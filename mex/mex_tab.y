@@ -180,9 +180,7 @@
     
   ATTRIBUTES *curfn=NULL;
 
-  #pragma off(unreferenced)
-  static char rcs_id[]="$Id: mex_tab.y,v 1.2 2003/06/07 05:54:28 wesgarland Exp $";
-  #pragma on(unreferenced)
+  /* $Id: mex_tab.y,v 1.3 2004/01/23 10:52:59 wmcbrine Exp $ */
 
 %}
 
