@@ -136,7 +136,7 @@
 
   // ATTN: This is color scheme dependant: blink/bkgr bit ... revise later
 
-#define MAKEINVERTEDCOLOR(clr) (((USHORT)(clr)<<4) | (((USHORT)(clr)>>4) & (USHORT)0x0F00))
+#define MAKEINVERTEDCOLOR(clr) (((USHORT)(clr)<<4) | (((USHORT)(clr)>>4) & (USHORT)0x0F00))
 
 /////////////////////////////////////////////////////////////////////////////
 // Miscellaneous declarations                                              //
