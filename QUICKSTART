@@ -1,0 +1,104 @@
+Wed Jun 11 13:47:53 EDT 2003
+
+This is a rough summary how to build and install Maximus and Squish 
+under ideal conditions.
+
+It is unlikely that these directions will work for you, but they should
+give you an idea of what needs to be done.
+
+Feedback is welcome, particularly in the form of new-style context diffs.
+
+1. You need the Maximus source distribution, presumably you
+   have it, because that's where this file is. It will have
+   a name like max-unix-3.03b.tar.gz. Once we are building
+   under non-UNIX platforms again, we will drop the '-unix'
+   from the archive name.
+
+   If you don't have a Maximus source distribution, you can
+   get it from maximus.sourceforge.net, in the file releases
+   area.
+
+   If you would like the latest-and-greatest (bleeding edge)
+   versions of Maximus and Squish for UNIX, you can check them
+   out from the CVS on SourceForge.
+
+   # cvs -z3 -d:pserver:anonymous@cvs.maximus.sourceforget.net:/cvsroot/maximus co maximus
+
+2. Untar the max-3.03-etc.tar.gz into the same directory as
+   as your cvs/maximus or the top-level directory created
+   while unpacking your Maximus source distribution (i.e., 
+   the directory where you found this file)
+
+   # cd maximus
+   # tar -zxvf ../max-3.03-etc.tar.gz
+
+3. Edit install_tree/etc/max.ctl, and customize it to suit your
+   needs. At the very least, put in your own name and pick a
+   pick a name for your BBS.
+
+4. Run the configure program. The default installation path is
+   /var/max -- to change this, run ./configure --prefix=/new/path
+
+   # ./configure
+
+5. If it said "Configuration Complete", all is well. Now you need to
+   build Maximus and Squish
+
+   # make build
+
+6. Hopefully everything built. Now you should make a bbs user and group.
+   Syntax will vary slightly from one UNIX variant to another. After
+   that, create the installation directory (PREFIX) so that you can
+   actually install the software.
+
+   # su
+   # groupadd bbs
+   # useradd -g bbs -d /var/max bbs
+   # passwd bbs
+   # mkdir -p /var/max
+   # chown bbs:bbs /var/max
+   # su bbs
+
+7. Install Maximus
+
+   # make install
+   # exit
+
+8. If that worked properly, your Maximus control files will be installed,
+   and you'll be prompted with "Your Name [Y,n]". Follow the prompts
+   until you hit the main menu. This step sets you up as the Sysop in 
+   etc/user.bbs.
+
+9. Choose G)oodbye to exit Maximus. Or maybe hit V)ersion first, just
+   to see something few have seen before. :)
+
+10. You need to find a way to make your BBS start automatically, and
+    restart when it crashes. One way to do this is as follows:
+
+   # vi /etc/inittab
+   
+   Add this to the end of the file:
+
+   mx:234:respawn:/bin/su - bbs -c "cd /var/max && bin/runbbs.sh"
+
+   # init q
+
+11. You now need to configure your archivers. These are controlled by
+    the file PREFIX/etc/compress.cfg. I have supplied dist/arj-3.10g.tar.gz
+    and dist/arc521e.tar.gz to get you going. These packages are not
+    part of Maximus, so they are not build automatically for you.
+
+12. If you need to shut down max, change 'respawn' to 'off' in your
+    inittab line, touch the file PREFIX/die.now, and re-issue init q.
+
+    # vi /etc/inittab
+
+    mx:234:respawn:/bin/su - bbs -c "cd /var/max && bin/runbbs.sh"
+
+    # touch /var/max/die.now; chown bbs /var/max/die.now
+    # init q
+
+13. If you've been following my directions verbatim, you're still root.
+
+    # exit
+
