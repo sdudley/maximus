@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_wfc.c,v 1.4 2003/11/15 23:27:29 paltas Exp $";
+static char rcs_id[]="$Id: max_wfc.c,v 1.5 2003/11/16 02:07:58 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Waiting-for-caller routines
@@ -288,8 +288,8 @@ static char * near Get_Modem_Response(void)
 
     /* Suppress any 'OK' messages */
 
-    if (eqstri(resp,"ok"))
-      *resp='\0';
+/*    if (eqstri(resp,"ok"))
+      *resp='\0';*/
 
     /* Reset the modem initialization timer so that we don't
      * try to reinit in the middle of a ring!
