@@ -223,7 +223,6 @@ DWORD COMMAPI ModemComOutCount(HCOMM hc)
     return(FALSE);
 }
 
-#if 0
 void ModemLowerDTR (int fd)
 {
   struct termios tty;
@@ -302,7 +301,6 @@ void ModemRaiseDTR (int fd, int baud, int cts)
   
   tcsetattr (fd, TCSANOW, &tty);
 }
-#endif
 
 
 BOOL COMMAPI ModemComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE
