@@ -52,53 +52,61 @@ int VioWrtTTY(const char *string, size_t length, void *handle)
   return 0;  
 }
 
-chtype cursesAttribute(unsigned char dosAttribute)
+void StartPairs()
+{
+    init_pair(1, COLOR_BLUE, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);    
+    init_pair(3, COLOR_RED, COLOR_BLACK);    
+    init_pair(4, COLOR_WHITE, COLOR_BLACK);    
+    init_pair(5, COLOR_CYAN, COLOR_BLACK);    
+    init_pair(6, COLOR_MAGENTA, COLOR_BLACK);        
+    init_pair(7, COLOR_YELLOW, COLOR_BLACK);        
+    init_pair(8, COLOR_WHITE, COLOR_BLACK);        
+}
+
+int cursesAttribute(unsigned char dosAttribute)
 {
   /* this doesn't support non-default background. 
    * if we want that, we need to define 64 color
    * pairs and go from there.
    */
 
-  chtype        ch;
+  int        ch = 0;
+  int		tmp = 0;
 
-/* busted */
- //return 0;
-	
   switch (dosAttribute & (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED))
   {
     case FOREGROUND_BLUE:
-      ch = COLOR_BLUE;
+      ch = 1;
       break;
     case FOREGROUND_GREEN:
-      ch = COLOR_GREEN;
+      ch = 2;
       break;
     case FOREGROUND_RED:
-      ch = COLOR_RED;
+      ch = 3;
       break;
     case FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED:
-      ch = COLOR_WHITE;
+      ch = 4;
       break;
     case FOREGROUND_BLUE | FOREGROUND_GREEN:
-      ch = COLOR_CYAN;
+      ch = 5;
       break;
     case FOREGROUND_BLUE | FOREGROUND_RED:
-      ch = COLOR_MAGENTA;
+      ch = 6;
       break;
     case FOREGROUND_GREEN | FOREGROUND_RED:
-      ch = COLOR_YELLOW;
+      ch = 7;
       break;
     default:
-      ch = COLOR_BLACK;
+      ch = 8;
       break;
   }
 
-  if (!(dosAttribute & FOREGROUND_INTENSITY))
+/*  if (!(dosAttribute & FOREGROUND_INTENSITY))
     ch |= A_DIM;
 
   if (dosAttribute & BACKGROUND_INTENSITY)
-    ch |= A_REVERSE;
+    ch |= A_REVERSE;*/
 
   return ch;
 }
-
-

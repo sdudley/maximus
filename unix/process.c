@@ -18,7 +18,6 @@ static void noop(int sig)
 /* The smoothy fork() trick doesn't work unfortionally, because of QWK expect the sh*t runs
    realtime.. */
 
-#if NEVER
 int spawnvp(int mode, const char *Cfile, char *const argv[])
 {
   pid_t		pid;
@@ -90,22 +89,4 @@ int spawnvp(int mode, const char *Cfile, char *const argv[])
   _exit(1);  
 }
 
-#else
-int spawnvp(int mode, const char *Cfile, char *const argv[])
-{
-    char tmp[1024];
-    int i, erl;
-    
-    memset(tmp, 0, 1024);
-    
-    for(i=0; argv[i]; i++)
-    {
-	strcat(tmp, argv[i]);
-	strcat(tmp, " ");
-    }
 
-    system(tmp);
-    
-    return 0;
-}
-#endif
