@@ -30,7 +30,7 @@
 int _fast Save_Dir(char *orig_disk,char *orig_path[],char *path)
 {
   char temp[PATHLEN];
-  char dn;
+  int dn;
   char *p;
 
   if (*orig_disk==-1)
@@ -39,9 +39,9 @@ int _fast Save_Dir(char *orig_disk,char *orig_path[],char *path)
   strcpy(temp,path);
 
   if (isalpha(*temp) && temp[1]==':')
-    dn=(char)(toupper(*temp)-'A');
+    dn=toupper(*temp)-'A';
   else
-    dn=(char)getdisk();
+    dn=getdisk();
 
   if (! orig_path[dn])  /* Do this if it's NULL, otherwise skip it */
   {
