@@ -85,6 +85,13 @@ install: max
 
 max: $(OBJS) date.o
 
+# Wes: strange build line forces g++ for linking with objects containing cppmain.o.
+# This is needed for gcc 3; otherwise we'd need to figure out which targets to
+# add libgcc_s.so to, and only only gcc 3. This should work for gcc 2 and gcc 3.
+
+max:
+	$(CXX) $(CFLAGS) $(LDFLAGS) $^ $(LOADLIBES) -o $@
+
 bldupd.o: bldupd.h
 
 .PRECIOUS: ../util/maid $(LANGHDR)

@@ -26,6 +26,13 @@ ansi2bbs.o: ansi2bbs.c
 ansi2mec.o: ansi2bbs.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DANSI2MEC -o $@ -c $<
 
+# Wes: strange build line forces g++ for linking with objects containing cppmain.o.
+# This is needed for gcc 3; otherwise we'd need to figure out which targets to
+# add libgcc_s.so to, and only only gcc 3. This should work for gcc 2 and gcc 3. 
+
+cvtusr scanbld silt: 
+	$(CXX) $(CFLAGS) $(LDFLAGS) $^ $(LOADLIBES) -o $@
+
 cvtusr:		cvtusr.o cppmain.o cvt_misc.o
 scanbld accem: EXTRA_LOADLIBES += -lmsgapi
 accem:		accem.o init.o
