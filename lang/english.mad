@@ -1,4 +1,4 @@
-; $Id: english.mad,v 1.1 2002/10/01 17:50:25 sdudley Exp $
+; $Id: english.mad,v 1.2 2003/06/04 22:55:27 wesgarland Exp $
 ;
 ; ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 ; ³                             ENGLISH.MAD                             ³
@@ -39,9 +39,9 @@
 
 ; This section starts off with several macro definitions:
 
-#define VER             3.01
+#define VER             3.02
 #define BETA_TEST
-#define YEAR            1989, 1995
+#define YEAR            1989, 2003
 
 #define LBRACKET        [
 #define RBRACKET        ]
@@ -380,6 +380,7 @@ log_ret_from_app=       "+Return from external application";
 @DOS log_no_fossil=     "!FOSSIL isn't loaded";
 @OS2 log_no_fossil=     "!Communications driver not properly installed";
 @NT log_no_fossil=      "!Communications driver not properly installed";
+@UNIX log_no_fossil=	"!Could not initialize communications library";
 log_err_msgapi=         "!Couldn't initialize message API";
 log_got_null_ptr=       ">!User off-line by NULL pointer!";
 brain_lapse=            "!Temporary brain lapse.  Name=\"%s\"?";
@@ -419,6 +420,7 @@ log_badex1=             ">!| Xtern_Run needs .EXE or .COM extension";
 @NT  log_badex2=        ">!| Use Xtern_Dos for .BAT or other!";
 @DOS log_badex2=        ">!| Use Xtern_Dos for .BAT or other!";
 @OS2 log_badex2=        ">!| Use Xtern_Os2 for .CMD or other!";
+@UNIX log_badex2=	">>!! Use Xtern_Unix for .SH or other!";
 log_badnf=              ">!Program not found!";
 log_badnm=              ">!Not enough memory to execute program";
 log_badee=              ">!Execution error (errno=%d)";
@@ -1606,6 +1608,7 @@ qwk_busy_msg=           "Error!  QWK packer is currently in use on another node!
 @NT  maxpipe_cmd=       "%s";
 @DOS maxpipe_cmd=       "%s";
 @OS2 maxpipe_cmd=       "maxpipe.exe %%P %s";
+@UNIX maxpipe_cmd=	"maxpipe %%P %s";
 br_which_areas=         "Search which areas (use \"*\" as wildcard): ";
 @RIP br_which_areas=    RIP RIP_KILL RIP_COL "01" RIP_TEXTXY "1C66Which areas (use "*" as wildcard):\n"
                         RLI RIP_COL "08" RIP_RECT "196LEY6Y" RIP_COL "0F" RIP_RECT "186KEX6X\n"
