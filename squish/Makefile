@@ -17,7 +17,7 @@ SQUISH_OBJS :=	squish.obj   s_abbs.obj         s_config.obj    \
                 s_thunk.obj  s_dupe.obj		ftscprod.obj
 
 ftscprod.c:
-	nawk -F, -f mkprod.awk < ftscprod.007 > ftscprod.c
+	awk -F, -f mkprod.awk < ftscprod.007 > ftscprod.c
 
 SQUISH_OBJS := $(SQUISH_OBJS:.obj=.o) bld.o
 bld.o: bld.h sqver.h
