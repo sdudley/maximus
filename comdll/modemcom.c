@@ -31,14 +31,11 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
   COMMHANDLE    h = NULL;
   struct termios tios;
 
-  memset(filename, 0, 128);
-  memset(lockname, 0, 128);
-
   if(strstr(pszDevice, "com"))
     pszDevice += 3;
     
-    sprintf(filename, "/dev/ttyS%01d", (unsigned) (atoi(pszDevice)-1));
-    sprintf(lockname, "/var/lock/LCK..ttyS%01d", (unsigned) (atoi(pszDevice)-1));
+  sprintf(filename, "/dev/ttyS%01d", (unsigned) (atoi(pszDevice)-1));
+  sprintf(lockname, "/var/lock/LCK..ttyS%01d", (unsigned) (atoi(pszDevice)-1));
 
     if(fexist(lockname))
     {
@@ -60,22 +57,6 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
     fclose(lockfp);    
   }
     
-  fcntl (fd, F_SETFL, FASYNC);
-
-  tcgetattr(fd, &tios);
-  
-  tios.c_iflag = 0;
-  tios.c_oflag = 0;  
-  tios.c_lflag = 0;
-
-  tios.c_cflag = B0 | CS8 | CREAD | CLOCAL | CRTSCTS;
-
-  if(tcsetattr(fd, TCSANOW, &tios) < 0)
-  {
-    printf("Could not set attributes at the modem! (%s)", filename);
-    exit(0);
-  }
-
   h = CommHandle_fromFileHandle(h, -1);
 
   if (!ComOpenHandle(h, phc, dwRxBuf, dwTxBuf))
@@ -84,7 +65,7 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
     return FALSE;
   }
 
-  _InitPort(phc);
+  _InitPort(*phc);
 
   if(fd)
   {
@@ -102,19 +83,31 @@ BOOL COMMAPI ModemComClose(HCOMM hc)
     if(!hc)
 	return FALSE;
     
+    LOWER_DTR(hc);    
     close(hc->listenfd);
     unlink(lockname);
-    LOWER_DTR(hc);
     
     return TRUE;
 } 
 
 USHORT COMMAPI ModemComIsOnline(HCOMM hc)
 {
-    if(!hc)
-       return 0;
+    int tmp=0;
 
-    return 1;
+    if(!hc)
+       return FALSE;
+
+    if(ioctl(hc->listenfd, TIOCMGET, &tmp) < 0)
+        return FALSE;
+
+    if((tmp & TIOCM_CD) == FALSE)
+    {	
+        hc->fDCD = FALSE;
+        logit("!Carrier lost");
+        return FALSE;
+    }
+    
+    return TRUE;
 }
 
 BOOL COMMAPI ModemComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
@@ -132,50 +125,30 @@ BOOL COMMAPI ModemComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdw
     int sresult = 0;    
     int BytesRead = 0;
     int tmp = 0;
-
-    if(hc->peekHack >= 0)
-    {
-	* (char*) pvBuf = hc->peekHack;
-	*pvBuf++;
-	hc->peekHack = -1;
-	*pdwBytesRead = 1;
-	
-	if(--dwBytesToRead == 0)
-	    return TRUE;
-    }
-    else
-	*pdwBytesRead = 0;
-
-    ioctl(hc->listenfd, TIOCMGET, &tmp);
-
+    
+    tv.tv_usec = 5;
+    tv.tv_sec = 0;
+    
     FD_ZERO(&fdrx);
     FD_SET(hc->listenfd, &fdrx);
+
+    *pdwBytesRead = 0;
     
-    tv.tv_sec = 0;
-    tv.tv_usec = 500;
-    
-    if(sresult = select(hc->listenfd + 1, &fdrx, NULL, NULL, &tv))
+    if(select(hc->listenfd + 1, &fdrx, 0, 0, &tv) > 0)
     {
-	switch(sresult)
-	{
-	case -1:
-	case 0:
-	    break;    
-	
-	default:
-	    BytesRead = read(hc->listenfd, pvBuf, dwBytesToRead);
+        BytesRead = read(hc->listenfd, pvBuf, dwBytesToRead);
 	    
-	    if(BytesRead <= 0)
-	    {
-		return FALSE;
-	    }
-	    else	    	    
-	    {
-		*pdwBytesRead += BytesRead;
-		return TRUE;
-	    }
+        if(BytesRead <= 0)
+        {
+	    return FALSE;
+	}
+	else	    	    
+	{
+	    *pdwBytesRead += BytesRead;
+	    return TRUE;
 	}
     }
+
     return FALSE;	
 }
 
@@ -189,9 +162,7 @@ int COMMAPI ModemComGetc(HCOMM hc)
 
 BOOL COMMAPI ModemComPutc(HCOMM hc, int c)
 {
-    char b = c;
-    
-    return (ComWrite(hc, &b, 1));
+    return (ComWrite(hc, &c, 1));
 }
 
 BOOL COMMAPI ModemComIsAModem(HCOMM hc)
@@ -209,13 +180,7 @@ BOOL COMMAPI ModemComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
 
 int COMMAPI ModemComPeek(HCOMM hc)
 {
-  if (!ComIsOnline(hc))
-    return -1;
-
-  if (hc->peekHack == -1)
-    hc->peekHack = ComGetc(hc);
-
-  return hc->peekHack;
+  return 0;
 }
 
 COMMHANDLE COMMAPI ModemComGetHandle(HCOMM hc)  
@@ -228,7 +193,6 @@ COMMHANDLE COMMAPI ModemComGetHandle(HCOMM hc)
 
 DWORD COMMAPI ModemComOutCount(HCOMM hc)
 {
-  ComIsOnline(hc);
   return 0;
 }
 
@@ -246,10 +210,20 @@ void ModemRaiseDTR (HCOMM hc)
 {
   struct termios tty;
 
+  fcntl (hc->listenfd, F_SETFL, FASYNC);
+
   LOWER_DTR(hc);
   tcgetattr (hc->listenfd, &tty);
+
+  tty.c_iflag = 0;
+  tty.c_oflag = 0;  
+  tty.c_lflag = 0;
+
+  tty.c_cflag = B0 | CS8 | CREAD | CLOCAL | CRTSCTS;
+
   cfsetospeed (&tty, B115200);
   cfsetispeed (&tty, B115200);
+
   tcsetattr (hc->listenfd, TCSANOW, &tty);
 }
 
@@ -293,42 +267,24 @@ BOOL COMMAPI ModemComPurge(HCOMM hc, DWORD fBuffer)
 
 BOOL COMMAPI ModemComBurstMode(HCOMM hc, BOOL fEnable)
 {
-  BOOL lastState;          
-
   if (!hc)
     return FALSE;
 
-  lastState = hc->burstModePending;
-  hc->burstModePending = fEnable;
-
-  return lastState;
+  return 1;
 }
 
 DWORD COMMAPI ModemComInCount(HCOMM hc)
 {
-  /* Okay, we need to fake this so that mdm_avail() will
-   * work. Let's peek, if that works, return that there is
-   * one byte available for read..
-   */
-
-  int ch;
-
-/*  if (!ComIsOnline(hc))
-    return 0;
-
-  ch = ComPeek(hc);
-
-  return (ch >= 0 ? 1 : 0);*/
+  int tmp = 0;
   
-  return 0;
+  ioctl(hc->listenfd, FIONREAD, &tmp);
+  
+  return tmp;
 }
 
 DWORD COMMAPI ModemComOutSpace(HCOMM hc)
 {
-/*  if (!ComIsOnline(hc))
-    return 0;*/
-
-  return 0;
+  return 1;
 }
 BOOL COMMAPI ModemComPause(HCOMM hc)
 {

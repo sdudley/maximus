@@ -27,9 +27,12 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.16 2004/01/27 21:05:02 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.17 2004/04/09 21:55:39 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.17  2004/04/09 21:55:39  paltas
+ * New IPcom.c without iac parsing and things, this is done in maxcomm.c
+ *
  * Revision 1.16  2004/01/27 21:05:02  paltas
  * Fixed IAC parsing
  *
@@ -98,7 +101,9 @@
 # error UNIX only!
 #endif
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.16 2004/01/27 21:05:02 paltas Exp $";
+#ifndef __GNUC__
+static char rcs_id[]="$Id: ipcomm.c,v 1.17 2004/04/09 21:55:39 paltas Exp $";
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -115,9 +120,6 @@ static char rcs_id[]="$Id: ipcomm.c,v 1.16 2004/01/27 21:05:02 paltas Exp $";
 #include <errno.h>
 #include "prog.h"
 #include "ntcomm.h"
-#ifdef TELNET
-# include "telnet.h"
-#endif
 
 #include "comprots.h"
 #include "comstruct.h"
@@ -146,10 +148,6 @@ struct _hcomm
   signed int		peekHack;		/**< Character we've ComPeek()ed but not ComRead(); or -1 */
   BOOL			burstModePending; 	/**< Next write's burst mode */
   size_t		txBufSize;		/**< Size of the transmit buffer */
-#ifdef TELNET
-  telnet_moption_t	telnetPendingOptions;	/**< Unprocessed option requests from remote */
-  telnet_moption_t	telnetOptions;		/**< Current telnet options (bitmask) */
-#endif
 } _hcomm;
 
 #endif
@@ -285,17 +283,16 @@ BOOL COMMAPI ComOpenHandle(COMMHANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD d
  */ 
  
 #define SOCKPATH "maxipc" 
-char sockpath[128];
-char lockpath[128];
+static char sockpath[PATH_MAX];
+static char lockpath[PATH_MAX];
 
 BOOL COMMAPI IpComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 {
   int			fd = -1; 	/**< file descriptor */
   struct sockaddr_un 	serv_addr;
-  struct servent 	*se;  
-  int			junk;
   short			portnum = 0;
   COMMHANDLE		h = NULL;
+  char			tmpPath[PATH_MAX];
   h = CommHandle_fromFileHandle(h, -1);
 
   if (strncasecmp(pszDevice, "Com", 3) == 0)
@@ -306,8 +303,8 @@ BOOL COMMAPI IpComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBu
 
   portnum=atoi(pszDevice);
 
-  sprintf(sockpath, "%s%d", SOCKPATH, portnum);
-  sprintf(lockpath, "%s%d.lck", SOCKPATH, portnum);
+  sprintf(sockpath, "%s/%s%d", getcwd(tmpPath, PATH_MAX), SOCKPATH, portnum);
+  sprintf(lockpath, "%s/%s%d.lck", getcwd(tmpPath, PATH_MAX), SOCKPATH, portnum);
 
   if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
   {
@@ -387,82 +384,6 @@ BOOL COMMAPI IpComClose(HCOMM hc)
   return TRUE;
 }
 
-#ifdef TELNET
-/** Similar to write(), but is aware of NVT and automagically
- *  performs IAC-escape sequences when needed. The output to
- *  the remote NVT should be the same as if it were a physical
- *  terminal, conneted to a serial port, written to with write().
- *
- *  This routine tries to perform a single blocking write of the
- *  buffer up to and including the first character to escape.
- *  This means it may or may not write the entire buffer --
- *  but that's okay, because write() doesn't guarantee it will
- *  write the entire buffer, either.
- *
- *  @note	In incredibly unfortunate circumstances, it is
- *		theoretically possible for this routine to miss
- *		the second character in an IAC-IAC escape
- *		sequence. This occurs when the first write exactly
- *		fills up the buffer AND there is insufficient room
- *		to write even one more character to the TCP buffer
- *		at least one second later.
- *
- *  @param	HCOMM	Maximus communications handle to write to
- *  @param	buf	Data to write
- *  @param	count	Number of bytes to write
- *
- *  @returns	Number of bytes from the original buffer which
- *		were consumed for output, or the error value
- *		from read() -- -1 on POSIX systems.
- */
-ssize_t telnet_write(HCOMM hc, const unsigned char *buf, size_t count)
-{
-  unsigned char	*iac;
-  int		fd = unixfd(hc);
-
-  if (!hc)
-    return -1;
-
-  iac = memchr(buf, cmd_IAC, count);
-  if (!iac)
-    return write(fd, buf, count);
-  else
-  {
-    ssize_t		bytesWritten;
-
-    /* Write up to the IAC */
-    bytesWritten = write(fd, buf, (iac - buf) + 1);
-    if (bytesWritten != ((iac - buf) + 1))
-      return bytesWritten;
-
-    /* Write an extra IAC, and hope to hell it goes */
-    if (write(fd, iac, 1) != 1)
-    {
-      sleep(1);
-      write(fd, iac, 1);
-    }
-
-    /* Report that we weren't "able" to write the whole buffer */
-    return bytesWritten;
-  }
-}
-#else
-# define telnet_write(a, b, c) write(unixfd(a),b,c)
-#endif
-
-#ifdef TELNET
-
-
-/** Read, blocking for (at most) the specified timeout.
- *  @see	telnet_read()
- *
- *  @param	fd	file descriptor to read from
- *  @param	buf	buffer to populate
- *  @param	count	size of buffer
- *  @param	timeout	Number of seconds to wait for data.
- *
- *  @returns		Number of bytes read, or -1 on error.
- */
 ssize_t timeout_read(int fd, unsigned char *buf, size_t count, time_t timeout)
 {
   /* for used by telnet_read to read more buffer w/o blocking */
@@ -496,385 +417,6 @@ ssize_t timeout_read(int fd, unsigned char *buf, size_t count, time_t timeout)
   return -1;
 }
 
-/** Return the bitmask version of a telnet option; suitable
- *  for setting/querying a telnet_moption_t via bitwise
- *  operations.
- *
- *  @param	The telnet option (byte code)
- *  @returns	The telnet option (bitmask code)
- */
-telnet_moption_t telnetOptionBit(telnet_option_t option)
-{
-  size_t i;
-
-  for (i=0; (i < sizeof(telnet_OptionList) / sizeof(telnet_OptionList[0])); i++)
-  {
-    if (telnet_OptionList[i].optEnum == option)
-      return telnet_OptionList[i].optBit;
-  }
-
-  return 0;
-}
-
-/** Set the values of the telnet option bitmasks associated with the
- *  current Maximus file handle. Used to process IAC WILL, WONT, DO,
- *  and DONT requests and acknowlegements from the remote NVT.
- *
- *  @param	hc	The Maximus communications handle associate with the NVT session.
- *  @param	command	The telnet command byte (WILL, WONT, DO, DONT)
- *  @param	option	The telnet option byte (SGA, ECHO, BINARY-TRANSFER, etc).
- */
-void setTelnetOption(HCOMM hc, telnet_command_t command, telnet_option_t option)
-{
-  BOOL			enable;
-  telnet_moption_t	*optionMask;
-
-  switch(command)
-  {
-    case cmd_WILL:
-      enable = TRUE;
-      optionMask = &(hc->telnetOptions);
-      break;
-    case cmd_WONT:
-      enable = FALSE;
-      optionMask = &(hc->telnetOptions);
-      break;
-    case cmd_DO:
-      enable = TRUE;
-      optionMask = &(hc->telnetPendingOptions);
-      break;
-    case cmd_DONT:
-      enable = FALSE;
-      optionMask = &(hc->telnetPendingOptions);
-      break;
-    default:
-      logit("!Unregonized telnet option IAC %i %i", command, option);
-      return;
-  }
-
-  switch(enable)
-  {
-    case TRUE:
-      *optionMask |= telnetOptionBit(option);
-      break;
-    case FALSE:
-      *optionMask &= telnetOptionBit(option);
-  }
-
-  return;
-}
-
-
-/** Read, consuming NVT control codes in as transparent a manner as possible.
- *  Processes IAC DO/DONT/WONT codes and adjusts hc as needed. Control codes
- *  are not passed to the caller.
- *
- *  @param	fd	file descriptor to read from
- *  @param	buf	buffer to populate
- *  @param	count	size of buffer
- *  @param	timeout	Number of seconds to wait for data.
- *
- *  @returns	Number of translated bytes read, or -1 on error.
- */
- 
-static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
-{
-  unsigned char	*ch;
-  unsigned char *tmp;
-  int		fd = unixfd(hc);
-  ssize_t	bytesRead;
-  
-  
-  bytesRead = read(fd, buf, count);	/* Select()ed for read already */
- 
-  if (!hc)
-    return -1;
-
-//  TODO: Fix this!
-  if (hc->telnetOptions & mopt_TRANSMIT_BINARY)
-    goto parse_iac;    
-
-  telnet_read_reread:
-  if (bytesRead <= 0)
-    return bytesRead;
-
-  if (count == 1) 
-  {
-    /* Asked for a single byte. Make sure the returned byte
-     * was nothing special. 
-     *
-     * Note: According to my docs, NULs are to be ignored
-     *       during telnet. So how the heck do we do ZMODEM? 
-     *	     Probably with IAC WILL TRANSMIT-BINARY.
-     */
-    switch(buf[0])
-    {
-      case '\0':
-	count = timeout_read(fd, buf, 1, 0);
-	goto telnet_read_reread;
-      case cmd_IAC:
-	break;				/* Fall through to IAC processing below */
-      case '\r':
-	hc->peekHack = -1;
-	timeout_read(unixfd(hc), (char *)&(hc->peekHack), 1, 1);
-	switch(hc->peekHack)
-	{
-	  case '\n':			/* Telnet end-of-line, give max \r\n */
-	    return bytesRead;
-	    break;
-	  case '\0':			/* Telnet carriage return, give max \r (consume \0) */
-	    hc->peekHack = -1;
-	    break;
-	}
-	break;
-      default:
-	return bytesRead;
-    }
-  }
-  else
-  {
-    /* Modify in-buffer eol, or cr sequences to look right */
-
-    ch = memchr(buf, '\r', bytesRead);
-    if(ch)
-	do
-	{
-    	    switch(ch[1])
-    	    {
-		case '\n':			/* Telnet end-of-line, give max \r\n */ 
-		    ch++; 
-		    break;
-		case '\0':			/* Telnet carriage return, give max \r (consume \0) */
-		    memmove(ch, ch + 1, --bytesRead);
-		    break;
-    	    }
-	    ch = memchr(ch, '\r', bytesRead - (ch - buf));
-	} while(ch && bytesRead);
-    
-
-    /* Pull \0 out of the buffer */
-    for (ch = memchr(buf, '\0', bytesRead);
-	 ch && bytesRead;
-	 ch = memchr(ch + 1, '\0', bytesRead - (ch - buf)))
-    {
-      memmove(ch, ch + 1, --bytesRead);
-    }
-
-    /* All characters consumed?? Try again */ 
-    if (bytesRead == 0)
-    {
-      bytesRead = timeout_read(fd, buf, count, 0);
-      if (bytesRead > 0)
-	goto telnet_read_reread;
-      return bytesRead;
-    }
-  }
-
-  parse_iac:
-  
-  /* Code below here assumes bytesRead, count >= 1 */
-  if(count <= 0)
-    return bytesRead;
-
-  /* output buffer and counter */
-  unsigned char obuf[bytesRead]; int oi; 
-  /* arguments */
-  unsigned char arg, arg2;
-  /* counter */
-  int i, j, found;
-  
-  memset(obuf, 0, bytesRead);
-  oi = 0;
-
-  for(i=0; i < bytesRead; i++)
-  {
-
-    if(buf[i] == cmd_IAC)
-    {
-	/* if the argument is avaible */
-        if((i+1) < bytesRead)
-        {
-	    i++;
-	    arg = buf[i];
-	}
-	/* if it's not IAC xxx */
-	else
-	{
-	    /* we read one */
-	    if(timeout_read(fd, &arg, 1, 200) != 1)
-	    {
-		logit("!Read of extra arg didn't succed!");
-	        sleep(1);
-		/* if we didn't get anything we tries agian, 
-		   and hope it goes. */
-	        if(timeout_read(fd, &arg, 1, 200) != 1)
-	        {
-		    return oi;
-		}
-	    }
-	}
-
-	/* find out which argument it's */    
-	switch(arg)
-	{
-	    /* a real IAC */
-	    case cmd_IAC:
-	        obuf[oi] = cmd_IAC;
-	        oi++;
-		break;
-	    /* a erase charecter */	
-	    case cmd_EC:
-	        obuf[oi] = 0x08;
-	        oi++;
-	        break;    
-	    /* IAC WILL/WONT/DO/DONT <some option> */
-	    case cmd_WILL:				
-	    case cmd_WONT: 
-    	    case cmd_DO:
-    	    case cmd_DONT:
-		/* if the second argument is aviable */
-		if((i+1) < bytesRead )	    
-		{
-		    i++;
-		    arg2 = buf[i];
-		}
-		/* else we read one */
-		else
-		{
-		    if(timeout_read(fd, &arg2, 1, 200) != 1)
-		    {
-			logit("!Read of extra option didn't succed!");
-		        sleep(1);
-		        if(timeout_read(fd, &arg2, 1, 200) != 1)
-		        {
-		    	    return oi;
-			}
-		    }
-		}
-		setTelnetOption(hc, arg, arg2);
-		break;
-	    /* no argument just continue the loop */
-	    case cmd_SE: 
-		logit("!Found distrubed IAC SE");
-		break;
-	    
-	    case cmd_NOP:
-	    case cmd_DM:
-	    case cmd_BRK:
-	    case cmd_IP:
-	    case cmd_AO:
-	    case cmd_AYT:
-	    case cmd_GA:
-	    case cmd_EL:
-	        break;
-		
-	    case cmd_SB:
-	        found = 0;
-		    
-		for(j=i; j < bytesRead; j++)
-		{
-		    if(buf[j] == cmd_SE)
-		    {
-		        found = 1;
-		        break;
-		    }
-		}	        
-
-		if(found)
-		{
-		    i = j;
-		}
-		break;
-	    default:
-		logit("!Unknown IAC arg (%d)", arg);
-		obuf[oi] = arg;
-		oi++;
-		break;
-	}
-	
-    }    
-    else
-    {
-        obuf[oi] = buf[i];
-        oi++;
-    }
-  }
-
-  memcpy(buf, obuf, oi);
-  return oi;
-}
-
-#else
-# define telnet_read(a, b, c) read(unixfd(a),b,c)
-#endif
-
-#ifdef TELNET
-/** This simple driver doesn't negotiate, it makes demands!
- *  We write with write() to enable us to write telnet data
- *  unmolested. We receive with ComPeek() because it will
- *  consume telnet data, and change the comm parameters
- *  as needed.
- *
- *  @note	The calls to ComPeek() aren't strictly
- *              necessary, as the control codes will get
- *              get consumed as soon as Maximus tries to
- *		read from the comm handle. However, it is
- *		best to process the return codes as quickly
- *		as possible, so as to allow the first ComWrite()
- *		from Maximus to be in the correct mode whenever
- *		possible.
- *
- *  @param	hc			Communications handle
- *  @param	preferBinarySession	TRUE if we'd prefer a binary session with the NVT.
- */
-void negotiateTelnetOptions(HCOMM hc, int preferBinarySession)
-{
-  unsigned char command[3];
-  int 		ch;
-
-  ch = IpComPeek(hc);	/* Get the ball rolling */
-
-  sprintf(command, "%c%c%c", cmd_IAC, cmd_DONT, opt_ENVIRON);
-  write(unixfd(hc), command, 3);
-  if (ch == -1)
-    ch = IpComPeek(hc);
-
-  sprintf(command, "%c%c%c", cmd_IAC, cmd_DO, opt_SGA);
-  write(unixfd(hc), command, 3);
-  if (ch == -1)
-    ch = IpComPeek(hc);
-
-  sprintf(command, "%c%c%c", cmd_IAC, cmd_WILL, opt_ECHO);
-  write(unixfd(hc), command, 3);
-  if (ch == -1)
-    ch = IpComPeek(hc);
-
-  sprintf(command, "%c%c%c", cmd_IAC, cmd_WILL, opt_SGA);
-  write(unixfd(hc), command, 3);
-  if (ch == -1)
-    ch = IpComPeek(hc);
-
-  sprintf(command, "%c%c%c", cmd_IAC, cmd_DONT, opt_NAWS);
-  write(unixfd(hc), command, 3);
-  if (ch == -1)
-    ch = IpComPeek(hc);
-
-  if (!preferBinarySession)
-    return;
-
-  sprintf(command, "%c%c%c", cmd_IAC, cmd_DO, opt_TRANSMIT_BINARY);
-  write(unixfd(hc), command, 3);
-  if (ch == -1)
-    ch = IpComPeek(hc);
-
-  sprintf(command, "%c%c%c", cmd_IAC, cmd_WILL, opt_TRANSMIT_BINARY);
-  write(unixfd(hc), command, 3);
-  if (ch == -1)
-    ch = IpComPeek(hc);
-
-  return;
-}
-#endif
 
 /** Return the current status of DCD on this line
  *  TCP/IP Interpretation: If carrier has not been set true yet,
@@ -925,7 +467,7 @@ USHORT COMMAPI IpComIsOnline(HCOMM hc)
     FD_SET(unixfd(hc), &wfds);
 
     tv.tv_sec = 0;
-    tv.tv_usec = 1;
+    tv.tv_usec = 0;
 
     if (((rready = select(unixfd(hc) + 1, &rfds, NULL, NULL, &tv)) < 0) || (select(unixfd(hc) + 1, NULL, &wfds, NULL, &tv) < 0))
     {
@@ -983,9 +525,6 @@ USHORT COMMAPI IpComIsOnline(HCOMM hc)
     fd = accept(hc->listenfd, (struct sockaddr *)&hc->saddr_p, &addrSize);
     if (fd >= 0)
     {	
-      int	optval;
-      int	optlen = sizeof(optval);
-//      pid_t	parentPID = getpid();
       FILE* 	f = NULL;
 
       /* Have accepted a socket. Close the bound socket and dump
@@ -1004,25 +543,12 @@ USHORT COMMAPI IpComIsOnline(HCOMM hc)
       memset(&dcb, 0, sizeof(dcb));
       dcb.isTerminal = FALSE;
 
-#ifdef TELNET
-      dcb.fBinary	= FALSE;	/* Set true after negotiating this */
-      logit("#Negotiating Telnet Options");
-      negotiateTelnetOptions(hc, TRUE);
-#else
       dcb.fBinary	= TRUE;
-#endif
 
       SetCommState(ComGetHandle(hc), &dcb);
       ComSetBaudRate(hc, 38400, NOPARITY, 8, ONESTOPBIT);
       _SetTimeoutBlock(hc);
 
-      /* Setup the suggested buffer sizes as the TCP buffer sizes */
-#ifdef BROKEN /* Makes max VERY slow under linux 2.0.30 -- WTF? -- Wes */
-      if ((optval = hc->txBufSize))
-	setsockopt(unixfd(hc), SOL_SOCKET, SO_SNDBUF, (char *)&optval, optlen);
-      if ((optval = hc->rxBufSize))
-	setsockopt(unixfd(hc), SOL_SOCKET, SO_RCVBUF, (char *)&optval, optlen);
-#endif
       hc->burstMode = TRUE; 
       hc->burstModePending = FALSE; /* turn off nagle by default */
  
@@ -1065,9 +591,6 @@ BOOL COMMAPI IpComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
     int	optlen = sizeof(optval);
 
     optval = !hc->burstModePending;
-#if defined(COMMAPI_DEBUG)
-    logit("!%sabled nagle algorithm", optval ? "dis" : "en");
-#endif
 
     retval = setsockopt(unixfd(hc), IPPROTO_TCP, TCP_NODELAY, (char *)&optval, optlen);
     if (retval == 0)
@@ -1077,7 +600,7 @@ BOOL COMMAPI IpComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
   totalBytesWritten = 0;
   do
   {
-    bytesWritten = telnet_write(hc, (char *)pvBuf + totalBytesWritten, dwCount - totalBytesWritten);
+    bytesWritten = write(unixfd(hc), (char *)pvBuf + totalBytesWritten, dwCount - totalBytesWritten);
     if ((bytesWritten < 0) && (errno != EINTR))
     {
       logit("!Unable to write to socket (%s)", strerror(errno));
@@ -1140,7 +663,7 @@ BOOL COMMAPI IpComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwByt
   if (hc->burstMode)
   {
     tv.tv_sec = 0;
-    tv.tv_usec = 1;
+    tv.tv_usec = 5;
   }
   else
   {
@@ -1157,13 +680,12 @@ BOOL COMMAPI IpComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwByt
     }
   }
 
-//  ComRead_getData:
   FD_ZERO(&rfds);
   FD_SET(unixfd(hc), &rfds);
 
   if (select(unixfd(hc)+1, &rfds, NULL, NULL, &tv))
   {
-    bytesRead = telnet_read(hc, pvBuf, dwBytesToRead);
+    bytesRead = read(unixfd(hc), pvBuf, dwBytesToRead);
 
     if (bytesRead >= 0)
     {

@@ -1,7 +1,7 @@
 include ../vars.mk
 
 
-CFLAGS += -DTELNET
+#CFLAGS += -DTELNET
 .PHONY: all install install_libs
 
 all: libcomm.so
