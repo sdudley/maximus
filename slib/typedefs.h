@@ -17,49 +17,84 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef __TYPEDEFS_H_DEFINED
-#define __TYPEDEFS_H_DEFINED
+#ifndef _TYPEDEFS_H
+#define _TYPEDEFS_H
 
-/* Handle the special defines for 32-bit flat model compilers */
+/* In theory, these are the only type-related defines
+ * to change when switching hardware platforms.
+ *
+ * The need for these definitions may seem odd,
+ * until you realize that on some platforms,
+ * long is 64 bits; on others it is 32... etc.
+ *
+ * These should work for Sparc, Alpha, and 
+ * probably others.
+ */
+#define INT8		char
+#define INT16		short
+#define INT32		int
+#define INT64		long long
 
-#if defined(__386__) || defined(__FLAT__)
-  typedef unsigned      bit;
+#define INT16_FORMAT	"hi"
+#define INT32_FORMAT	"i"
+#define INT64_FORMAT	"lli"
 
-  typedef unsigned char byte;
-  typedef signed char   sbyte;
+#define UINT16_FORMAT	"hu"
+#define UINT32_FORMAT	"u"
+#define UINT64_FORMAT	"llu"
 
-  typedef unsigned short word;
-  typedef signed short   sword;
+#define UINT16_XFORMAT	"hx"
+#define UINT32_XFORMAT	"x"
+#define UINT64_XFORMAT	"llx"
 
-  typedef unsigned int  dword;
-  typedef signed int    sdword;
+#define SIZET_FORMAT	"lu"
+#define POINTER_FORMAT	"p"
 
-#if !defined(NT) && !defined(UNIX)
-  typedef unsigned short ushort;
+#define HAVE_ULONG
+#define HAVE_USHORT
+
+/* These legacy max types imply a particular size */
+typedef unsigned INT8	byte;
+typedef signed INT8	sbyte;
+typedef unsigned INT16	word;
+typedef signed INT16	sword;
+typedef unsigned INT32	dword;
+typedef signed INT32	sdword;
+
+/* I prefer these for new code */
+typedef signed INT64	int64;
+typedef signed INT32	int32;
+typedef signed INT16	int16;
+typedef signed INT8	int8;
+typedef unsigned INT64	uint64;
+typedef unsigned INT32	uint32;
+typedef unsigned INT16	uint16;
+typedef unsigned INT8	uint8;
+
+#ifndef LINUX
+typedef ptrdiff_t	typeof((char *)1 - (char *)0) /* will that work? */
 #endif
 
-  typedef   signed short sshort;
-
-  typedef unsigned long  ulong;
-  typedef   signed long  slong;
-#else
-  typedef unsigned      bit;
-
-  typedef unsigned char byte;
-  typedef signed char   sbyte;
-
-  typedef unsigned int   word;
-  typedef signed int    sword;
-
-  typedef unsigned long dword;
-  typedef signed long   sdword;
-
-  typedef unsigned short ushort;
-  typedef   signed short sshort;
-
-  typedef unsigned long  ulong;
-  typedef   signed long  slong;
+/* These legacy max types sort of imply a machine interface */
+#ifndef HAVE_USHORT
+typedef unsigned short ushort;
 #endif
 
+#ifndef HAVE_ULONG
+typedef unsigned long	ulong;
 #endif
+
+typedef signed short	sshort;
+typedef signed long	slong;
+typedef	unsigned int	bit;
+
+#include "hntypes.h"
+
+#endif /* _TYPEDEFS_H */
+
+
+
+
+
+
 
