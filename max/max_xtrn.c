@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_xtrn.c,v 1.6 2003/11/15 23:27:29 paltas Exp $";
+static char rcs_id[]="$Id: max_xtrn.c,v 1.7 2003/11/21 03:31:02 paltas Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_chat
@@ -319,7 +319,6 @@ static char * near GetComspec(void)
   return comspec;
 }
 
-#ifndef UNIX
 int Outside(char *leaving,char *returning,int method,char *parm,
             int slogan,int ctltype,char restart_type,
             char *restart_name)
@@ -437,10 +436,10 @@ int Outside(char *leaving,char *returning,int method,char *parm,
 
   /* Disable the FOSSIL */
 
-  if (!in_wfc)
+/*  if (!in_wfc)
     Mdm_flush_ck_tic(4000, FALSE, TRUE);
 
-  mdm_deinit();
+  mdm_deinit();*/
 
 
   Out_Save_Directories(stay);
@@ -532,8 +531,8 @@ int Outside(char *leaving,char *returning,int method,char *parm,
         }
       }
 
-      if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
-        mdm_watchdog(1);
+/*      if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
+        mdm_watchdog(1);*/
 
       nowrite_lastuser=TRUE;
       quit(erl);
@@ -616,8 +615,8 @@ int Outside(char *leaving,char *returning,int method,char *parm,
       Out_Disable_Ctrlc();
     }
 
-    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
-      mdm_watchdog(1);
+/*    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
+      mdm_watchdog(1);*/
 
     IoPause();
 
@@ -634,8 +633,8 @@ int Outside(char *leaving,char *returning,int method,char *parm,
 
     IoResume();
 
-    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
-      mdm_watchdog(0);
+/*    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
+      mdm_watchdog(0);*/
 
     Reopen_Files();
 
@@ -681,8 +680,8 @@ Skip:
 
     Close_Files();
 
-    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
-      mdm_watchdog(1);
+/*    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
+      mdm_watchdog(1);*/
 
     IoPause();
 
@@ -706,13 +705,13 @@ Skip:
       strcpy(temp, parm);
     }
     else
-  #endif
       erl=system(temp);
+  #endif
 
     IoResume();
 
-    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
-      mdm_watchdog(0);
+/*    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)
+      mdm_watchdog(0);*/
 
     Reopen_Files();
 
@@ -780,7 +779,7 @@ RetProc:
   display_line=display_col=1;
   inchat=save_inchat;
 
-  mdm_attr=curattr=-1;
+//  mdm_attr=curattr=-1;
   
   Puts(GRAY);
   
@@ -799,19 +798,6 @@ RetProc:
  
   return erl;
 }
-
-#else
-int Outside(char *leaving,char *returning,int method,char *parm,
-            int slogan,int ctltype,char restart_type,
-            char *restart_name)
-{
-    int erl;
-    erl = system(parm);
-    return 0;
-}
-#endif
-
-
 
 
 static void near Out_Save_Directories(int stay)
@@ -999,9 +985,9 @@ static void near Out_Reinstall_Fossil(void)
    * there, and that an external program didn't borrow our interrupt *
    * vector, and forget to give it back.  (How rude!)                */
 
-  mdm_deinit();
+/*  mdm_deinit();
   Fossil_Install(FALSE);
-  Mdm_Flow_On();
+  Mdm_Flow_On();*/
 }
 
 
@@ -1108,8 +1094,8 @@ void Shell_To_Dos(void)
   Outside(NULL, NULL, OUTSIDE_RUN, GetComspec(), FALSE, CTL_NONE,
           RESTART_MENU, NULL);
 
-/*if (!in_wfc)
-    Lputs(CLS);*/
+  if (!in_wfc)
+    Lputs(CLS);
 
   if (*PRM(backfromdos) && !in_wfc)
     Display_File(0, NULL, PRM(backfromdos));

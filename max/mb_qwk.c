@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.3 2003/09/12 23:18:24 paltas Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.4 2003/11/21 03:31:02 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command
@@ -1281,8 +1281,12 @@ static int near QWK_Compress_Mail(BROWSE *b)
   sprintf(qwkname, "%s%s.qw%c", qwk_path, PRM(olr_name), qwk_ctr);
   unlink(qwkname);
 
+#ifndef UNIX
   sprintf(files, "%s*.*", qwk_path);
-
+#else
+  sprintf(files, "%s*", qwk_path);
+#endif  
+  
   Load_Archivers();
   
   while (usr.compress==0 || 
@@ -1315,6 +1319,10 @@ static int near QWK_Compress_Mail(BROWSE *b)
   }
   
   Clean_QWK_Directory(FALSE);
+  
+#ifdef UNIX
+    adaptcase(qwkname);
+#endif
   
   if (ret != 0 || !fexist(qwkname))
   {

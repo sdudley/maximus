@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwkup.c,v 1.4 2003/11/15 23:27:29 paltas Exp $";
+static char rcs_id[]="$Id: mb_qwkup.c,v 1.5 2003/11/21 03:31:02 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# QWK uploads, for processing .REP packets
@@ -143,6 +143,7 @@ void QWK_Upload(void)
 static int near Receive_REP(char *name)
 {
   char temp[PATHLEN];
+  char * tmpdir = NULL;
   struct _css css;
   sword protocol;
   long ul_start_time;
@@ -159,8 +160,9 @@ static int near Receive_REP(char *name)
 
   sprintf(temp, ss, PRM(olr_name), dot_rep);
 
+#ifndef UNIX
   upper_fn(temp);
-  
+#endif
 
   /* Save the current time */
 
@@ -236,6 +238,9 @@ static int near Receive_REP(char *name)
     Puts(xferaborted);
   else
   {
+#ifdef UNIX
+    adaptcase(name);
+#endif    
     if (fexist(name))
       return 0;
     else
@@ -257,7 +262,7 @@ static int near Decompress_REP(char *rep_name)
   struct _arcinfo *ai;
   int ret, fd, ctr;
   static char qwk_busy[]="qwk_busy.$$$";
-  
+  char oldp[PATHLEN];  
   Load_Archivers();
 
 
@@ -306,6 +311,7 @@ static int near Decompress_REP(char *rep_name)
                     SH_DENYNO, S_IREAD | S_IWRITE)) != -1)
         close(fd);
 
+
       ret=Outside(NULL, NULL, OUTSIDE_RUN, cmd, FALSE, CTL_NONE, 0, NULL);
 
       sprintf(temp, ss, qwk_path, msg_name);
@@ -318,6 +324,10 @@ static int near Decompress_REP(char *rep_name)
       unlink(qwk_busy);
     }
   }
+
+#ifdef UNIX
+  adaptcase(msg_name);  
+#endif
 
   if (ret != 0 || !fexist(msg_name))
   {
@@ -345,8 +355,11 @@ static int near Toss_QWK_Packet(char *name)
   int qfd, ret;
 
   ret=0;
-  
+#ifndef UNIX
   upper_fn(name);
+#else
+  adaptcase(name);
+#endif
 
   Printf(tossing_rep_packet, No_Path(name));
   
