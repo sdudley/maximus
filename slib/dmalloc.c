@@ -85,7 +85,7 @@ void _stdc _dptabend(void)
 
   for (i=0; i < cPtrs; i++)
   {
-    fprintf(stderr, "Ptr=" POINTER_FORMAT "; from=%08lx\n",
+    fprintf(stderr, "Ptr=%" POINTER_FORMAT "; from=%08lx\n",
             ptab[i].p,
             (long)ptab[i].ulFrom);
   }
