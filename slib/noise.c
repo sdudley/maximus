@@ -110,6 +110,41 @@
     Beep((DWORD)freq, (DWORD)duration);
   }
 
+#elif defined(UNIX)
+void noise(int freq /*hz*/, int duration /*ms*/)
+{
+  /* hack by wes to make noise. Maybe nice noise will come some day */
+
+  /* assumes the device is already set up for for 8khz raw 8-bit PCM */
+
+  char oneSecond[8000 / 8];
+  int  i, b;
+  FILE *file;
+
+  if (freq > 8000)
+    freq = 7999;
+
+  /* e.g. - 440 hz -- write 440 equally spaced ones into the 8000 bit second */
+  for (i = 0; i < sizeof(oneSecond); i++)
+  {
+    for (b = 0; b < 8; b++)
+    {
+      if (i || b)
+        if (freq % ((i * 8) + b) == 0)
+	  oneSecond[i] |= 1 << b;
+    }
+  }
+
+  file = fopen("/dev/audio", "a");
+  if (!file)
+    return;
+
+  for (i = 0; i < duration / 1000; i++)
+    fwrite(oneSecond, sizeof(oneSecond), 1, file);
+
+  fwrite(oneSecond, duration % sizeof(oneSecond), 1, file);
+  fclose(file);  
+}
 #else
   #error Unknown OS
 #endif
