@@ -104,8 +104,6 @@ int spawnvp(int mode, const char *Cfile, char *const argv[])
 	strcat(tmp, " ");
     }
 
-    logit("!%s", tmp);
-    
     system(tmp);
     
     return 0;
