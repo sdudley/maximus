@@ -18,10 +18,10 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sstat.c,v 1.3 2003/08/26 15:37:19 paltas Exp $";
+static char rcs_id[]="$Id: sstat.c,v 1.4 2003/11/28 21:23:27 paltas Exp $";
 #pragma on(unreferenced)
 
-//#define DEBUG
+#define DEBUG
 
 #include <stdio.h>
 #include <string.h>
@@ -35,6 +35,8 @@ static char rcs_id[]="$Id: sstat.c,v 1.3 2003/08/26 15:37:19 paltas Exp $";
 static struct _ahlist *ahlist=NULL;
 static struct _nodtot *nodtot=NULL;
 static struct _sscfg sc;
+
+char statfile[128];
 
 void _fast NoMem(void);
 
@@ -408,6 +410,15 @@ static void near ParseConfigLine(char *line)
       }
     }
   }
+  else if(eqstri(s, "statfile"))
+  {
+    while ((s=strtok(NULL, cfgdelim)) != NULL)
+    {
+	strcat(statfile, s);
+    }
+    
+  }
+  
   else
   {
     printf("Invalid keyword in config file: `%s'\n", s);
@@ -421,18 +432,27 @@ static void near ParseConfigLine(char *line)
 static void near ParseConfig(char *cfg)
 {
   FILE *fp;
+  char * envConfig = NULL;
+  char * tmp = NULL;
   char line[PATHLEN];
   
   sc.node=NULL;
   sc.area=NULL;
   sc.do_all=FALSE;
-  
-  if (cfg==NULL)
-#ifndef UNIX
-    cfg="SSTAT.CFG";
+
+  if (envConfig = getenv("SQUISH"))
+  {
+    if(tmp = strrchr(envConfig, '/'))
+    {
+	strncpy(cfg, envConfig, tmp - envConfig);
+	cfg[tmp - envConfig] = '\0';
+#ifdef UNIX
+	strcat(cfg, "/sstat.cfg");
 #else
-    cfg="sstat.cfg";
-#endif
+	strcat(cfg, "\SSTAT.CFG");
+#endif	
+    }
+  }
   
   if ((fp=shfopen(cfg, "r", O_RDONLY))==NULL)
   {
@@ -454,17 +474,25 @@ int _stdc main(int argc, char *argv[])
 {
   dword total_in_bytes, total_in_msgs;
   int fd;
+  char cfg[128];
+
+  memset(statfile, 0, 128);
 
   NW(argc);
   NW(argv);
   
-  ParseConfig(argv[1]);
+  ParseConfig(cfg);
 
-#ifndef UNIX
-  if ((fd=open("SQUISH.STT", O_RDONLY | O_BINARY))==-1)
-#else
-  if ((fd=open("squish.stt", O_RDONLY | O_BINARY))==-1)
-#endif
+  if(statfile[0] == 0)
+  {
+    #ifndef UNIX
+	strcpy(statfile, "SQUISH.STT");
+    #else
+	strcpy(statfile, "squish.stt");		
+    #endif
+  }
+
+  if ((fd=open(statfile, O_RDONLY | O_BINARY))==-1)
   {
     printf("Error!  No statistics file to read!\n");
     return 1;
