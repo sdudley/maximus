@@ -1,4 +1,4 @@
-$Id: TODO,v 1.2 2003/06/29 15:41:52 wesgarland Exp $
+$Id: TODO,v 1.3 2003/06/29 16:10:17 wesgarland Exp $
 
 This is a brief list of important tasks which need to completed, and who is looking at them. At some
 point, this file will be moved into the Attic and the bug tracker will get used. Or Bugzilla. Anybody
@@ -6,6 +6,9 @@ feel like setting it up? For now, new tasks appear at the top, and disappear in 
 
 Programmer	Task Description					Status
 --------------- ------------------------------------------------------- --------------
+Wes Garland	Modify ./configure replace PREFIX in default configs	Not Started
+Unassigned	Verify that config files ctl/ match max-3.03-etc.tar.gz Not Started
+Unassigned	Change /var/max to PREFIX in default config files	Not Started
 Wes Garland	Add ncurses-detection to configure			Not Started
 Unassigned	Make Max local editor input accept LF as CR/LF		Not Started
 Wes Garland	Change default scripts + configs to user "maximus"	In progress
