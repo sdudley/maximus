@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sq_area.c,v 1.2 2003/06/05 22:54:50 wesgarland Exp $";
+static char rcs_id[]="$Id: sq_area.c,v 1.3 2003/10/05 14:19:07 paltas Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS
@@ -300,7 +300,7 @@ static unsigned near _SquishFillBaseHeader(SQBASE *psqb, byte OS2FAR *szName)
   psqb->end_frame=sizeof(SQBASE);
   psqb->max_msg=0L;
   psqb->keep_days=0;
-  psqb->sz_sqhdr=sizeof(SQHDR);
+  psqb->sz_sqhdr=SQHDR_SIZE;
   (void)memset(psqb->rsvd2, 0, sizeof psqb->rsvd2);
 
   return TRUE;
