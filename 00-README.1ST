@@ -1,0 +1,213 @@
+Last Update: max-unix-3.02, Tue May 13 02:00:14 EDT 2003
+
+This archive contains Maximus/UNIX v3.02 and Squish/UNIX v1.11. Maximus
+and Squish are Copyright (c) 1989-2003 by Lanius Corporation and Scott J.
+Dudley. These sources have been released under the terms of the GNU Public
+Licence. Please see the file LICENSE in this directory for the text of the
+GNU Public Licence (GPL).
+
+Maximus/UNIX and Squish/UNIX are ports for use by UNIX and UNIX-like
+(Linux, Mac OS/X) operating systems, by Wes Garland -- email me as
+wes@ninja250.kingston.net. You might also be able to reach me via routed
+netmail at 1:249/128.
+
+Note: I am very delinquent about checking my e-mail, because I get tonnes
+of spam and have a rather busy life. If you need to get ahold of me..
+well, try every few days. Make sure you put "MAXIMUS" in the subject line.
+
+If you are a developer hacking on Maximus, you can give me a call at home,
+between the hours of 7:00pm and 8:30pm, Eastern Standard Time (GMT +0500).
+Don't bother asking for my phone number, if you aren't smart enough to
+figure it out, I don't want to talk to you.
+
+What's in the archive? Lots of stuff, here are the highlights:
+
+README.1ST:		This file :)
+MaximusSourceDoc.doc:   Some notes from sjd. Read before hacking.
+src:			Scott's s3 source tree, with some mods.
+src/unix:		Win/OS2->UNIX Helper functions (compat library)
+sample/binkd:		My BinkD configs (binkd 0.9.4)
+sample/squish:		My Squish configs
+dist/arj-3.10g.tar.gz:  The ARJ program I used for my compress.cfg
+dist/arc521e.tar.gz:	The ARC program I used for my compress.cfg
+
+Q: How did you build this release?
+A: Machine:  Linux alpha 2.0.35 #1 Fri Oct 9 01:10:55 EDT 1998 alpha unknown
+   CPU Type: Little Endian, 64-bits (64 bit long, 32 bit int, 16 bit short, 8 bit char)
+   Compiler: egcs-2.90.29 980515 (egcs-1.0.3 release)
+   Make:     GNU Make version 3.76.1
+
+Q: What do I need to build this release?
+A: Good question. I used a pretty stock RedHat 5.2 box. So, I'd guess,
+   GCC 2.72+, GNU Make 3.74+, Bison/Yacc, and a few megs of disk space.
+   Make sure you installed the G++ stuff when you did GCC. This should
+   be automatic for GCC 2.95 and later releases.
+
+Q: How many people are running this software?
+A: The current count is zero.
+
+Q: How well tested is it?
+A: Not as well as the 1979 Ford Pinto gas tank.
+
+Q: What might work?
+A: Squish might work. A bunch of the utilities (maid, etc) might work.
+   Maximus might work too, but I find it more likely that the guy 
+   sitting in front of Tim Hortons on Princess street begging for 
+   spare change works.
+
+Q: How do I install Squish?
+A: cp -rp sample/squish/var /var
+   cd src && make squish_install
+
+Q: How do I install Maximus?
+A: - Run the DOS installer (the unix installer is screwed)
+   - Copy the files to /var/max somehow. I installed over a SAMBA share, 
+     that made it nice and easy. 
+   cd src && make max_install
+   
+Q: How do I run Maximus/Squish
+A: Download the binaries. RTFM. Substitute "C:\Max" for "/var/max", and
+   apply some common sense. The OS/2 Binaries are on Hobbes, I forget
+   where I found the Dos and Windows binaries. In either case, they're
+   not on the Lanius site. Maybe The Fowl Weather Post is still online?
+
+Q: Where can I expect problems with this release?
+A: Everywhere!
+
+Q: No, more specifically!
+A: Oh.
+   - You may need to try a bunch of times before stuff builds. There
+     are interdependency problems to fix.
+   - Big Endian machines will not read fido packets, and probably a
+     whole horde of other things will blow up.
+   - File locking semantics might be broken, so multinode systems 
+     might randomly blow up.
+   - Semaphores aren't turned on, and besides, your UNIX mailer
+     probably doesn't know about Squish, anyhow. So, uh, just
+     have the mailer call Squish, like in the bad old DOS days.
+     Don't make it a cron job. And make sure your mailer won't
+     call two Squishes at once.
+   - Max doesn't support telnet or serial. So, you might be able
+     to talk it into listening (Com3000 = listen on port 3000),
+     but you should connect to it with a terminal that supports
+     raw sockets (e.g. PuTTY). Telnet is close, but not the same.
+   - If you have a newer version of GCC (2.95+?), I have a 
+     sneaking feeling that it will puke on sjd's old-school
+     c++ code in the btree library.
+
+Q: What do I do if I find a bug?
+A: Set up BugZilla, give me a login and password, and report it.
+   Then maybe some day, I'll log in and report it fixed. Or
+   somebody else might.
+
+Q: What do I do if I fix a bug?
+A: Diff your file and the distribution, with a 5-line context diff.
+   Make sure you tell me what the rcs_id in the file was. If the
+   file is still checked out by sjd, include file size/date.
+
+Q: I don't like installing my stuff in /var/max
+A: So change vars.mk
+
+Q: How can I set up the Binkd mailer to work with Squish?
+A: See sample/binkd
+
+Q: I'm not building under LINUX. What do I do?
+A: Pick a symbolic constant for your OS, and toss it in the CFLAGS
+   in vars.mk (suggestions: IRIX, SOLARIS, AIX, HPUX, MACOSX). Do
+   NOT undefine UNIX. Then wrap any changes you make to the source
+   with #if defined(UNIX) && defined(YOUR_SYMBOL_HERE) .. #endif.
+   And send me the diffs.
+
+Q: Hey! I tried to build your sources under Windows and nothing works!
+A: Duh. If you are feeling really resourceful, you can fix everything
+   I broke. I'll even help by contributing a makefile which makes
+   GNU Make 3.79 interoperate with MSVC 5.0 (and eVc 3.0 + celib if
+   you're a crazy masochist) by providing default rules for the command
+   line compiler. This way we'd only need to maintain one set of makefiles, 
+   although it would force Windows developers to install CygWin in order 
+   to build Windows-native binaries. But that's good, maybe they will
+   see the light.
+
+Q: Hey! I tried to build your sources under DOS/DJGPP, and nothing works!
+A: Well, at least I sort of feel sorry for you. If you get it working,
+   let me know what you had to change, and send in some diffs.
+
+Q: Hey! I tried to build your sources under OS/2 with Watcom C, and
+   nothing works!
+A: Somebody still has those tools? Cool! Once you get Let me know what
+   I broke, and I'll fix it.
+
+Q: Hey! I tried to build your sources under OS/2 with GCC and EMX,
+   and nothing works!
+A: That doesn't surprise me, I don't know anything about OS/2, 
+   except how to spell it (and how to make a wall clock out of the
+   IBM OS/2 2.1 Beta CD). If it doesn't take you much to fix it, 
+   let me know, and I'll merge the patches in.
+
+Q: Why are your Makefiles a mess?
+A: They're not, check out those makefile.mk things! Okay, they're not
+   actually messy, just odd. But now you know why mine are a mess, I
+   was in hurry to get things working.
+
+Q: How can I use GNU AutoConf with Maximus/UNIX and Squish/UNIX?
+A: Download AutoConf. Come up with the Makefile templates, etc.
+   Get everything compiling and linking, and send me your code.
+   I'll stick it in the tar file.
+
+Q: Hey, I have an Intel box, and think it would be neat if I could
+   use compile the assembly code and make use of it somehow.
+A: Good for you, so get to work. I don't have an Intel UNIX box, and
+   Maximus doesn't need to run under DOS with 8250 UARTs on a
+   1024K 386 running DESQview 2.51 anymore.
+
+Q: So, how did you get around all that assembly?
+A: Direct Video Vid* routines implemented using the OS/2 C code as a
+   base. Some OS/2 Vio* routines were replaced wholesale; in other
+   cases the Vid* routines were replaced. In either case, I used
+   curses. The com routines were based on the Windows NT com code.
+   Other things weren't needed. Some things were probably left
+   out at great peril.
+
+Q: You keep talking about locking semantics being a problem.
+A: Yeah, I need docs for the OS/2 DosSem* calls. Not the 32-bit 
+   mutex calls, the 16-bit ones. Ditto for sopen(). These are
+   both in src/unix (libcompat.so).
+
+Q: What can I do to help?
+A: - Test by using
+   - Fix the C++ code in btree to compile cleanly with a modern
+     compiler. 
+   - Unit test the tricky-looking stuff in src/unix.
+   - Do something nice with the tui. My hackish approach for
+     the installer was just a quick attempt to see what would 
+     happen. A full curses port should only be a 10-12 hour 
+     effort.
+   - Write some endian-proof struct packing code (nice tidy
+     libraries, please) and throw it at the fido packet stuff.
+     My current (poor) solution is to make the compiler pack
+     the structs itself, and hope like hell we're running on a
+     little endian platform. Grep for __attribute.*packed to
+     find where I've done this.
+   - If it cores, send me a stack backtrace (gdb, bt). Keep the
+     core, source, binary and libraries around for a while, I may
+     need more input.
+   - Write a com library based on ntcomm.c which uses the
+     POSIX termios interface.
+   - If it just won't do something, send me a system call trace,
+     about 500 lines around the problem area. If you use truss
+     for the trace, trap the entry/exit points for the DLLs
+     in /var/max/lib. (truss = SYSV, ktrace = BSD, strace = Linux)
+   - If you are a door developer, port your code, or send it to
+     me. Especially if your door is in C, C++, Perl, MECCA, MEX,
+     Pascal, or BASIC. VB and QB don't count as BASIC, but some
+     QB code might be usable if your door is really good.
+
+Q: What do I do if I didn't understand this document?
+A: Wait until I get a pre-alpha release ready. If you can't 
+   understand this, then you're not ready to run a release in
+   this state. Actually, maybe you could convince all of your
+   hacker friends to help you out, and publish their changes.
+
+-- 
+Wes Garland, 1:249/128
+wes@ninja250.kingston.net

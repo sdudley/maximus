@@ -1,0 +1,26 @@
+Tue May 13 02:00:27 EDT 2003 - Maximus/UNIX 3.02 
+
+	Initial Release, so Tony Summerfelt can play with squish.
+	Current Status: Squish "works for me"
+
+Sat May 24 00:50:45 EDT 2003 - Maximus/UNIX 3.03a
+
+	Initial Public Release. Bumped version number 3.03 to avoid confusion.
+	Current Status: Everything but Maximus "works for me"
+
+	Major Problem Areas:
+		- No Installer
+		- Local console output is buggy (always one keystroke behind)
+		- fdcomm.so comm driver is buggy and does not speak telnet 
+		- fdcomm.so comm driver only allows one concurrent session
+		- MexVM crashes regularly on 64-bit arch. Don't know about 32-bit.
+
+	Problems Fixed:
+		- Too many to mention.
+
+	Added Features:
+		- max -p2000 makes Maximus listen on TCP port 2000
+		- Added more options to master makefile; now tries to
+		  compiler Maximus control files during make install
+		- Added a simple ./configure script, to try and reduce
+		  confusion among users.

@@ -1,0 +1,24 @@
+CHANGES			What's changed?
+LICENSE			GNU Public Licence
+MANIFEST		This file
+VERSION			Date & Version information for this archive
+btree			B-Tree C++ classes & test utilities
+comdll			Communications Drivers
+configure		Configuration shell script
+dist			Handy things which max needs, but aren't max (e.g. archivers)
+install_tree		Sample configuration files and empty directories
+lang			Language modules
+legacy			Legacy pieces which aren't used by this distribution
+max			Maximus-CBCS in all its glory
+mex			MEX VM, compiler, etc.
+msgapi			Squish message base API
+prot			Transfer Protocols
+sample			Sample configuration files for related applications (e.g. BinkleyTerm) which match max samples
+slib			Big library of routines used by Maximus, Squish, etc.
+squish			Squish message tosser
+unix			Code to bridge max and UNIX/workalike systems
+util			Utilities used by Maxmimus (silt, maid, mecca, etc)
+vars.mk.configure	Source for vars.mk; included by each Makefile
+vars_gcc.mk		Makefile help for GCC
+vars_linux.mk		Makefile help for Linux
+vars_sunos.mk		Makefile help for SunOS 4 and Solaris 2
