@@ -11,9 +11,10 @@
 #include <sys/ioctl.h>
 #include "prog.h"
 #include "ntcomm.h"
+#include "comstruct.h"
+#include "comprots.h"
 
-typedef void * commHandle_t;
-
+#if 0
 struct _hcomm
 {
   /****** Public members available to *any* COMMAPI driver */
@@ -33,7 +34,7 @@ ub */
   BOOL                  burstModePending;       /**< Next write's burstmode */
  
 } _hcomm;
-
+#endif
 
 
 BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)

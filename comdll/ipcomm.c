@@ -27,9 +27,12 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.12 2004/01/13 00:47:31 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.13 2004/01/14 16:09:54 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.13  2004/01/14 16:09:54  paltas
+ * Used a better way to switch between modem and ip..
+ *
  * Revision 1.12  2004/01/13 00:47:31  paltas
  * Fixed comm module you can both run modem and telnet.
  *
@@ -91,7 +94,7 @@
 
 #define TELNET
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.12 2004/01/13 00:47:31 paltas Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.13 2004/01/14 16:09:54 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,12 +111,13 @@ static char rcs_id[]="$Id: ipcomm.c,v 1.12 2004/01/13 00:47:31 paltas Exp $";
 #include <errno.h>
 #include "prog.h"
 #include "ntcomm.h"
-
 #ifdef TELNET
 # include "telnet.h"
 #endif
 
-typedef void * commHandle_t;		/**< Eventually, probably will be a dlopen() handle */
+#include "comprots.h"
+#include "comstruct.h"
+
 /** Syntactic sugar for UNIX only */
 #define unixfd(hc)	FileHandle_fromCommHandle(ComGetHandle(hc))
 
@@ -121,6 +125,7 @@ typedef void * commHandle_t;		/**< Eventually, probably will be a dlopen() handl
  *  Fields below handleType are private to the module. Fields above
  *  (and including) handleType are "public" to the com module stub.
  */
+#if 0
 struct _hcomm
 {
   /****** Public members available to *any* COMMAPI driver */
@@ -142,6 +147,8 @@ struct _hcomm
   telnet_moption_t	telnetOptions;		/**< Current telnet options (bitmask) */
 #endif
 } _hcomm;
+
+#endif
 
 void logit(char *format,...);
 
@@ -803,32 +810,32 @@ void negotiateTelnetOptions(HCOMM hc, int preferBinarySession)
   unsigned char command[3];
   int 		ch;
 
-  ch = ComPeek(hc);	/* Get the ball rolling */
+  ch = IpComPeek(hc);	/* Get the ball rolling */
 
   sprintf(command, "%c%c%c", cmd_IAC, cmd_DONT, opt_ENVIRON);
   write(unixfd(hc), command, 3);
   if (ch == -1)
-    ch = ComPeek(hc);
+    ch = IpComPeek(hc);
 
   sprintf(command, "%c%c%c", cmd_IAC, cmd_DO, opt_SGA);
   write(unixfd(hc), command, 3);
   if (ch == -1)
-    ch = ComPeek(hc);
+    ch = IpComPeek(hc);
 
   sprintf(command, "%c%c%c", cmd_IAC, cmd_WILL, opt_ECHO);
   write(unixfd(hc), command, 3);
   if (ch == -1)
-    ch = ComPeek(hc);
+    ch = IpComPeek(hc);
 
   sprintf(command, "%c%c%c", cmd_IAC, cmd_WILL, opt_SGA);
   write(unixfd(hc), command, 3);
   if (ch == -1)
-    ch = ComPeek(hc);
+    ch = IpComPeek(hc);
 
   sprintf(command, "%c%c%c", cmd_IAC, cmd_DONT, opt_NAWS);
   write(unixfd(hc), command, 3);
   if (ch == -1)
-    ch = ComPeek(hc);
+    ch = IpComPeek(hc);
 
   if (!preferBinarySession)
     return;
@@ -836,12 +843,12 @@ void negotiateTelnetOptions(HCOMM hc, int preferBinarySession)
   sprintf(command, "%c%c%c", cmd_IAC, cmd_DO, opt_TRANSMIT_BINARY);
   write(unixfd(hc), command, 3);
   if (ch == -1)
-    ch = ComPeek(hc);
+    ch = IpComPeek(hc);
 
   sprintf(command, "%c%c%c", cmd_IAC, cmd_WILL, opt_TRANSMIT_BINARY);
   write(unixfd(hc), command, 3);
   if (ch == -1)
-    ch = ComPeek(hc);
+    ch = IpComPeek(hc);
 
   return;
 }
@@ -896,7 +903,7 @@ USHORT COMMAPI IpComIsOnline(HCOMM hc)
     FD_SET(unixfd(hc), &wfds);
 
     tv.tv_sec = 0;
-    tv.tv_usec = 0;
+    tv.tv_usec = 1;
 
     if (((rready = select(unixfd(hc) + 1, &rfds, NULL, NULL, &tv)) < 0) || (select(unixfd(hc) + 1, NULL, &wfds, NULL, &tv) < 0))
     {
@@ -970,7 +977,7 @@ USHORT COMMAPI IpComIsOnline(HCOMM hc)
       fclose(f);
       
       CommHandle_setFileHandle(hc->h, fd);
-      hc->listenfd = -1;
+//      hc->listenfd = -1;
       hc->fDCD = TRUE;
       memset(&dcb, 0, sizeof(dcb));
       dcb.isTerminal = FALSE;
@@ -1026,7 +1033,7 @@ BOOL COMMAPI IpComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
   if (!hc)
     return FALSE;
 
-  if (!ComIsOnline(hc)) /* Don't write to the listen fd! */
+  if (!IpComIsOnline(hc)) /* Don't write to the listen fd! */
     return FALSE;
 
   if (hc->burstMode != hc->burstModePending) /** see ComBurstMode() */
@@ -1083,7 +1090,7 @@ BOOL COMMAPI IpComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwByt
   BOOL 		retval = FALSE;
   ssize_t	bytesRead = 0;
 
-  if (!ComIsOnline(hc))
+  if (!IpComIsOnline(hc))
     return FALSE;
 
   if (dwBytesToRead == 0)
@@ -1178,10 +1185,10 @@ int COMMAPI IpComGetc(HCOMM hc)
   DWORD dwBytesRead;
   BYTE b;
 
-  if (!ComIsOnline(hc))
+  if (!IpComIsOnline(hc))
     return -1;
 
-  return (ComRead(hc, &b, 1, &dwBytesRead) == 1) ? b : -1;
+  return (IpComRead(hc, &b, 1, &dwBytesRead) == 1) ? b : -1;
 }
 
 
@@ -1191,11 +1198,11 @@ int COMMAPI IpComGetc(HCOMM hc)
  */
 int COMMAPI IpComPeek(HCOMM hc)
 {
-  if (!ComIsOnline(hc))
+  if (!IpComIsOnline(hc))
     return -1;
 
   if (hc->peekHack == -1)
-    hc->peekHack = ComGetc(hc);
+    hc->peekHack = IpComGetc(hc);
 
   return hc->peekHack;
 }
@@ -1205,10 +1212,10 @@ BOOL COMMAPI IpComPutc(HCOMM hc, int c)
 {
   BYTE b=(BYTE)c;
 
-  if (!ComIsOnline(hc))
+  if (!IpComIsOnline(hc))
     return -1;
 
-  return ComWrite(hc, &b, 1);
+  return IpComWrite(hc, &b, 1);
 }
 
 /** Wait for a character to be placed in the input queue.
@@ -1243,7 +1250,7 @@ BOOL COMMAPI IpComRxWait(HCOMM hc, DWORD dwTimeOut)
   if (select(unixfd(hc) + 1, &fds, NULL, NULL, &tv) == 1)
   {
     if (hc->fDCD == FALSE)
-      (void)ComIsOnline(hc);
+      (void)IpComIsOnline(hc);
     return TRUE;
   }
 
@@ -1273,7 +1280,7 @@ BOOL COMMAPI IpComTxWait(HCOMM hc, DWORD dwTimeOut)
   tv.tv_sec = dwTimeOut / 1000;
   tv.tv_usec = dwTimeOut % 1000;
 
-  if (ComIsOnline(hc))
+  if (IpComIsOnline(hc))
   {
     FD_ZERO(&fds);
     FD_SET(unixfd(hc), &fds);
@@ -1289,7 +1296,7 @@ BOOL COMMAPI IpComTxWait(HCOMM hc, DWORD dwTimeOut)
     FD_SET(hc->listenfd, &fds);
 
     if (select(hc->listenfd + 1, &fds, NULL, NULL, &tv) == 1)
-      (void)ComIsOnline(hc);
+      (void)IpComIsOnline(hc);
   }
 
   return TRUE;
@@ -1330,7 +1337,7 @@ DWORD COMMAPI IpComInCount(HCOMM hc)
  */
 DWORD COMMAPI IpComOutCount(HCOMM hc)
 {
-  ComIsOnline(hc);
+  IpComIsOnline(hc);
   return 0;
 }
 
@@ -1345,7 +1352,7 @@ DWORD COMMAPI IpComOutCount(HCOMM hc)
  */
 DWORD COMMAPI IpComOutSpace(HCOMM hc)
 {
-  if (!ComIsOnline(hc))
+  if (!IpComIsOnline(hc))
     return 0;
 
   return hc->txBufSize ? : 1024;
@@ -1367,7 +1374,7 @@ BOOL COMMAPI IpComPurge(HCOMM hc, DWORD fBuffer)
 #endif
 
   if (fBuffer & COMM_PURGE_RX)
-    while (ComIsOnline(hc) && (ComGetc(hc) >= 0));
+    while (IpComIsOnline(hc) && (ComGetc(hc) >= 0));
 
   if (fBuffer & COMM_PURGE_TX)
     sleep(0);
@@ -1520,23 +1527,4 @@ BOOL COMMAPI IpComBurstMode(HCOMM hc, BOOL fEnable)
 
   return lastState;
 }
-
-/** Determine if the communications device is a modem,
- *  as opposed to something else, like, oh, a listening
- *  socket. Extension to Maximus COMM API by Wes.
- *
- *  @param	hc	The communications handle to check.
- *  @returns		TRUE if the device is a modem.
- *
- *  @note		Calls in main max sources should be guarded with 
- *			#if (COMMAPI_VER > 1)
- */
-BOOL COMMAPI IpComIsAModem(HCOMM hc)
-{
-  return FALSE;
-}
-
-
-
-
 

@@ -10,7 +10,7 @@ install_libs: libcomm.so
 
 install: install_libs
 
-libcomm.so: ipcomm.o modemcom.o common.o
+libcomm.so: ipcomm.o common.o modemcom.o
 	$(CC) $(CFLAGS) -ggdb -shared $^ -lutil $(LDFLAGS) -o $@
 
 
