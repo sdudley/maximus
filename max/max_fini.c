@@ -17,9 +17,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_fini.c,v 1.1 2002/10/01 17:51:38 sdudley Exp $";
+#endif
+
+static char __attribute__((unused)) rcs_id[]="$Id: max_fini.c,v 1.2 2003/06/29 20:57:14 wesgarland Exp $";
+
+#ifndef __GNUC__
 #pragma on(unreferenced)
+#endif
 
 /*# tname=Termination code
 */
@@ -571,7 +577,11 @@ void mdm_hangup(void)  /* Do the raise DTR/drop DTR thingy */
 {
   long flush_tout;
 
-  if (!local)
+  if (!local 
+#if (COMMAPI_VER > 1)
+	&& ComIsAModem(hcModem)
+#endif
+     )
   {
     /* Turn off flow control so we don't get stuck with a ^s! */
     Mdm_Flow_Off();
@@ -602,6 +612,13 @@ void mdm_hangup(void)  /* Do the raise DTR/drop DTR thingy */
     }
   }
 
+#if (COMMAPI_VER > 1)
+  if (!local && !ComIsAModem(hcModem))
+  {
+    ComClose(hcModem);
+  }
+#endif
+  
   quit(0);
 }
 
