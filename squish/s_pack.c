@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.6 2003/09/09 16:27:46 paltas Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.7 2003/09/10 22:15:48 paltas Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -627,6 +627,7 @@ static void near AddViaLine(byte *mbuf, byte *ctrl, XMSG xmsg)
   struct tm *lt;
   byte temp[160], *s;
   char *artag;
+  int match = FALSE;
   
   struct _sblist * tmps;
   
@@ -648,7 +649,15 @@ static void near AddViaLine(byte *mbuf, byte *ctrl, XMSG xmsg)
   
   for(tmps=config.addr; tmps; tmps=tmps->next)
     if(tmps->zone == xmsg.dest.zone)
+    {
 	break;
+	match = TRUE;
+    }
+    
+  if(!match)
+  {
+    tmps = config.addr;
+  }
   
   (void)sprintf(temp,
                 "\x01Via %s @%04d%02d%02d.%02d%02d%02d.UTC " SQNAME " " SQVERSION "\r",

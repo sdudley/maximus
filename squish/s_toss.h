@@ -25,7 +25,11 @@ struct _partial
   word tflag;                 /* Flags for tossing from this packet */
 };
 
-
+typedef struct ftscprod_
+{
+    unsigned int adr;
+    char * name;
+} ftscprod;
 
 /* Internal handle passed between tossing functions */
 
