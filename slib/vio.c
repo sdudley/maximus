@@ -566,7 +566,6 @@ static CHAR_INFO aci[MAX_COL];
 #include "modem.h"
 #include <curses.h>
 #include <signal.h>
-#include <syslog.h>
 #include "viocurses.h"
  
 static BYTE Vcurattr = 7;
@@ -590,10 +589,6 @@ void setsize()
     getyx(stdscr, curRow, curCol);
     setscrreg(0, lastRow);
   }
-
-#ifdef DEBUG_SCROLL
-  syslog(LOG_ERR, "Local screen is %ix%i, cursor is at %ix%i", Vnumcols, Vnumrows, curCol, curRow);
-#endif
 }
 
 void resize(int sig)
@@ -613,30 +608,31 @@ word VidOpen(int has_snow,int desqview,int dec_rows)
 {
   if (!stdscr)
   {
-#warning this has to go
-    openlog("slib", LOG_PID | LOG_NDELAY, LOG_LOCAL0);
-
     fflush(stdout);
 
     if (!getenv("TERM"))
       putenv("TERM=vt100");
 
-    initscr();             /* init curses */
-    raw();
+    initscr();             	/* init curses */
+    keypad(stdscr, TRUE);	/* enable keyboard mapping */
+    cbreak();			/* char-by-char instead of line-mode input */    
+    nodelay(stdscr, TRUE);	/* Make getch() non-blocking */
+    nonl();			/* No LF->CRLF mapping on output */
+    noecho();			/* do not echo input */
+    noqiflush();		/* Do not flush on INTR, QUIT, SUSP */
 
-    keypad(stdscr, TRUE);  /* enable keyboard mapping */
-    nonl();                /* No LF->CRLF mapping on output */
-    cbreak();              /* char-by-char instead of line-mode input */
-    noecho();              /* do not echo input */
+#if 0
+    raw();		   	/* Do not process ^C as SIGINT, etc + cbreak() */
+    timeout(0);			/* set getch timeout */
+#endif
 
-    noqiflush();
-    timeout(0);
-    scrollok(stdscr, TRUE);
-    immedok(stdscr, TRUE);
-    atexit((void *)VidClose);
+    scrollok(stdscr, TRUE);	/* Allow automatic scrolling */
+    immedok(stdscr, TRUE);	/* call refresh with many curses functions (slow) */
+    atexit((void *)VidClose);	/* Try to reset the screen to a usable state on exit */
   }
+
   setsize();
-  signal(SIGWINCH, resize);
+  signal(SIGWINCH, resize);	/* Hope and pray */
   return 1;
 }
 
@@ -730,9 +726,6 @@ void VidPutch(int Row, int Col, char Char, char Attr)
   {
     scrl(1);
     Row--;
-#ifdef DEBUG_SCROLL
-    syslog(LOG_ERR, __FUNCTION__ ": Scrolling one line for wrap-around char '%c'", ch & 0xff);
-#endif
   }
 #endif
 
@@ -775,8 +768,13 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
 
   for (i = 0; i < num_col; i++)
   {
+#ifdef BIG_ENDIAN
+    attr = start[i * 2];
+    ch = start[(i * 2) + 1];
+#else
     ch = start[i * 2];
     attr = start[(i * 2) + 1];
+#endif
 
 #ifdef MANUAL_SCROLL
     if (ch == '\n')
@@ -793,8 +791,6 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
       buf[i] = ((start[i * 2] == '\n') ? ' ' : start[i * 2]);
 
     buf[i] = (char)0;
-
-    syslog(LOG_ERR, __FUNCTION__ ": '%s'", buf);
   }
 #endif
 
@@ -802,11 +798,6 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
   /* Wrap around */
   if ((start_col + num_col) > lastCol)
     newlineCount += (start_col + num_col) / lastCol;
-#endif
-
-#ifdef DEBUG_SCROLL
-  if (newlineCount)
-    syslog(LOG_ERR, "Scrolling %i lines in " __FUNCTION__, newlineCount);
 #endif
 
 #ifdef MANUAL_SCROLL
