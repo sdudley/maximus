@@ -1,0 +1,42 @@
+Last Update: Thu Jun  5 19:48:29 EDT 2003 by Wes
+
+Some notes on hacking Maximus:
+
+- The code base for the UNIX (and UNIX-like operating systems) is based upon
+  the "common" Maximus code base (common to OS/2, Windows, and DOS). Where
+  the common code-base diverges, the code base which uses OS facilities
+  which are either more like UNIX or more powerful (usually the same
+  thing ;) has been selected. As such, the code base is a little of bit of
+  OS/2, a little bit of Windows, all rolled into one. Also, if one stream
+  had assembly code while another didn't, the one without assembler was
+  (generally) chosen.
+
+  Where practical, some sections of code were re-written to work under
+  UNIX. Examples of this include the direct video routines in Vio.c, which
+  were implemented with curses calls. In many other situations, the native
+  OS's function call was studied, along with the way Maximus uses that
+  function. Appropriate behaviour was then emulated -- for example, the
+  OS/2 VioWrtTTY() call was emulated with curses calls.
+
+- Major code changes to allow Maximus to run under a new platform should
+  be guarded with compiler #defines. 
+
+  There are four major compiler #defines recognized for the UNIX port:
+
+  UNIX:  Code which is specific to UNIX and not appropriate for OS/2, DOS,
+         Windows
+  BSD:   Code which is specific to the BSD variants (BSDI, FreeBSD, OS X,
+         NetBSD, SunOS 4, etc)
+  LINUX: Code which is specific to UNIX-like operating systems with Linux
+         kernels
+  SYSV:  Code which is specific to AT&T System Vr4 UNIX(tm) Variants
+         (SunOS 5, AIX, HP/UX, etc)
+
+  Minor #defines such as SUNOS4 and SOLARIS may be defined in 
+  vars_${PLATFORM}.mk; however OS-native defines (such as __FreeBSD__)
+  are preferred.
+  
+  Please be sure to use defines with the most appropriate scope. If you
+  are unsure of what platforms a change needs to be made on, it should
+  be discussed with other Maximus developers before commiting to the CVS
+  repository.
