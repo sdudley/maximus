@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqfix.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: sqfix.c,v 1.3 2003/10/01 07:08:56 paltas Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -206,7 +206,7 @@ static void near link_base(char *origname)
          read(sqd, (char *)&hdr, sizeof(hdr))==sizeof(hdr);
        pos=hdr.next_frame, mn++)
   {
-    if (read(sqd, (char *)&msg, sizeof(XMSG)) != sizeof(XMSG))
+    if (read(sqd, (char *)&msg, XMSG_SIZE) != XMSG_SIZE)
       ErrRead(name);
     
     rl[(size_t)mn].date.msg_st=((union stamp_combo *)&msg.date_arrived)->ldate
@@ -401,11 +401,11 @@ static void near rebuild_file(int old_sqd,MSG *new,char *bufr)
 
       /* Copy out the message header */
       
-      memmove(&msg, here, sizeof(XMSG));
+      memmove(&msg, here, XMSG_SIZE);
       
       /* Now jump to the control text */
       
-      here += sizeof(XMSG);
+      here += XMSG_SIZE;
 
       /* Make sure that it's as long as it really says it is */
       
@@ -434,6 +434,8 @@ static void near rebuild_file(int old_sqd,MSG *new,char *bufr)
        * else!                                                              */
 
       msg.attr |= MSGSCANNED; 
+
+      txt[strlen(txt)] = 0;
 
       if (MsgWriteMsg(msgh,
                       FALSE,
