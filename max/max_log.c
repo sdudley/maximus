@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_log.c,v 1.4 2003/11/15 23:27:29 paltas Exp $";
+static char rcs_id[]="$Id: max_log.c,v 1.5 2003/12/16 12:43:45 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Log-on routines and new-user junk
@@ -508,17 +508,13 @@ static int near GetName(void)
       if (prm.not_configured)
         Display_File(0, NULL, PRM(not_configured));
       /* Test this again, it might have been changed */
-#ifndef UNIX
       if ((usr.bits2 & BITS2_CONFIGURED)==0)
         Get_AnsiMagnEt();
-#endif
     }
     else if (! local)
     {
-#ifndef UNIX
       doublecheck_ansi();
       doublecheck_rip();
-#endif
     }
 
     free(quest);
@@ -738,9 +734,7 @@ static void near Get_AnsiMagnEt(void)
 
 /* TODO: Check up on this.. (Bo) */
 
-#ifndef UNIX
     x=autodetect_ansi();
-#endif
 
     if (! *linebuf)
       Puts(get_ansi1);
@@ -765,9 +759,8 @@ static void near Get_AnsiMagnEt(void)
       sprintf(string,"%swhy_rip",PRM(misc_path));
 
 /* TODO: Check up on this.. (Bo) */
-#ifndef UNIX
       x=autodetect_rip();
-#endif
+
       if (GetListAnswer(x ? CYnq : yCNq, string, useyforyes, 0, get_rip)==YES)
       {
         usr.bits  |= (BITS_RIP | BITS_FSR | BITS_HOTKEYS );
@@ -1290,7 +1283,7 @@ int autodetect_ansi(void)
 {
   int x;
 
-  if (local)
+  if (local || !ComIsAModem(hcModem))
     return TRUE;
 
   mdm_dump(DUMP_INPUT);
@@ -1317,7 +1310,7 @@ int autodetect_rip(void)
 {
   int x;
 
-  if (local)
+  if (local || !ComIsAModem(hcModem))
     return FALSE;
 
   /* RIP autodetect */
