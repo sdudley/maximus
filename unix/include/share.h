@@ -2,13 +2,21 @@
 #define _WES_SHARE_H
 
 #include <io.h>
-
-#ifdef LINUX
 #include <sys/file.h>
+
+#if defined(SOLARIS) || defined(NEED_FLOCK)
+int flock(int fd, int lockmode);
+# define FLOCK_IS_FCNTL
 #endif
 
-#ifdef SOLARIS
-#include <flock.h>
+#if !defined(LOCK_EX)
+# define LOCK_SH	0x01		/**< shared file lock */
+# define LOCK_EX	0x02		/**< exclusive file lock */
+# define LOCK_NB	0x04		/**< don't block when locking */
+# define LOCK_UN	0x08		/**< unlock file */
+# ifndef FLOCK_IS_FCNTL
+#  error flock header missing!
+# endif
 #endif
 
 #define SH_DENYNONE	0
