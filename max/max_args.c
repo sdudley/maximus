@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_args.c,v 1.5 2004/01/13 00:44:56 paltas Exp $";
+static char rcs_id[]="$Id: max_args.c,v 1.6 2004/01/13 01:33:02 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Command-line argument processing code
@@ -546,6 +546,9 @@ static void near Unknown_CmdParam(char *param)
 #ifdef OS_2                                         
   Lprintf("  -p<handle>   Com handle                 -y<info>    Extra modem connect info\n");
   Lprintf("  -pd<port>    Com port number\n");
+#elif UNIX
+  Lprintf("  -p<port_num> Com port number (modem)    -y<info>    Extra modem connect info\n");  
+  Lprintf("  -pt<ipcnum>  Start a TCP/IP task by using Unix sockets\n");
 #else
   Lprintf("  -p<port_num> Com port number            -y<info>    Extra modem connect info\n");
 #ifdef __MSDOS__

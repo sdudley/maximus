@@ -1,0 +1,80 @@
+================= IMPORTANT CHANGE IN THIS RELEASE ====================
+So we can use both telnet and modem communication I did make a little
+change in the main program of maximus.
+
+If you want to start a telnet task just type max -pt1 -w ...
+
+If you want to start a modem task just type max -p1 -w ...
+
+=======================================================================
+
+
+Dear Maximus'er,
+
+As you might have noticed multiuser telnet has been a bit
+of a problem with earlier versions of Maximus/Unix, but I
+really think I've reached a solution which might be pretty usefull.
+
+The new solution requires Inetd, to work properly.
+
+It works in this way:
+
+1. A connect arrivies
+2. Inetd is starting 'maxcomm'
+3. 'maxcomm' is looking for a free unix socket,
+   which maximus creates in the root dir of max
+   then it starts. It's called maxipc<tasknumber>.
+   'maxcomm' will search until it finds a free one.
+4. 'maxcomm' is sending and recieving data between
+   the telnet connection and the unix socket.
+   
+Well that's pretty fine, but how do I set it up?
+
+Here is my configuration (/home/ftn is like /var/max (default max rootdir)):
+
+First we setup inetd, insert the line (or remove a existing
+telnet line) into /etc/inetd.conf
+
+telnet          stream  tcp     nowait  ftn     /usr/sbin/tcpd /home/ftn/shell/runrun.sh
+
+After that create a /home/ftn/shell/runrun.sh (or simulear):
+
+#!/bin/sh
+cd /home/ftn
+bin/maxcomm
+
+If you have a running maximus task it might work. 
+
+Here is just a super sneaky advice if you use the program 'screen',
+here is the relavant lines of my .screenrc
+
+screen -t BinkD 0 /home/ftn/shell/binkd.sh
+screen -t MAX 1 /home/ftn/shell/max.sh 1
+screen -t MAX 2 /home/ftn/shell/max.sh 2
+screen -t MAX 3 /home/ftn/shell/max.sh 3
+screen -t MAX 4 /home/ftn/shell/max.sh 4
+
+And max.sh is like:
+
+ERRLVL=0
+TASK=$1
+
+while [ $ERRLVL -eq 0 ]; do
+  cd /home/ftn/
+  bin/max -w -pt$TASK -b38400 -n$TASK
+  ERR=$?
+  echo "errorlevel " $ERR
+  ERRLVL=0
+  if [ $ERR = 1 ]; then
+     echo "Exting Max ..."
+     exit
+     ERRLVL=1
+  fi
+  sleep 7
+done
+			  
+Th-that's it folks.
+
+Friendly Regards,
+Bo Simonsen
+bo@geekworld.dk / 2:236/100
