@@ -27,9 +27,12 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.17 2004/04/09 21:55:39 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.18 2004/06/06 21:46:58 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.18  2004/06/06 21:46:58  paltas
+ * Fixed "carrier detech" in modemcom, and removed delay in ipcomm.
+ *
  * Revision 1.17  2004/04/09 21:55:39  paltas
  * New IPcom.c without iac parsing and things, this is done in maxcomm.c
  *
@@ -102,7 +105,7 @@
 #endif
 
 #ifndef __GNUC__
-static char rcs_id[]="$Id: ipcomm.c,v 1.17 2004/04/09 21:55:39 paltas Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.18 2004/06/06 21:46:58 paltas Exp $";
 #endif
 
 #include <stdio.h>
@@ -393,7 +396,7 @@ ssize_t timeout_read(int fd, unsigned char *buf, size_t count, time_t timeout)
   fd_set		rfds;
 
   tv.tv_sec = timeout;
-  tv.tv_usec = 500;
+  tv.tv_usec = 5;
 
   FD_ZERO(&rfds);
   FD_SET(fd, &rfds);
@@ -663,7 +666,7 @@ BOOL COMMAPI IpComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwByt
   if (hc->burstMode)
   {
     tv.tv_sec = 0;
-    tv.tv_usec = 5;
+    tv.tv_usec = 0;
   }
   else
   {

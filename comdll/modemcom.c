@@ -27,6 +27,7 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
 {
   int                   fd = -1;        /**< file descriptor */
   int pid;
+  int tmp;
   FILE* lockfp;
   COMMHANDLE    h = NULL;
   struct termios tios;
@@ -39,16 +40,16 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
 
     if(fexist(lockname))
     {
-        printf("Lock file does allready exist! (%s)", lockname);
+        logit("!Lock file does allready exist! (%s)", lockname);
 	exit(0);
     }
 
   fd = open(filename, O_RDWR | O_NDELAY);
   
-  if(fd < -1)
+  if(fd < 0)
   {
-    printf("Could not open device! (%s)", filename);
-    exit(0);
+    logit("!Could not open device! (%s)", filename);
+    return(FALSE);
   }
   else
   {
@@ -74,7 +75,8 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
   
   (*phc)->device        = strdup(filename);
   (*phc)->peekHack	= -1;
-  
+  (*phc)->fDCD		= 0;
+
   return TRUE;
 }
 
@@ -97,14 +99,17 @@ USHORT COMMAPI ModemComIsOnline(HCOMM hc)
     if(!hc)
        return FALSE;
 
-    if(ioctl(hc->listenfd, TIOCMGET, &tmp) < 0)
-        return FALSE;
+    if(hc->fDCD)
+    {
+	if(ioctl(hc->listenfd, TIOCMGET, &tmp) < 0)
+    	    return FALSE;
 
-    if((tmp & TIOCM_CD) == FALSE)
-    {	
-        hc->fDCD = FALSE;
-        logit("!Carrier lost");
-        return FALSE;
+        if((tmp & TIOCM_CD) == FALSE)
+        {	
+	    hc->fDCD = FALSE;
+    	    logit("!Carrier lost");
+	    return FALSE;
+	}
     }
     
     return TRUE;
@@ -112,6 +117,9 @@ USHORT COMMAPI ModemComIsOnline(HCOMM hc)
 
 BOOL COMMAPI ModemComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
 {
+    if(!ModemComIsOnline(hc))
+	return FALSE;
+
     if(write(hc->listenfd, pvBuf, dwCount) != -1)
 	return TRUE;
     else 
@@ -126,6 +134,9 @@ BOOL COMMAPI ModemComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdw
     int BytesRead = 0;
     int tmp = 0;
     
+    if(!ModemComIsOnline(hc))
+	return FALSE;
+    
     tv.tv_usec = 5;
     tv.tv_sec = 0;
     
@@ -134,7 +145,7 @@ BOOL COMMAPI ModemComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdw
 
     *pdwBytesRead = 0;
     
-    if(select(hc->listenfd + 1, &fdrx, 0, 0, &tv) > 0)
+    if(select(hc->listenfd + 1, &fdrx, 0, 0, &tv) >= 0)
     {
         BytesRead = read(hc->listenfd, pvBuf, dwBytesToRead);
 	    
@@ -148,6 +159,11 @@ BOOL COMMAPI ModemComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdw
 	    return TRUE;
 	}
     }
+    else
+    {
+	hc->fDCD = 0;
+	return(FALSE);
+    }
 
     return FALSE;	
 }
@@ -156,12 +172,19 @@ int COMMAPI ModemComGetc(HCOMM hc)
 {
     DWORD dwBytesRead;
     char b = 0;
+
+    if(!ModemComIsOnline(hc))
+	return FALSE;
+
         
     return (ComRead(hc, &b, 1, &dwBytesRead) == 1) ? b : -1;
 }
 
 BOOL COMMAPI ModemComPutc(HCOMM hc, int c)
 {
+    if(!ModemComIsOnline(hc))
+	return FALSE;
+
     return (ComWrite(hc, &c, 1));
 }
 
@@ -295,3 +318,7 @@ BOOL COMMAPI ModemComResume(HCOMM hc)
   return FALSE;
 }
 
+int ModemComIsOnlineNow(HCOMM hc)
+{
+    hc->fDCD = 1;
+}
