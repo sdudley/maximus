@@ -9,16 +9,26 @@
 #include "msgapi.h"
 #include "typedefs.h"
 
-/* Bo: this file is stolen from SMAPI (http://husky.sf.net) */
+/* Bo: this file is stolen from SMAPI (http://husky.sf.net)
+ * And it ensures that the XMSG structure is written correctly,
+ * which it's not with write()
+ */
 
-/* those defines does only work on little endian machines */
- 
+/* Wes: putword.c and putword.h are pulled from xmsgapi.
+ * Will figure out how to integrate this nicely later.
+ */
+
+#undef __LITTLE_ENDIAN__
+#undef __BIG_ENDIAN__
+
 #if defined(BIG_ENDIAN)
-# define put_dword(ptr, val)     (*(dword *)(ptr) = (val))
-# define put_word(ptr, val)      (*(word *)(ptr) = (val))
-# define get_dword(ptr)          (*(dword *)(ptr))
-# define get_word(ptr)           (*(word *)(ptr))
+# define __BIG_ENDIAN__
+#elif defined(LITTLE_ENDIAN)
+# define __LITTLE_ENDIAN__
 #endif
+
+#include "putword.h"
+#include "putword.c"
 
 int read_xmsg(int handle, XMSG *pxmsg)
 {
