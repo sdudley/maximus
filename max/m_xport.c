@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_xport.c,v 1.1 2002/10/01 17:52:51 sdudley Exp $";
+static char rcs_id[]="$Id: m_xport.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: X)port routine
@@ -32,6 +32,9 @@ static char rcs_id[]="$Id: m_xport.c,v 1.1 2002/10/01 17:52:51 sdudley Exp $";
 #include <mem.h>
 #include "prog.h"
 #include "max_msg.h"
+#ifdef UNIX
+# include <errno.h>
+#endif
 
 void Msg_Xport(void)
 {

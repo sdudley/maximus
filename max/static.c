@@ -18,12 +18,13 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: static.c,v 1.1 2002/10/01 17:53:08 sdudley Exp $";
+static char rcs_id[]="$Id: static.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MAX_INITIALIZE
 
 #include <stdlib.h>
+#include "compat.h"
 #include "mm.h"
 #include "max_area.h"
 #include "max_edit.h"

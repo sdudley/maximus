@@ -48,7 +48,7 @@ struct _omsg
       word reply;          /* Current msg is a reply to this msg number     */
       word attr;           /* Attribute (behavior) of the message           */
       word up;             /* Next message in the thread                    */
-   };
+   } __attribute__((packed, aligned(2)));
 
 #endif
 

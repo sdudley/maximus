@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include "fb.h"
+
 static int near CanDownload(PFAH pfah, char *name, word *flag, char *path);
 static int near InFileList(PFAH pfah, char *name, word *flag, char *pt);
 static int near FileExist(char *path, char *name);

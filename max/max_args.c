@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_args.c,v 1.1 2002/10/01 17:51:26 sdudley Exp $";
+static char rcs_id[]="$Id: max_args.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Command-line argument processing code
@@ -34,6 +34,9 @@ static char rcs_id[]="$Id: max_args.c,v 1.1 2002/10/01 17:51:26 sdudley Exp $";
 #include "prog.h"
 #include "mm.h"
 #include "caller.h"
+#ifdef UNIX
+#include <errno.h>
+#endif
 
 #ifndef ORACLE
 
@@ -155,9 +158,14 @@ void Parse_Args(char *ctlname,int argc,char *argv[])
     }
     else *p1='\0';    /* No path, so chop it off */
 
-  strcpy(ctlname, cfancy_str(prmname));
+  strcpy(ctlname, cfancy_fn(prmname));
+#ifndef UNIX
   strcat(ctlname, ".Ctl");
   strcat(prmname, ".Prm");
+#else
+  strcat(ctlname, ".ctl");
+  strcat(prmname, ".prm");
+#endif
 }
 
 #if 0

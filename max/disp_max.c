@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: disp_max.c,v 1.1 2002/10/01 17:50:51 sdudley Exp $";
+static char rcs_id[]="$Id: disp_max.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=.BBS-file display routines (Max-specific)
@@ -148,7 +148,7 @@ word DisplayMaxCode(DSTK *d)
 
         case 'D': /* Everything except the last subdivision in the file area */
           if ((p=strrchr(usr.files,'.')) != NULL)
-            Printf("%0.*s", p-usr.files, usr.files);
+            Printf("%0.*s", p-(char *)usr.files, usr.files);
           break;
 
         case 'N': /* Current file area description */
@@ -685,7 +685,7 @@ static int near MsgAreaControl(DSTK *d)
 
     case 'D':
       if ((p = strrchr(usr.msg, '.')) != NULL)
-        Printf("%0.*s", p-usr.msg, usr.msg);
+        Printf("%0.*s", p-(char *)usr.msg, usr.msg);
       break;
 
     case 'E':

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_main.c,v 1.1 2002/10/01 17:51:49 sdudley Exp $";
+static char rcs_id[]="$Id: max_main.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Main menu functions and commands
@@ -39,6 +39,9 @@ static char rcs_id[]="$Id: max_main.c,v 1.1 2002/10/01 17:51:49 sdudley Exp $";
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
+#ifdef UNIX
+# include <sys/utsname.h>
+#endif
 
 #ifdef OS_2
 #include <os2.h>
@@ -266,7 +269,7 @@ static void near Yell(void)
 
 static void near Max_Version(void)
 {
-#ifndef NT
+#if !defined(UNIX) && !defined(NT)
   byte id, subid;
 #endif
 
@@ -291,7 +294,7 @@ static void near Max_Version(void)
   Printf(YELLOW "Licensed for use by members of the Dutch HCC.\n\n");
 #endif
 
-#ifndef NT
+#if !defined(NT) && !defined(UNIX)
   #if defined(OS_2)
     #ifdef __FLAT__
       DosDevConfig(&id, DEVINFO_MODEL);
@@ -444,6 +447,15 @@ static void near Max_Version(void)
     Printf(fossil_ver,finfo.id);
   }
 
+#elif defined(UNIX)
+  {
+    struct utsname name;
+
+    if (uname(&name) == 0)
+      Printf("%s %s, running on %s hardware (%s)\n", name.sysname, name.release, name.machine, name.nodename);
+    else
+      Printf("Unknown UNIX-type platform\n");
+  }
 #else
   #error Unknown OS
 #endif
@@ -475,6 +487,8 @@ static void near Compilation_Data(void)
   #define COMPILER "Microsoft C"
 #elif defined(__ZTC__)
   #define COMPILER "Zortech C"
+#elif defined(__GNUC__)
+  #define COMPILER "GNU C"
 #else
 #error Unknown compiler type!
 #endif

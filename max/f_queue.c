@@ -228,7 +228,7 @@ int AddFileEntry(char *fname, word flags, long size)
       f->fFlags=flags;
       f->szDesc=NULL;
       f->ulSize=(size >= 0L) ? size : fsize(fname);
-      if (f->ulSize==-1L)
+      if (f->ulSize==(unsigned long)-1L)
         f->fFlags |= FFLAG_NOENT;
       return fnames++;
     }

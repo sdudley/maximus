@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_runo.c,v 1.1 2002/10/01 17:52:02 sdudley Exp $";
+static char rcs_id[]="$Id: max_runo.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_main
@@ -211,7 +211,7 @@ static int near Exec_Misc(PAMENU pam, struct _opt *thisopt, char *arg,
 
     case o_menupath:
       strcpy(menupath,arg);
-      Add_Trailing(menupath,'\\');
+      Add_Trailing(menupath, PATH_DELIM);
       break;
 
     case o_cls:

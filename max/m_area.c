@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_area.c,v 1.1 2002/10/01 17:52:35 sdudley Exp $";
+static char rcs_id[]="$Id: m_area.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: A)rea Change command and listing of message areas
@@ -285,7 +285,7 @@ int Msg_Area(void)
   }
   while (!ok);
 
-  logit(log_msga, usr.msg);
+  logit(log_msga, usr.msg ? usr.msg : "(null)");
   DisposeMah(&ma);
 
   return 0;

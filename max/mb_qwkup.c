@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwkup.c,v 1.1 2002/10/01 17:52:17 sdudley Exp $";
+static char rcs_id[]="$Id: mb_qwkup.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# QWK uploads, for processing .REP packets
@@ -158,6 +158,7 @@ static int near Receive_REP(char *name)
   /* Name of the file to receive */
 
   sprintf(temp, ss, PRM(olr_name), dot_rep);
+
   upper_fn(temp);
   
 
@@ -649,7 +650,7 @@ static int near QWKRetrieveAreaFromPkt(PXMSG msg, struct _qmhdr *qh, char *aname
 
   /* If the area number is too high, get a new area from the user. */
 
-  strcpy(aname, (tossto >= akh.num_areas) ? qmark : akd[tossto].name);
+  strcpy(aname, (tossto >= akh.num_areas) ? qmark : (char *)(akd[tossto].name));
 
   *pwTossTo=tossto;
   return TRUE;
@@ -825,7 +826,7 @@ static int near QWKTossMsgBody(PXMSG msg, struct _qmhdr *qh, int msg_blocks, int
 
       /* Strip imbedded NULs out of the uploaded message block */
 
-      for (p=block; p < endblock; p++)
+      for (p=(byte *)block; p < (byte *)endblock; p++)
         if (*p=='\0')
           *p=' ';
 
@@ -833,7 +834,7 @@ static int near QWKTossMsgBody(PXMSG msg, struct _qmhdr *qh, int msg_blocks, int
        * the end of the message.                                              */
 
       if (!bytes_remain)
-        for (p=endblock-1; p >= block && *p==' '; p--)
+        for (p=(byte *)endblock-1; p >= (byte *)block && *p==' '; p--)
           *p='\0';
 
       /* Make sure that it's nul-terminated. */
@@ -843,7 +844,7 @@ static int near QWKTossMsgBody(PXMSG msg, struct _qmhdr *qh, int msg_blocks, int
 
       /* Now convert everything to non-hi-bit, and convert PCB CR's to 0x0d. */
 
-      for (p=block; *p && p < endblock; p++)
+      for (p=(byte *)block; *p && p < (byte *)endblock; p++)
       {
         if (*p==0x0d)
           continue;
@@ -882,13 +883,13 @@ static int near QWKTossMsgBody(PXMSG msg, struct _qmhdr *qh, int msg_blocks, int
 
           /* Skip past any spaces at the beginning */
 
-          while (p < block+QWK_RECSIZE && *p==' ')
+          while (p < (byte *)(block+QWK_RECSIZE) && *p==' ')
             p++;
 
           if (isdigit(*p))
             MaxParseNN(p, &msg->dest);
 
-          while (p < block+QWK_RECSIZE && *p != '\r')
+          while (p < (byte *)(block+QWK_RECSIZE) && *p != '\r')
             p++;
 
           /* Now skip over any blank lines */
@@ -923,7 +924,7 @@ static int near QWKTossMsgBody(PXMSG msg, struct _qmhdr *qh, int msg_blocks, int
       if (end > end1buf)
       {
         end=end1buf;
-        len_p=end1buf-p;
+        len_p=(byte *)end1buf-p;
       }
 
 #ifdef MAX_TRACKER

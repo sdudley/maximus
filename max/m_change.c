@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_change.c,v 1.1 2002/10/01 17:52:39 sdudley Exp $";
+static char rcs_id[]="$Id: m_change.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: C)hange command
@@ -60,7 +60,7 @@ int Msg_Change(void)
 
 
   if ((msgh=MsgOpenMsg(sq, MOPEN_READ, lmsg))==NULL ||
-      MsgReadMsg(msgh, &msg, 0L, 0L, NULL, 0L, NULL)==-1L ||
+      MsgReadMsg(msgh, &msg, 0L, 0L, NULL, 0L, NULL)==(unsigned long)-1L ||
       ! (eqstri(msg.from, usr.name) || eqstri(msg.from, usr.alias) ||
          mailflag(CFLAGM_ATTRANY)))
   {

@@ -41,6 +41,8 @@
       #define SLASH_2 "/2"
     #elif defined(NT)
       #define SLASH_2 "/NT"
+    #elif defined(UNIX)
+      #define SLASH_2 "/UNIX"
     #else
       #define SLASH_2
     #endif
@@ -53,10 +55,10 @@
 
     #define MAX_VER_INT 3
     #define VER_MAJ     "3"
-    #define VER_MIN     "01"
+    #define VER_MIN     "03"
     #define TEAR_TEST   ""
 
-    #define VER_CHECKSUM (~'3'+~'0'+~'1')
+    #define VER_CHECKSUM (~'3'+~'0'+~'3')
     #define NAME_CHEKSUM (~'M'+~'A'+~'X')
 
     #define VER         VER_MAJ "." VER_MIN

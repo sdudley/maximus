@@ -492,8 +492,7 @@
 #define AREATYPE_ECHO     0x04
 #define AREATYPE_CONF     0x08
 
-#define AREATYPE_ALL      (AREATYPE_LOCAL | AREATYPE_MATRIX |   \
-                           AREATYPE_ECHO | AREATYPE_CONF)
+#define AREATYPE_ALL      (AREATYPE_LOCAL | AREATYPE_MATRIX | AREATYPE_ECHO | AREATYPE_CONF)
 
 #define HEADER_NONE       0x00  /* The header type for each menu.          */
 #define HEADER_MESSAGE    0x01
@@ -671,7 +670,7 @@
   {
     word node;          /* node number  */
     word net;           /* net number   */
-  };
+  } __attribute__((packed, aligned(2)));
 #endif
 
 #include "colour.h"
@@ -696,8 +695,8 @@ struct _sys
     word attrib;           /* Area attribute (see below)                    */
     byte lock;             /*                                               */
     byte filler;           /* Free space for another kludge...              */
-    long quote_pos;        /* Position of next usable byte in Quote file    */
-};
+    int32 quote_pos;        /* Position of next usable byte in Quote file    */
+}  __attribute__((packed, aligned(2)));
 
 #endif
 
@@ -731,7 +730,7 @@ struct _opt
   byte fill1;   /* Reserved by Maximus for future use                      */
 
   byte rsvd2[8]; /* Reserved for future uses */
-};
+}  __attribute__((packed, aligned(2)));
 
 #define DEFAULT_OPT_WIDTH 20
 
@@ -752,8 +751,7 @@ struct _menu
   word dspfile;     /* Name of file to display for menu, instead of        *
                      * generating menu from .Mnu file.                     */
   word flag;        /* See MFLAG_XXX in MAX.H.                             */
-};
-
+}  __attribute__((packed, aligned(2)));
 
 
 /* Menu structure used INTERNALLY within Max itself */
@@ -771,8 +769,7 @@ typedef struct _amenu
   #define MFLAG_MF_EXPERT   0x0004u
 /*  #define MFLAG_MF_HOTFLASH 0x0008u*/
   #define MFLAG_MF_RIP      0x0400u
-  #define MFLAG_MF_ALL      (MFLAG_MF_NOVICE | MFLAG_MF_REGULAR | \
-                             MFLAG_MF_EXPERT /*| MFLAG_MF_HOTFLASH*/)
+  #define MFLAG_MF_ALL      (MFLAG_MF_NOVICE | MFLAG_MF_REGULAR | MFLAG_MF_EXPERT /*| MFLAG_MF_HOTFLASH*/)
 
   #define MFLAG_HF_NOVICE   0x0010u /* HeaderFile for these levels only */
   #define MFLAG_HF_REGULAR  0x0020u
@@ -780,8 +777,7 @@ typedef struct _amenu
   #define MFLAG_HF_RIP      0x0800u
 /*  #define MFLAG_HF_HOTFLASH 0x0080u*/
 
-  #define MFLAG_HF_ALL      (MFLAG_HF_NOVICE | MFLAG_HF_REGULAR | \
-                             MFLAG_HF_EXPERT /*| MFLAG_HF_HOTFLASH*/)
+  #define MFLAG_HF_ALL      (MFLAG_HF_NOVICE | MFLAG_HF_REGULAR | MFLAG_HF_EXPERT /*| MFLAG_HF_HOTFLASH*/)
 
   #define MFLAG_SILENT      0x0100u /* Silent menuheader option */
   #define MFLAG_RESET       0x0200u /* Reset term size on display */
@@ -803,8 +799,7 @@ struct _bbs_stats
   sword   today_callers;
   union stamp_combo date;
   byte    lastuser[36];
-};
-
+}  __attribute__((packed, aligned(1)));
 
 
 /* Structure for entries in PROTOCOL.MAX */
@@ -850,9 +845,7 @@ struct _proto
     
   word fnamword;
   word descword;
-};
-
-
+}  __attribute__((packed, aligned(2)));
 
 #include "prm.h"    /* MAX.PRM structure */
 
@@ -909,9 +902,7 @@ struct _cstat
   dword next_msgofs;
   dword new_msgofs;
 #endif
-};
-
-
+} __attribute__((packed, aligned(2)));
 
 /* Data element in IPCxx.BBS file (see MAX_CHAT.C) */
 
@@ -928,7 +919,7 @@ struct _cdat
   dword rsvd1;
   word  rsvd2;
 #endif
-};
+} __attribute__((packed, aligned(2)));
 
 /* Handle for saving CHAT status.  Mainly used internally, but also        *
  * in RESTARxx.BBS.                                                        */
@@ -937,7 +928,7 @@ struct _css
 {
   word avail;
   byte status[80];
-};
+} __attribute__((packed, aligned(2)));
 
 
 /* NOTE: The following structure is not completely stable.  Unless         *
@@ -1023,13 +1014,12 @@ struct _restart
   char rsvd3;
   
   sword last_protocol;
-  long getoff;
+  int32 getoff;
   char returning[PATHLEN];
-  long steady_baud_l;             /* Locked baud rate (as integer) */
+  int32 steady_baud_l;             /* Locked baud rate (as integer) */
   SCOMBO date_newfile;            /* User's last newfiles date */
   char menuname[PATHLEN];         /* Name of current menu */
-};
-
+}  __attribute__((packed, aligned(2)));
 
 /*#include "dmalloc.h"*/
 
@@ -1103,7 +1093,7 @@ char *receive_file (char *fpath, char *fname, char protocol);
      byte  name[20];      /* node name                                     */
      byte  phone[40];     /* phone number                                  */
      byte  city[40];      /* city and state                                */
-  };
+  } __attribute__((packed, aligned(2)));
 #endif
 
 #ifndef _NEWNODE_DEFINED
@@ -1127,7 +1117,7 @@ char *receive_file (char *fpath, char *fname, char protocol);
      byte ModemType;                            /* RESERVED for modem type */
      word NodeFlags;                            /* set of flags (see below) */
      word NodeFiller;
-  };
+  } __attribute__((packed, aligned(2)));
 #endif
 
 /*------------------------------------------------------------------------*/
@@ -1160,7 +1150,8 @@ struct _maxnode
   char phone[40];
   char city[40];
   word flag;
-};
+} __attribute__((packed, aligned(2)));
+
 
 
 #define CMDLEN    60          /* size of the command typeahead buffer       */
@@ -1310,8 +1301,8 @@ struct _pkthdr
   word orig_point;
   word dest_point;
 
-  long prod_data;         /* Product-specific data                      */
-};
+  int32 prod_data;         /* Product-specific data                     */
+} __attribute__((packed, aligned(2)));
    
 #endif
 
@@ -1345,10 +1336,8 @@ struct _pkthdr22
   byte orig_domain[8];
   byte dest_domain[8];
 
-  long prod_data;         /* Product-specific data                      */
-};
-
-
+  int32 prod_data;        /* Product-specific data                      */
+} __attribute__((packed, aligned(2)));
 
 struct _pktprefix
 {
@@ -1359,7 +1348,7 @@ struct _pktprefix
   sword dest_net;
   word  attr;
   word  cost;
-};
+} __attribute__((packed, aligned(2)));
 
 
 /*

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_misc.c,v 1.1 2002/10/01 17:51:53 sdudley Exp $";
+static char rcs_id[]="$Id: max_misc.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Miscellaneous routines
@@ -261,6 +261,12 @@ void Giveaway_Slice(void)
 #elif defined(__MSDOS__)
   if (sleeper)
     (*sleeper)();
+#elif defined(UNIX)
+# ifdef _REENTRANT
+  sched_yield();
+# else
+  sleep(0);
+# endif
 #else
   #error Unknown OS!
 #endif

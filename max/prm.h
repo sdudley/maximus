@@ -134,6 +134,7 @@ struct _netaddr
   #define MULTITASKER_OS2         6
   #define MULTITASKER_PCMOS       7
   #define MULTITASKER_NT          8
+  #define MULTITASKER_UNIX	  9
 
   #define MULTITASKER_auto        MULTITASKER_AUTO
   #define MULTITASKER_none        MULTITASKER_NONE
@@ -145,7 +146,7 @@ struct _netaddr
   #define MULTITASKER_os2         MULTITASKER_OS2
   #define MULTITASKER_pcmos       MULTITASKER_PCMOS
   #define MULTITASKER_nt          MULTITASKER_NT
-
+  #define MULTITASKER_unix	  MULTITASKER_UNIX
 
 
 

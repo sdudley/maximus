@@ -115,12 +115,17 @@ extrn VWIN *dspwin IS(NULL);    /* Display window ("above" normal screen)   */
 extrn long dspwin_time IS(0L);  /* Timeout for the display window           */
 
 
+#ifdef UNIX
 extrn char slogan[] IS(CLS "%sMAXIMUS Version %s%s\n");
+#else
+extrn char slogan[] IS(CLS "%sMAXIMUS Version %s%s\n");
+#endif
                     
 extrn char copyright[] IS("Copyright 1989, " THIS_YEAR " by Lanius Corporation.  All rights reserved.\n\n");
 
 extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
-                                  "Development by Scott Dudley, Peter Fitzsimmons and David Nugent.\n\n"
+                                  "Development by Scott Dudley, Peter Fitzsimmons and David Nugent.\n"
+				  "UNIX port by Wes Garland.\n\n"
 
                          LRED "For technical support, send mail to tech@lanius.com or \"Tech\" at 1:249/106.\n"
                          LRED "For more information on Maximus, send mail to sales@lanius.com, or write to:\n\n"
@@ -253,9 +258,15 @@ extrn char mtag_dat[] IS("%smtag.dat");
 extrn char mtag_idx[] IS("%smtag.idx");
 extrn char mtag_fre[] IS("%smtag.fre");
 /*extrn char *ftag_name IS("%sftag.bbs");*/
+#ifndef UNIX
 extrn char ipcxx_bbs[] IS("%sIPC%02x.BBS");
 extrn char ipc_star[] IS("%sIPC*.BBS");
 extrn char ipc_x[] IS("IPC%x.BBS");
+#else
+extrn char ipcxx_bbs[] IS("%sipc%02x.bbs");
+extrn char ipc_star[] IS("%sipc*.bbs");
+extrn char ipc_x[] IS("ipc%x.bbs");
+#endif
 extrn char xctl_keyboard[] IS("Keyboard\n");
 extrn char xctl_port_baud[] IS("Port %u\nBaud %ld\n");
 extrn char xctl_modem[] IS("Modem %x %lx %x %x %lx\n");
@@ -288,7 +299,11 @@ extrn char last_onexit[LEN(PATHLEN)] IS("");
 extrn char orig_disk2;                  /* Disk drive we started from, alt1*/
 extrn char orig_disk3;                  /* Disk drive we started from, alt2*/
 extrn char original_path[PATHLEN];      /* The DRIVE/PATH we started from  */
+#ifdef UNIX
+extrn char prmname[LEN(80)] IS("etc/max.prm");/* Name of current .PRM file     */
+#else
 extrn char prmname[LEN(80)] IS("max.prm");/* Name of current .PRM file     */
+#endif
 extrn char searchfor[LEN(BUFLEN)];      /* Text to search FILES.BBS for    */
 extrn char log_name[LEN(80)];           /* Name of log file                */
 extrn char menupath[LEN(80)];           /* Path to the current menu files. */

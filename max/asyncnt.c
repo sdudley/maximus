@@ -18,10 +18,10 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: asyncnt.c,v 1.1 2002/10/01 17:50:45 sdudley Exp $";
+static char rcs_id[]="$Id: asyncnt.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
-#ifdef NT
+#if defined(NT) || defined(UNIX)
 
 #include <stdio.h>
 #include <ctype.h>
@@ -109,7 +109,7 @@ void com_XON_enable(void)
 
 void com_break(int on)
 {
-  HANDLE h=ComGetHandle(hcModem);
+  OSCOMMHANDLE h=ComGetHandle(hcModem);
 
   if (on)
     SetCommBreak(h);
@@ -139,7 +139,7 @@ int Cominit(int port)
           sprintf(tmp, "handle %d", port+1);
 
           hf = (HFILE)port+1;  /* maximus subtracts 1 from the value on the command line. Add it back here. */
-          rc = !ComOpenHandle((HANDLE)hf, &hcModem, 8200, 8200);
+          rc = !ComOpenHandle((OSCOMMHANDLE)hf, &hcModem, 8200, 8200);
         }
 
         if(rc)

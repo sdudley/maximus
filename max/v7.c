@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: v7.c,v 1.1 2002/10/01 17:53:21 sdudley Exp $";
+static char rcs_id[]="$Id: v7.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Version 7 nodelist module
@@ -56,7 +56,11 @@ int V7FindNode(NETADDRP opus_addr, struct _newnode *node, char *net_info)
   
   strcpy(index_filename, net_info);       /* take nodelist path   */
   strcat(index_filename, nodelist_base);  /* add in the file name */
+#ifndef UNIX
   strcat(index_filename, ".NDX");         /* add in the file ext  */
+#else
+  strcat(index_filename, ".ndx");         /* add in the file ext  */
+#endif
 
   record=btree(index_filename, (void *)opus_addr, addr_compare);
 
@@ -108,7 +112,11 @@ int V7FindName(char *name, NETADDRP faddr, struct _newnode *node, char *net_info
   *index_filename='\0';                     /* "null-terminated string"  */
 
   strcpy(index_filename, net_info);     /* take nodelist path        */
+#ifndef UNIX
   strcat(index_filename, "SYSOP.NDX");  /* add in the file name      */
+#else
+  strcat(index_filename, "sysop.ndx");  /* add in the file name      */
+#endif
 
   record=btree(index_filename, (void *)last_name_first, name_compare);
 
@@ -329,7 +337,11 @@ static int near get_ver7_info(unsigned long pos, NETADDRP faddr, struct _newnode
 
   strcpy(temp, net_info);                     /* take nodelist path */
   strcat(temp, nodelist_base);                /* add in the filename*/
+#ifndef UNIX
   strcat(temp, ".DAT");                       /* then the extension */
+#else
+  strcat(temp, ".dat");                       /* then the extension */
+#endif
   
   if ((stream=sopen(temp, O_RDONLY | O_BINARY | O_NOINHERIT, SH_DENYNO,
                     S_IREAD | S_IWRITE))==-1)

@@ -71,7 +71,7 @@ int  mdm_blockwrite(int max_chars, char *offset);
 #define Mdm_Flow_On()   Mdm_Flow(FLOW_ON)
 #define Mdm_Flow_Off()  Mdm_Flow(FLOW_PARTIAL_OFF)
 
-#if defined(OS_2) || defined(NT)
+#if defined(OS_2) || defined(NT) || defined(UNIX)
 
     #ifdef OS_2
       #ifndef COMMAPI

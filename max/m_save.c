@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_save.c,v 1.1 2002/10/01 17:52:50 sdudley Exp $";
+static char rcs_id[]="$Id: m_save.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: Message saving routines
@@ -36,6 +36,9 @@ static char rcs_id[]="$Id: m_save.c,v 1.1 2002/10/01 17:52:50 sdudley Exp $";
 #include "max_edit.h"
 #include "m_for.h"
 #include "m_save.h"
+#ifdef UNIX
+# include <errno.h>
+#endif
 
 static void near SaveMsgFromUpfile(HMSG msgh,FILE *upfile, long total_len,int local_msg, PMAH pmah);
 static void near SaveMsgFromEditor(HMSG msgh, long total_len, PMAH pmah);
@@ -274,9 +277,9 @@ static void near SaveMsgFromUpfile(HMSG msgh,FILE *upfile, long total_len,int lo
 
       if (*s=='\t')
       {
-        size_t add=8-((s-temp+line_len)%8);
+        size_t add=8-((((char *)s-(char *)temp)+line_len)%8);
 
-        if (s-temp+add >= PATHLEN-5)
+        if (((char *)s-(char *)temp)+add >= PATHLEN-5)
           *s=' ';
         else
         {
@@ -290,7 +293,7 @@ static void near SaveMsgFromUpfile(HMSG msgh,FILE *upfile, long total_len,int lo
       else if (*s == 0x8d && (prm.charset & CHARSET_CHINESE)==0)
       {
         if (s[1] && !isspace(s[1]) &&
-            (((s > temp) && s[-1]!=' ') || ((s== temp) && !first && last_char!=' ')))
+            ((((char *)s > (char *)temp) && s[-1]!=' ') || (((char *)s== (char *)temp) && !first && last_char!=' ')))
           *s=' '; /* Replace with space if required */
         else
         {         /* Otherwise just eliminate it */

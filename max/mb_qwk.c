@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.1 2002/10/01 17:52:14 sdudley Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command
@@ -93,7 +93,7 @@ struct _qfile
 char *qwk_path=NULL;
 
 static char ps_dats[]="%sDATS";
-static char o8lxdat[]="\\%08lx.DAT";
+static char o8lxdat[]=PATH_DELIMS "%08lx.DAT";
 static char ndx_name[]="%s%03d.NDX";
 static char personal_name[]="%sPERSONAL.NDX";
 static char mdat_template[]="%smessages.dat";
@@ -188,7 +188,7 @@ static int copy_attaches(void)
 
       /* Invent a new filename for each attach */
 
-      sprintf(temp, "%s\\filatt%02d%s", qwk_path, FileEntries(), strrchr(q->fname,'.'));
+      sprintf(temp, "%s" PATH_DELIMS "filatt%02d%s", qwk_path, FileEntries(), strrchr(q->fname,'.'));
       if (lcopy(q->fname,temp)==-1)
       {
         q->attachID=0;  /* Don't delete this one */

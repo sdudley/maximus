@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_gets.c,v 1.1 2002/10/01 17:51:39 sdudley Exp $";
+static char rcs_id[]="$Id: max_gets.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Maximus get-string function
@@ -329,7 +329,7 @@ int mdm_gets(char *string, int type, int c, int max, char *prompt)
 
   while (ch != K_RETURN)
   {
-    /* We have to do this timer-checking stuff manually, sine Mdm_keyp()  *
+    /* We have to do this timer-checking stuff manually, since Mdm_keyp() *
      * isn't active for long enough to sense a timeout...  Mdm_getcw()    *
      * *does* do the checking normally, but we only call it once we       *
      * finally get a character...                                         */
@@ -365,6 +365,7 @@ int mdm_gets(char *string, int type, int c, int max, char *prompt)
     }
 
     ch=(unsigned char)Mdm_getcw();
+#warning Potential security problem? Can remote send local scan code?
 
 #ifdef EMSI
     /* Check for IEMSI caller.  If we're supposed to eat the character,     *

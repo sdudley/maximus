@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_in.c,v 1.1 2002/10/01 17:51:40 sdudley Exp $";
+static char rcs_id[]="$Id: max_in.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Character/word/line general modem and keyboard input functions
@@ -45,8 +45,13 @@ static char *szInputString=NULL;
 static char *szCharString=NULL;
 static char *aszListString[MAX_RECUR];
 
+#ifndef __GNUC__
 static int near Inputv(char *dest,int type,int ch,int max,char *prompt, char *va_args[1]);
 static int near Input_Charv(int type, char *extra, char *va_args[1]);
+#else
+static int near Inputv(char *dest,int type,int ch,int max,char *prompt, va_list va_args);
+static int near Input_Charv(int type, char *extra, va_list va_args);
+#endif
 
 void InputAllocStr(void)
 {
@@ -251,8 +256,11 @@ int cdecl Inputf(char *dest,int type,int ch,int max,char *prompt,...)
  * to the user.  (Use NULL if none required)
  */
 
+#ifndef __GNUC__
 static int near Inputv(char *dest,int type,int ch,int max,char *prompt, char *arg[1])
-
+#else
+static int near Inputv(char *dest,int type,int ch,int max,char *prompt, va_list arg)
+#endif
 {
   int ret=0;
   char *s;
@@ -339,8 +347,11 @@ int cdecl Input_Charf(int type,char *extra,...)
   return rc;
 }
 
-
+#ifndef __GNUC__
 static int near Input_Charv(int type, char *extra, char *arg[1])
+#else
+static int near Input_Charv(int type, char *extra, va_list arg)
+#endif
 {
   int mdm_keyp;
   int isnllb;
@@ -893,7 +904,7 @@ int MoreYnBreak(char *nonstop,char *colour)
 
 void EatNulAfterCr(void)
 {
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
   long t;
 
   if (GetConnectionType()==CTYPE_TELNET)

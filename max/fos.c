@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos.c,v 1.1 2002/10/01 17:50:56 sdudley Exp $";
+static char rcs_id[]="$Id: fos.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=FOSSIL interface routines
@@ -33,6 +33,10 @@ static char rcs_id[]="$Id: fos.c,v 1.1 2002/10/01 17:50:56 sdudley Exp $";
 #include "prog.h"
 #include "mm.h"
 #include "modem.h"
+
+#ifdef UNIX
+#define NT
+#endif
 
 static int waslocal =0;
 static int waskeyboard =0;

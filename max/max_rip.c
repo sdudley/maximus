@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_rip.c,v 1.1 2002/10/01 17:52:01 sdudley Exp $";
+static char rcs_id[]="$Id: max_rip.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=RIP support routines
@@ -140,7 +140,7 @@ static int near sendrip(char *pszFile, int fDisplay, int force)
   /* Get qualified filename for file to send */
 
   strcpy(temp, rippath);
-  Add_Trailing(temp, '\\');
+  Add_Trailing(temp, PATH_DELIM);
   strcat(temp, pszFile);
 
   /* See if it exists in the current RIP path */
@@ -151,7 +151,7 @@ static int near sendrip(char *pszFile, int fDisplay, int force)
     /* Ok, then try the default RIP path */
 
     strcpy(temp, PRM(rippath));
-    Add_Trailing(temp, '\\');
+    Add_Trailing(temp, PATH_DELIM);
     strcat(temp, pszFile);
 
     if ((filesize=fexist(temp))==-1)

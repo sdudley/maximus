@@ -117,7 +117,7 @@ int IsInFilesBbs(PFAH pfah, char *filename, word *flag, char *path)
         {
           /* Strip off filename specification */
 
-          if (temp[0]=='\\' || temp[1]==':')
+          if (temp[0]=='\\' || temp[1]==':' || temp[0]=='/')
           {
             char *sp=strchr(temp, ' ');
             char *tb=strchr(temp, '\t');
@@ -144,8 +144,8 @@ int IsInFilesBbs(PFAH pfah, char *filename, word *flag, char *path)
             {
               if (path)
               {
-                strncpy(path, temp, pth-temp+1);
-                path[pth-temp+1]='\0';
+                strncpy(path, temp, (char *)pth-(char *)temp+1);
+                path[(char *)pth-(char *)temp+1]='\0';
               }
               
               strocpy(temp, pth+1);

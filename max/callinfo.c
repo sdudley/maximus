@@ -61,7 +61,7 @@ void ci_filename(char * buf)
     strcpy(temp, PRM(caller_log));
     Convert_Star_To_Task(temp);
     Parse_Outside_Cmd(temp,buf);
-    p=strrchr(buf,'\\');
+    p=strrchr(buf, PATH_DELIM);
     if (p==NULL)
       p=buf;
     if (strchr(p,'.')==NULL)

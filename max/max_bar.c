@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_bar.c,v 1.1 2002/10/01 17:51:26 sdudley Exp $";
+static char rcs_id[]="$Id: max_bar.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Barricade-handling routines
@@ -36,7 +36,9 @@ static char rcs_id[]="$Id: max_bar.c,v 1.1 2002/10/01 17:51:26 sdudley Exp $";
 #include "prog.h"
 #include "mm.h"
 #include "max_area.h"
-
+#ifdef UNIX
+#include <errno.h>
+#endif
 
 /* ParseBarPriv
  *

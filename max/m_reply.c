@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_reply.c,v 1.1 2002/10/01 17:52:49 sdudley Exp $";
+static char rcs_id[]="$Id: m_reply.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: R)eply command
@@ -73,7 +73,7 @@ static int near readmsgline(struct _mline * pml)
 
     /* Skip over trailing junk */
 
-    while (*bptr == (byte)'\x8d' || *bptr=='\x0a')
+    while (*(byte *)bptr == (byte)'\x8d' || *bptr=='\x0a')
       ++bptr;
 
     /* See if we got end of line, and if so, return length */

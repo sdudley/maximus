@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_outr.c,v 1.1 2002/10/01 17:51:59 sdudley Exp $";
+static char rcs_id[]="$Id: max_outr.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Modem output and AVATAR translation routines
@@ -45,7 +45,7 @@ extern char strng[];
 
 static int rip_wrap=1;
 
-#if defined(OS_2) || defined(NT)
+#if defined(OS_2) || defined(NT) || defined(UNIX)
 
     static void near CMDM_PPUTcw(int c)
     {

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: f_con.c,v 1.1 2002/10/01 17:51:00 sdudley Exp $";
+static char rcs_id[]="$Id: f_con.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=File area routines: C)ontents functions
@@ -216,7 +216,7 @@ static sword near Zip_Scan_For_Header(char *buffer)
   byte *x;
 
   if ((x=memstr(buffer,END_STRSIG,SEEK_SIZE,strlen(END_STRSIG))) != NULL)
-    return (sword)(x-buffer);
+    return (sword)((char *)x-buffer);
   else return 0;
 }
 
@@ -532,7 +532,11 @@ static sword near Read_LzhArc(int type,int lzhfile)
   Puts(arc_h1);
   Puts(arc_h2);
   
+#ifndef UNIX
   while (! eof(lzhfile))
+#else
+  while(1)
+#endif
   {
     Mdm_check();
 

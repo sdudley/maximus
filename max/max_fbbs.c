@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_fbbs.c,v 1.1 2002/10/01 17:51:36 sdudley Exp $";
+static char rcs_id[]="$Id: max_fbbs.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=FILES.BBS-specific routine for displaying file entry
@@ -188,7 +188,7 @@ int Process_Files_Entry(DSTK *d, char *orig_entry)
   
   /* Now add the path for the current directory */
   
-  if (strchr(filename, '\\'))
+  if (strchr(filename, PATH_DELIM))
     strcpy(filespec, filename);
   else
     sprintf(filespec, ss, FAS(fah, downpath), filename);

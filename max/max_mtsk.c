@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_mtsk.c,v 1.1 2002/10/01 17:51:54 sdudley Exp $";
+static char rcs_id[]="$Id: max_mtsk.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Multitasker autodetect logic
@@ -39,6 +39,8 @@ void Config_Multitasker(int log_it)
   NW(log_it);
 
   multitasker=MULTITASKER_nt;
+#elif defined(UNIX)
+multitasker=MULTITASKER_unix;
 #elif defined(__MSDOS__)
 
   static struct _mtask
@@ -54,6 +56,7 @@ void Config_Multitasker(int log_it)
               {ddosloaded,  MULTITASKER_DOUBLEDOS,ddossleep,  "DoubleDOS"},
               {pcmosloaded, MULTITASKER_PCMOS,    pcmossleep, "PC-MOS"},
               {os2loaded,   MULTITASKER_OS2,      os2sleep,   "OS/2"},
+	      (unixloaded,  MULTITASKER_UNIX,	  unixsleep,  "UNIX"),
               {NULL,        MULTITASKER_NONE,     spoolsleep, NULL}};
             
   struct _mtask *mt;

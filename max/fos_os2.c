@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
+static char rcs_id[]="$Id: fos_os2.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=FOSSIL interface routines (OS/2)
@@ -31,6 +31,12 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
 #include <stdarg.h>
 #include <dos.h>
 
+#if defined(UNIX)
+# include "prog.h"
+# include "mm.h"
+# include "modem.h"
+#endif
+
 #if defined(OS_2) || defined(NT)
   #ifdef OS_2
     #define INCL_DOS
@@ -42,7 +48,9 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
   #include "prog.h"
   #include "mm.h"
   #include "modem.h"
+#endif
 
+#if defined(OS_2) || defined(NT) || defined(UNIX)
   static int fossil_installed=FALSE;
 
   int mdm_ggetcw(void)
@@ -58,7 +66,7 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
     if (!local)
     {
       ComTxWait(hcModem, 10000L);
-#ifdef NT
+#if defined(NT) || defined(UNIX)
       ComClose(hcModem);
 #endif
     }
@@ -81,9 +89,15 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
   #else
     unsigned short r,c;
 
+  #ifdef UNIX
+    *row = (char)VidWhereY();
+    *col = (char)VidWhereX();
+  #else
     VioGetCurPos(&r, &c, 0);
     *row=(char)r;
     *col=(char)c;
+  #endif
+
   #endif
   }
 
@@ -102,7 +116,7 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
       while (p < (char *)(finfo+1))
         *p++='\0';
 
-  #ifdef NT
+  #if defined(NT)
     {
       CONSOLE_SCREEN_BUFFER_INFO csbi;
 
@@ -110,6 +124,11 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
 
       finfo->width=csbi.dwSize.X;
       finfo->height=csbi.dwSize.Y;
+    }
+  #elif defined(UNIX)
+    {
+      finfo->width = VidNumCols();
+      finfo->height = VidNumRows();
     }
   #else
     {
@@ -148,7 +167,7 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
   }
 #endif
 
-  #ifndef ORACLE
+/*  #ifndef ORACLE */
 
     int mdm_avail()
     {
@@ -182,6 +201,10 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
       if (steady_baud)
         bod=steady_baud;
 
+#ifdef UNIX
+if (!hcModem->saddr_p)
+{
+#endif
       for (pb=bodcvt; pb->baudrate; pb++)
       {
         if (pb->bodmask==bod)
@@ -195,8 +218,11 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
 
       if (!pb->bodmask)
         b=19200L;
+#ifdef UNIX
+} else b=38400L;
+#endif
 
-    #ifdef NT
+    #if defined(NT) || defined(UNIX)
       rc=!ComSetBaudRate(hcModem, b, NOPARITY, 8, ONESTOPBIT);
     #else
       /* If the speed is 115.2k, do nothing.  ComSetBaudRate doesn't
@@ -223,7 +249,7 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
       if (!max_chars)
         return 0;
 
-#ifdef NT
+#if defined(NT) || defined(UNIX)
       return(ComWrite(hcModem, offset, max_chars) ? max_chars : 0);
 #else
       return(ComWrite(hcModem, offset, max_chars) ? 0 : max_chars);
@@ -235,7 +261,7 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
 
     int mdm_blockread(int max_chars, char *offset)
     {
-      #ifdef NT
+      #if defined(NT) || defined(UNIX)
         DWORD cbBytesRead;
       #else
         USHORT cbBytesRead;
@@ -321,6 +347,7 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
     }
 
 
+#ifndef ORACLE
     char mdm_dump(char buffer)
     {
       if (local)
@@ -352,7 +379,7 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
 
       return 0;
     }
-
+#endif
 
     int mdm_init(int prt)   /* Returns 0 upon success, 2 on no FOSSIL installed */
     {
@@ -389,7 +416,7 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
       return real_carrier();
     }
 
-  #endif /* ORACLE */
+/*  #endif */ /* ORACLE */
 
 #endif /* OS_2 || NT */
 

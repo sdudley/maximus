@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_outl.c,v 1.1 2002/10/01 17:51:58 sdudley Exp $";
+static char rcs_id[]="$Id: max_outl.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Local output and AVATAR translation routines
@@ -217,7 +217,7 @@ void Lputc(int ch)
         }
         else
         {
-          #ifdef OS_2   /* Non-IBM video mode for MS-DOS adds '\r'         */
+          #if defined(OS_2) || defined(UNIX)   /* Non-IBM video mode for MS-DOS adds '\r'         */
           lputc(13);    /* automatically, but OS/2 doesn't.                */
           #endif
 
