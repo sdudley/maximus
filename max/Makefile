@@ -92,6 +92,15 @@ max: $(OBJS) date.o
 max:
 	$(CXX) $(CFLAGS) $(LDFLAGS) $^ $(LOADLIBES) -o $@
 
+# max2 is the same as max, but most of the object files are
+# moved into an solib, to allow use to track function calls
+# with truss -ulibmax2
+libmax2.so: LD=gcc -shared
+max2:	$(MAXOBJ) cppmain.o date.o
+	$(CXX) $(CFLAGS) $(LDFLAGS) $^ -lmax2 $(LOADLIBES) -o $@
+
+libmax2.so: $(MOBJS) $(ZOBJS)
+
 bldupd.o: bldupd.h
 
 .PRECIOUS: ../util/maid $(LANGHDR)
