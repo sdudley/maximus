@@ -19,7 +19,7 @@ else
 
   if [ "${PREFIX}" != "/var/max" ]; then
     echo "Modifying configuration files to reflect PREFIX=${PREFIX}.."
-    for file in etc/max.ctl etc/areas.bbs etc/compress.cfg etc/squish.cfg
+    for file in etc/max.ctl etc/areas.bbs etc/compress.cfg etc/squish.cfg etc/sqafix.cfg
     do
       echo " - ${file}"
       cat "${PREFIX}/${file}" | sed "s;/var/max;${PREFIX};g" > "${PREFIX}/${file}.tmp"
