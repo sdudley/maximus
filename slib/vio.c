@@ -614,6 +614,9 @@ word VidOpen(int has_snow,int desqview,int dec_rows)
       putenv("TERM=vt100");
 
     initscr();             	/* init curses */
+    start_color();
+    printf("\033(U");
+    StartPairs();
     keypad(stdscr, TRUE);	/* enable keyboard mapping */
     cbreak();			/* char-by-char instead of line-mode input */    
     nodelay(stdscr, TRUE);	/* Make getch() non-blocking */
@@ -642,6 +645,7 @@ int VidClose(void)
     endwin();            /* destroy curses instance */
 
   stdscr = NULL;
+  printf("\033(B");
   return 0;
 }
 
@@ -744,7 +748,7 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
                       sword win_start_col,       /* add to from_ofs     */
                       word this_row)            /* physical screen row.*/
 {
-   /* mvaddstr(this_row, start_col, from_ofs + win_start_col * 2); */
+/*    mvaddstr(this_row, start_col, from_ofs + win_start_col * 2); */
 
   /* We're putting out tonnes of garbage, mostly control-Gs - attr 7? I think
    * this is no ordinary char *buffer, it's a buffer full of 16-bit words, with
@@ -758,7 +762,7 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
 
   chtype        chbuf[num_col];
   int           i;
-  int  		ch, attr;
+  int  		ch, attr, tmpattr;
   unsigned char *start;
 #ifdef MANUAL_SCROLL
   int		newlineCount = 0;
@@ -780,7 +784,8 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
     if (ch == '\n')
       newlineCount++;
 #endif
-    chbuf[i] = ch | (attr & FOREGROUND_INTENSITY ? A_NORMAL : A_DIM);
+    tmpattr = cursesAttribute(attr);
+    chbuf[i] = ch | COLOR_PAIR(tmpattr) | A_BOLD;
   }
 
 #ifdef DEBUG_WINBLITZ
@@ -827,6 +832,8 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
 
 
 #endif
+
+				    
 
 void pascal VidSyncDVWithForce(int fForce)
 {

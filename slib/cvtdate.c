@@ -45,6 +45,12 @@ struct tm * _fast DosDate_to_TmDate(union stamp_combo *dosdateUA,
   if (is_dst==-1)
     InitCvt();
 
+  if(dosdateUA->ldate == 0)
+  {
+    struct tm* t = gmtime(NULL);
+    memcpy(tmdate, t, sizeof(*t));
+  }
+
   tmdate->tm_mday=dosdate->msg_st.date.da;
   tmdate->tm_mon =dosdate->msg_st.date.mo-1;
   tmdate->tm_year=dosdate->msg_st.date.yr+80;
