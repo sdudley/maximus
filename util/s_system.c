@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_system.c,v 1.1 2002/10/01 17:57:54 sdudley Exp $";
+static char rcs_id[]="$Id: s_system.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: 'Section System' processing logic
@@ -274,6 +274,8 @@ int Parse_System(FILE *ctlfile)
           prm.multitasker=MULTITASKER_PCMOS;
         else if (eqstri(p, "os/2"))
           prm.multitasker=MULTITASKER_OS2;
+        else if (eqstri(p, "UNIX"))
+          prm.multitasker=MULTITASKER_UNIX;
         else Unknown_Ctl(linenum, p);
       }
       else if (eqstri(p, "mcp")) /* MCP stuff */

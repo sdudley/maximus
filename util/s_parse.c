@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_parse.c,v 1.1 2002/10/01 17:57:52 sdudley Exp $";
+static char rcs_id[]="$Id: s_parse.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: .CTL file parsing routines
@@ -135,7 +135,8 @@ int Parse_Ctlfile(char *ctlname)
 
   linenum=1;
 
-  strcpy(ctl_name, fancy_str(ctlname));
+  strcpy(ctl_name, fancy_fn(ctlname));
+  fixPathMove(ctl_name);
 
   printf("\nParsing `%s':",ctl_name);
 

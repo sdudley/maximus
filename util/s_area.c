@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_area.c,v 1.1 2002/10/01 17:57:40 sdudley Exp $";
+static char rcs_id[]="$Id: s_area.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define SILT
@@ -156,7 +156,7 @@ void AddMsgArea(BFILE bDat, BFILE bNdx, BFILE bIdx, PMAH pmah, SLIST *sl)
 
     if (Bread(bDat, &a, sizeof a) != sizeof a)
     {
-      printf("Error reading existing file area from offset %ld (area %s)\n",
+      printf("Error reading existing file area from offset %" INT32_FORMAT " (area %s)\n",
              pa2Found->offset, name);
       exit(1);
     }

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: ansi2bbs.c,v 1.1 2002/10/01 17:57:15 sdudley Exp $";
+static char rcs_id[]="$Id: ansi2bbs.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=ANSI2BBS and ANSI2MEC, ANSI to .BBS/MEC conversion utilities
@@ -40,19 +40,28 @@ void WriteColour(int colour,FILE *bbsfile);
 char blink;
 
 #ifdef ANSI2MEC
-    #define A_NAME "ANSI2MEC"
     #define A_DESC "An ANSI to .MEC file conversion program"
-
+#ifndef UNIX
+    #define A_NAME "ANSI2MEC"
     #define EXT    ".MEC"
+#else
+    #define A_NAME "ansi2mec"
+    #define EXT    ".mec"
+#endif
 
     #define PutRepChr(ch,count) for (x=0;x < count+1;x++) \
                         fprintf(bbsfile,"%c",ch);
 
 #else
-    #define A_NAME "ANSI2BBS"
     #define A_DESC "An ANSI to .BBS file conversion program"
 
+#ifndef UNIX
+    #define A_NAME "ANSI2BBS"
     #define EXT    ".BBS"
+#else
+    #define A_NAME "ansi2bbs"
+    #define EXT    ".bbs"
+#endif
 
     #define PutRepChr(ch,count) \
               ((ch==25 || ch==13 || ch==10) ? \
@@ -138,7 +147,11 @@ int _stdc main(int argc,char *argv[])
   strcpy(inname,argv[1]);
 
   if ((p=strchr(inname,'.'))==NULL)
+#ifndef UNIX
     strcat(inname,".ANS");
+#else
+    strcat(inname,".ans");
+#endif
 
   if (argc < 3)
   {
@@ -154,7 +167,9 @@ int _stdc main(int argc,char *argv[])
     strcat(outname,EXT);
 
 
-  printf("Compiling %s to %s...\n",strupr(inname),strupr(outname));
+  /* printf("Compiling %s to %s...\n",strupr(inname),strupr(outname)); */
+  printf("Compiling %s to %s...\n", fancy_fn(inname), fancy_fn(outname)); 
+
 
   if ((ansifile=fopen(inname,"rb"))==NULL)
   {

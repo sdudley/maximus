@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include "areadat.h"
+
 int Make_Strng(char *value,int type);
 int Make_Pth(char *value);
 void Strip_Comment(char *l);
@@ -32,10 +34,10 @@ int Deduce_Priv(char *p);
 int Deduce_Attribute(char *a);
 int Deduce_Class(int priv);
 void Unknown_Ctl(int linenum,char *p);
-Compiling(char type,char *string,char *name);
-Blank_Sys(struct _sys *sys,int mode);
-Add_Backslash(char *s);
-Remove_Backslash(char *s);
+int Compiling(char type,char *string,char *name);
+void Blank_Sys(struct _sys *sys,int mode);
+int Add_Backslash(char *s);
+int Remove_Backslash(char *s);
 int Parse_Weekday(char *s);
 int Parse_Menu(FILE *ctlfile,char *name);
 dword Deduce_Lock(char *p);

@@ -1,3 +1,5 @@
+
+/* Modify mecca_vb.h.in, NOT mecca_vb.h - wes */
 /*{"msg_notenter",     0,   -1, "\x17\x0d""nE",     NULL},*/
 {"1equal",           0,   -1, "\x10""Q1",         NULL},
 {"1file",            0,   -1, "\x10" "1",         NULL},

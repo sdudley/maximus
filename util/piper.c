@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: piper.c,v 1.1 2002/10/01 17:57:35 sdudley Exp $";
+static char rcs_id[]="$Id: piper.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #error Obsolete.  This program is no longer in the distribution
@@ -179,6 +179,8 @@ int _stdc main(int argc,char *argv[])
   Hello("PIPER", "Maximus Control File Converter", VERSION,
         "1990, " THIS_YEAR_LAST);
 
+#warning hard-coded filenames inappropriate for unix
+
   if (fexist("AREAS.CTL"))
   {
     printf("`AREAS.CTL' already exists;  Overwrite [y,N]? ");
@@ -198,8 +200,13 @@ int _stdc main(int argc,char *argv[])
     rename("AREAS.CTL","AREAS.BAK");
   }
 
+#ifndef UNIX
   if ((areasbbs=fopen("AREAS.BBS","r")) != NULL ||
       (areasbbs=fopen("ECHO.CTL","r")) != NULL)
+#else
+  if ((areasbbs=fopen("etc/areas.bbs","r")) != NULL ||
+      (areasbbs=fopen("etc/echo.ctl","r")) != NULL)
+#endif
   {
     while (fgets(temp,80,areasbbs) != NULL)
     {
@@ -222,8 +229,8 @@ int _stdc main(int argc,char *argv[])
 
         getword(strupr(p),abbs[abbs_num].path," \t\n",1);
 
-        if (abbs[abbs_num].path[strlen(abbs[abbs_num].path)-1] != '\\')
-          strcat(abbs[abbs_num].path,"\\");;
+        if (abbs[abbs_num].path[strlen(abbs[abbs_num].path)-1] != PATH_DELIM)
+          strcat(abbs[abbs_num].path, PATH_DELIMS);;
 
         getword(p,abbs[abbs_num++].tag," \t\n",2);
       }

@@ -71,6 +71,8 @@ struct _symbol
 
 
 /* Structure for verb table, below */
+struct _inf;
+
 struct _table
 {
   char *verb;

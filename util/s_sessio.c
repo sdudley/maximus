@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_sessio.c,v 1.1 2002/10/01 17:57:53 sdudley Exp $";
+static char rcs_id[]="$Id: s_sessio.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: 'Section Session' processing logic
@@ -275,8 +275,11 @@ int Parse_Session(FILE *ctlfile)
         if (x==1 && do_prm)           /* USES statement */
         {                             /* Allow mecca or mex vm */
           int n=(*s2==':')?1:0;
+#ifndef UNIX
           static char * ext[] = { ".BBS", ".VM" };
-
+#else
+          static char * ext[] = { ".bbs", ".vm" };
+#endif
           if (! fexist(s2+n))
           {
             strcat(s2,ext[n]);

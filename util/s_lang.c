@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_lang.c,v 1.1 2002/10/01 17:57:45 sdudley Exp $";
+static char rcs_id[]="$Id: s_lang.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: 'Section Language' processing logic
@@ -83,8 +83,11 @@ int Parse_Language(FILE *ctlfile)
           /* Now open the language file, to find out how big the largest     *
            * heap is.                                                        */
 
+#ifndef UNIX
           sprintf(temp,"%s%s.LTF",strings+prm.lang_path,p);
-
+#else
+          sprintf(temp,"%s%s.ltf",strings+prm.lang_path,p);
+#endif
           if ((lf=shopen(temp,O_RDONLY | O_BINARY))==-1)
           {
             printf("\nFatal error opening language file `%s'!\n",temp);

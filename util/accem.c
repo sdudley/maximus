@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: accem.c,v 1.1 2002/10/01 17:57:14 sdudley Exp $";
+static char rcs_id[]="$Id: accem.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=ACCEM -- decompiles .BBS files into .MEC files
@@ -138,22 +138,26 @@ int _stdc main(int argc,char *argv[])
     }
   }
 
-  strupr(inname);
-  
+  /* strupr(inname); */
+  fancy_fn(inname);
+
   if (! strchr(outname,'.'))
     strcat(outname, (p[1]=='R') ? ".mer" : ".mec");
 
-  strupr(outname);
+  /* strupr(outname); */
+  fancy_fn(outname);
     
   iqsort((char *)verbs, verb_table_size, sizeof(verbs[0]), trcmp);
   Init_Table();
 
+  fixPathMove(inname);
   if ((bbsfile=fopen(inname,"rb"))==NULL)
   {
     printf("Error opening `%s' for read!\n",argv[1]);
     exit(1);
   }
   
+  fixPathMove(outname);
   if ((mecfile=fopen(outname,"wb"))==NULL)
   {
     printf("Error opening `%s' for write!\n",argv[2]);

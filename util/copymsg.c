@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: copymsg.c,v 1.1 2002/10/01 17:57:15 sdudley Exp $";
+static char rcs_id[]="$Id: copymsg.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -93,6 +93,7 @@ int copymsg(FILE *outfile, char *fname)
     struct _omsg *msg;
     FILE *inf;
 
+    fixPathMove(fname); 
     inf = fopen(fname, "rb");
     if(!inf)
         return FALSE;

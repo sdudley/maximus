@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fb.c,v 1.1 2002/10/01 17:57:23 sdudley Exp $";
+static char rcs_id[]="$Id: fb.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NOVER
@@ -439,7 +439,8 @@ static void near make_finf(char *path)
   {
     memset(fi->name, '\0', sizeof(fi->name));
     strncpy(fi->name, ff->szName, sizeof(fi->name));
-    strupr(fi->name);
+    /* strupr(fi->name); */
+    fancy_fn(fi->name);
 
     fi->cdate=ff->scCdate;
     fi->wdate=ff->scWdate;
@@ -725,7 +726,8 @@ static int near process_line(PFAH pfah, byte *line, char *path)
 
     strncpy(fdat.name, filepath+1, MAX_FN_LEN);
     fdat.name[MAX_FN_LEN]='\0';
-    strupr(fdat.name);
+    /* strupr(fdat.name); */
+    fancy_fn(fdat.name);
 
     /* Strip off the filename, then dupe it onto 'path' */
 
@@ -752,7 +754,8 @@ static int near process_line(PFAH pfah, byte *line, char *path)
       *fname='\0';
 
     strcat(fname, fdat.name);
-    strupr(fname);
+    /* strupr(fname); */
+    fancy_fn(fname);
   }
 
 /*fdat.priv=area.filepriv;
@@ -864,7 +867,8 @@ static int near process_line(PFAH pfah, byte *line, char *path)
         fdat.fdate=ff->scWdate;
         fdat.fsize=ff->ulSize;
 
-        strupr(fdat.name);
+        /* strupr(fdat.name); */
+	fancy_fn(fdat.name);
         write_entry(&fdat, desc, NULL, filepath, PFAS(pfah, acs));
       }
       while (!nofind && FindNext(ff)==0);

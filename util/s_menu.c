@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_menu.c,v 1.1 2002/10/01 17:57:50 sdudley Exp $";
+static char rcs_id[]="$Id: s_menu.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: 'Section Menu' processing logic
@@ -201,7 +201,9 @@ TryAgain:
     {
       getword(line,temp,ctl_delim,2);
       /*Add_Filename(temp);*/
-      
+#ifdef UNIX
+      fixPathMove(temp);
+#endif
       menu.headfile=InsertMenuHeap(temp);
 
       x=3;
@@ -319,8 +321,12 @@ TryAgain:
       while ((s=strtok(NULL, ctl_delim)) != NULL)
       {
         Add_Specific_Path(s, temp, strings+prm.menupath);
+#ifndef UNIX
         strcat(temp, ".MNU");
-        
+#else
+        strcat(temp, ".mnu");
+#endif	        
+
         lcopy(firstname, temp);
       }
     }

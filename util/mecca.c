@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mecca.c,v 1.1 2002/10/01 17:57:29 sdudley Exp $";
+static char rcs_id[]="$Id: mecca.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=MECCA -- the Maximus Embedded Command Compiler (Advanced)
@@ -164,7 +164,9 @@ void Parse_Args(int argc,char *argv[])
     strcpy(inname, av1);
     max_len=12;
 
-    if ((p=strrchr(inname, '\\')) != NULL ||
+    if (
+	(p=strrchr(inname, '/')) != NULL || 
+	(p=strrchr(inname, '\\')) != NULL ||
         (p=strrchr(inname, ':')) != NULL)
     {
       *(p+1)='\0';
@@ -182,13 +184,20 @@ void Parse_Args(int argc,char *argv[])
       {
         strcpy(outname,av2);
 
-        if (outname[strlen(outname)-1] != '\\' && outname[strlen(outname)-1] != ':')
-          strcat(outname, "\\");
+#ifndef UNIX
+        if (outname[strlen(outname)-1] != '\\' && outname[strlen(outname)-1] != ':')  
+#else
+        if (outname[strlen(outname)-1] != PATH_DELIM)
+#endif
+          strcat(outname, PATH_DELIMS);
       }
       else strcpy(outname,inname);
 
-      if ((p=strrchr(outname, '\\')) != NULL ||
-          (p=strrchr(outname, ':')) != NULL)
+      if (
+	  (p=strrchr(outname, '\\')) != NULL || 
+	  (p=strrchr(outname, '/')) != NULL ||
+          (p=strrchr(outname, ':')) != NULL
+	 )
       {
         *(p+1)='\0';
         strcat(outname, ff->szName);
@@ -202,7 +211,11 @@ void Parse_Args(int argc,char *argv[])
     {
       strcpy(outname,av2);
 
+#ifndef UNIX
       if (outname[strlen(outname)-1]=='\\' || outname[strlen(outname)-1]==':')
+#else
+      if (outname[strlen(outname)-1]==PATH_DELIM)
+#endif
       {
         strcat(outname, ff->szName);
 
@@ -341,10 +354,10 @@ void Compile(char *inname,char *outname,int mode,int time_comp)
     }
 
     printf("Compiling %-*s to %-*s: ",
-           max_len, strupr(inname), max_len, strupr(outname));
+           max_len, /*strupr*/fancy_fn(inname), max_len, /*strupr*/fancy_fn(outname));
   }
 
-
+  fixPathMove(inname);
   if ((infile=fopen(inname,"r"))==NULL)
   {
     if (mode==1)
@@ -360,6 +373,7 @@ void Compile(char *inname,char *outname,int mode,int time_comp)
     amode="w+b";
   else amode="r+b";
 
+  fixPathMove(outname);
   if ((outfile=fopen(outname, amode))==NULL)
   {
     fclose(infile);
@@ -386,6 +400,18 @@ void Compile(char *inname,char *outname,int mode,int time_comp)
 
   while ((ch=getc(infile)) != EOF)
   {
+#ifdef UNIX
+    /* Wes -- The UNIX version was putting out \r\r\n,
+     * instead of \r\n in the *.BBS file. I suspect
+     * this is because the input eats \r\n into \n when 
+     * opened from a non-UNIX platform in !O_BINARY
+     * mode. So I'm going to eat the \r myself, and
+     * maintain dos-compatible output.
+     */
+     if (ch == '\r')
+       continue;
+#endif
+
     if (!o_type && ch==lastch && ch != '[')
       lastcount++;
     else Compress_Sequence();
@@ -408,6 +434,11 @@ void Compile(char *inname,char *outname,int mode,int time_comp)
       while (ch != ']' && tokenbuf[0] != '[' && tokenidx < MAX_TOKENLEN)
       {
         ch=getc(infile);
+#ifdef UNIX
+        /* wes - see \r comments above */
+        if (ch == '\r')
+          continue;
+#endif
         tokenbuf[tokenidx++]=(unsigned char)ch;
       }
 
@@ -570,7 +601,12 @@ void P_On(struct _inf *inf)
     p=strtok(NULL,TOKENDELIM);
 
     fseek(outfile,-1L,SEEK_CUR);
+#ifdef UNIX
+    /* wes - see \r comments elsewhere */
+    while ((ch = getc(outfile)) == '\r');
+#else
     ch=getc(outfile);
+#endif
     fseek(outfile,-1L,SEEK_CUR);
 
     x=Colour_Num(p);
@@ -618,14 +654,14 @@ void P_Include(struct _inf *inf)
 
     if (*p != '\\' && *p != '/' && p[1] != ':')
     {
-      char *s = strrchr(inf->inname,'\\');
+      char *s = strrchr(inf->inname, PATH_DELIM);
       if (s!=NULL)
       {
         int i = s - inf->inname;
         if ((szName=malloc(strlen(p)+i+2))==NULL)
           NoMem();
         strncpy(szName,inf->inname,i);
-        szName[i++]='\\';
+        szName[i++]= PATH_DELIM;
         strcpy(szName+i,p);
       }
     }
@@ -637,7 +673,7 @@ void P_Include(struct _inf *inf)
 
     if ((*inf->outfile=fopen(inf->outname,"r+b"))==NULL)
     {
-      printf("\a    Error reopening `%s' for output!\n",*inf->outname);
+      printf("\a    Error reopening `%s' for output!\n", inf->outname);
       errs++;
       return;
     }
@@ -662,10 +698,18 @@ void P_Copy(struct _inf *inf)
   p=strtok(NULL,TOKENDELIM);
   outfile=*inf->outfile;
 
+  fixPathMove(p);
   if (p && (copyfile=fopen(p,"rb")) != NULL)
   {
     while ((ch=getc(copyfile)) != EOF)
+    {
+#ifdef UNIX
+      /* wes - see \r comments elsewhere */
+      if (ch == '\r')
+        continue;
+#endif
       putc(ch,outfile);
+    }
 
     fclose(copyfile);
   }

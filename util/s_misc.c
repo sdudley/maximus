@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_misc.c,v 1.1 2002/10/01 17:57:51 sdudley Exp $";
+static char rcs_id[]="$Id: s_misc.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: Miscellaneous routines
@@ -78,9 +78,9 @@ void Add_Path(char *s,int warn)
    while (*s && (s[x=strlen(s)-1]==' ' || s[x]=='\t'))
     s[x]='\0';
 
-  if (*s && s[x] != '\\')
+  if (*s && s[x] != PATH_DELIM)
   {
-    s[++x]='\\';
+    s[++x]=PATH_DELIM;
     s[++x]='\0';
   }
 
@@ -114,7 +114,7 @@ void Add_Path(char *s,int warn)
 
   if (warn && !direxist(temp))
   {
-    printf("\nWarning!  Path `%s' does not exist!\n",fancy_str(temp));
+    printf("\nWarning!  Path `%s' does not exist!\n",fancy_fn(temp));
     Compiling(-1,NULL,NULL);
   }
 
@@ -159,7 +159,9 @@ void Add_Filename(char *s)
   else
 #endif
   strcpy(temp,s);
-
+#ifdef UNIX
+  fixPathMove(temp);
+#endif
   strcpy(s,temp);
 }
 
@@ -254,7 +256,7 @@ int makedir(char *d)
 
       fn=sstrdup(d);
 
-      Strip_Trailing(fn, '\\');
+      Strip_Trailing(fn, PATH_DELIM);
 
       x=make_dir(fn);
       free(fn);
@@ -357,7 +359,7 @@ void Unknown_Ctl(int linenum,char *p)
 }
 
 
-Compiling(char type,char *string,char *name)
+int Compiling(char type,char *string,char *name)
 {
   static char last_string[80],
               last_name[80];
@@ -393,13 +395,13 @@ Compiling(char type,char *string,char *name)
 
 
 
-Add_Backslash(char *s)
+int Add_Backslash(char *s)
 {
   int x;
 
-  if (*s && s[x=strlen(s)-1] != '\\')
+  if (*s && s[x=strlen(s)-1] != PATH_DELIM)
   {
-    s[++x]='\\';
+    s[++x]=PATH_DELIM;
     s[++x]='\0';
   }
 
@@ -408,11 +410,11 @@ Add_Backslash(char *s)
 
 
 
-Remove_Backslash(char *s)
+int Remove_Backslash(char *s)
 {
   int x;
 
-  if (*s && s[x=strlen(s)-1]=='\\' && x != 2)
+  if (*s && s[x=strlen(s)-1]==PATH_DELIM && x != 2)
     s[x]='\0';
 
   return 0;
@@ -552,9 +554,9 @@ int Make_Pth(char *value)
   while (*s && (s[x=strlen(s)-1]==' ' || s[x]=='\t'))
     s[x]='\0';
 
-  if (*s && s[x] != '\\')
+  if (*s && s[x] != PATH_DELIM)
   {
-    s[++x]='\\';
+    s[++x]=PATH_DELIM;
     s[++x]='\0';
   }
 
@@ -581,7 +583,7 @@ int Add_To_Heap(char *s,int fancy)
     offset += strlen(s)+1;
 
     if (fancy)
-      fancy_str(strings+old_ofs);
+      fancy_fn(strings+old_ofs);
   }
 
   if (offset >= HEAP_SIZE)
@@ -641,7 +643,7 @@ int Blank_Sys(struct _sys *sys,int mode)
 
   strcpy(sys->bbspath, strings+prm.menupath);
   strcpy(sys->hlppath, strings+prm.sys_path);
-  strcat(sys->hlppath, "Hlp\\");
+  strcat(sys->hlppath, "Hlp" PATH_DELIMS);
 
   return 0;
 }
@@ -775,7 +777,7 @@ void near FiltPath(void *v, char *words[], char *line)
   line[len] = 0;
 
 /*  strcpy(line, make_fullfname(line));*/
-  Add_Trailing(line, '\\');
+  Add_Trailing(line, PATH_DELIM);
 }
 
 
