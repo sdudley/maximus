@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqfix.c,v 1.3 2003/10/01 07:08:56 paltas Exp $";
+static char rcs_id[]="$Id: sqfix.c,v 1.4 2003/10/05 13:51:32 paltas Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -369,13 +369,13 @@ static void near rebuild_file(int old_sqd,MSG *new,char *bufr)
     {
       /* Make sure that we haven't overflowed the buffer */
 
-      if (! snuggle_up(bufr, (ptrdiff_t)sizeof(SQHDR), &got, old_sqd))
+      if (! snuggle_up(bufr, SQHDR_SIZE, &got, old_sqd))
         break;
 
 
       /* If we got something, move it to the header and see if it's ok */
       
-      memmove(&hdr, here, sizeof(SQHDR));
+      memmove(&hdr, here, SQHDR_SIZE);
 
       /* If the frame header is damaged... */
       
@@ -391,7 +391,7 @@ static void near rebuild_file(int old_sqd,MSG *new,char *bufr)
         continue;
       }
 
-      here += sizeof(SQHDR);
+      here += SQHDR_SIZE;
       
       /* Make sure that we haven't overflowed the buffer */
 
@@ -435,8 +435,6 @@ static void near rebuild_file(int old_sqd,MSG *new,char *bufr)
 
       msg.attr |= MSGSCANNED; 
 
-      txt[strlen(txt)] = 0;
-
       if (MsgWriteMsg(msgh,
                       FALSE,
                       &msg,
@@ -469,7 +467,7 @@ static void near rebuild_file(int old_sqd,MSG *new,char *bufr)
     /* Seek back the size of one header, to allow for overlap */
 
     if (got==BSIZ)
-      lseek(old_sqd, -(signed long)sizeof(SQHDR)+1, SEEK_CUR);
+      lseek(old_sqd, -(signed long)SQHDR_SIZE+1, SEEK_CUR);
   }
 
 /* (void)tell(old_sqd);*/
