@@ -17,7 +17,7 @@ TRACK_OBJ :=    dbase.obj       dbasec.obj                      \
 TRACK_OBJ := $(TRACK_OBJ:.obj=.o)
 BTREE_OBJ := $(BTREE_OBJ:.obj=.o)
 
-EXTRA_LOADLIBES = -lmaxdb -lmaxbt -lmsgapi
+EXTRA_LOADLIBES = -lmaxdb -lmaxbt -lmsgapi -lstdc++
 #LOADLIBES := -lmaxdb -lmaxbt $(LOADLIBES)
 
 .PHONY:		all tracklib install install_libs install_bin
