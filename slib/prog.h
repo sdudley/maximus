@@ -251,6 +251,7 @@ typedef long timer_t;
 # else
 #  define LITTLE_ENDIAN
 # endif
+#endif
 
 #if !defined(BIG_ENDIAN) && !defined(LITTLE_ENDIAN) && !defined(UNIX)
 /* Do OS/2, DOS or Windows run on non-Intel, non-Alpha CPUs?? */
