@@ -210,20 +210,20 @@ typedef struct _iaddr
   byte    segment;  /* SEG_AR, SEG_GLOBAL, or SEG_TEMP                    */
   byte    indirect; /* If var is indirect or not                          */
   VMADDR  offset;   /* Offset from start of AR                            */
-} IADDR;
+} __attribute__((packed)) IADDR;
 
 
 typedef struct _opttype
 {
   word bool;
-} OPTTYPE;
+} __attribute__((packed)) OPTTYPE;
 
 typedef struct _symtab
 {
   unsigned len;
   struct _symtab *parent;
   ATTRIBUTES **table;
-} SYMTAB;
+} __attribute__((packed)) SYMTAB;
 
 
 struct _address
@@ -232,7 +232,7 @@ struct _address
   byte indirect;      /* If var is indirect or not                          */
   VMADDR offset;      /* Offset from start of AR                            */
   TYPEDESC *typedesc; /* Type descriptor of pointed-to object               */
-};
+} __attribute__((packed));
 
 
 /* Linked list of function/procecure arguments */
@@ -244,7 +244,7 @@ struct _funcargs
   word ref;           /* Is this argument passed by reference? */
   
   FUNCARGS *next;
-};
+} __attribute__((packed));
 
 /* A linked list used internally by ET, for keeping track of constant       *
  * data references.                                                         */
@@ -255,7 +255,7 @@ struct _conval
   VMADDR offset;
   VMADDR len;
   byte *buf;
-};
+} __attribute__((packed));
 
 
 /* An internal stack for processing 'goto' statements */
@@ -266,7 +266,7 @@ struct _goto
   char *name;                     /* Name of the symbol declared */
   VMADDR quad;                    /* Where this quad was referenced */
   VMADDR scope;                   /* Scope number that this was declared in */
-};
+} __attribute__((packed));
 
 
 /* Struct used for range-checking - passed to Generate() routine */
@@ -276,7 +276,7 @@ struct _rcheck
   VMADDR lo, hi;
   
   DATAOBJ *obj;
-};
+} __attribute__((packed));
 
 
 /* One of these is created in the on-disk .vm file for EACH reference
@@ -289,7 +289,7 @@ struct _ipat
 {
   word argn;  /* 1 for arg1, 2 for arg2 */
   VMADDR ip;
-};
+} __attribute__((packed));
 
 
 /* A patch structure used within the .VM file.  One of these is created
@@ -305,7 +305,7 @@ struct _imp
   byte init;                  /* If this sym was init'd (data follows _imp) */
   
   VMADDR n_patch;             /* Number of refs to this symbol              */
-};
+} __attribute__((packed));
 
 
 
@@ -316,7 +316,7 @@ struct _ipatlist
 {
   struct _ipat pat;
   struct _ipatlist *next;
-};
+} __attribute__((packed));
 
 
 /* Linked list of symbols to patch in the VM runtime symbol table.  This    *
@@ -329,7 +329,7 @@ struct _implist
   struct _imp ref;              /* Name of symbol to patch */
   struct _ipatlist *pat;        /* Linked list of offsets to patch */
   struct _implist *next;        /* Pointer to next symbol to patch */
-};
+} __attribute__((packed));
 
 
 
@@ -339,7 +339,7 @@ struct _tlist
 {
   ADDRESS addr;
   TLIST *next;
-};
+} __attribute__((packed));
 
 
 /* List of list of temporary registers */
@@ -349,7 +349,7 @@ struct _tlistlist
   word size;
   TLIST *tlist;
   TLLIST *next;
-};
+} __attribute__((packed));
 
 /**************************************************************************
  *                        SEMANTIC STACK STRUCTURES                       *
@@ -360,7 +360,7 @@ typedef struct
 {
   ATTRIBUTES *func;
   ATTRIBUTES *arg;
-} FUNCCALL;
+} __attribute__((packed)) FUNCCALL;
 
 
 
@@ -371,7 +371,7 @@ typedef struct _consttype
   byte *lit;
   word val;
   dword dwval;
-} CONSTTYPE;
+} __attribute__((packed)) CONSTTYPE;
 
 
 /* TOKENTYPE - a record to indicate a token operator */
@@ -379,7 +379,7 @@ typedef struct _consttype
 typedef struct _tokentype
 {
   word operator;
-} TOKEN;
+} __attribute__((packed)) TOKEN;
 
 
 /* RANGE - produced by 'range', when given the input 'x .. y' */
@@ -388,7 +388,7 @@ typedef struct _range
 {
   VMADDR lo;
   VMADDR hi;
-} RANGE;
+} __attribute__((packed)) RANGE;
 
 
 
@@ -399,7 +399,7 @@ typedef struct _range
 typedef struct _valtype
 {
   enum _valkind {ByteKind, WordKind, DwordKind,
-                 StringKind} valkind;
+                 StringKind} __attribute__((packed)) valkind;
 
   union
   {
@@ -407,8 +407,8 @@ typedef struct _valtype
     word wordval;
     dword dwordval;
     IADDR str;
-  } kind;
-} VALTYPE;
+  } __attribute__((packed)) kind;
+} __attribute__((packed)) VALTYPE;
 
 /* DATAOBJ - produced by expressions, records, structures, etc. */
 
@@ -429,23 +429,23 @@ struct _dataobj
   {
     VALTYPE val;
     ADDRESS addr;
-  } form;
+  } __attribute__((packed)) form;
 
-};
+} __attribute__((packed));
 
 
 struct _patch
 {
   VMADDR quad;
   PATCH *next;
-};
+} __attribute__((packed));
 
 
 typedef struct _whiletype
 {
   PATCH jump;
   VMADDR top_quad;
-} WHILETYPE;
+} __attribute__((packed)) WHILETYPE;
 
 
 typedef struct _fortype
@@ -457,13 +457,13 @@ typedef struct _fortype
   PATCH paJmpBody;
   PATCH paJmpTest;
   PATCH paJmpPost;
-} FORTYPE;
+} __attribute__((packed)) FORTYPE;
 
 typedef struct
 {
   PATCH *patchout;
   VMADDR else_label;
-} ELSETYPE;
+} __attribute__((packed)) ELSETYPE;
 
 
 
@@ -485,7 +485,7 @@ struct _typedesc
     {
       RANGE bounds;
       TYPEDESC *el_type;
-    } array;
+    } __attribute__((packed)) array;
 
     struct  /* a structure */
     {
@@ -495,10 +495,10 @@ struct _typedesc
       VMADDR oscope;    /* Revert to this scope level when done processing */
       VMADDR ooffset;   /* Revert to this offset when done processing */
       VMADDR omaxoffset;/* Revert to this max offset when done processing */
-    } struc;
-  } typeinfo;
+    } __attribute__((packed)) struc;
+  } __attribute__((packed)) typeinfo;
 
-};
+} __attribute__((packed));
 
 
 
@@ -514,7 +514,7 @@ typedef struct _funcattr
   ATTRIBUTES *param;          /* Linked list of parameters for this f()   */
   TYPEDESC *ret_type;         /* Type descriptor for this f()'s return type */
   byte declared;              /* Whether or not func body was declared    */
-} FUNCATTR;
+} __attribute__((packed)) FUNCATTR;
 
 
 struct _attributes
@@ -535,8 +535,8 @@ struct _attributes
     ADDRESS addr;             /* If class==ClassVariable or ClassArg    */
     FUNCATTR f;               /* If class==ClassProc                    */
     SYMTAB *pst;              /* If class==ClassStruct                  */
-  } c;
-};
+  } __attribute__((packed)) c;
+} __attribute__((packed));
 
 
 #ifndef MEX_PARSER

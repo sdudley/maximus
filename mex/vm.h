@@ -28,7 +28,7 @@
                           Compile-time flags
  *****************************************************************************/
 
-#define DEBUGVM         /* Enable minimal debugging support */
+//#define DEBUGVM         /* Enable minimal debugging support */
 
 #if !defined(EXPENTRY) && !defined(OS_2)
 #define EXPENTRY far pascal
@@ -48,7 +48,7 @@ typedef struct _vm_quad INST;
  *****************************************************************************/
 
 #ifdef UNIX
-/* # define makeVMADDR(x) ((VMADDR)NULL + x) */
+//#define makeVMADDR(x) ((VMADDR)NULL + x) 
 # define makeVMADDR(x) x
 #else
 # define makeVMADDR(x) x
@@ -113,7 +113,7 @@ struct _args
   word w1, w2;
   dword dw1, dw2;
   IADDR a1, a2;
-};
+} __attribute__((packed));
 
 
 /* _opproc - used to create table of instruction opcodes, and the supporting
@@ -127,7 +127,7 @@ struct _opproc
 #ifdef DEBUGVM
   char *lit;
 #endif
-};
+} __attribute__((packed));
 
 
 /* _rtsym - Run-time symbol table (for global references only) */
@@ -136,7 +136,7 @@ struct _rtsym
 {
   char name[MAX_GLOB_LEN];
   VMADDR offset;
-};
+} __attribute__((packed));
 
 /* _dsheap - head of the data segment heap.  This structure is used to
  * track information about used and free blocks in the MEX program heap.
@@ -152,7 +152,7 @@ struct _dsheap
   VMADDR next;
   byte free;
   byte rsvd;
-};
+} __attribute__((packed));
 
 /* _usrfunc - this is used as part of an array of structures to define
  * all of the application-specific functions which can be called
@@ -164,7 +164,7 @@ vm_extern struct _usrfunc
   char *name;
   word (EXPENTRY *fn)(void);
   VMADDR quad;
-} *usrfn;
+} __attribute__((packed)) *usrfn;
 
 
 /*****************************************************************************
@@ -194,7 +194,7 @@ union _lit_or_addr
   word litword;
   dword litdword;
   IADDR litstr;
-};
+} __attribute__((packed));
 
 
 /* A quadruple, or instruction quad.  This is what the VM executes, and
@@ -222,8 +222,8 @@ struct _vm_quad
   {
     VMADDR jump_label;
     IADDR dest;
-  } res;
-};
+  } __attribute__((packed)) res;
+} __attribute__((packed));
 
 
 /* Virtual machine header structure.  Used at the beginning of a .VM file */
@@ -238,7 +238,7 @@ struct _vmh
   VMADDR lHeapSize;     /* Size of heap */
   VMADDR lStackSize;    /* Size of stack */
   VMADDR lGlobSize;     /* Size of DATA/BSS globals */
-};
+} __attribute__((packed));
 
 
 
@@ -248,7 +248,7 @@ struct _dfuncdef
 {
   char name[MAX_GLOB_LEN];
   VMADDR quad;
-};
+} __attribute__((packed));
 
 
 /* On-disk representation of a function which is called */
@@ -260,7 +260,7 @@ struct _dfcall
   /* Following this structure:
   VMADDR quad[n_quads];   Quad number FROM WHICH THE FUNCTION WAS CALLED
   */
-};
+} __attribute__((packed));
 
 
 /* Linked list of all declared functions in this file, plus their starting
@@ -272,7 +272,7 @@ struct _funcdef
   char *name;
   VMADDR quad;
   struct _funcdef *next;
-};
+} __attribute__((packed));
 
 
 /* LList of structure used for each function CALLED in our program */
@@ -283,7 +283,7 @@ struct _fcall
   VMADDR quad; /* Quad number FROM WHICH THE FUNCTION WAS CALLED */
   word written; /* Has this already been written to disk? */
   struct _fcall *next;
-};
+} __attribute__((packed));
 
 
 /*****************************************************************************

@@ -179,9 +179,12 @@
   #endif
     
   ATTRIBUTES *curfn=NULL;
-
-  /* $Id: mex_tab.y,v 1.3 2004/01/23 10:52:59 wmcbrine Exp $ */
-
+  
+  #ifndef __GNUC__
+  #pragma off(unreferenced)
+  static char rcs_id[]="$Id: mex_tab.y,v 1.4 2004/01/27 20:57:25 paltas Exp $";
+  #pragma on(unreferenced)
+  #endif
 %}
 
 
@@ -243,10 +246,17 @@
 %token T_CONSTSTRING
 %token T_ID
 
-%type <dataobj> const_byte_p 
+/*%type <dataobj> const_byte_p 
 %type <dataobj> const_word_p
 %type <dataobj> const_dword_p
-%type <dataobj> const_string_p
+%type <dataobj> const_string_p*/
+
+%type <constant> const_byte_p 
+%type <constant> const_word_p
+%type <constant> const_dword_p
+%type <constant> const_string_p
+
+
 %type <constant> T_CONSTWORD T_CONSTBYTE T_CONSTDWORD T_CONSTSTRING
 %type <id> T_ID
 
@@ -628,29 +638,29 @@ useful_expr     :       lval_ident T_ASSIGN expr
                 ;
 
 const_byte_p	:	T_CONSTBYTE
-                                { $$ = &$1; }
+                                { $$ = $1; }
                 ;
 
 const_word_p	:	T_CONSTWORD
-                                { $$ = &$1; }
+                                { $$ = $1; }
                 ;
 
 const_dword_p	:	T_CONSTDWORD
-                                { $$ = &$1; }
+                                { $$ = $1; }
                 ;
 
 const_string_p	:	const_string
-                                { $$ = &$1; }
+                                { $$ = $1; }
                 ;
 
 literal         :       const_byte_p
-                                { $$=byteref($1); }
+                                { $$=byteref(&$1); }
                 |       const_word_p
-                                { $$=wordref($1); }
+                                { $$=wordref(&$1); }
                 |       const_dword_p
-                                { $$=dwordref($1); }
+                                { $$=dwordref(&$1); }
                 |       const_string_p
-                                { $$=stringref($1); }
+                                { $$=stringref(&$1); }
                 ;
 
 
