@@ -588,9 +588,8 @@ void setsize()
   {
     getmaxyx(stdscr, Vnumrows, Vnumcols); 
     getyx(stdscr, curRow, curCol);
+    setscrreg(0, lastRow);
   }
-
-  setscrreg(0, lastRow);
 
 #ifdef DEBUG_SCROLL
   syslog(LOG_ERR, "Local screen is %ix%i, cursor is at %ix%i", Vnumcols, Vnumrows, curCol, curRow);
@@ -599,12 +598,15 @@ void setsize()
 
 void resize(int sig)
 {
-  /* SIGWINCH -- not sure how well this will work.. */
-  setsize();
+  if (stdscr)
+  {
+    /* SIGWINCH -- not sure how well this will work.. */
+    setsize();
 #ifdef NCURSES_VERSION
-  wresize(stdscr, Vnumrows, Vnumcols);
+    wresize(stdscr, Vnumrows, Vnumcols);
 #endif
-  refresh();
+    refresh();
+  }
 }
 
 word VidOpen(int has_snow,int desqview,int dec_rows)
@@ -679,8 +681,11 @@ void VidBios(int use_bios)
 void VidCls(char Attribute)
 {
   curRow = curCol = 0;
-  clear();
-  refresh();
+  if (stdscr)
+  {
+    clear();
+    refresh();
+  }
 }
 
 void _fast VidGetXY(int *Col,int *Row)
@@ -701,7 +706,8 @@ int VidWhereY(void)
 
 void VidHideCursor(void)
 {
-  curs_set(0);
+  if (stdscr)
+    curs_set(0);
 }
 
 void _fast VidSetAttr(char Attribute)
@@ -711,7 +717,7 @@ void _fast VidSetAttr(char Attribute)
 
 int VidGetch(int Row,int Col)
 {
-  return (mvinch(Col, Row) & A_CHARTEXT);
+  return stdscr ? (mvinch(Col, Row) & A_CHARTEXT) : 0;
 }
 
 void VidPutch(int Row, int Col, char Char, char Attr)
@@ -730,8 +736,11 @@ void VidPutch(int Row, int Col, char Char, char Attr)
   }
 #endif
 
-  mvaddch(Row, Col, ch);
-  refresh();
+  if (stdscr)
+  {
+    mvaddch(Row, Col, ch);
+    refresh();
+  }
 }
 
 typedef unsigned char CHAR_INFO, *PCHAR_INFO;
@@ -815,10 +824,12 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
   }
 #endif
 
-  move(this_row, start_col);
-  addchnstr(chbuf, num_col);
-
-  refresh();
+  if (stdscr)
+  {
+    move(this_row, start_col);
+    addchnstr(chbuf, num_col);
+    refresh();
+  }
 
   return;
 }
@@ -832,12 +843,14 @@ void pascal VidSyncDVWithForce(int fForce)
     // not implemented
     NW(fForce);
 #else
-  refresh();
+  if (stdscr)
+    refresh();
 #endif
 }
 
 void pascal VidSyncDV(void)
 {
-  refresh();
+  if (stdscr)
+    refresh();
 }
 

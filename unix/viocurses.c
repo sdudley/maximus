@@ -14,7 +14,8 @@
 
 int VioSetCurPos(int row, int column, void *handle)
 {
-  move(row,column);
+  if (stdscr)
+    move(row,column);
   return 0;
 }
 
@@ -36,8 +37,11 @@ int VioWrtTTY(const char *string, size_t length, void *handle)
   if (string)
   {
     /* putp(string); */
-    addstr(string);
-    refresh();
+    if (stdscr)
+    {
+      addstr(string);
+      refresh();
+    }
   }
   else
     return 1;
