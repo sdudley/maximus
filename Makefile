@@ -2,8 +2,11 @@
 # @author			Wes Garland
 # @date				May 13th, 2003
 #
-# $Id: Makefile,v 1.4 2003/06/12 02:50:52 wesgarland Exp $
+# $Id: Makefile,v 1.5 2003/06/12 03:26:43 wesgarland Exp $
 # $Log: Makefile,v $
+# Revision 1.5  2003/06/12 03:26:43  wesgarland
+# Corrected PREFIX-passing between master Makefile and copy_install_ree.sh
+#
 # Revision 1.4  2003/06/12 02:50:52  wesgarland
 # Modified to better support non-standard PREFIX
 #
@@ -93,7 +96,8 @@ configure:
 	./configure "--prefix=$(PREFIX)"
 
 config_install:
-	@scripts/copy_install_tree.sh
+	export PREFIX
+	@scripts/copy_install_tree.sh "$(PREFIX)"
 
 	$(MAKE) reconfig
 

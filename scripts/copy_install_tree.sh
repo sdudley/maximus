@@ -1,9 +1,13 @@
 #! /bin/sh
 
+[ "$1" ] && PREFIX="$1"
+
 if [ ! "${PREFIX}" ]; then
   echo "Error: PREFIX not set!"
   exit 1
 fi
+
+export PREFIX
 
 [ -d "${PREFIX}/docs}" ] || mkdir -p "${PREFIX}/docs"
 
