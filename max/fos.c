@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
+static char rcs_id[]="$Id: fos.c,v 1.3 2003/06/06 01:13:59 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=FOSSIL interface routines
@@ -33,10 +33,7 @@ static char rcs_id[]="$Id: fos.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
 #include "prog.h"
 #include "mm.h"
 #include "modem.h"
-
-#ifdef UNIX
-#define NT
-#endif
+#include "keys.h"
 
 static int waslocal =0;
 static int waskeyboard =0;
@@ -167,7 +164,8 @@ int Mdm_kpeek_tic(word tics)
     {
       if (local || keyboard)
       {
-        if ((x=loc_peek())=='\x1b' && !local)
+#if K_ESC != K_ONEMORE	/* !UNIX (unless we change our minds about the implementation) */
+        if ((x=loc_peek()) == K_ESC && !local)
         {
           loc_getch(); /* Throw away character */
           Keyboard_Off();
@@ -175,8 +173,9 @@ int Mdm_kpeek_tic(word tics)
           return 0;
         }
         else
+#endif
         {
-          if (x==3)
+          if (x == K_CTRLC)
           {
             /* Throw away the character we just got */
 
@@ -216,12 +215,16 @@ void Mdm_check(void)    /* Check for carrier loss, time limit, etc. */
   {
     if (local || keyboard)
     {
-      if (loc_peek()=='\x1b' && !local)
+#if K_ESC != K_ONEMORE /* ! UNIX */
+      if (loc_peek()== K_ESC && !local)
       {
         loc_getch(); /* Throw away character */
         Keyboard_Off();
         waskeyboard=2;
       }
+#else
+      ;
+#endif
     }
     else Parse_Local(loc_getch());
   }
@@ -284,7 +287,7 @@ void Mdm_Flow(int state)
   {
     (void)mdm_ctrlc(state==FLOW_ON);
 
-    #if defined(OS_2) || defined(NT)
+    #if defined(OS_2) || defined(NT) || defined(UNIX)
       com_XON_enable();
     #elif defined(__MSDOS__)
       mdm_flow(prm.handshake_mask);
@@ -292,7 +295,7 @@ void Mdm_Flow(int state)
       #error Unknown OS!
     #endif
 
-    #ifdef NT
+    #if defined(NT) || defined(UNIX)
     com_HHS_enable(prm.handshake_mask);
     #endif
   }
@@ -302,7 +305,7 @@ void Mdm_Flow(int state)
      * for XON/XOFF!                                                       */
 
     (void)mdm_ctrlc(0);
-#if defined(OS_2) || defined(NT)
+#if defined(OS_2) || defined(NT) || defined(UNIX)
     com_XON_disable();
 #elif defined(__MSDOS__)
     mdm_flow(prm.handshake_mask & ~(FLOW_TXOFF|FLOW_RXOFF));
@@ -310,14 +313,14 @@ void Mdm_Flow(int state)
     #error Unknown OS!
 #endif
 
-#ifdef NT
+#if defined(NT) || defined(UNIX)
     com_HHS_enable(prm.handshake_mask);
 #endif
   }
   else if (state==FLOW_OFF)
   {
     (void)mdm_ctrlc(0);
-#if defined(OS_2) || defined(NT)
+#if defined(OS_2) || defined(NT) || defined(UNIX)
     com_XON_disable();
 #elif defined(__MSDOS__)
     mdm_flow(0);
@@ -325,7 +328,7 @@ void Mdm_Flow(int state)
     #error Unknown OS!
 #endif
 
-#ifdef NT
+#if defined(NT) || defined(UNIX)
     com_HHS_disable(prm.handshake_mask);
 #endif
   }
