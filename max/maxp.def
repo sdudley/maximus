@@ -1,9 +1,0 @@
-NAME Maximus WINDOWCOMPAT
-
-DESCRIPTION "Maximus/2 (c) 1991 Scott J. Dudley and Peter Fitzsimmons"
-
-STACKSIZE   20000
-HEAPSIZE    0
-
-PROTMODE
-EXETYPE OS2
