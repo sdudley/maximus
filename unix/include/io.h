@@ -23,6 +23,10 @@
 # define O_NOINHERIT 0x10000
 #endif
 
+#ifdef __FreeBSD__
+# define O_NOINHERIT 0x20000
+#endif
+
 #ifndef O_NOINHERIT
 # error You must choose a value for O_NOINHERIT which does not conflict with other vendor open flags!
 #endif
