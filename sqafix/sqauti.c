@@ -3463,7 +3463,11 @@ Fail:    WriteLog("! Insufficient memory for line %lu in file '%s'\n", iLine, ps
      // was sent, the queue entry type is in upper case, otherwise
      // it's all lowercase
 
+#ifndef UNIX
+     // Thanks to Sean Rima, for correcting this error (sqafix was segfaulting
+     // by processing passthru areas).
      psz = (pque->fs & QF_WARNINGDONE) ? xstrupr(psz) : xstrlwr(psz);
+#endif 
      cch+= sprintf(achLine + cch, " %s", psz);
 
      // Format the queue entry event and expiration times

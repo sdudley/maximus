@@ -84,8 +84,6 @@ BOOL COMMAPI ComOpenHandle(COMMHANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD d
     return FALSE;
 
   hc->h = CommHandle_fromFileHandle(NULL, -1);
-//  SetupComm(hc->h, dwRxBuf, dwTxBuf);
-//  hc->txBufSize = dwTxBuf;
 
   /* Store the passed handle (may contain file descriptor)*/
   hc->h = hfComm;
@@ -106,20 +104,13 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 
   memset(filename, 0, 128);
 
-/*  if(!strncasecmp(pszDevice, "Com", 3))
-  {
-    pszDevice += 3;
-    sprintf(filename, "/dev/ttyS%d", atoi(pszDevice)-1);
-  }
-  else
-  {*/
-    strcpy(filename, "/dev/modem");
-//  }
+  strcpy(filename, "/dev/modem");
 
   fd = open(filename, O_RDWR | O_NDELAY);
   
-  if(fd == -1)
+  if(fd < -1)
   {
+    printf("Could not open device!");
     exit(0);
   }
   
@@ -133,7 +124,11 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 
   tios.c_cflag = B0 | CS8 | CREAD | CLOCAL | CRTSCTS;
 
-  tcsetattr(fd, TCSANOW, &tios);
+  if(tcsetattr(fd, TCSANOW, &tios) < 0)
+  {
+    printf("Could not set attributes at the modem!");
+    exit(0);
+  }
 
   h = CommHandle_fromFileHandle(h, -1);
 
@@ -167,10 +162,17 @@ BOOL COMMAPI ComClose(HCOMM hc)
 
 USHORT COMMAPI ComIsOnline(HCOMM hc)
 {
+    int tmp = 0;
+
     if(!hc)
        return 0;
+
+    if(ioctl (hc->listenfd, TIOCMGET, &tmp) < 0)
+    {
+	return 0;
+    }
        
-    return TRUE;
+    return ((tmp & TIOCM_CD) != 0);
 }
 
 BOOL COMMAPI ComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)

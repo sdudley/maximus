@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.9 2003/11/18 22:50:51 paltas Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.10 2003/12/14 17:40:19 paltas Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -417,7 +417,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
             if (! GateRouteMessage(&msg, *mn, &olddest))
               (void)WriteZPInfo(&msg, AddToMsgBuf, ctrl);
 
-            /*S_LogMsg("@Sending message %ld to %s",
+/*            S_LogMsg("@Sending message %ld to %s",
                      (long)*mn, Address(&msg.dest));*/
 
             if (Send_Message(mh, &msg, bytes, *mn, ar))
@@ -442,7 +442,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
   
   if (rewriteit)
   {
-    /*S_LogMsg("@Message #%ld has SENT bit set: %s", (long)*mn,
+/*    S_LogMsg("@Message #%ld has SENT bit set: %s", (long)*mn,
              (msg.attr & MSGSENT) ? "yes" : "no!!!!!!!!!!!!!");*/
 
 
@@ -880,8 +880,15 @@ static int near Send_Message(HMSG mh, XMSG *msg, dword bytes, dword mn, struct _
   NW(mh);
 
   if ((config.flag2 & FLAG2_QUIET)==0)
-    (void)printf("Sending (#%lu): %s", mn, Address(&msg->dest));
+  {
+    (void)printf("Sending (#%lu): %s (%s)", mn, Address(&msg->dest), 
+		 (msg->attr & MSGCRASH ? "CRASH" : 
+		 (msg->attr & MSGHOLD ? "HOLD" : "NORMAL" )));
 
+    S_LogMsg(" Netmail Message (#%lu) to %s (%s)", mn, Address(&msg->dest), 
+		 (msg->attr & MSGCRASH ? "CRASH" : 
+		 (msg->attr & MSGHOLD ? "HOLD" : "NORMAL" )));
+  }
 
   (void)NetaddrToSblist(&msg->dest, &scanto);
 
@@ -983,15 +990,6 @@ void HandleAttReqPoll(word action, byte **toscan)
   if (*p)
     msg.attr |= (dword)FlavourToMsgAttr(**p);
 
-#ifdef UNIX
-  if (action == ACTION_POLL)
-  {
-    Process_OneAttReqUpd(&msg, "", 0, "", "");  
-    (void)printf("Created poll to: %s\n ", Address(&msg.dest));
-    return;
-  }
-#endif
-
   /* Tell the user about what we're doing */
 
   (void)printf("%s %s: ", action==ACTION_GET    ? "Request file from" :
@@ -1061,7 +1059,11 @@ static void near Process_AttReqUpd(XMSG *msg, char *filename, word manual)
   
     if (!manual && *filename)
     {
+#ifndef UNIX    
       if (filename[1] != ':' && !strchr(filename,'\\')) /* wes - not changing; \\ is in packet (?) */
+#else
+      if (filename[1] != ':' && !strchr(filename,'/')) /* wes - not changing; \\ is in packet (?) */
+#endif
       {
         struct _tosspath *tp, *lasttp;
 
@@ -1095,7 +1097,7 @@ static void near Process_AttReqUpd(XMSG *msg, char *filename, word manual)
 
     /* Try to find file */
 
-    if ((ff=FindOpen(filename, 0))==NULL)
+    if ((ff=FindOpen(filename, 0))==NULL || !(*filename))
       Process_OneAttReqUpd(msg, filename, tflag, filename, pwd);
     else
     {

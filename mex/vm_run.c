@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_run.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
+static char rcs_id[]="$Id: vm_run.c,v 1.3 2003/12/14 17:40:19 paltas Exp $";
 #pragma on(unreferenced)
 
 #define VM_INIT
@@ -317,7 +317,7 @@ void * fetch(FORM form, IADDR *where)
 
     got=*(IADDR *)ret;
   }
-
+  
   switch (got.segment)
   {
     case SEG_AR:      return (pbBp+got.offset);
@@ -359,7 +359,7 @@ int store(IADDR *dest, FORM form, void *val)
     case FormDword: *(dword *)dp=*(dword *)val; break;
     case FormAddr:  *(IADDR *)dp=*(IADDR *)val; break;
     default:          vm_err(err_invalid_optype);
-  }
+  } 
   
   return 0;
 }

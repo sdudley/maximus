@@ -18,9 +18,11 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_heap.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
+static char rcs_id[]="$Id: vm_heap.c,v 1.3 2003/12/14 17:40:19 paltas Exp $";
 #pragma on(unreferenced)
 
+#define HEAP_PROBLEMS
+#define HEAP_SIGNATURE
 #define COMPILING_MEX_VM
 
 #include <stdio.h>
