@@ -61,8 +61,8 @@ chtype cursesAttribute(unsigned char dosAttribute)
 
   chtype        ch;
 
-	/* busted */
-  return 0;
+/* busted */
+ //return 0;
 	
   switch (dosAttribute & (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED))
   {

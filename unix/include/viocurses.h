@@ -3,7 +3,7 @@
 
 int VioSetCurPos(int row, int column, void *handle);
 int VioWrtTTY(const char *string, size_t length, void *handle);
-/* chtype cursesAttribute(unsigned char dosAttribute); */
+// chtype cursesAttribute(unsigned char dosAttribute); 
 
 #define FOREGROUND_BLUE      0x0001
 #define FOREGROUND_GREEN     0x0002
