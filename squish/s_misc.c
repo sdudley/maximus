@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_misc.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: s_misc.c,v 1.3 2003/06/13 03:29:08 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -998,7 +998,11 @@ static char * near MakeFullPath(char *cmd)
 
   /* Now scan all directories on the path */
 
+#ifndef UNIX
   for (s=strtok(newpath, " ;"); s || last; s=strtok(NULL, " ;"))
+#else
+  for (s=strtok(newpath, ":"); s || last; s=strtok(NULL, ":"))
+#endif
   {
     if (s)
     {
