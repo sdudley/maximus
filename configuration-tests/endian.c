@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     case 0x12345678:
       printf(output_format, "BIG_ENDIAN");
       break;
-    case 0x56781234:
+    case 0x78563412:
       printf(output_format, "-DLITTLE_ENDIAN");
       break;
     default:
