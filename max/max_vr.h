@@ -56,7 +56,7 @@
     #define MAX_VER_INT 3
     #define VER_MAJ     "3"
     #define VER_MIN     "03"
-    #define TEAR_TEST   ""
+    #define TEAR_TEST   "b"
 
     #define VER_CHECKSUM (~'3'+~'0'+~'3')
     #define NAME_CHEKSUM (~'M'+~'A'+~'X')
