@@ -36,12 +36,12 @@ extern "C" {
 #include <stdlib.h>
 #include "compiler.h"
 #include "typedefs.h"
+#include "stamp.h"
 
 /*#include "typedefs.h"*/ /* now included from compiler.h */ /* not anymore - wes */
 #if defined(UNIX)
 # include <unistd.h>
 #endif
-#include "stamp.h"
 
 #ifndef NULLL
 #ifdef OS_2 /* for use with DLLs */
@@ -221,70 +221,11 @@ typedef long timer_t;
 #undef PATHLEN
 #endif
 
-#if defined(BIG_ENDIAN)
-# undef BIG_ENDIAN
-#endif
-
-#if defined(LITTLE_ENDIAN)
-# undef LITTLE_ENDIAN)
-#endif
-
-#if defined(__BYTE_ORDER)
-# if __BYTE_ORDER == __BIG_ENDIAN
-#  define BIG_ENDIAN
-#  undef  LITTLE_ENDIAN
-# endif
-#  if __BYTE_ORDER == _LITTLE_ENDIAN
-#  define LITTLE_ENDIAN
-#  undef  BIG_ENDIAN
-# endif
-#endif
-
-#if defined(BIG_ENDIAN) && defined(LITTLE_ENDIAN)
-# error BIG_ENDIAN and LITTLE_ENDIAN cannot both be defined at the same time!
-#endif
-
-#if !defined(__BYTE_ORDER) && !defined(BIG_ENDIAN) && !defined(LITTLE_ENDIAN) && defined(UNIX)
-# if defined(LINUX)
-#  include <endian.h>
-# elif defined(__FreeBSD__) || defined(__NetBSD__)
-#  include <machine/endian.h>
-# elif defined(SOLARIS)
-#  include <sys/isa_defs.h>
-# else
-#  include <stddef.h> /* Other candidates: sys/machine.h, sys/endian.h */
-# endif
-#endif
-
-#if defined(__BYTE_ORDER)
-# if __BYTE_ORDER == __BIG_ENDIAN
-#  define BIG_ENDIAN
-#  undef  LITTLE_ENDIAN
-# endif
-# if __BYTE_ORDER == __LITTLE_ENDIAN
-#  define LITTLE_ENDIAN
-#  undef  BIG_ENDIAN
-# endif
-#endif
-
-#ifdef LITTLE_ENDIAN
-#warning debug: chose LITTLE_ENDIAN
-#endif
-
-#ifdef BIG_ENDIAN
-#warning debug: chose BIG_ENDIAN
-#endif
+/* endian definition from configure */
+#include "compiler_details.h"
 
 #if !defined(BIG_ENDIAN) && !defined(LITTLE_ENDIAN) && !defined(UNIX)
 /* Do OS/2, DOS or Windows run on non-Intel, non-Alpha CPUs?? */
-# define LITTLE_ENDIAN
-#endif
-
-#if defined(SYSV) && defined(_BIG_ENDIAN) && !defined(BIG_ENDIAN) && !defined(LITTLE_ENDIAN)
-# define BIG_ENDIAN
-#endif
-
-#if defined(SYSV) && defined(_LITTLE_ENDIAN) && !defined(LITTLE_ENDIAN) && !defined(BIG_ENDIAN)
 # define LITTLE_ENDIAN
 #endif
 
