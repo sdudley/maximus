@@ -1,4 +1,3 @@
-/* A modem communication module for UNIX by Bo Simonsen, Copyright 2003 */
 /* Bits "stolen" from BTXE (http://btxe.sourceforge.net) */
 /* Might not work well yet.. */
 
@@ -142,7 +141,7 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
   }
   
   (*phc)->device        = strdup(filename);
-
+  (*phc)->peekHack	= -1;
   return TRUE;
 }
 
@@ -160,7 +159,8 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
 {
     if(!hc)
        return 0;
-    return 1;
+       
+    return TRUE;
 }
 
 BOOL COMMAPI ComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
@@ -175,10 +175,24 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
 {
     fd_set fdrx;
     struct timeval tv;
-    
+    int sresult = 0;    
     int BytesRead = 0;
+    int tmp = 0;
 
-    //ioctl(hc->listenfd, TIOCMGET, &dwBytesToRead);
+    if(hc->peekHack >= 0)
+    {
+	* (char*) pvBuf = hc->peekHack;
+	*pvBuf++;
+	hc->peekHack = -1;
+	*pdwBytesRead = 1;
+	
+	if(--dwBytesToRead == 0)
+	    return TRUE;
+    }
+    else
+	*pdwBytesRead = 0;
+
+    ioctl(hc->listenfd, TIOCMGET, &tmp);
 
     FD_ZERO(&fdrx);
     FD_SET(hc->listenfd, &fdrx);
@@ -186,21 +200,29 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
     tv.tv_sec = 0;
     tv.tv_usec = 0;
     
-    if(select(hc->listenfd + 1, &fdrx, NULL, NULL, &tv) != 0)
+    if(sresult = select(hc->listenfd + 1, &fdrx, NULL, NULL, &tv))
     {
-	BytesRead = read(hc->listenfd, pvBuf, dwBytesToRead);
+	switch(sresult)
+	{
+	case -1:
+	case 0:
+	    break;    
 	
-	if(BytesRead >= 0)
-	{
-	    *pdwBytesRead += BytesRead;
-	    return TRUE;
-	}	
-	else
-	{
-    	    return FALSE;
+	default:
+	    BytesRead = read(hc->listenfd, pvBuf, dwBytesToRead);
+	    
+	    if(BytesRead <= 0)
+	    {
+		return FALSE;
+	    }
+	    else	    	    
+	    {
+		*pdwBytesRead += BytesRead;
+		return TRUE;
+	    }
 	}
     }
-    return FALSE;
+    return FALSE;	
 }
 
 int COMMAPI ComGetc(HCOMM hc)
@@ -262,7 +284,6 @@ LOWER_DTR (HCOMM hc)
   cfsetospeed (&tty, B0);
   cfsetispeed (&tty, B0);
   tcsetattr (hc->listenfd, TCSANOW, &tty);
-  sleep(1);
 }
 
 void
@@ -274,7 +295,6 @@ RAISE_DTR (HCOMM hc)
   cfsetospeed (&tty, B115200);
   cfsetispeed (&tty, B115200);
   tcsetattr (hc->listenfd, TCSANOW, &tty);
-  sleep(1);
 }
 
 
@@ -298,8 +318,6 @@ bDataBits,
   rc=SetCommState(ComGetHandle(hc), &dcb);
   _SetTimeoutBlock(hc);
  
-  RAISE_DTR(hc);
-
   return rc;
 }
 
