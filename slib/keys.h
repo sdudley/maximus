@@ -20,10 +20,15 @@
 /*# name=Keyboard keys definition
 */
 
+#ifndef _KEYS_H
+#define _KEYS_H
+
 #define K_ESC   27
 
 /********************/
 
+#ifndef UNIX
+# define K_ONEMORE 	0
 #define K_F1    59
 #define K_F2    60
 #define K_F3    61
@@ -131,6 +136,88 @@
 #define K_CHOME  119
 #define K_CPGUP  132
 
+/* Override a few of the really handy console
+ * keys by fudging the scan codes. Here's how
+ * we fudge them -- IIRC (from 1990!!!) under DOS,
+ * you get ALT-A (for example) as scan code zero,
+ * then another scancode (presumably K_ALTA) from
+ * the keyboard. 
+ *
+ * So, I'm going to replace 'scan code 0' in the
+ * code K_ONEMORE. Except, under UNIX, it'll be
+ * 'ESC'.
+ *
+ * This means we can fall back to the mainframe-
+ * style PF keys, where we send "ESC 1" for PF1.
+ * And I'll turn ESC-control-k into ALT-K, and a few
+ * others. I don't want to do cursor keys and stuff.
+ */
+
+#else /* UNIX */
+# define K_ONEMORE 	K_ESC
+# define K_F1		'1'
+# define K_F2		'2'
+# define K_F3		'3'
+# define K_F4		'4'
+# define K_F5		'5'
+# define K_F6		'6'
+# define K_F7		'7'
+# define K_F8		'8'
+# define K_F9		'9'
+# define K_F10		'0'
+# define K_F11		'-'
+# define K_F12		'='
+# define K_SF1		'!'
+# define K_SF2		'@'
+# define K_SF3		'#'
+# define K_SF4		'$'
+# define K_SF5		'%'
+# define K_SF6		'^'
+# define K_SF7		'&'
+# define K_SF8		'*'
+# define K_SF9		'('
+# define K_SF10		')'
+# define K_SF11		'_'
+# define K_SF12		'+'
+# define K_ALTA		'\001'
+# define K_ALTB		'\002'
+# define K_ALTC		'\003'
+# define K_ALTD		'\004'
+# define K_ALTE		'\005'
+# define K_ALTF		'\006'
+# define K_ALTG		'\007'
+# define K_ALTH		'\010'
+# define K_ALTI		'\011'
+# define K_ALTJ		'\012'
+# define K_ALTK		'\013'
+# define K_ALTL		'\014'
+# define K_ALTM		'\015'
+# define K_ALTN		'\016'
+# define K_ALTO		'\017'
+# define K_ALTP		'\020'
+# define K_ALTQ		'\021'
+# define K_ALTR		'\022'
+# define K_ALTS		'\023'
+# define K_ALTT		'\024'
+# define K_ALTU		'\025'
+# define K_ALTV		'\026'
+# define K_ALTW		'\027'
+# define K_ALTX		'\030'
+# define K_ALTY		'\031'
+# define K_ALTZ		'\032'
+
+/* Like VI, but ESC instead of control */
+# define K_UP		'k'
+# define K_LEFT		'h'
+# define K_RIGHT	'l'
+# define K_DOWN		'n'
+
+/* I don't want these under UNIX (?) */
+# define K_PGUP		'^'
+# define K_PGDN		'v'
+#endif /* UNIX */
+
+/* These are common */
 #define K_CTRLA   1
 #define K_CTRLB   2
 #define K_CTRLC   3
@@ -164,3 +251,5 @@
 #define K_CTRLZ  26
 
 #define K_VTDEL 127
+
+#endif /* _KEYS_H */
