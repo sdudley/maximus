@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_xtrn.c,v 1.2 2003/06/04 23:53:08 wesgarland Exp $";
+static char rcs_id[]="$Id: max_xtrn.c,v 1.3 2003/06/13 04:53:30 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_chat
@@ -109,7 +109,11 @@ static char * near MakeFullPath(char *cmd)
 
   /* Now scan all directories on the path */
 
+#ifdef UNIX
   for (s=strtok(newpath, " ;"); s || last; s=strtok(NULL, " ;"))
+#else
+  for (s=strtok(newpath, ":"); s || last; s=strtok(NULL, ":"))
+#endif
   {
     if (s)
     {
@@ -132,6 +136,7 @@ static char * near MakeFullPath(char *cmd)
       return NULL;
     }
     
+#ifndef UNIX
     if (!fexist_maybehidden(this))
     {
       (void)strcpy(this, try);
@@ -151,7 +156,7 @@ static char * near MakeFullPath(char *cmd)
         }
       }
     }
-
+#endif
 
     /* Now tack on the rest of the command */
         
@@ -294,6 +299,11 @@ static char * near GetComspec(void)
   char *comspec;
 
   comspec=getenv("COMSPEC");
+
+#ifdef UNIX
+  if (!comspec)
+    comspec=getenv("SHELL");
+#endif
 
   if (!comspec)
 #if defined(__MSDOS__)
