@@ -25,7 +25,6 @@ int fexist(char* filename)
 
 int main(void)
 {
-    struct termios termio;
     int s, t, len, tmp;
     int i = 1;
     char c;
@@ -34,7 +33,7 @@ int main(void)
     fd_set rfds, wfds;
     char tmptext[128];
     char lockpath[128];
-    char str[128];
+    char str[512];
     struct dirent * dirp = NULL;
     DIR* dir = NULL;
 
@@ -78,9 +77,8 @@ int main(void)
 
 	if(select(s+1, &wfds, 0, 0, &tv) > 0)
 	{
-    	    if ((t=read(s, str, 128)) > 0) 
+    	    if ((t=read(s, str, 512)) > 0) 
 	    {
-                str[t] = '\0';
 		write(1, str, t);
     	    } 
 	    else 
@@ -94,13 +92,16 @@ int main(void)
 	FD_ZERO(&rfds);
 	FD_SET(0, &rfds);
 
-	tv.tv_usec = 1;
+	tv.tv_usec = 500;
 	tv.tv_sec = 0;
 	    
 	if(select(0 + 1, &rfds, 0, 0, &tv) > 0)
 	{
-	    if(t = read(0, str, 128)) 
+	    if(t = read(0, str, 512)) 
+	    {
     		write(s, str, t);
+	    }
+	    
 	}
     }
 

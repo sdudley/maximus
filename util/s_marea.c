@@ -17,7 +17,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: s_marea.c,v 1.3 2004/01/22 08:04:28 wmcbrine Exp $ */
+#pragma off(unreferenced)
+static char rcs_id[]="$Id: s_marea.c,v 1.4 2004/01/27 21:06:06 paltas Exp $";
+#pragma on(unreferenced)
 
 /*# name=SILT: 'Section Area' processing logic
 */
@@ -262,7 +264,6 @@ static void near assert_msgarea(char *path, word type, word killbyage,
   MsgCloseArea(ha);
 }
 
-
 static void near MsgAreaWrite(MAINFO *pmi, int closeit)
 {
   static int mai_fd=-1;
@@ -312,7 +313,9 @@ static void near MsgAreaWrite(MAINFO *pmi, int closeit)
   if (ma_fd==-1 && !closeit)
   {
     char fname[PATHLEN];
-    dword dwId=MAREA_ID;
+    dword dwId __attribute__((packed));
+    
+    dwId =MAREA_ID;
 
     if (strings[prm.marea_name]==0)
     {
@@ -332,7 +335,7 @@ static void near MsgAreaWrite(MAINFO *pmi, int closeit)
       exit(1);
     }
 
-    if (write(ma_fd, (char *)&dwId, sizeof dwId) != sizeof dwId)
+    if (write(ma_fd, (char*) &dwId, sizeof dwId) != sizeof dwId)
     {
       printf("\aError writing key to msg data file %s\n", fname);
       exit(1);
