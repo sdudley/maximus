@@ -1,4 +1,4 @@
-; $Id: english.mad,v 1.4 2003/09/12 23:18:21 paltas Exp $
+; $Id: english.mad,v 1.5 2004/01/11 23:36:03 wmcbrine Exp $
 ;
 ; ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 ; ³                             ENGLISH.MAD                             ³
@@ -1587,16 +1587,16 @@ br_msg_pvt=             RED "-";
 err_toss_qwk=           LRED "Error tossing from %s!\n";
 wait_doing_compr=       YELLOW "Compressing mail.  Please wait...\n";
 qwk_update_lr=          YELLOW "Please wait.  Updating lastread pointers...";
-door_id_name=           "DOOR = %s\n";
-door_id_ver=            "VERSION = %s\n";
-door_id_sys=            "SYSTEM = %s\n";
-door_id_cname=          "CONTROLNAME = %s\n";
+door_id_name=           "DOOR = %s\r\n";
+door_id_ver=            "VERSION = %s\r\n";
+door_id_sys=            "SYSTEM = %s\r\n";
+door_id_cname=          "CONTROLNAME = %s\r\n";
 cprog_name=             "MAXIMUS";
-door_id_ctype_add=      "CONTROLTYPE = ADD\n";
-door_id_ctype_drop=     "CONTROLTYPE = DROP\n";
-cdat_hello=             "HELLO\n";
-cdat_news=              "NEWS\n";
-cdat_goodbye=           "GOODBYE\n";
+door_id_ctype_add=      "CONTROLTYPE = ADD\r\n";
+door_id_ctype_drop=     "CONTROLTYPE = DROP\r\n";
+cdat_hello=             "HELLO\r\n";
+cdat_news=              "NEWS\r\n";
+cdat_goodbye=           "GOODBYE\r\n";
 qwk_too_many=           LRED "\nWarning!  A maximum of %ld messages can be packed during one download.\n\n" WHITE;
 qwk_nuke_tear=          "\r---";
 qwk_replace_tear=       "___";
