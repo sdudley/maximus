@@ -66,6 +66,10 @@ typedef struct _ffind FFIND;
 #  define GLOB_ONLYDIR 0
 # endif
 
+# ifndef GLOB_NOESCAPE
+#  define GLOB_NOESCAPE 0
+#endif
+
 static const unsigned int GLOB_FLAGS_MASK = (GLOB_ERR | GLOB_MARK | GLOB_NOSORT | GLOB_NOCHECK | GLOB_DOOFFS | GLOB_APPEND | GLOB_NOESCAPE | GLOB_PERIOD | GLOB_ONLYDIR);
 # if GLOB_ONLYDIR == 0
 #  undef GLOB_ONLYDIR
