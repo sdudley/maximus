@@ -273,12 +273,10 @@
 
   // Declare size_t type
 
-#if !defined(_SIZE_T) &&                /* Borland C */         \
-    !defined(_SIZE_T_DEFINED) &&        /* Microsoft C */       \
-    !defined(_SIZE_T_DEFINED_)          /* Watcom C */
-    #define _SIZE_T
-    #define _SIZE_T_DEFINED
-    #define _SIZE_T_DEFINED_
+#if !defined(_SIZE_T) && !defined(_SIZE_T_DEFINED) && !defined(_SIZE_T_DEFINED_)
+  #define _SIZE_T 
+  #define _SIZE_T_DEFINED
+  #define _SIZE_T_DEFINED_
   typedef unsigned int size_t;
 #endif
 
