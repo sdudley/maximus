@@ -1,7 +1,7 @@
 include ../vars.mk
 
 PROGS := 	maid mecca accem ansi2bbs scanbld ansi2mec cvtusr \
-		editcall mr fixlr setlr fb silt #maxpipe mxpipe32 piper
+		editcall mr fixlr setlr fb silt maxcomm #maxpipe mxpipe32 piper
 
 all: $(PROGS)
 install: $(PROGS)
@@ -19,7 +19,7 @@ mecca_vb.h: mecca_vb.h.in
 
 mecca.h: mecca_vb.h
 mecca.o init.o accem.o: mecca.h
-fixlr setlr fb mr editcall mecca cvtusr ansi2mec ansi2bbs: EXTRA_LOADLIBES += -lmsgapi
+maxcomm fixlr setlr fb mr editcall mecca cvtusr ansi2mec ansi2bbs: EXTRA_LOADLIBES += -lmsgapi
 ansi2bbs.o: ansi2bbs.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DANSI2BBS -o $@ -c $<
 
@@ -30,14 +30,14 @@ ansi2mec.o: ansi2bbs.c
 # This is needed for gcc 3; otherwise we'd need to figure out which targets to
 # add libgcc_s.so to, and only only gcc 3. This should work for gcc 2 and gcc 3. 
 
-cvtusr scanbld silt: 
+cvtusr scanbld silt maxcomm: 
 	$(CXX) $(CFLAGS) $(LDFLAGS) $^ $(LOADLIBES) -o $@
 
 cvtusr:		cvtusr.o cppmain.o cvt_misc.o
 scanbld accem: EXTRA_LOADLIBES += -lmsgapi
 accem:		accem.o init.o
 scanbld:	cppmain.o scanbld.o
-
+maxcomm:	maxcomm.o
 
 SILT_OBJS   :=  silt.obj        cppmain.obj     s_equip.obj     s_matrix.obj \
                 s_menu.obj      s_misc.obj      s_parse.obj     s_sessio.obj \
