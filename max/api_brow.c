@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: api_brow.c,v 1.1 2002/10/01 17:50:43 sdudley Exp $";
+static char rcs_id[]="$Id: api_brow.c,v 1.2 2003/06/04 23:09:26 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NO_MSGH_DEF
@@ -134,7 +134,12 @@ static int near BrowseCheckScanFile(BROWSE *b)
   }
   else if (b->type==MSGTYPE_SQUISH)
   {
+#ifndef UNIX
     sprintf(temp, "%s.SQI", b->path);
+#else
+    sprintf(temp, "%s.sqi", b->path);
+#endif
+
     recsize=sizeof(SQIDX);
     blsiz=SCAN_BLOCK_SQUISH;
   }
