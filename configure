@@ -6,7 +6,7 @@
 # @author	Wes Garland; wes@ninja250.kingston.net
 # @date		May 23 2003
 #
-# $Id: configure,v 1.4 2003/06/11 23:41:56 wesgarland Exp $
+# $Id: configure,v 1.5 2003/06/12 00:18:01 wesgarland Exp $
 #
 
 OUTPUT='vars_local.mk'
@@ -245,7 +245,7 @@ cd ..
 
 if [ ! -d "install_tree" ]; then
   beep
-  echo "Warning: could not find install_tree. Did you forget to unpack max-etc-3.03.tar.gz?"
+  echo "Warning: could not find install_tree. Did you forget to unpack max-3.03-etc.tar.gz?"
   exit 1
 fi
 
