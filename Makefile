@@ -2,8 +2,11 @@
 # @author			Wes Garland
 # @date				May 13th, 2003
 #
-# $Id: Makefile,v 1.5 2003/06/12 03:26:43 wesgarland Exp $
+# $Id: Makefile,v 1.6 2003/06/29 20:38:51 wesgarland Exp $
 # $Log: Makefile,v $
+# Revision 1.6  2003/06/29 20:38:51  wesgarland
+# Cosmetic change
+#
 # Revision 1.5  2003/06/12 03:26:43  wesgarland
 # Corrected PREFIX-passing between master Makefile and copy_install_ree.sh
 #
@@ -96,10 +99,10 @@ configure:
 	./configure "--prefix=$(PREFIX)"
 
 config_install:
-	export PREFIX
+	@export PREFIX
 	@scripts/copy_install_tree.sh "$(PREFIX)"
 
-	$(MAKE) reconfig
+	@$(MAKE) reconfig
 
 	@[ ! -f ${PREFIX}/etc/user.bbs ] || echo "This is not a fresh install -- not creating new user.bbs"
 	@[ -f ${PREFIX}/etc/user.bbs ] || echo "Creating user.bbs"
