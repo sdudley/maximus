@@ -6,7 +6,7 @@
 # @author	Wes Garland; wes@ninja250.kingston.net
 # @date		May 23 2003
 #
-# $Id: configure,v 1.6 2003/06/12 02:51:59 wesgarland Exp $
+# $Id: configure,v 1.7 2003/06/13 04:14:04 wesgarland Exp $
 #
 
 OUTPUT='vars_local.mk'
@@ -194,6 +194,7 @@ echo "PREFIX=${PREFIX}" > vars.mk
 echo "SRC=${SRC}" >> vars.mk
 echo "COMP=unix" >> vars.mk
 echo "PLATFORM=${PLATFORM}" >> vars.mk
+echo "BUILD=${BUILD}" >> vars.mk
 echo "" >> vars.mk
 echo "# Build platform: `uname -a`" >> vars.mk
 
