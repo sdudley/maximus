@@ -31,6 +31,7 @@
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
 
+
 struct _ndx {
     union
     {
@@ -43,7 +44,7 @@ struct _ndx {
             sdword  CtlFree;    /* Head of freelist            */
             sdword  CtlLvls;    /* Number of index levels      */
             word    CtlParity;  /* XOR of above fields         */
-        } CtlBlk;
+        } __attribute__((packed)) CtlBlk;
 
         struct _INodeBlk {
             sdword  IndxFirst;  /* Pointer to next lower level */
@@ -57,8 +58,8 @@ struct _ndx {
                 word   IndxLen; /* Length of string            */
                 sdword IndxData;/* Record number of string     */
                 sdword IndxPtr; /* Block number of lower index */
-            } IndxRef[20];
-        } INodeBlk;
+            } __attribute__((packed)) IndxRef[20];
+        } __attribute__((packed)) INodeBlk;
 
         struct _LNodeBlk {
                                 /* IndxFirst is -1 in LNodes   */
@@ -71,19 +72,25 @@ struct _ndx {
                 word   KeyOfs;  /* Offset of string into block */
                 word   KeyLen;  /* Length of string            */
                 sdword KeyVal;  /* Pointer to data block       */
-            } LeafRef[30];
-        } LNodeBlk;
+            } __attribute__((packed)) LeafRef[30];
+        } __attribute__((packed)) LNodeBlk;
 
         char RawNdx[512];
 
-    } ndx;
-} __attribute__((packed));
+    } __attribute__((packed)) ndx;
+};
+
+#define NDX_SIZE 512
 
 /*--------------------------------------------------------------------------*/
-/*                                                                          */
-/* OPUS 1.20 Version 7 Nodelist structure. Copyright 1991 Wynn Wagner III   */
-/* and Doug Boone. Used by permission.                                      */
-/*                                                                          */
+/*                                                                          
+*/
+/* OPUS 1.20 Version 7 Nodelist structure. Copyright 1991 Wynn Wagner III   
+*/
+/* and Doug Boone. Used by permission.                                      
+*/
+/*                                                                          
+*/
 /*--------------------------------------------------------------------------*/
 
 struct _vers7 {
@@ -104,6 +111,7 @@ struct _vers7 {
         byte BaudRate;         /* baud rate divided by 300 */
 } __attribute__((packed));
 
+#define VER7_SIZE 22
 
 word FEATENTRY _export FeatureNetMsg(struct _feat_netmsg far *pfn);
 word FEATENTRY _export FeatureInit(struct _feat_init far *pfi);

@@ -28,7 +28,7 @@ squish: $(SQUISH_OBJS)
 libkillrcat.so: killrcat.o
 	gcc -shared $^ -o $@
 
-libmsgtrack.so: msgtrack.o vsev.o
+libmsgtrack.so: msgtrack.o
 	gcc -shared $^ -o $@
 
 install: install_libs install_binaries
