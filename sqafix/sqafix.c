@@ -134,7 +134,8 @@
  // Command line request parser table
 
  static struct {
-   PSZ    psz;   USHORT cmd;
+   PSZ    psz;   
+   USHORT cmd;
  } aCmdReqTab [] = {
    "Scan",       CMD_SCAN,
    "S",          CMD_SCAN,
@@ -218,10 +219,12 @@
  {
 #ifdef BIOS_CONSOLE
    return bioskey(1);
-#endif
-#ifndef UNIX
+#elif !defined(UNIX)
    return kbhit();
+#else
+   return 0;
 #endif
+
  }
 
  static int SUBENTRY DoGetKey(void)
@@ -280,8 +283,9 @@
 
  static VOID SUBENTRY DoShowHelp(VOID)
  {
+#ifndef UNIX 
    time_t tm;
-
+#endif
    // Display general help
 
    fprintf(stdout,
