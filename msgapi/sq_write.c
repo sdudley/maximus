@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sq_write.c,v 1.1 2002/10/01 17:54:34 sdudley Exp $";
+static char rcs_id[]="$Id: sq_write.c,v 1.2 2003/06/05 22:54:50 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS
@@ -340,7 +340,7 @@ static unsigned near _SquishLinkMessageFrame(HMSG hmsg, dword dwTotal,
 static unsigned near _SquishGetWriteFrame(HMSG hmsg, dword dwTxtTotal,
                                           dword dwCtrlLen)
 {
-  dword dwTotal=(dword)sizeof(XMSG)+dwTxtTotal+dwCtrlLen;
+  dword dwTotal=(dword)XMSG_SIZE+dwTxtTotal+dwCtrlLen;
   dword dwFrameLen=0;
 
   assert(HSqd->fHaveExclusive);
@@ -466,13 +466,13 @@ static unsigned near _SquishWriteXmsg(HMSG hmsg, PXMSG pxm, dword *pdwOfs)
       return FALSE;
     }
 
-  if (write(HSqd->sfd, (char *)&xmsg, sizeof xmsg) != (int)sizeof xmsg)
+  if (write_xmsg(HSqd->sfd, (char *)&xmsg) != 1)
   {
     msgapierr=MERR_NODS;
     return FALSE;
   }
 
-  *pdwOfs = (dword)ofs + (dword)sizeof xmsg;
+  *pdwOfs = (dword)ofs + (dword)XMSG_SIZE;
 
   return TRUE;
 }
@@ -508,7 +508,7 @@ static unsigned near _SquishWriteCtrl(HMSG hmsg, byte OS2FAR *szCtrl,
 
   /* Now seek to the appropriate offset */
 
-  ofs=hmsg->foWrite + HSqd->cbSqhdr + sizeof(XMSG);
+  ofs=hmsg->foWrite + HSqd->cbSqhdr + XMSG_SIZE;
 
 
   /* Write the control information at the appropriate offset */
@@ -544,12 +544,12 @@ static unsigned near _SquishWriteTxt(HMSG hmsg, unsigned fAppend,
 
   /* Figure out where to start writing text */
 
-  ofs=hmsg->foWrite + (long)HSqd->cbSqhdr + (long)sizeof(XMSG)
+  ofs=hmsg->foWrite + (long)HSqd->cbSqhdr + (long)XMSG_SIZE
                     + (long)hmsg->sqhWrite.clen;
 
   /* Figure out how much we can write, at most */
 
-  dwMaxWrite=hmsg->sqhWrite.msg_length - sizeof(XMSG) - hmsg->sqhWrite.clen;
+  dwMaxWrite=hmsg->sqhWrite.msg_length - XMSG_SIZE - hmsg->sqhWrite.clen;
 
   /* If we're appending to existing text, make sure that we adjust properly */
 

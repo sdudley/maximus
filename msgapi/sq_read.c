@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sq_read.c,v 1.1 2002/10/01 17:54:33 sdudley Exp $";
+static char rcs_id[]="$Id: sq_read.c,v 1.2 2003/06/05 22:54:50 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS
@@ -48,7 +48,7 @@ static unsigned near _SquishReadXmsg(HMSG hmsg, PXMSG pxm, dword *pdwOfs)
       return FALSE;
     }
 
-  if (read(HSqd->sfd, (char *)pxm, sizeof *pxm) != (int)sizeof *pxm)
+  if (read_xmsg(HSqd->sfd, (char *)pxm) != 1)
   {
     msgapierr=MERR_BADF;
     return FALSE;
@@ -56,7 +56,7 @@ static unsigned near _SquishReadXmsg(HMSG hmsg, PXMSG pxm, dword *pdwOfs)
 
   /* Update our position */
 
-  *pdwOfs=(dword)ofs + (dword)sizeof *pxm;
+  *pdwOfs=(dword)ofs + (dword) XMSG_SIZE;
 
   /* If there is a UMSGID associated with this message, store it in         *
    * memory in case we have to write the message later.  Blank it           *
@@ -78,7 +78,7 @@ static unsigned near _SquishReadXmsg(HMSG hmsg, PXMSG pxm, dword *pdwOfs)
 static unsigned near _SquishReadCtrl(HMSG hmsg, byte OS2FAR *szCtrl,
                                      dword dwCtrlLen, dword *pdwOfs)
 {
-  long ofs=hmsg->foRead + HSqd->cbSqhdr + sizeof(XMSG);
+  long ofs=hmsg->foRead + HSqd->cbSqhdr + XMSG_SIZE;
   unsigned uMaxLen=(unsigned)min(dwCtrlLen, hmsg->sqhRead.clen);
 
   /* Read the specified amount of text, but no more than specified in       *
@@ -117,13 +117,13 @@ static dword near _SquishReadTxt(HMSG hmsg, byte OS2FAR *szTxt, dword dwTxtLen,
 {
   /* Start reading from the cur_pos offset */
 
-  long ofs=hmsg->foRead + (long)HSqd->cbSqhdr + (long)sizeof(XMSG)
+  long ofs=hmsg->foRead + (long)HSqd->cbSqhdr + (long)XMSG_SIZE
                         + (long)hmsg->sqhRead.clen;
 
   /* Max length is the size of the msg text inside the frame */
 
   unsigned uMaxLen=(unsigned)(hmsg->sqhRead.msg_length -
-                              hmsg->sqhRead.clen - sizeof(XMSG));
+                              hmsg->sqhRead.clen - XMSG_SIZE);
 
   /* Make sure that we don't try to read beyond the end of the msg */
 

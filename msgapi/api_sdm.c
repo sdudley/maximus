@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: api_sdm.c,v 1.1 2002/10/01 17:54:21 sdudley Exp $";
+static char rcs_id[]="$Id: api_sdm.c,v 1.2 2003/06/05 22:54:50 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS
@@ -51,7 +51,7 @@ static char rcs_id[]="$Id: api_sdm.c,v 1.1 2002/10/01 17:54:21 sdudley Exp $";
 static byte *hwm_from="-=|ÿSquishMailÿ|=-";
 
 
-extern void far pascal DosSleep(dword);
+//extern void far pascal DosSleep(dword);
 
 HAREA MSGAPI SdmOpenArea(byte OS2FAR *name, word mode, word type)
 {
@@ -110,7 +110,7 @@ HAREA MSGAPI SdmOpenArea(byte OS2FAR *name, word mode, word type)
   mh->type &= ~MSGTYPE_ECHO;
 
   *mh->api=sdm_funcs;
-  mh->sz_xmsg=sizeof(XMSG);
+  mh->sz_xmsg=XMSG_SIZE;
 
   msgapierr=0;
   return mh;
@@ -1034,7 +1034,7 @@ static sword near _SdmRescanArea(HAREA mh)
 
 static void MSGAPI Init_Xmsg(PXMSG msg)
 {
-  (void)memset(msg, '\0', sizeof(XMSG));
+  (void)memset(msg, '\0', XMSG_SIZE);
 }
 
 static void MSGAPI Convert_Fmsg_To_Xmsg(struct _omsg *fmsg, PXMSG msg, word def_zone)

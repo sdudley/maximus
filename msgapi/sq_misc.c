@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sq_misc.c,v 1.1 2002/10/01 17:54:31 sdudley Exp $";
+static char rcs_id[]="$Id: sq_misc.c,v 1.2 2003/06/05 22:54:50 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS
@@ -64,7 +64,7 @@ dword MAPIENTRY SquishGetTextLen(HMSG hmsg)
   if (MsgInvalidHmsg(hmsg) || !_SquishReadMode(hmsg))
     return (dword)-1L;
 
-  rc = (long)hmsg->sqhRead.msg_length - (long)sizeof(XMSG) -
+  rc = (long)hmsg->sqhRead.msg_length - (long)XMSG_SIZE -
        (long)hmsg->sqhRead.clen;
 
   return (rc < 0) ? (dword)0L : (dword)rc;

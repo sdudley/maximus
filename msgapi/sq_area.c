@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sq_area.c,v 1.1 2002/10/01 17:54:29 sdudley Exp $";
+static char rcs_id[]="$Id: sq_area.c,v 1.2 2003/06/05 22:54:50 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS
@@ -277,7 +277,7 @@ static unsigned near _SquishSetBaseDefaults(HAREA ha)
   Sqd->foCur=NULL_FRAME;
   Sqd->foPrev=NULL_FRAME;
   ha->cur_msg=0;
-  ha->sz_xmsg=sizeof(XMSG);
+  ha->sz_xmsg=XMSG_SIZE;
   return TRUE;
 }
 

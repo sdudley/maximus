@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: msgapi.h,v 1.2 2003/06/05 03:31:41 wesgarland Exp $ */
+/* $Id: msgapi.h,v 1.3 2003/06/05 22:54:50 wesgarland Exp $ */
 
 #ifndef __SQAPI_H_DEFINED
 #define __SQAPI_H_DEFINED
@@ -194,6 +194,7 @@ typedef dword UMSGID;
 #define XMSG_TO_SIZE    36
 #define XMSG_SUBJ_SIZE  72
 
+#define XMSG_SIZE (94 + XMSG_FROM_SIZE + XMSG_TO_SIZE + XMSG_SUBJ_SIZE)
 
 /* Number of reply fields in XMSG.replies */
 
