@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwkup.c,v 1.7 2003/12/16 14:07:35 paltas Exp $";
+static char rcs_id[]="$Id: mb_qwkup.c,v 1.8 2004/01/11 19:50:27 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# QWK uploads, for processing .REP packets
@@ -636,34 +636,33 @@ static int near QWKRetrieveAreaFromPkt(PXMSG msg, struct _qmhdr *qh, char *aname
 {
   word tossto;    /* Area (cardinal #) in which to place msg */
 
-  /* "& 0xff" needed for EZ-Reader */
-
-  qh->conf &= 0xff;
-
-  /* If conference field not filled it, grab it from the ASCII stuff */
-
-  if (qh->conf==0 || qh->conf==' ')
-    qh->conf=atoi(qh->msgn);
-
-  /* Now figure out which area we have to toss to.  This involves some    *
-   * really ugly conversion between the QWK one-byte message numbers,     *
-   * and the ten-character Maximus area names.                            */
-
-  tossto=qh->conf-1;
-  
-  
   /* Skip any deleted messages, or those messages which are addressed     *
    * to the Maximus "control program".                                    */
   
   if (qh->msgstat==QWK_KILLED || eqstri(msg->to, cprog_name))
     return FALSE;
 
+  /* New method -- prefer ASCII version */
+
+  tossto=atoi(qh->msgn);
+  
+  /* Otherwise, use the low byte of the binary conference number (omitting
+   * the high byte for the benefit of EZ-Reader, per old method's comments;
+   * check this) */
+
+  if (!tossto)
+    tossto=qh->confLSB;
+
   /* Now state what we're doing */
 
-  Printf(qwk_msg_stats, (int)qh->conf, msg->to, msg->subj);
+  Printf(qwk_msg_stats, tossto, msg->to, msg->subj);
 
+  /* Adjust to internal offset */
 
-  /* If the area number is too high, get a new area from the user. */
+  tossto--;
+
+  /* Get area name based on offset.
+   * If the area number is too high, get a new area from the user. */
 
   strcpy(aname, (tossto >= akh.num_areas) ? qmark : (char *)(akd[tossto].name));
 
@@ -786,7 +785,9 @@ static int near QWKTossMsgBody(PXMSG msg, struct _qmhdr *qh, int msg_blocks, int
 
   *pfUpdateStatus=FALSE;  /* We were not just updating status */
   *pkludge=NULL;
+#ifdef MAX_TRACKER
   memset(&qti, 0, sizeof qti);
+#endif
 
   /* Fix the fields in the message header */
 

@@ -58,7 +58,8 @@ struct _qmhdr
   byte replyto[8];
   byte len[6];
   byte msgstat;   /* See QWK_xxx, above */
-  word conf;
+  byte confLSB;
+  byte confMSB;
 /*byte wasread;*/
   byte rsvd[3];
 };
@@ -68,9 +69,9 @@ struct _qmhdr
 
 struct _qmndx
 {
-  unsigned long mks_rec;
+  byte mks_rec[4];
   byte conf;
-} __attribute__((packed));
+};
 
 
 

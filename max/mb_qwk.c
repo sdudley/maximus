@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.4 2003/11/21 03:31:02 paltas Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.5 2004/01/11 19:50:27 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command
@@ -735,7 +735,8 @@ static int near BuildQWKHeader(BROWSE *b)
   
   bprintf(qm.len, "%-6ld", MsgGetTextLen(b->m) / QWK_RECSIZE + 1);
   qm.msgstat=QWK_ACTIVE;
-  qm.conf=this_conf;
+  qm.confLSB=(byte)(this_conf & 0xffu);
+  qm.confMSB=(byte)((this_conf >> 8) & 0xffu);
   /*qm.wasread=(b->msg.attr & MSGREAD) ? '*' : ' ';*/
   /*qm.wasread=1;*/
   memset(qm.rsvd, ' ', sizeof(qm.rsvd));
@@ -781,16 +782,26 @@ static int near AddPersonalIndex(BROWSE *b, struct _qmndx *pqn)
 
 /* Generate the index record for this message */
 
-static int near BuildIndex(BROWSE *b, long this_rec, word this_conf)
+static int near BuildIndex(BROWSE *b, unsigned long this_rec, word this_conf)
 {
-  long ieee;
   struct _qmndx qmndx;
   int rc=TRUE;
-
-  /* Create the MSBinary-format .QWK index */
+  byte exp=0;
   
-  ieee=long_to_ieee(this_rec+1);
-  ieee_to_msbin((unsigned long *)&ieee, (unsigned long *)&qmndx.mks_rec);
+  /* Create the MSBinary-format .QWK index */
+
+  this_rec++;
+  while (!(this_rec & 0x800000L)) {
+    exp++;
+    this_rec <<= 1;
+  }
+  this_rec &= 0x7fffffL;
+
+  qmndx.mks_rec[0] = this_rec & 0xff;
+  qmndx.mks_rec[1] = (this_rec >> 8) & 0xff;
+  qmndx.mks_rec[2] = (this_rec >> 16) & 0xff;
+  qmndx.mks_rec[3] = 152 - exp;
+
   qmndx.conf=(byte)(this_conf & 0xffu);
 
   if (!AddPersonalIndex(b, &qmndx))
@@ -893,9 +904,14 @@ static int near QWKInitializeHeaders(BROWSE *b, int qwkfile,
 /* Add all of the stuff to the packet that belongs before the message       *
  * body itself.                                                             */
 
+#ifdef MAX_TRACKER
 static void near QWKAddHeaderText(BROWSE *b, char *block, char **pblpos,
                                   int *pn_blocks, TRK_MSG_NDX *ptmn,
                                   char *ctrl, int *pdo_we_own)
+#else
+static void near QWKAddHeaderText(BROWSE *b, char *block, char **pblpos,
+				  int *pn_blocks, char *ctrl, int *pdo_we_own)
+#endif
 {
   struct _qwk_callback qc;      /* Used for passing info the QWK callback fn */
 
@@ -999,7 +1015,9 @@ static int near UpdateCounters(BROWSE *b)
 
 int QWK_Display(BROWSE *b)
 {
+#ifdef MAX_TRACKER
   TRK_MSG_NDX tmn;              /* Tracking record for this message */
+#endif
   char *block;                  /* Block used for output */
   char *blpos;                  /* Current position in block */
   char *ctrl;                   /* Kludges for this message */
@@ -1045,7 +1063,11 @@ int QWK_Display(BROWSE *b)
 
   /* Add all of the pre-header text information */
 
+#ifdef MAX_TRACKER
   QWKAddHeaderText(b, block, &blpos, &n_blocks, &tmn, ctrl, &do_we_own);
+#else
+  QWKAddHeaderText(b, block, &blpos, &n_blocks, ctrl, &do_we_own);
+#endif
   QWKAddMsgBody(b, block, &blpos, &n_blocks);
 
   /* See if there's a file attached to this message */
