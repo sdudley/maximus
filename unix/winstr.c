@@ -4,12 +4,12 @@
 #include <string.h>
 #include <ctype.h>
 
-inline int stricmp(const char *a, const char *b)
+int stricmp(const char *a, const char *b)
 {
   return strcasecmp(a, b);
 }
 
-inline int strnicmp(const char *a, const char *b, size_t n)
+int strnicmp(const char *a, const char *b, size_t n)
 {
   return strncasecmp(a, b, n);
 }
