@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: editcall.c,v 1.4 2004/01/27 21:06:06 paltas Exp $";
+static char rcs_id[]="$Id: editcall.c,v 1.5 2004/01/27 23:02:55 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 /*# name=Number-of-callers fudging utility
 */
@@ -66,12 +68,12 @@ int _stdc main(int argc,char *argv[])
 
   read(bfile,(char *)&bbstat,sizeof(struct _bbs_stats));
 
-  printf("Current value = %lu calls.\n",bbstat.num_callers);
+  printf("Current value = %lu calls.\n", (unsigned long) bbstat.num_callers);
 
   if(argc==3)
   {
     bbstat.num_callers=atol(argv[2]);
-    printf("New value     = %lu calls.\n",bbstat.num_callers);
+    printf("New value     = %lu calls.\n", (unsigned long) bbstat.num_callers);
 
     lseek(bfile,0L,SEEK_SET);
 

@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_access.c,v 1.4 2004/01/27 21:06:06 paltas Exp $";
+static char rcs_id[]="$Id: s_access.c,v 1.5 2004/01/27 23:02:55 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 /*# name=SILT: 'Section Access' processing logic
 */
@@ -198,7 +200,7 @@ int ParseAccess(FILE *ctlfile,char *name)
         an+=2;
         ishex=TRUE;
       }
-      sscanf(an,(ishex)?"%lx":"%ld", &thiscls.ulUsrFlags);
+      sscanf(an,(ishex) ? "%lx" : "%ld", (long*) &thiscls.ulUsrFlags);
     }
     else if (eqstri(keyword,"mailflags") || eqstri(keyword,"mail"))
     {

@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_marea.c,v 1.4 2004/01/27 21:06:06 paltas Exp $";
+static char rcs_id[]="$Id: s_marea.c,v 1.5 2004/01/27 23:02:55 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 /*# name=SILT: 'Section Area' processing logic
 */
@@ -313,7 +315,7 @@ static void near MsgAreaWrite(MAINFO *pmi, int closeit)
   if (ma_fd==-1 && !closeit)
   {
     char fname[PATHLEN];
-    dword dwId __attribute__((packed));
+    dword dwId;
     
     dwId =MAREA_ID;
 

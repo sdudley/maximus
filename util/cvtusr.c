@@ -17,10 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: cvtusr.c,v 1.3 2004/01/27 21:06:06 paltas Exp $";
+static char rcs_id[]="$Id: cvtusr.c,v 1.4 2004/01/27 23:02:55 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 /*# name=USER.BBS conversion utility
 */
@@ -390,15 +391,15 @@ void Convert_Quick(void)
   {
     Blank_User(&usr);
 
-    TP_to_Cstr(qbu.name, usr.name);
-    TP_to_Cstr(qbu.city, usr.city);
-    TP_to_Cstr(qbu.pwd, usr.pwd);
+    TP_to_Cstr((byte*) qbu.name, usr.name);
+    TP_to_Cstr((byte*) qbu.city, usr.city);
+    TP_to_Cstr((byte*) qbu.pwd, usr.pwd);
 
     if (strchr(usr.pwd, ' '))
       *strchr(usr.pwd, ' ')='\0';
 
-    TP_to_Cstr(qbu.home_phone, usr.phone);
-    TP_to_Cstr(qbu.data_phone, usr.dataphone);
+    TP_to_Cstr((byte*) qbu.home_phone, usr.phone);
+    TP_to_Cstr((byte*) qbu.data_phone, usr.dataphone);
 
     usr.credit=qbu.credit;
     usr.times=qbu.times;

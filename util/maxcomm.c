@@ -25,9 +25,7 @@ int fexist(char* filename)
 
 int main(void)
 {
-    int s, t, len, tmp;
-    int i = 1;
-    char c;
+    int s, t, len;
     struct sockaddr_un remote;
     struct timeval tv;
     fd_set rfds, wfds;
@@ -45,7 +43,7 @@ int main(void)
 
     dir = opendir(getcwd(tmptext, 128));
 
-    while(dirp = readdir(dir))
+    while((dirp = readdir(dir)))
     {
         if(strstr(dirp->d_name, "maxipc") 
            && !strstr(dirp->d_name, ".lck"))
@@ -97,7 +95,7 @@ int main(void)
 	    
 	if(select(0 + 1, &rfds, 0, 0, &tv) > 0)
 	{
-	    if(t = read(0, str, 512)) 
+	    if((t = read(0, str, 512))) 
 	    {
     		write(s, str, t);
 	    }

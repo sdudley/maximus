@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: setlr.c,v 1.3 2004/01/27 21:06:06 paltas Exp $";
+static char rcs_id[]="$Id: setlr.c,v 1.4 2004/01/27 23:02:55 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,7 +48,7 @@ static void near SetLR(char *name, UMSGID uid, int num_users)
   if ((fd=open(fname,  O_WRONLY | O_BINARY | O_CREAT | O_TRUNC,
                S_IREAD | S_IWRITE))==-1)
   {
-    printf("Error opening %s for write!\n");
+    printf("Error opening %s for write!\n", fname);
     exit(1);
   }
 
@@ -103,12 +105,12 @@ int main(int argc, char *argv[])
                       *argv[1]=='$' ? MSGTYPE_SQUISH : MSGTYPE_SDM))==NULL)
   {
     printf("Error!  Can't open message area %s!\n"
-           "(use \"$d:\path\areaname\" for Squish-format areas!)\n");
+           "(use \"$d:\\path\\areaname\" for Squish-format areas!)\n", argv[1]);
     return 1;
   }
 
   high=MsgGetHighMsg(ha);
-  printf("Highest message number is %ld.\n", high);
+  printf("Highest message number is %ld.\n", (unsigned long) high);
 
   num_users=atoi(argv[2]);
 
@@ -116,7 +118,7 @@ int main(int argc, char *argv[])
     high=atoi(argv[3]);
 
   printf("Setting message number for all %d users to %ld.\n",
-         num_users, high);
+         num_users, (unsigned long) high);
 
   uhigh=MsgMsgnToUid(ha, high);
 

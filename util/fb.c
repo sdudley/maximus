@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fb.c,v 1.4 2004/01/27 21:06:06 paltas Exp $";
+static char rcs_id[]="$Id: fb.c,v 1.5 2004/01/27 23:02:55 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #define NOVER
 #define NOVARS
@@ -440,7 +442,9 @@ static void near make_finf(char *path)
     memset(fi->name, '\0', sizeof(fi->name));
     strncpy(fi->name, ff->szName, sizeof(fi->name));
     /* strupr(fi->name); */
+#ifndef UNIX
     fancy_fn(fi->name);
+#endif
 
     fi->cdate=ff->scCdate;
     fi->wdate=ff->scWdate;
@@ -727,8 +731,9 @@ static int near process_line(PFAH pfah, byte *line, char *path)
     strncpy(fdat.name, filepath+1, MAX_FN_LEN);
     fdat.name[MAX_FN_LEN]='\0';
     /* strupr(fdat.name); */
+#ifndef UNIX
     fancy_fn(fdat.name);
-
+#endif
     /* Strip off the filename, then dupe it onto 'path' */
 
     filepath[1]='\0';
@@ -755,7 +760,9 @@ static int near process_line(PFAH pfah, byte *line, char *path)
 
     strcat(fname, fdat.name);
     /* strupr(fname); */
+#ifndef UNIX
     fancy_fn(fname);
+#endif    
   }
 
 /*fdat.priv=area.filepriv;
@@ -868,7 +875,9 @@ static int near process_line(PFAH pfah, byte *line, char *path)
         fdat.fsize=ff->ulSize;
 
         /* strupr(fdat.name); */
+#ifndef UNIX
 	fancy_fn(fdat.name);
+#endif	
         write_entry(&fdat, desc, NULL, filepath, PFAS(pfah, acs));
       }
       while (!nofind && FindNext(ff)==0);
@@ -1018,7 +1027,7 @@ static void near write_entry(FDAT *fdat, char *desc, char *ul, char *path, char 
      * put us at the very END of the field.  Also, mark the location        *
      * of the FIRST digit we see.                                           */
 
-    for (s=desc+1, p=NULL; desc && *s==' ' || *s=='\t' || isdigit(*s); s++)
+    for (s=desc+1, p=NULL; desc && (*s==' ' || *s=='\t' || isdigit(*s)); s++)
       if (!p && isdigit(*s))
         p=s;
 

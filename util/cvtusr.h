@@ -33,12 +33,15 @@ void Convert_Quick(void);
 void Convert_Opus103(void);
 void Convert_Max(int c);
 void Convert_Max102(void);
+void Convert_Lread(void);
+void Convert_Max200(void);
 void Check_If_Exist(void);
 long CRC(char *s);
 char * BASIC_String(char *s,int len);
 void Blank_User(struct _usr *usr);
 void Convert_RBBS(char *name);
 void Reverse_Max200(void);
+void Reverse_Max300(void);
 
 byte MaxToOpusPriv(int mpriv);
 int OpusToMaxPriv(byte opriv);

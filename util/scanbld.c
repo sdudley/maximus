@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: scanbld.c,v 1.4 2004/01/27 21:06:06 paltas Exp $";
+static char rcs_id[]="$Id: scanbld.c,v 1.5 2004/01/27 23:02:55 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 /*# name=SCANBLD main module
 */
@@ -192,7 +194,7 @@ static void near ScanOneMessage(struct _sbcfg *psc, int fd, HMSG hmsg, long mn)
 
   if ((mn % 10)==0 && (psc->flags & SFLAG_QUIET)==0)
   {
-    printf("\b\b\b\b%04d", mn);
+    printf("\b\b\b\b%04d", (int) mn);
     fflush(stdout);
   }
 
@@ -341,7 +343,7 @@ static void near ScanOneArea(struct _sbcfg *psc, PMAH pmah)
   MsgCloseArea(ha);
 
   if ((psc->flags & SFLAG_QUIET)==0)
-    printf("\b\b\b\b%04d - Done\n", mn-1);
+    printf("\b\b\b\b%04d - Done\n", (int) mn-1);
 }
 
 
