@@ -17,8 +17,33 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __COMPILER_H_DEFINED
+#define __COMPILER_H_DEFINED
+
+#ifndef __MAKEDEPEND__
+
+#if !defined(UNIX) && (defined(__unix__) || defined(__unix) || defined(unix))
+# warning CPPFLAGS wrong -- missing -DUNIX
+# define UNIX 1
+#endif
+
+#if !defined(LINUX) && defined(__linux__)
+# warning CPPFLAGS wrong -- missing -DLINUX
+# define LINUX
+#endif
+
+#if defined(UNIX)
+# if !defined(SYSV) && (defined(__svr4__) || defined(__SVR4))
+#  warning CPPFLAGS wrong -- missing -DSYSV
+#  define SYSV
+# endif
+#endif
+
+#endif /* ! __MAKEDEPEND__ */
+
 #if defined(UNIX)
 # include "compiler_unix.h"
+# include "compiler_align.h"
 #else
 /*# name=Compiler-determination and memory-model-determination routines
     name=Support for WATCOM C (DOS, OS/2 and 386 flat), Microsoft C
@@ -29,8 +54,6 @@
 /* Non-DOS systems...  Just do a "#define __FARCODE__",                     *
  * "#define __FARDATA__" and "#define __LARGE__" in place of this file.     */
 
-#ifndef __COMPILER_H_DEFINED
-#define __COMPILER_H_DEFINED
 
 
 #ifdef _lint  /* default to large segmented model when linting */
@@ -362,6 +385,7 @@
 #include "typedefs.h"
 #endif
 
+#include "compiler_align.h"
+#endif /* ! UNIX */
 #endif /* ! __COMPILER_H_DEFINED */
 
-#endif /* ! UNIX */
