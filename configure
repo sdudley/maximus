@@ -6,22 +6,34 @@
 # @author	Wes Garland; wes@ninja250.kingston.net
 # @date		May 23 2003
 #
-# $Id: configure,v 1.3 2003/06/11 19:23:53 wesgarland Exp $
+# $Id: configure,v 1.4 2003/06/11 23:41:56 wesgarland Exp $
 #
 
 OUTPUT='vars_local.mk'
 
-necho()
+nonlecho()
 {
-  if [ -f "/usr/ucb/echo" ]; then
-    /usr/ucb/echo -n $*
-  else
-    if [ -f "/bin/printf" ]; then
-      /bin/printf "%s" %*
+  if [ -f "/usr/bin/printf" ] || [ -f "/bin/printf" ]; then
+    if [ "$2" ]; then
+      printf '%s' "$*"
     else
-      echo -n $*
+      printf "$1"
+    fi
+  else
+    if [ -f "/usr/ucb/echo" ]; then
+      /usr/ucb/echo -n "$*"
+    else
+      echo -n "$*"
     fi
   fi
+
+  return 0 # true
+}
+
+beep()
+{
+  nonlecho "\007"
+  return 0 # true
 }
 
 if [ "${UID}" = "0" ] || [ "`id -u 2>/dev/null`" = "0" ] || [ "${USER}" = "root" ] || [ "${LOGNAME}" = "root" ]; then
@@ -29,7 +41,7 @@ if [ "${UID}" = "0" ] || [ "`id -u 2>/dev/null`" = "0" ] || [ "${USER}" = "root"
   echo "WARNING WARNING WARNING WARNING WARNING"
   echo
   echo "This script should not be run as root!"
-  necho "Press ^C to abort, or enter to continue:"
+  nonlecho "Press ^C to abort, or enter to continue:"
   read line
   echo 
 fi
@@ -171,7 +183,7 @@ echo "If you have any installation-specific changes to make, you can edit"
 echo "the file '${OUTPUT}'."
 echo
 if [ "${firstTime}" ]; then
-  necho "Press ^C to abort, or enter to continue:"
+  nonlecho "Press ^C to abort, or enter to continue:"
   read line
 fi
 
@@ -221,6 +233,8 @@ echo "/* Generated: `date` */" >> ../slib/compiler_details.h
 echo  >> ../slib/compiler_details.h
 echo "#ifndef _COMPILER_DETAILS_H" >> ../slib/compiler_details.h
 echo "#define _COMPILER_DETAILS_H" >> ../slib/compiler_details.h
+echo "#undef BIG_ENDIAN" >> ../slib/compiler_details.h
+echo "#undef LITTLE_ENDIAN" >> ../slib/compiler_details.h
 ./endian '#define %s' >> ../slib/compiler_details.h || (err=$? && echo " + Error $err running endian test" && exit $err)
 echo >> ../slib/compiler_details.h
 echo "#endif /* _COMPILER_DETAILS_H */" >> ../slib/compiler_details.h
@@ -230,8 +244,8 @@ ${MAKE} stamp_combo >/dev/null || (err=$? && echo "Error $err compiling stamp_co
 cd ..
 
 if [ ! -d "install_tree" ]; then
-  echo "\007Warning: could not find install_tree. Did you forget to"
-  echo "unpack max-etc-3.03.tar.gz?"
+  beep
+  echo "Warning: could not find install_tree. Did you forget to unpack max-etc-3.03.tar.gz?"
   exit 1
 fi
 
