@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.9 2004/01/12 18:46:30 wmcbrine Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.10 2004/01/12 23:28:14 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command
@@ -1259,9 +1259,9 @@ static void near FinishControlDAT(void)
   */
 
 
-  fprintf(cdat, cdat_hello);
-  fprintf(cdat, cdat_news);
-  fprintf(cdat, cdat_goodbye);
+  fprintf(cdat, "HELLO\r\n");
+  fprintf(cdat, "NEWS\r\n");
+  fprintf(cdat, "GOODBYE\r\n");
   fprintf(cdat, "0\r\n");
 
   /* Now, finally update the "number of conferences" pointer */
