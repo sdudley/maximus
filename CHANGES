@@ -13,7 +13,8 @@ Sat May 24 00:50:45 EDT 2003 - Maximus/UNIX 3.03a
 		- Local console output is buggy (always one keystroke behind)
 		- fdcomm.so comm driver is buggy and does not speak telnet 
 		- fdcomm.so comm driver only allows one concurrent session
-		- MexVM crashes regularly on 64-bit arch. Don't know about 32-bit.
+		- MexVM crashes regularly on 64-bit arch. Don't know about
+		  32-bit.
 
 	Problems Fixed:
 		- Too many to mention.
@@ -24,3 +25,75 @@ Sat May 24 00:50:45 EDT 2003 - Maximus/UNIX 3.03a
 		  compiler Maximus control files during make install
 		- Added a simple ./configure script, to try and reduce
 		  confusion among users.
+
+Fri Jun  6 20:22:09 EDT 2003 - Maximus/UNIX 3.03b [pre-release]
+
+	- Incorporated 3.03a-patch1, which added 7-bit NVT (telnet capability)
+	  to the listening socket, and allowed multiple users at once. This
+	  capability requires a dynamic node number; max -n0.
+
+	- Incorporated FreeBSD & Linux build advice/fixes from Andrew Clarke
+	  and Bo Simonsen.
+
+	- Incorporated changes to msgapi from Bo Simonsen; some code in the
+  	  changes originates from The Husky Project. Changes should allow
+	  Squish bases to be binary-compatible with other software's Squish
+	  bases. Bo also removed an empty echomail kludge line in Maximus, 
+	  and added a local Seen-By.
+
+	- Modified comdll API to COMMAPI_VER=2.  This allows Maximus to make
+	  intelligent use of the Nagle algorithm, turning it on and off as 
+	  appropriate. COMMAPI_VER=2 also allows us to not send modem commands
+	  at communication handles which aren't attached to modems.
+
+	- Added BINARY-TRANSFER NVT option which should negotiate 8-bit clear
+	  NVT sessions with clients that support the option. This should allow
+	  users the ability to use download protocols. Feedback requested.
+
+	- Major work to configuration engine; should do a better job setting
+	  parameters and informing users of problems.
+
+	- Support for GNU Make 3.76 deprecated; 3.79+ is recommended.
+
+	- Added -fpermissive to g++ CXXFLAGS to quell warnings about non-
+	  comforming C++ code.
+
+	- Now builds under Solaris 8/SPARC; however, disk-based data structs
+	  are still backwards (wrong endian). This means that it may not work,
+	  and if it does it won't toss FTSC packets, nor will it interoperate
+	  with other Maximus/Squish products. Solaris-x86 may work fine, but
+	  it has not however been tested.
+
+	- Many other changes -- see CVS for complete details.
+
+Wed Jun 11 11:01:10 EDT 2003, Maximus/UNIX 3.03b [tagged release]
+
+	- More changes to allow support for Sparc and other BIG_ENDIAN 
+	  platforms. Data files are still not binary compatible with other
+	  systems, BEWARE. The Sparc port is at where it is right now in 
+	  order to help me debug the code body; My sun is fast and has a
+	  pleasant development environment, where as my old RedHat
+	  5.2, Alpha UDB box is NOT fast and does NOT have the 
+	  development environment I enjoy.
+
+	- Massive work done on configure script and Makefile rules, to allow
+	  a cleaner "from-scratch" build. Now we detect platform endianness 
+	  rather than trying to read it from C header files (this was causing 
+	  problems for Vince Koen and Andrew Clarke). Make configure_install
+	  should now be smart enough to rebuild all maximus control files
+	  into a useable state, but (theoretically) not overwrite anything
+	  you need.
+
+	- Changed struct _stamp to union _stampu and (hopefully) adjusted
+	  code appropriately. This should allow proper sizing, comparison,
+	  and endianness of the dos date/time stamps, union stamp_combo,
+	  etc. under non-x86 hardware.
+
+	- Fixed lack-of-responsiveness in keyboard/video driver in max -c
+	  and max -k modes, but introduced a bug where the cursor is often
+	  positioned one linefeed lower than it ought to be.
+
+	- Integrated patches from Andrew Clarke to allow building under
+	  FreeBSD.
+
+	- Many other changes; see CVS for details.

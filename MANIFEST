@@ -1,15 +1,17 @@
-CHANGES			What's changed?
 LICENSE			GNU Public Licence
+QUICKSTART		How to build and install (if you're lucky)
+CHANGES			What's changed?
 MANIFEST		This file
-VERSION			Date & Version information for this archive
+00-README.1ST		You'd know by now if you could follow directions
 btree			B-Tree C++ classes & test utilities
 comdll			Communications Drivers
 configure		Configuration shell script
+configuration-tests	Tests used by the configure script	
 dist			Handy things which max needs, but aren't max (e.g. archivers)
 install_tree		Sample configuration files and empty directories
 lang			Language modules
 legacy			Legacy pieces which aren't used by this distribution
-max			Maximus-CBCS in all its glory
+max			Maximus-CBCS, in all its glory
 mex			MEX VM, compiler, etc.
 msgapi			Squish message base API
 prot			Transfer Protocols
@@ -22,3 +24,4 @@ vars.mk.configure	Source for vars.mk; included by each Makefile
 vars_gcc.mk		Makefile help for GCC
 vars_linux.mk		Makefile help for Linux
 vars_sunos.mk		Makefile help for SunOS 4 and Solaris 2
+vars_freebsd.mk		Makefile help for FreeBSD
