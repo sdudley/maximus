@@ -85,7 +85,7 @@
               OPEN_FLAGS_NOINHERIT, 0L);
       return( rc? -1 : hf );
   }
-#elif defined(NT)
+#elif defined(NT) || defined(UNIX)
   #include <io.h>
   #include <fcntl.h>
   #include <sys/types.h>

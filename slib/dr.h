@@ -32,7 +32,9 @@
 #define _A_SYSTEM MSDOS_SYSTEM
 
 #else
-#include <direct.h>
+# ifndef UNIX
+#  include <direct.h>
+# endif
 #endif
 
 

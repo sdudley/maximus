@@ -108,11 +108,22 @@ static long CalcFreeSpace(long lSectorsPerCluster, long lBytesPerSector, long lF
 
     return CalcFreeSpace(lSectorsPerCluster, lBytesPerSector, lFreeClusters);
   }
+#elif defined(UNIX)
+/* Note: Probably need to use statvfs under SVR4 */
+#include <sys/vfs.h>
+
+long zfree(char *path)
+{
+  struct statfs sb;
+
+  if (statfs(path, &sb))
+    return 0; /* Can't stat -> no free space */
+
+  return sb.f_bavail * sb.f_bsize;
+}
 #else
   #error Unknown OS
 #endif
-
-
 
 static long CalcFreeSpace(long lSectorsPerCluster, long lBytesPerSector, long lFreeClusters)
 {

@@ -34,6 +34,8 @@
 #define LAST_KEY    0x87654321L
 #define KEY_SIZES   (sizeof(unsigned long)*2)
 
+int shutup=0; /* hack by wes to satisfy linking in maid -- normally defined in pmdmal.c for os/2?? */
+
 typedef struct
 {
   void *p;
@@ -83,9 +85,9 @@ void _stdc _dptabend(void)
 
   for (i=0; i < cPtrs; i++)
   {
-    fprintf(stderr, "Ptr=%08lx; from=%08lx\n",
+    fprintf(stderr, "Ptr=" POINTER_FORMAT "; from=%08lx\n",
             ptab[i].p,
-            ptab[i].ulFrom);
+            (long)ptab[i].ulFrom);
   }
 }
 

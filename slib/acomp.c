@@ -51,6 +51,10 @@ int _stdc AreaNameComp(byte *a1,byte *a2)
       return 1;*/
   }
 
+#if defined(UNIX)
+  return strcasecmp(a1, a2);
+#else
   return (stricmp(a1, a2));
+#endif
 }
 

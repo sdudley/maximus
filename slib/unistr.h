@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#if defined(__POSIX__)
+#if defined(__POSIX__) && !defined(UNIX)
   int stricmp(const char *s1, const char *s2);
   int strnicmp(const char *s1, const char *s2, const int n);
   char *strlwr(const char *s);

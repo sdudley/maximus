@@ -62,7 +62,15 @@ char * _fast make_fullfname(char *path)
 
   if (full[2] != PATH_DELIM)
   {
+#ifndef UNIX
     getcurdir((toupper(full[0])-'A')+1, dir);
+#else
+    {
+      char *s = getcwd(dir, sizeof(dir));
+      if (!s)
+        *dir = (char)0;
+    }
+#endif
 
     if (*dir)
     {
@@ -111,6 +119,7 @@ char * _fast make_fullfname(char *path)
   if (full[len=strlen(full)-1]=='.')
     full[len]='\0';
 
+  fixPathMove(full);
   return full;
 }
 

@@ -28,7 +28,11 @@
 
 #define sbofs2ptr(sb,ofs)   (char*)(((char *)(sb)) + (ofs))
 
+#if defined(UNIX)
+strbuf * sb_new(int sz)
+#else
 strbuf * sb_new(word sz)
+#endif
 {
   strbuf *sb;
 
@@ -142,6 +146,7 @@ word sb_inbuf(strbuf *sb, char *s, int icase)
   {
     char *p=sbofs2ptr(sb,at);
     len=(word)strlen(p)+1;
+
     if ((icase ? stricmp : strcmp)(s, p)==0)
       return at;
   }

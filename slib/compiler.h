@@ -17,6 +17,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#if defined(UNIX)
+# include "compiler_unix.h"
+#else
 /*# name=Compiler-determination and memory-model-determination routines
     name=Support for WATCOM C (DOS, OS/2 and 386 flat), Microsoft C
     name=(all memory models, DOS & OS/2), Turbo C 2.0, Turbo/Borland C++
@@ -361,3 +364,4 @@
 
 #endif /* ! __COMPILER_H_DEFINED */
 
+#endif /* ! UNIX */

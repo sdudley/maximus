@@ -25,6 +25,7 @@
 #define INCL_DOSERRORS
 
 #include <pos2.h>
+#include "typedefs.h"
 #include "compiler.h"
 
 #ifdef __WATCOMC__  /* handle DLL startup requirements for WC 8.5 */

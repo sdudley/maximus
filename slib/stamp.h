@@ -54,8 +54,8 @@ struct _stamp   /* DOS-style datestamp */
     word hh : 5;
 /*lint -restore */
 #endif
-  } time;
-};
+  } time __attribute__((packed));
+} __attribute__((packed));
 
 
 struct _dos_st

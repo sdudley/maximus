@@ -23,11 +23,20 @@
 #include "pwin.h"
 #include "comqueue.h"
 #include "compiler.h"
+#ifdef UNIX
+# include "wincomm.h"
+#endif
 
-#define COMMAPI  NTstdcall  /* Standard NT API calling convention */
+#ifndef UNIX
+# define COMMAPI  NTstdcall  /* Standard NT API calling convention */
+#else
+# define COMMAPI
+#endif
+
 /*#define DEFAULT_COMM_MASK   (EV_ERR | EV_RLSD | EV_RXFLAG)*/
 #define DEFAULT_COMM_MASK   (EV_ERR | EV_RLSD)
 
+#ifndef UNIX
 typedef struct
 {
   HANDLE h;                 /* Handle of the physical com port file */
@@ -50,12 +59,39 @@ typedef struct
 
   COMMTIMEOUTS ct;          /* Timeout values */
 } *HCOMM;
+#else
+# include <pthread.h>
+typedef struct
+{
+  int h;                   	/* Handle of the physical com port file */
+  struct sockaddr_in *saddr_p; /* Address were bound to, listening on */
+  int listenfd;
+  COMQUEUE cqTx;            	/* Transmit queue */
+  COMQUEUE cqRx;            	/* Receive queue */
+
+  pthread_t 		hRx, hTx, hMn;		/* Handles for read and write threads */
+  pthread_mutex_t 	*hevTx, *hevRx;		/* Semaphores for the tx/rx threads */
+  pthread_cond_t	*hevTxDone;         	/* Pending transmit has completed */
+  pthread_cond_t	*hevRxWait, *hevTxWait;  	/* Waiting for input/output buf to clear */
+  pthread_cond_t 	*hevRxPause, *hevTxPause;  	/* Stop transmitter for compause/resume */
+  pthread_cond_t	*hevRxDone;         	/* Pending receive has completed */
+  pthread_cond_t	*hevMonDone;        	/* Pending monitor has completed */
+
+  BOOL fDCD;                /* Current status of DCD */
+  volatile BOOL fDie;       /* True if we are trying to kill threads */
+  DWORD dwCtrlC;            /* How many ^C's have we received from user? */
+  volatile DWORD cThreads;  /* Number of active threads */
+
+  COMMTIMEOUTS ct;          /* Timeout values */
+  const char	*device;
+} *HCOMM;
+#endif
 
 #define COMM_PURGE_RX 1
 #define COMM_PURGE_TX 2
 #define COMM_PURGE_ALL  (COMM_PURGE_RX | COMM_PURGE_TX)
 
-BOOL COMMAPI ComOpenHandle(HANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf);
+BOOL COMMAPI ComOpenHandle(OSCOMMHANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf);
 BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf);
 BOOL COMMAPI ComClose(HCOMM hc);
 USHORT COMMAPI ComIsOnline(HCOMM hc);
@@ -70,7 +106,7 @@ DWORD COMMAPI ComInCount(HCOMM hc);
 DWORD COMMAPI ComOutCount(HCOMM hc);
 DWORD COMMAPI ComOutSpace(HCOMM hc);
 BOOL COMMAPI ComPurge(HCOMM hc, DWORD fBuffer);
-HANDLE COMMAPI ComGetHandle(HCOMM hc);
+OSCOMMHANDLE COMMAPI ComGetHandle(HCOMM hc);
 BOOL COMMAPI ComGetDCB(HCOMM hc, LPDCB pdcb);
 USHORT COMMAPI ComSetDCB(HCOMM hc, LPDCB pdcb);
 BOOL COMMAPI ComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE bDataBits, BYTE bStopBits);

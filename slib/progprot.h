@@ -119,7 +119,7 @@ unsigned long _fast long_to_ieee(unsigned long l);
 int _fast ieee_to_msbin(void *source,void *dest);
 int _fast msbin_to_ieee(void *source,void *dest);
 int _stdc AreaNameComp(byte *a1,byte *a2);
-void * _fast smalloc(unsigned size);
+void * _fast smalloc(unsigned int size);
 char * _fast sstrdup(char *s);
 char * _fast strocpy(char *d, char *s);
 int pascal kgetch(void);

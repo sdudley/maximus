@@ -20,6 +20,7 @@
 #ifndef __POS2_H_DEFINED
 #define __POS2_H_DEFINED
 
+#ifndef UNIX
 #ifdef __FLAT__
 /*#pragma pack(4)*/
 #pragma pack(1)
@@ -56,6 +57,7 @@
     #pragma library("os2.lib");
   #endif
 #endif
+#endif /* ! UNIX */
 
 #endif /* __POS2_H_DEFINED */
 

@@ -95,7 +95,7 @@
   void _stdc uninstall_24(void)
   {
   }
-#elif defined(NT)
+#elif defined(NT) || defined(UNIX)
   void _fast install_24(void)
   {
   }

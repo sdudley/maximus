@@ -21,7 +21,10 @@
 #include <stdlib.h>
 #include <dos.h>
 #include "prog.h"
+#undef offsetof
 #include "dmalloc.h"
+#undef offsetof
+#define offsetof(typename,var) (size_t)(&(((typename *)0)->var))
 #include "dmpvt.h"
 #include "fpseg.h"
 
@@ -89,3 +92,5 @@ void * cdecl dsmalloc(size_t size)
 
   return (void *)p;
 }
+
+

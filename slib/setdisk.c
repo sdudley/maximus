@@ -68,6 +68,11 @@ int _fast set_disk(int drive)
     return 26;
 }
 
+#elif defined(UNIX)
+int set_disk(int drive)
+{
+  return 26;
+}
 #else
   #error Unknown OS
 #endif

@@ -85,6 +85,37 @@
   }
 
   #endif /* DOS/8086 */
+#elif defined(UNIX)
+#include <sys/param.h>
+char *canon(char *orig, char *dest)
+{
+#warning interface ripe for buffer overrun
+  char *o, *d;
+  char rpath[MAXPATHLEN + 1];
+
+  if (!dest)
+    return orig;
+
+  if (orig[1] == ':')
+    orig += 2;
+
+  for (o=orig, d=dest; *o; o++, d++)
+  {
+    if (*o == '\\')
+      *d = '/';
+    else
+      *d = *o;
+  }
+
+  d = realpath(dest, rpath);
+  if (d && (d != dest))
+  {
+    rpath[sizeof(rpath) - 1] = (char)0;
+    strcpy(dest, d);
+  }
+
+  return dest;
+}
 #else
   #error Unknown OS
 #endif

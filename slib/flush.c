@@ -44,6 +44,11 @@
     FlushFileBuffers((HANDLE)fh);
   }
 
+#elif defined(UNIX)
+void flush_handle2(int fh)
+{
+  fsync(fh);
+}
 #elif !defined(__MSDOS__)  /* dos version defined in .asm file */
   #error Unknown OS
 #endif

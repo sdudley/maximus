@@ -534,6 +534,7 @@ main()
 
 void heapchk(void)
 {
+#if !defined(UNIX)
   int h = _heapchk();
   if( h != _HEAPOK && h != _HEAPEMPTY)
   {
@@ -546,5 +547,6 @@ void heapchk(void)
       *(char far *)0=0;
       exit(1);
   }
+#endif
 }
 

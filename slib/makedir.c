@@ -28,13 +28,15 @@
 #include "prog.h"
 #include "dr.h"
 
-int _fast make_dir(char *dir)
+int _fast make_dir(char *dirC)
 {
   char temp[PATHLEN],
        save[PATHLEN],
        *s;
-
+  char *dir;
   int x;
+
+  dir = fixPathDup(dirC);
 
   strcpy(save,dir);
 
@@ -57,11 +59,15 @@ int _fast make_dir(char *dir)
     *s++='\0';
 
     if (!direxist(temp) && mkdir(temp)==-1)
+    {
+      fixPathDupFree(dirC, dir);
       return -1;
+    }
 
     strcpy(temp,save);
   }
 
+  fixPathDupFree(dirC, dir);
   return (mkdir(temp));
 }
 

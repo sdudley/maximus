@@ -27,6 +27,8 @@
 #include "prog.h"
 #include "max.h"
 #include "userapi.h"
+#include "uni.h"
+#include "compiler.h"
 
 #ifdef OS_2
   #define INCL_DOS

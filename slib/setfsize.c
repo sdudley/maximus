@@ -76,7 +76,30 @@
     SetFilePointer((HANDLE)fd, size, NULL, FILE_BEGIN);
     return (!SetEndOfFile((HANDLE)fd));
   }
+#elif defined(UNIX)
+int setfsize(int fd, long size)
+{
+  off_t off;
+
+  if (!size)
+    return 1;
+
+  /* I'm guessing this extends, but doesn't truncate the file -- wes */
+  off = lseek(fd, size - 1, SEEK_SET);
+  if (off < 0)
+    return 1;
+
+  /* Force a one-byte write of nothing to insure file gets extended */    
+  write(fd, "", 1);
+  return 0;
+}
 #else
   #error Unknown OS
 #endif
+
+
+
+
+
+
 

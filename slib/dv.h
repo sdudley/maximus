@@ -48,12 +48,14 @@ extern char near Vid_Bios;
 #define SCROLL_up         0x06 /* Modes for VioScroll() */
 #define SCROLL_down       0x07
 
-#define MONOMEM     MK_FP(0xb000,0x0000)
-#define CGAMEM      MK_FP(0xb800,0x0000)
+#ifndef UNIX	/* Danger, Will Robinson, Danger! */
+# define MONOMEM     MK_FP(0xb000,0x0000)
+# define CGAMEM      MK_FP(0xb800,0x0000)
 
-#define NUM_COLS    (*((unsigned int far *)MK_FP(0x0000,0x044a)))
-#define BUFFER_LEN  (*((unsigned int far *)MK_FP(0x0000,0x044c)))
-#define PAGE_OFS    (*((unsigned int far *)MK_FP(0x0000,0x044e)))
+# define NUM_COLS    (*((unsigned int far *)MK_FP(0x0000,0x044a)))
+# define BUFFER_LEN  (*((unsigned int far *)MK_FP(0x0000,0x044c)))
+# define PAGE_OFS    (*((unsigned int far *)MK_FP(0x0000,0x044e)))
+#endif
 
 
 #define CBLACK     ((byte)0)

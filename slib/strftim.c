@@ -45,7 +45,7 @@ size_t cdecl strftime(char *string, size_t maxsize, const char *format, const st
 
   for (in=format,out=temp;*in;in++)
   {
-    if ((int)(out-(int)temp) >= maxsize)
+    if ((ssize_t)(out-(ssize_t)temp) >= (ssize_t)maxsize)
       break;
 
     if (*in=='%')

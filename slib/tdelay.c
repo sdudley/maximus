@@ -55,6 +55,11 @@
     Sleep((DWORD)msecs);
   }
 
+#elif defined(UNIX)
+void tdelay(int msecs)
+{
+  usleep(msecs * 1000);
+}
 #else
   #error Unknown OS
 #endif

@@ -38,7 +38,7 @@ void * cdecl dcalloc(size_t numitems,size_t size);
 void cdecl dfree(void *block);
 void * cdecl drealloc(void *block,size_t size);
 void _stdc dptab(int show_nondelta);
-void * cdecl dsmalloc(unsigned size);
+void * cdecl dsmalloc(size_t);
 char * cdecl dsstrdup(char *s);
 void heapchk(void);
 

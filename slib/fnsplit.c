@@ -40,6 +40,11 @@
 #define MAXPATH _MAX_PATH
 #endif
 
+#if defined(UNIX)
+# include <sys/param.h>
+# define MAXPATH MAXPATHLEN
+#endif
+
 #ifdef __TOPAZ__
 int         _RTLENTRYF _EXPFUNC fnsplit( const char * path,
                             char * drive,
@@ -70,7 +75,13 @@ int _stdc fnsplit(const char *path,char *drive,char *dir,char *name,char *ext)
   else if (drive)
     *drive='\0';
 
-  if ((s=strrchr(path,'\\')) != NULL)
+  s = strrchr(path, PATH_DELIM);
+#if defined(UNIX)
+  if (!s)
+    s = strrchr(path, '\\'); /* maybe dos path? */
+#endif
+
+  if (s != NULL)
   {
     if (dir)
     {
@@ -102,5 +113,12 @@ int _stdc fnsplit(const char *path,char *drive,char *dir,char *name,char *ext)
 
   return flag;
 }
+
+
+
+
+
+
+
 
 

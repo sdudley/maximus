@@ -20,6 +20,8 @@
 /* include file to be used wherever io.h or share.h would normally          *
  * be used.                                                                 */
 
+/* wes -- I'm pulling this wierd override. My code has at least SOME file locking semantics.. */
+#if 0
 #if defined(__POSIX__) || defined(__GNUC__)
   #include <unistd.h>
 
@@ -38,4 +40,8 @@
   #include <io.h>
   #include <share.h>
 #endif
+#endif
+
+#include <io.h>
+#include <share.h>
 

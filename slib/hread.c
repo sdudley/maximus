@@ -40,7 +40,10 @@
 
     while (size > 0)
     {
-      unsigned long ulMax=65536L - (word)(unsigned)(char near *)buf;
+      /* What's he trying to do here, some kind of aligned read? I'll guess near * = 16 bit ptr... - wes
+       * unsigned long ulMax=65536L - (word)(unsigned)(char near *)buf;
+       */
+      unsigned long ulMax = 65536L - ((long)buf & 0xFFFF);
       ulMax=min(ulMax, size);
       ulMax=min(ulMax, 32767L);
 
@@ -75,7 +78,9 @@
 
     while (size > 0)
     {
-      unsigned long ulMax=65536L - (word)(unsigned)(char near *)buf;
+      /* see h_read comment */
+      /* unsigned long ulMax=65536L - (word)(unsigned)(char near *)buf; */
+      unsigned long ulMax = 65536L - ((long)buf & 0xFFFF);
       ulMax=min(ulMax, size);
       ulMax=min(ulMax, 32767L);
 

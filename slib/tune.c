@@ -42,10 +42,9 @@
   }
 
 #else /* !(MSDOS && 386) */
-
   static char *delims=" \t\n";
 
-  #if defined(OS_2) || defined(NT)
+  #if defined(OS_2) || defined(NT) || defined(UNIX)
     void (_fast *noisefunc)(int, int) = noise;
   #elif defined(__MSDOS__)
     void (_fast *noisefunc)(int, int);

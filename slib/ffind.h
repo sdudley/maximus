@@ -28,6 +28,9 @@
 #include "typedefs.h"
 #include "stamp.h"
 #include "prog.h"
+#ifdef UNIX
+# include <glob.h>
+#endif
 
 cpp_begin()
 
@@ -84,7 +87,11 @@ struct _ffind
   #else
     unsigned short hdir;       /* directory handle from DosFindFirst */
   #endif
-
+#elif defined(UNIX)
+  char		szName[PATHLEN];
+  glob_t	globInfo;
+  size_t	globNext;
+  unsigned	uiAttrSearch;
 #endif
 };
 

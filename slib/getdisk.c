@@ -74,7 +74,25 @@ int _fast get_disk(void)
     return tolower(*szPath)-'a';
 }
 
+#elif defined(UNIX)
+/* wes - groan */
+int get_disk(void)
+{
+  return 0; /* Assume "c" drive for whatever reason */
+}
+
 #else
   #error Unknown OS
 #endif
+
+
+
+
+
+
+
+
+
+
+
 

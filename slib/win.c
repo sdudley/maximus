@@ -285,12 +285,18 @@ void _fast WinPutstr(VWIN *win,int Row,int Col,char *s)
 
 void _fast WinPuts(VWIN *win,char *s)
 {
+  if (!ValidWin(win))
+    return;
+
   while (*s)
     WinPutc(win,*s++);
 }
 
 void _fast WinPutsA(VWIN *win,char *s)
 {
+  if (!ValidWin(win))
+    return;
+
   while (*s)
     WinPutcA(win,*s++);
 }
@@ -827,7 +833,7 @@ void _fast WinSync(VWIN *win,int sync_cursor)
 
   if (hidden)
   {
-    #ifdef __MSDOS__
+    #if defined(__MSDOS__) || defined(UNIX)
     VidSyncDV();
     #endif
 
@@ -1012,19 +1018,28 @@ VWIN * _fast WinOpen(int row,int col,int height,int width,int border,int attr,in
 
 void _fast WinCursorHide(VWIN *win)
 {
-  win->flag |= WFLAG_NOCUR;
-  _WinPlaceCursor();
+  if (ValidWin(win))
+  {
+    win->flag |= WFLAG_NOCUR;
+    _WinPlaceCursor();
+  }
 }
 
 void _fast WinCursorShow(VWIN *win)
 {
-  win->flag &= ~WFLAG_NOCUR;
-  _WinPlaceCursor();
+  if (ValidWin(win))
+  {
+    win->flag &= ~WFLAG_NOCUR;
+    _WinPlaceCursor();
+  }
 }
 
 void _fast WinClose(VWIN * win)
 {
   VWIN *w;
+
+  if (!ValidWin(win))
+    return;
 
   if (ValidWin(win))
   {
@@ -1195,7 +1210,7 @@ static void near _WinUpdateShadows(VWIN *head)
     if (WinShowFunc)
       (*WinShowFunc)();
 
-  #ifdef __MSDOS__
+  #if defined(__MSDOS__) || defined(UNIX)
     VidSyncDV();
   #endif
   }

@@ -21,7 +21,7 @@
    Topaz also needs a coreleft since it doesn't come with one either. */
 
 #include <dos.h>
-#include "compiler.h"
+#include "prog.h"
 #include "alc.h"
 
 /* Only include coreleft if we're not using TC/DOS */
@@ -136,6 +136,20 @@
           return (r.x.bx * 16L);
         }
       #endif
+    #elif defined(UNIX)
+
+#include <unistd.h>
+
+unsigned long coreleft(void)
+{
+  long pagesAvail;
+  long pageSize;
+
+  pageSize = sysconf(_SC_PAGE_SIZE);
+  pagesAvail = sysconf(_SC_AVPHYS_PAGES);
+
+  return pageSize * pagesAvail;
+}
     #else
       #error unknown operating system
     #endif
@@ -180,4 +194,7 @@ int main(void)
   printf("core=%ld\n", coreleft());
 }
 #endif
+
+
+
 

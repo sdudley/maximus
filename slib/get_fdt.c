@@ -130,7 +130,7 @@
     id = __FileHandleIDs[handle];
   #endif
 #else
-  #error Don't know how to handle this!
+  #error Don\'t know how to handle this!
 #endif
 
     if (GetFileInformationByHandle((HANDLE)id, &fi))
@@ -143,6 +143,27 @@
 
     return 1;
   }
+#elif defined(UNIX)
+/* Quick hack by wes. Looks get_fdt populates a stamp combo
+ * with the file's timestamp, and returns 0 if okay. I
+ * wonder which timestamp that is? I think I'll use mtime.
+ */
+
+#include <sys/stat.h>
+
+int get_fdt(int fd, union stamp_combo *psc)
+{
+  struct stat sb;
+  struct tm   timebuf;
+
+  if (fstat(fd, &sb))
+    return 1;
+
+  if (TmDate_to_DosDate(localtime_r(&sb.st_mtime, &timebuf), psc))
+    return 1;
+
+  return 0;
+}
 #else
   #error Unknown OS
 #endif

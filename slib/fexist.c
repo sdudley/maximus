@@ -24,6 +24,11 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef UNIX
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <unistd.h>
+#endif
 
 #if (defined(__MSDOS__) || defined(OS_2) || defined(NT)) && !defined(__IBMC__)
 #include <dos.h>
@@ -49,32 +54,74 @@ main()
 
 int _fast fexist(char *filename)
 {
-  FFIND *ff;
-
-  ff=FindOpen(filename,0);
-
-  if (ff)
+#ifdef UNIX
+  if (strchr(filename, '?') || strchr(filename, '*'))
   {
-    FindClose(ff);
+#endif
+    FFIND *ff;
+
+    ff=FindOpen(filename,0);
+
+    if (ff)
+    {
+      FindClose(ff);
+      return TRUE;
+    }
+    else return FALSE;
+#ifdef UNIX
+  }
+  else
+  {
+    struct stat	sb;
+    char 	*fndup = fixPathDup(filename);
+    int 	i;
+
+    i = stat(fndup, &sb);
+    fixPathDupFree(filename, fndup);
+
+    if (i)
+      return FALSE;
+
     return TRUE;
   }
-  else return FALSE;
+#endif
 }
 
 long _fast fsize(char *filename)
 {
-  FFIND *ff;
-  long ret=-1L;
-
-  ff=FindOpen(filename, 0);
-
-  if (ff)
+#ifdef UNIX
+  if (strchr(filename, '?') || strchr(filename, '*'))
   {
-    ret=ff->ulSize;
-    FindClose(ff);
-  }
+#endif
+    FFIND *ff;
+    long ret=-1L;
 
-  return ret;
+    ff=FindOpen(filename, 0);
+
+    if (ff)
+    {
+      ret=ff->ulSize;
+      FindClose(ff);
+    }
+
+    return ret;
+#ifdef UNIX
+  }
+  else
+  {
+    struct stat	sb;
+    char 	*fndup = fixPathDup(filename);
+    int 	i;
+
+    i = stat(fndup, &sb);
+    fixPathDupFree(filename, fndup);
+
+    if (i)
+      return -1;
+
+    return sb.st_size;
+  }
+#endif
 }
 
 #if defined(__MSDOS__)
@@ -125,8 +172,17 @@ long _fast fsize(char *filename)
     char *tempstr;
     size_t l;
 
+#ifndef UNIX
     if (NULL == (tempstr=(char *)strdup(directory)))
       return FALSE;
+#else
+    if (!directory)
+      return FALSE;
+
+    tempstr = fixPathDup(directory);
+    if ((tempstr == directory) || (tempstr == (directory + 2)))
+      tempstr = strdup(directory);
+#endif
 
     /* Root directory of any drive always exists! */
 

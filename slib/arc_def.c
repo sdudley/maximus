@@ -74,6 +74,8 @@ again:
     if (eqstri(word1, "dos") || eqstri(word1, "nt"))
 #elif defined(NT)
     if (eqstri(word1, "dos") || eqstri(word1, "os2"))
+#elif defined(UNIX)
+    if (eqstri(word1, "dos") || eqstri(word1, "os2") || eqstri(word1, "nt"))
 #else
     #error invalid operating system
 #endif
@@ -84,6 +86,8 @@ again:
     else if (eqstri(word1, "os2"))
 #elif defined(NT)
     else if (eqstri(word1, "nt"))
+#elif defined(UNIX)
+    else if (eqstri(word1, "unix"))
 #else
     #error invalid operating system
 #endif
