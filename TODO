@@ -1,8 +1,10 @@
-$Id: TODO,v 1.3 2003/06/29 16:10:17 wesgarland Exp $
+$Id: TODO,v 1.4 2003/06/29 21:01:13 wesgarland Exp $
 
-This is a brief list of important tasks which need to completed, and who is looking at them. At some
-point, this file will be moved into the Attic and the bug tracker will get used. Or Bugzilla. Anybody
-feel like setting it up? For now, new tasks appear at the top, and disappear in the CHANGES file.
+This is a brief list of important tasks which need to completed, and who is looking at them.
+At some point, this file will be moved into the Attic and the bug tracker will get used. Or
+Bugzilla. Anybody feel like setting it up? 
+
+For now, new tasks appear at the top, and disappear into the CHANGES file.
 
 Programmer	Task Description					Status
 --------------- ------------------------------------------------------- --------------
