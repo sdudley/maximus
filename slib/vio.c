@@ -616,8 +616,13 @@ word VidOpen(int has_snow,int desqview,int dec_rows)
     initscr();             	/* init curses */
     start_color();
     printf("\033(U");
-    StartPairs();
+    InitPairs();
+
+/* If enabled wouldn't our keytable work */
+
+#if 0
     keypad(stdscr, TRUE);	/* enable keyboard mapping */
+#endif
     cbreak();			/* char-by-char instead of line-mode input */    
     nodelay(stdscr, TRUE);	/* Make getch() non-blocking */
     nonl();			/* No LF->CRLF mapping on output */
@@ -706,8 +711,8 @@ int VidWhereY(void)
 
 void VidHideCursor(void)
 {
-  if (stdscr)
-    curs_set(0);
+/*  if (stdscr)
+    curs_set(0);*/
 }
 
 void _fast VidSetAttr(char Attribute)
@@ -717,7 +722,15 @@ void _fast VidSetAttr(char Attribute)
 
 int VidGetch(int Row,int Col)
 {
-  return stdscr ? (mvinch(Col, Row) & A_CHARTEXT) : 0;
+   chtype c;
+
+   if(stdscr)
+   {
+	c = mvinch(Col, Row) & A_CHARTEXT;
+	return c;
+   }
+   else
+	return 0;
 }
 
 void VidPutch(int Row, int Col, char Char, char Attr)
@@ -785,7 +798,7 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
       newlineCount++;
 #endif
     tmpattr = cursesAttribute(attr);
-    chbuf[i] = ch | COLOR_PAIR(tmpattr) | A_BOLD;
+    chbuf[i] = ch | (COLOR_PAIR(tmpattr) | A_BOLD);
   }
 
 #ifdef DEBUG_WINBLITZ

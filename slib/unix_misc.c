@@ -1,8 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
+#include <errno.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 #include <sys/types.h>
+#include <string.h>
+#include <pty.h>
+#include <utmp.h>
+#include "process.h"
+#include "io.h"
+#include "prog.h"
+#include "ntcomm.h"
+
+#define unixfd(hc)      FileHandle_fromCommHandle(ComGetHandle(hc))
 
 /* Record locking code */
 

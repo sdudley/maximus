@@ -1,4 +1,4 @@
-#WHICH=telnet
+WHICH=telnet
 
 include ../vars.mk
 

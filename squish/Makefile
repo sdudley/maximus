@@ -3,7 +3,7 @@ include ../vars.mk
 MAINTARGETS := squish sqfix
 EXTRATARGETS:= sqpack sqconv sqinfo sqset sstat sqreidx
 MAINTARGETS += $(EXTRATARGETS)
-EXTRA_LOADLIBES += -lmax -lmsgapi -ldl
+EXTRA_LOADLIBES += -lmsgapi -ldl
 
 .PHONY: all install install_libs install_binaries
 

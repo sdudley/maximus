@@ -52,16 +52,15 @@ int VioWrtTTY(const char *string, size_t length, void *handle)
   return 0;  
 }
 
-void StartPairs()
+void InitPairs()
 {
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);    
     init_pair(3, COLOR_RED, COLOR_BLACK);    
-    init_pair(4, COLOR_WHITE, COLOR_BLACK);    
+    init_pair(4, COLOR_WHITE, COLOR_BLACK);
     init_pair(5, COLOR_CYAN, COLOR_BLACK);    
     init_pair(6, COLOR_MAGENTA, COLOR_BLACK);        
     init_pair(7, COLOR_YELLOW, COLOR_BLACK);        
-    init_pair(8, COLOR_WHITE, COLOR_BLACK);        
 }
 
 int cursesAttribute(unsigned char dosAttribute)
@@ -77,28 +76,28 @@ int cursesAttribute(unsigned char dosAttribute)
   switch (dosAttribute & (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED))
   {
     case FOREGROUND_BLUE:
-      ch = 1;
+      ch = PAIR_BLUE;
       break;
     case FOREGROUND_GREEN:
-      ch = 2;
+      ch = PAIR_GREEN;
       break;
     case FOREGROUND_RED:
-      ch = 3;
+      ch = PAIR_RED;
       break;
     case FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED:
-      ch = 4;
+      ch = PAIR_WHITE;
       break;
     case FOREGROUND_BLUE | FOREGROUND_GREEN:
-      ch = 5;
+      ch = PAIR_CYAN;
       break;
     case FOREGROUND_BLUE | FOREGROUND_RED:
-      ch = 6;
+      ch = PAIR_MAGENTA;
       break;
     case FOREGROUND_GREEN | FOREGROUND_RED:
-      ch = 7;
+      ch = PAIR_YELLOW;
       break;
     default:
-      ch = 8;
+      ch = PAIR_WHITE;
       break;
   }
 

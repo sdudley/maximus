@@ -278,6 +278,9 @@ int COMMAPI ComPeek(HCOMM hc)
 
 COMMHANDLE COMMAPI ComGetHandle(HCOMM hc)  
 {
+  if(!hc)
+    return NULL;
+
   return (COMMHANDLE)hc->h;
 }
 

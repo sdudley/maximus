@@ -27,9 +27,12 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.10 2003/11/23 13:14:45 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.11 2003/12/16 12:31:34 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.11  2003/12/16 12:31:34  paltas
+ * Fixed keys in local mode
+ *
  * Revision 1.10  2003/11/23 13:14:45  paltas
  * Forking still doesn't work properly, but ModemIO works, just without filetransfer
  *
@@ -83,7 +86,7 @@
 # error UNIX only!
 #endif
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.10 2003/11/23 13:14:45 paltas Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.11 2003/12/16 12:31:34 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -263,6 +266,8 @@ BOOL COMMAPI ComOpenHandle(COMMHANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD d
  *  @param	dwRxBuf		Receive buffer size
  *  @returns			TRUE on success
  */ 
+ 
+ 
 BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 {
   int			fd = -1; 	/**< file descriptor */

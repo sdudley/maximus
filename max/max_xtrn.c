@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_xtrn.c,v 1.7 2003/11/21 03:31:02 paltas Exp $";
+static char rcs_id[]="$Id: max_xtrn.c,v 1.8 2003/12/16 12:31:35 paltas Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_chat
@@ -629,8 +629,11 @@ int Outside(char *leaving,char *returning,int method,char *parm,
       erl=swapvp(args[0], args);
     else
   #endif
+  #ifndef UNIX
       erl=spawnvp(P_WAIT, args[0], args);
-
+  #else
+      erl=xxspawnvp(P_WAIT, args[0], args);
+  #endif
     IoResume();
 
 /*    if ((prm.flags & FLAG_watchdog) && !local && !in_wfc)

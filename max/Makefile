@@ -54,7 +54,8 @@ mexcall.obj     mexoutp.obj     mextime.obj     mexlang.obj     \
 mexrip.obj      mexstr.obj      mexmarea.obj    mexfile.obj     \
 mexclass.obj    mexuser.obj     mexinp.obj      mextag.obj      \
 mexffind.obj    mexxtrn.obj     mexrtl.obj      max_accs.obj    \
-m_input.obj     m_lines.obj     f_okay.obj      atexit.obj
+m_input.obj     m_lines.obj     f_okay.obj      atexit.obj	\
+xspawn.obj
 
 #callfos.obj
 

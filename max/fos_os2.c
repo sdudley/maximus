@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos_os2.c,v 1.6 2003/12/14 17:38:39 paltas Exp $";
+static char rcs_id[]="$Id: fos_os2.c,v 1.7 2003/12/16 12:31:35 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=FOSSIL interface routines (OS/2)
@@ -425,44 +425,5 @@ if (ComIsAModem(hcModem))
 
 #endif /* OS_2 || NT */
 
-#ifdef UNIX
-int spawnvp(int mode, const char *Cfile, char *const argv[])
-{
-    char tmp[1024];
-    int i, erl;
-    int pipearr[2];
-    pid_t pid;
-	    
-    memset(tmp, 0, 1024);
-		
-    for(i=0; argv[i]; i++)
-    {
-        strcat(tmp, argv[i]);
-        strcat(tmp, " ");
-    }
+/* works with output, but no input... */
 
-/*    pipearr[0] = FileHandle_fromCommHandle(ComGetHandle(hcModem));
-    pipearr[1] = FileHandle_fromCommHandle(ComGetHandle(hcModem));
-		    
-    pipe(pipearr);*/
-
-    close(0);
-    close(1);
- 
-    dup2(FileHandle_fromCommHandle(ComGetHandle(hcModem)), stdout);
-    dup2(FileHandle_fromCommHandle(ComGetHandle(hcModem)), stdin);
-
-    pid = fork();
-
-    if(pid == 0)
-    {
-	system(tmp);
-    }
-    else
-    {
-	waitpid(pid, 0, 0);
-    }
-    
-    return 0;
-}							    
-#endif 

@@ -15,16 +15,13 @@ static void noop(int sig)
   ;
 }
 
-/* The smoothy fork() trick doesn't work unfortionally, because of QWK expect the sh*t runs
-   realtime.. */
-
 int spawnvp(int mode, const char *Cfile, char *const argv[])
 {
   pid_t		pid;
   struct stat	sb;
   char		*file;
 
- signal(SIGCHLD, noop);
+  signal(SIGCHLD, noop);
 
   file = fixPathDup(Cfile);
 
@@ -36,7 +33,7 @@ int spawnvp(int mode, const char *Cfile, char *const argv[])
   else
     pid = 0; /* fake being a child */
 
-   if (pid) /* Parent */
+  if (pid) /* Parent */
   {
     if ((mode == P_NOWAIT) || (mode == P_NOWAITO))
     {
@@ -86,7 +83,13 @@ int spawnvp(int mode, const char *Cfile, char *const argv[])
 
   execvp(file, argv);
   fprintf(stderr, __FUNCTION__ ": could not spawn %s! (%s)\n", file, strerror(errno));
-  _exit(1);  
+  _exit(1);
 }
+
+
+
+
+
+
 
 
