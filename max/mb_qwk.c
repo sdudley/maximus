@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.5 2004/01/11 19:50:27 wmcbrine Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.6 2004/01/11 23:37:21 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command
@@ -310,12 +310,13 @@ static int near Create_Control_DAT(void)
 {
   char temp[PATHLEN];
   union stamp_combo sc;
-  static char ps_n[]="%s\n";
+  static char ps_n[]="%s\r\n";
 
   
   sprintf(temp, "%scontrol.dat", qwk_path);
     
-  if ((cdat=shfopen(temp, fopen_writep, O_RDWR | O_CREAT | O_NOINHERIT))==NULL)
+  if ((cdat=shfopen(temp, fopen_writep, O_RDWR | O_CREAT | O_BINARY |
+		    O_NOINHERIT))==NULL)
   {
     cant_open(temp);
     return -1;
@@ -329,7 +330,7 @@ static int near Create_Control_DAT(void)
   
   /* The name of this city - we don't know, so leave it blank */
   
-  fprintf(cdat, "\n");
+  fprintf(cdat, "\r\n");
 
   /* Phone number of this place */
 
@@ -338,11 +339,11 @@ static int near Create_Control_DAT(void)
 
   /* Name of the xxxxxxxx.QWK file */
 
-  fprintf(cdat,"0 ,%s\n", PRM(olr_name));
+  fprintf(cdat,"0 ,%s\r\n", PRM(olr_name));
 
   /* The current date */
 
-  fprintf(cdat,"%02d-%02d-%4d,%02d:%02d:%02d\n",
+  fprintf(cdat,"%02d-%02d-%4d,%02d:%02d:%02d\r\n",
                sc.msg_st.date.mo,
                sc.msg_st.date.da,
                sc.msg_st.date.yr+1980,
@@ -353,12 +354,12 @@ static int near Create_Control_DAT(void)
   /* Now add the user's name */
   
   strcpy(temp, usrname);
-  fprintf(cdat, "%s\n", cstrupr(temp));
+  fprintf(cdat, "%s\r\n", cstrupr(temp));
 
 
-  fprintf(cdat, "\n");  /* Name of custom menu to display; none in this case*/
-  fprintf(cdat, "0\n"); /* ?? Unknown. */
-  fprintf(cdat, "0\n"); /* ?? Unknown. */
+  fprintf(cdat, "\r\n");  /* Name of custom menu to display; none in this case*/
+  fprintf(cdat, "0\r\n"); /* ?? Unknown. */
+  fprintf(cdat, "0\r\n"); /* ?? Unknown. */
 
 
   /* Save this position in the file for later */
@@ -366,8 +367,8 @@ static int near Create_Control_DAT(void)
   cdatpos=ftell(cdat);
   
   /* Write the highest conference number - this will be updated later */
-
-  fprintf(cdat, "%-5u\n", 0);
+	
+  fprintf(cdat, "%-5u\r\n", 0);
   
   /* Following this is a list of all the conferences containing messages.   *
    * We write these out as we're searching through the areas, so leave      *
@@ -622,7 +623,7 @@ int QWK_Status(BROWSE *b, char *aname, int colour)
 
   /* Add the conference "number" to the CONTROL.DAT file */
 
-  fprintf(cdat, "%d\n", this_conf);
+  fprintf(cdat, "%d\r\n", this_conf);
 
 
   QWKAddToCdat(&mah);
@@ -657,7 +658,7 @@ static void near QWKAddToCdat(PMAH pmah)
    * handle brain-dead readers.                                             */
 
   temp[12]='\0';
-  fprintf(cdat, "%s\n", *temp ? temp : "Unknown");
+  fprintf(cdat, "%s\r\n", *temp ? temp : "Unknown");
 }
 
 
@@ -1264,12 +1265,12 @@ static void near FinishControlDAT(void)
   fprintf(cdat, cdat_hello);
   fprintf(cdat, cdat_news);
   fprintf(cdat, cdat_goodbye);
-  fprintf(cdat, "0\n");
+  fprintf(cdat, "0\r\n");
 
   /* Now, finally update the "number of conferences" pointer */
 
   fseek(cdat, cdatpos, SEEK_SET);
-  fprintf(cdat,"%-5u\n", num_conf ? num_conf-1 : 0);
+  fprintf(cdat,"%-5u\r\n", num_conf ? num_conf-1 : 0);
 
   fclose(cdat);
 }
@@ -1487,7 +1488,7 @@ static void near GenerateStupidFiles(void)
   
   sprintf(fname, "%sDOOR.ID", qwk_path);
   
-  if ((fp=fopen(fname, "w")) != NULL)
+  if ((fp=fopen(fname, "wb")) != NULL)
   {
     fprintf(fp, door_id_name, us_short);
     fprintf(fp, door_id_ver, version);
