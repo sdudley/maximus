@@ -104,14 +104,24 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
   COMMHANDLE    h = NULL;
   struct termios tios;
 
-  if(!strncasecmp(pszDevice, "Com", 3))
+  memset(filename, 0, 128);
+
+/*  if(!strncasecmp(pszDevice, "Com", 3))
   {
     pszDevice += 3;
+    sprintf(filename, "/dev/ttyS%d", atoi(pszDevice)-1);
   }
-
-  sprintf(filename, "/dev/ttyS%d", (atoi(pszDevice)-1));
+  else
+  {*/
+    strcpy(filename, "/dev/modem");
+//  }
 
   fd = open(filename, O_RDWR | O_NDELAY);
+  
+  if(fd == -1)
+  {
+    exit(0);
+  }
   
   fcntl (fd, F_SETFL, FASYNC);
 
@@ -291,6 +301,7 @@ RAISE_DTR (HCOMM hc)
 {
   struct termios tty;
 
+  LOWER_DTR(hc);
   tcgetattr (hc->listenfd, &tty);
   cfsetospeed (&tty, B115200);
   cfsetispeed (&tty, B115200);

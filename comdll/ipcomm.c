@@ -27,9 +27,12 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.9 2003/11/15 23:24:57 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.10 2003/11/23 13:14:45 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.10  2003/11/23 13:14:45  paltas
+ * Forking still doesn't work properly, but ModemIO works, just without filetransfer
+ *
  * Revision 1.9  2003/11/15 23:24:57  paltas
  * Changed a bit to gaim comb. with modemio
  *
@@ -80,7 +83,7 @@
 # error UNIX only!
 #endif
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.9 2003/11/15 23:24:57 paltas Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.10 2003/11/23 13:14:45 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -357,8 +360,8 @@ BOOL COMMAPI ComClose(HCOMM hc)
 
   if(hc->device)
      free((char *)hc->device);
-/*  if(hc)
-     free(hc);*/
+  if(hc)
+     free(hc);
 
   return TRUE;
 }
@@ -564,7 +567,6 @@ static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
 
   if (hc->telnetOptions & mopt_TRANSMIT_BINARY)
     goto parse_iac;
-//    return bytesRead;
 
   telnet_read_reread:
   if (bytesRead <= 0)
@@ -644,6 +646,9 @@ static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
   
   parse_iac:
   /* Code below here assumes bytesRead, count >= 1 */
+  if(count <= 0)
+    return bytesRead;
+  
   for (iac = memchr(buf, cmd_IAC, bytesRead);
        bytesRead > 0 && iac && (iac < (buf + bytesRead));
        iac = memchr(iac + 1, cmd_IAC, bytesRead))
@@ -936,7 +941,7 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
   if (select(hc->listenfd + 1, &rfds, NULL, NULL, &tv) > 0)
   {
     int addrSize = sizeof(*hc->saddr_p);
-    int fd;
+    int fd = -1;
 
     fd = accept(hc->listenfd, (struct sockaddr *)&hc->saddr_p, &addrSize);
     if (fd >= 0)
@@ -950,12 +955,16 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
        * This technique probably won't cause us much grief, except
        * maybe on a very busy system.
        */
+#ifdef FORKING
+      close(hc->listenfd);	
 
-      close(hc->listenfd);
-/*      if (fork())
-	_exit(0);	/* _exit -> no atexit cleanups! */ /* This should NOT be changed to exec; fd limit - Wes */
-
+      if (fork())
+      {
+        _exit(0);	/* _exit -> no atexit cleanups! */ /* This should NOT be changed to exec; fd limit - Wes */
+      }
+      
       logit("#pid %i accepted incoming connection and became pid %i", (int)parentPID, (int)getpid());
+#endif
 
       /* Set accepted descriptor and other misc com parameters */
       CommHandle_setFileHandle(hc->h, fd);
@@ -990,8 +999,10 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
        * into waking up faster.
        */
       hc->peekHack = '\n';
+
     }
   }
+
   return hc->fDCD ? 1 : 0;
 }
 
@@ -1098,7 +1109,7 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
   if (hc->burstMode)
   {
     tv.tv_sec = 0;
-    tv.tv_usec = 0;
+    tv.tv_usec = 1;
   }
   else
   {
