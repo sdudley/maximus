@@ -19,17 +19,24 @@
 
 #ifndef _TYPEDEFS_H
 #define _TYPEDEFS_H
-
-/* In theory, these are the only type-related defines
- * to change when switching hardware platforms.
+/**  @file typedefs.h Portable type definitions.
+ * 
+ *  In theory, these are the only type-related defines
+ *  to change when switching hardware platforms.
  *
- * The need for these definitions may seem odd,
- * until you realize that on some platforms,
- * long is 64 bits; on others it is 32... etc.
+ *  The need for these definitions may seem odd,
+ *  until you realize that on some platforms,
+ *  long is 64 bits; on others it is 32... etc.
  *
- * These should work for Sparc, Alpha, and 
- * probably others.
+ *  These definitions should be used when representing
+ *  data which is written to disk or must go over the wire;
+ *  otherwise, native types should be used.
+ *
+ *  These definitions should work for Sparc 32/64, Alpha, x86,
+ *  and probably others. Sparc 64 and Alpha are both LP64.
  */
+#include <sys/types.h>
+
 #define INT8		char
 #define INT16		short
 #define INT32		int
@@ -97,12 +104,4 @@ typedef signed long	slong;
 typedef	unsigned int	bit;
 
 #include "hntypes.h"
-
 #endif /* _TYPEDEFS_H */
-
-
-
-
-
-
-
