@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.3 2003/06/05 23:17:22 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -379,6 +379,10 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
               if (config.flag & FLAG_KILLFWD)
                 msg.attr |= MSGKILL;
             }
+
+            /* Bo: we also add via lines to messages which come from here */
+	    if (msg.attr & MSGLOCAL)
+	      AddViaLine(msgbuf, ctrl);
 
             front=msgbuf;
 
