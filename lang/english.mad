@@ -1,4 +1,4 @@
-; $Id: english.mad,v 1.2 2003/06/04 22:55:27 wesgarland Exp $
+; $Id: english.mad,v 1.3 2003/06/11 19:44:12 wesgarland Exp $
 ;
 ; ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 ; ³                             ENGLISH.MAD                             ³
@@ -39,7 +39,7 @@
 
 ; This section starts off with several macro definitions:
 
-#define VER             3.02
+#define VER             3.03
 #define BETA_TEST
 #define YEAR            1989, 2003
 
@@ -1498,10 +1498,12 @@ ued_need_more_lines=    LRED "Your screen must be at least 24 lines long to use 
 
 :m_browse
 
-br_area_verbose=        LGREEN "BROWSE - Message search & retrieval\n\n" YELLOW "Which areas:\n\n" YELLOW "C" GRAY ")urrent area\n" YELLOW "T" GRAY ")agged areas (selected through T)ag command - default)\n" YELLOW "W" GRAY ")ildcard\n" YELLOW "G" GRAY ")roup\n" YELLOW "L" GRAY ")ocal & netmail areas only\n" YELLOW "A" GRAY ")ll areas\n" YELLOW "Q" GRAY ")uit\n\n";
+br_area_verbose=        LGREEN "BROWSE - Message search & retrieval\n\n" YELLOW "Which areas:\n\n" YELLOW "C" GRAY ")urrent area\n" YELLOW "T" GRAY ")agged areas (selected through T)ag command - default)\n" YELLOW "W" GRAY ")ildcard\n" YELLOW "G" GRAY ")r
+oup\n" YELLOW "L" GRAY ")ocal & netmail areas only\n" YELLOW "A" GRAY ")ll areas\n" YELLOW "Q" GRAY ")uit\n\n";
 br_area=                "Area type: " LBRACKET "C)urrent, T)agged (default), W)ildcard, G)roup, L)ocal, A)ll, Q)uit" RBRACKET ": ";
 br_areak=               "CTWGALQ?";
-br_type_verbose=        YELLOW "Type of messages to show:\n\n" YELLOW "A" GRAY ")ll messages\n" YELLOW "N" GRAY ")ew messages (everything since last read - default)\n" YELLOW "Y" GRAY ")our mail (messages addressed to YOU)\n" YELLOW "S" GRAY ")earch (specify to/from/subj/body and keywords)\n" YELLOW "F" GRAY ")rom a specified msg# to the last message\n" YELLOW "Q" GRAY ")uit\n" YELLOW "?" GRAY ")help\n\n";
+br_type_verbose=        YELLOW "Type of messages to show:\n\n" YELLOW "A" GRAY ")ll messages\n" YELLOW "N" GRAY ")ew messages (everything since last read - default)\n" YELLOW "Y" GRAY ")our mail (messages addressed to YOU)\n" YELLOW "S" GRAY ")earch (spec
+ify to/from/subj/body and keywords)\n" YELLOW "F" GRAY ")rom a specified msg# to the last message\n" YELLOW "Q" GRAY ")uit\n" YELLOW "?" GRAY ")help\n\n";
 br_type=                "Type: " LBRACKET "N)ew msgs, A)ll, Y)our mail, S)earch, F)rom msg#, Q)uit, ?)help" RBRACKET ": ";
 br_typek=               "ANYFS?Q";
 br_ty_from=             "\nStart displaying at which msg# (\"=\" for current): ";
