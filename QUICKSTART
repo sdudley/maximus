@@ -22,19 +22,27 @@ Feedback is welcome, particularly in the form of new-style context diffs.
    versions of Maximus and Squish for UNIX, you can check them
    out from the CVS on SourceForge.
 
+   # wget http://wes.zapto.org/~wes/maximus/max-unix-stable.tar.gz
+
+   or
+
    # cvs -z3 -d:pserver:anonymous@cvs.maximus.sourceforget.net:/cvsroot/maximus co maximus
 
-2. Untar the max-3.03-etc.tar.gz into the same directory as
-   as your cvs/maximus or the top-level directory created
-   while unpacking your Maximus source distribution (i.e., 
-   the directory where you found this file)
+2. Untar the max-3.03-etc.tar.gz from the same directory as
+   as the source distribution, or from the same directory
+   you issued your CVS checkout. This will unpack the
+   install_tree in maximus/, which contains all the config
+   files Maximus needs (*.mec, *.ctl, etc).
 
+   # wget http://wes.zapto.org/~wes/maximus/max-3.03-etc.tar.gz
+   # tar -zxvf max-3.03-etc.tar.gz
    # cd maximus
-   # tar -zxvf ../max-3.03-etc.tar.gz
 
 3. Edit install_tree/etc/max.ctl, and customize it to suit your
    needs. At the very least, put in your own name and pick a
    pick a name for your BBS.
+
+   # vi install_tree/etc/max.ctl
 
 4. Run the configure program. The default installation path is
    /var/max -- to change this, run ./configure --prefix=/new/path
