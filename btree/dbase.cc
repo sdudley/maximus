@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: dbase.cc,v 1.2 2003/06/11 17:21:38 wesgarland Exp $";
+static char rcs_id[]="$Id: dbase.cc,v 1.3 2004/01/11 19:58:18 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 #ifdef OS_2
@@ -804,7 +804,7 @@ int CPPEXPORT DBASE::remove(void **ppvFields)
 
   rc=ppvFields && _lookup(ppvFields, 0, pvFoundRec, &nn, 0, TRUE, 0, 0);
 
-  delete [] pvFoundRec;
+  delete [] (char *)pvFoundRec;
 
   if (!rc)
     return FALSE;

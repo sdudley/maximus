@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: trackc.cc,v 1.1 2002/10/01 17:49:31 sdudley Exp $";
+static char rcs_id[]="$Id: trackc.cc,v 1.2 2004/01/11 19:58:18 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -34,7 +34,7 @@ TRK BEXPENTRY TrkOpen(char *szName, unsigned fNewFile)
   grow_handles(40);
 
   TRK t=new TRACKER;
-
+  
   // Try to open the tracking file with the specified parameters
 
   if (t && !t->open(szName, fNewFile))
@@ -42,7 +42,7 @@ TRK BEXPENTRY TrkOpen(char *szName, unsigned fNewFile)
     delete t;
     t=NULL;
   }
-
+  
   return t;
 }
 
