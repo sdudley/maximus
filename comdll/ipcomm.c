@@ -27,9 +27,12 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.8 2003/11/15 23:20:19 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.9 2003/11/15 23:24:57 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.9  2003/11/15 23:24:57  paltas
+ * Changed a bit to gaim comb. with modemio
+ *
  * Revision 1.8  2003/11/15 23:20:19  paltas
  * Speed up telnet, and made Zmodem transfer working.. Dunno about X/Y
  * modem..
@@ -77,7 +80,7 @@
 # error UNIX only!
 #endif
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.8 2003/11/15 23:20:19 paltas Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.9 2003/11/15 23:24:57 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1528,3 +1531,7 @@ BOOL COMMAPI ComIsAModem(HCOMM hc)
 
 
 
+void RAISE_DTR(HCOMM hc)
+{}
+void LOWER_DTR(HCOMM hc)
+{}
