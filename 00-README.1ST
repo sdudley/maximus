@@ -80,13 +80,20 @@ A: Squish is a good canditate for that description. Bo Simonsen has
    Maximus seems to work, but the Mex VM is BROKEN. At least under
    Alpha. I'd recommend just removing all your mex files.
 
-Q: How do I install Squish?
-A: cp -rp sample/squish/var /var
+Q: How do I install Squish and Maximus?
+A: ./configure
+   - make build
+   - make install
+
+   This is actually covered a little in-depth in the QUICKSTART file.
+ 
+Q: How do I install just Squish?
+A: cp -rp install_tree/spool install_tree/etc /var/max
    ./configure
    make squish
-   make squish install
+   make squish_install
 
-Q:  How do I install Maximus?
+Q:  How do I install just Maximus?
 A1: (Old Answer)
     - Run the DOS installer (the unix installer is screwed)
     - Copy the files to /var/max somehow. I installed over a SAMBA share, 
@@ -96,9 +103,10 @@ A1: (Old Answer)
    
 A2: (New Answer)
     ./configure
+    - cp -rp install_tree/* /var/max
+    - rm /var/max/etc/squish.cfg
     - make max
     - make max_install
-    - pray
 
 Q: Where can I expect problems with this release?
 A: Everywhere!
