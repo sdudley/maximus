@@ -137,7 +137,7 @@ extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
 #else
 extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
                                   "Development by Scott Dudley, Peter Fitzsimmons and David Nugent.\n"
-				  "UNIX port by Wes Garland.\n\n"
+				  "UNIX port by Wes Garland, Bo Simonsen and R.F. Jones.\n\n"
 
 			LRED "Maxmius is no longer supported by Lanius Corporation, however the source\n"
 			LRED "code for Maximus has been made freely available under the terms of the\n"
@@ -147,8 +147,8 @@ extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
 			YELLOW "at http://maximus.sourceforge.net/, or by FidoNet FREQ at x:xxx/xxx\n"
 			LRED "\n"
 			LRED "For technical support, please post a message on the FidoNet MUFFIN echo.\n"
-			LRED "Alternatively, you may contact Wes Garland via FidoNet routed netmail at\n"
-			LRED "1:249/128, or via internet e-mail as wes@ninja250.kingston.net\n\n");
+			LRED "Alternatively, you may contact Bo Simonsen via FidoNet routed netmail at\n"
+			LRED "2:236/100, or via internet e-mail as bo@geekworld.dk\n\n");
 #endif
                        
 extrn char fopen_read[] IS("r");     /* Flags for using fopen() calls */

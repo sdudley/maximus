@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_misc.c,v 1.10 2004/01/28 06:38:10 paltas Exp $";
+static char rcs_id[]="$Id: max_misc.c,v 1.11 2004/06/06 21:48:51 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -1165,7 +1165,6 @@ void Check_Time_Limit(unsigned long *input_timeout, int *timer2)
       Time5Left();
   }
 
-#if 0
   /* Make sure the user didn't fall asleep... */
   if (input_timeout && timeup(*input_timeout) &&
       (!local || (local && (prm.flags2 & FLAG2_ltimeout))) &&
@@ -1185,7 +1184,6 @@ void Check_Time_Limit(unsigned long *input_timeout, int *timer2)
       *timer2=TRUE;
     }
   }
-  #endif
 }
 
 /* Returns TRUE if the given area is tagged */

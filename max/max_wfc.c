@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_wfc.c,v 1.12 2004/04/09 21:56:32 paltas Exp $";
+static char rcs_id[]="$Id: max_wfc.c,v 1.13 2004/06/06 21:48:51 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -83,7 +83,7 @@ void Wait_For_Caller(void)
       WFC_IdleInternal();
       if(local || kexit|| do_next_event)
         break;
-      usleep(250000);
+      //usleep(250000);
     }
     ComTxWait(hcModem, 1000);
     goto letsgo;
@@ -433,6 +433,12 @@ static int near Process_Modem_Response(char *rsp)
       Mdm_Flow(FLOW_ON);
     }
 
+    #ifdef UNIX
+	/* On UNIX we need to tell the comm api that our device
+	   has a carrier else WFC will be dancing with "No carrier" */
+	mdm_nowonline();
+    #endif
+
     if (!carrier())
     {
       logit(log_byebye);
@@ -553,15 +559,20 @@ static int near WFC_IdleInternal(void)
   
 
   /* If it's time to reinitialize the modem, do so now. */
-  
-  if (timeup(init_tmr))
+#if (COMMAPI_VER > 1)  
+  if(ComIsAModem(hcModem))
   {
-    WFC_Init_Modem();
-    Update_Status(wfc_waiting);
-    init_tmr=timerset(INIT_TIME);
+    if (timeup(init_tmr))
+    {
+	WFC_Init_Modem();
+        Update_Status(wfc_waiting);
+	init_tmr=timerset(INIT_TIME);
+    }
+  
+    Check_For_Message(NULL, NULL);
   }
-
-  Check_For_Message(NULL, NULL);
+#endif
+  
   Giveaway_Slice();
 #if (COMMAPI_VER > 1)
   if(ComIsAModem(hcModem))

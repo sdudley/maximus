@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos_os2.c,v 1.11 2004/01/27 21:00:29 paltas Exp $";
+static char rcs_id[]="$Id: fos_os2.c,v 1.12 2004/06/06 21:48:51 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -174,6 +174,11 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.11 2004/01/27 21:00:29 paltas Exp $";
     int mdm_avail()
     {
       return !local && ComInCount(hcModem);
+    }
+
+    int mdm_nowonline()
+    {
+	ModemComIsOnlineNow(hcModem);
     }
 
     int mdm_baud(int bod)

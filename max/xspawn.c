@@ -32,6 +32,7 @@ int xxspawnvp(int mode, const char *Cfile, char *const argv[])
   int i;
   char tmp[1024];
   char buffer[80];
+  struct termios tios;
 
   signal(SIGCHLD, noop);
 
@@ -82,56 +83,43 @@ int xxspawnvp(int mode, const char *Cfile, char *const argv[])
     }
   }
 
-  if (mode == P_NOWAITO)
+  else /* child */
   {
-    /* Parent will not reap -- use double fork trick to avoid zombies */
 
-    pid = getpid();
-    signal(SIGCHLD, SIG_IGN);
-    (void)setpgid(pid, pid); 
-    if (fork())
-      _exit(0);
-  }
+    if (mode == P_NOWAITO)
+    {
+	/* Parent will not reap -- use double fork trick to avoid zombies */
 
-  if(!hcModem)
-    local = TRUE;
+	pid = getpid();
+	signal(SIGCHLD, SIG_IGN);
+	(void)setpgid(pid, pid); 
+	if (fork())
+        _exit(0);
+    }
 
-  if(!local)
-  {
-    fd = unixfd(hcModem);
-    dup2(fd, 0);
-  }
+    if(!hcModem)
+       dup2(unixfd(hcModem), 0);
   
-  memset(tmp, 0, 1024);
+    memset(tmp, 0, 1024);
     
-  for(i=0; argv[i]; i++)
-  {
-      strcat(tmp, argv[i]);
-      strcat(tmp, " ");
-  }
-				  
-  fp = popen(tmp, "r");
+    for(i=0; argv[i]; i++)
+    {
+	strcat(tmp, argv[i]);
+        strcat(tmp, " ");
+    }
+		  
+    fp = popen(tmp, "r");
  
-  if(!fp)
-    exit(1);
+    if(!fp)
+	exit(1);
   
-  while(fgets(buffer, 80, fp))
-  {
-    if(!local)
-    {
-        ComWrite(hcModem, buffer, strlen(buffer));
-        ComWrite(hcModem, "\n", 1);
-    }
-    else
-    {
-        VioWrtTTY(buffer, strlen(buffer), NULL);
-        VioWrtTTY("\n", 1, NULL);
-    }
+    while(fgets(buffer, 80, fp))
+    	Puts(buffer);
+
+    pclose(fp);																					
+
+    _exit(1);
   }
-
-  pclose(fp);																					
-
-  _exit(1);
 }
 
 

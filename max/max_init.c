@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_init.c,v 1.6 2004/01/28 06:38:10 paltas Exp $";
+static char rcs_id[]="$Id: max_init.c,v 1.7 2004/06/06 21:48:51 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -890,6 +890,9 @@ void Local_Beep(int n)
     #ifdef OS_2
       DosBeep(300, 250);
       DosSleep(100);
+    #elif UNIX
+      beep();
+      sleep(1);
     #else
       fputc('\a', stdout);
     
