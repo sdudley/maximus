@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
       printf(output_format, "BIG_ENDIAN");
       break;
     case 0x78563412:
-      printf(output_format, "-DLITTLE_ENDIAN");
+      printf(output_format, "LITTLE_ENDIAN");
       break;
     default:
       fprintf(stderr, "Error: Unknown endianness; %02x,%02x,%02x,%02x = %08x\n", 
