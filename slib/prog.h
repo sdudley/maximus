@@ -206,7 +206,9 @@ extern "C" {
 #endif
 
 
+#if !defined(UNIX) || !defined(HAVE_TIMER_T)
 typedef long timer_t;
+#endif
 
 #define REGISTER
 

@@ -61,7 +61,7 @@
     else return (int)bytesWrite;
   }
 
-#elif defined(NT)
+#elif defined(NT) || defined(UNIX)
   #include "prog.h"
   #include <io.h>
   #include <fcntl.h>

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: editcall.c,v 1.1 2002/10/01 17:57:19 sdudley Exp $";
+static char rcs_id[]="$Id: editcall.c,v 1.2 2003/06/05 23:27:31 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Number-of-callers fudging utility
@@ -54,7 +54,7 @@ int _stdc main(int argc,char *argv[])
     return 1;
   }
 
-  sprintf(temp,"BBSTAT%02x.BBS",atoi(argv[1]));
+  sprintf(temp,"etc/bbstat%02x.bbs",atoi(argv[1]));
 
   if ((bfile=open(temp,O_RDWR | O_BINARY))==-1)
   {

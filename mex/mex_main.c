@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mex_main.c,v 1.1 2002/10/01 17:53:51 sdudley Exp $";
+static char rcs_id[]="$Id: mex_main.c,v 1.2 2003/06/05 23:26:50 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MEX_INIT
@@ -56,12 +56,13 @@ static void near usage(void)
   exit(0);
 }
 
+int yydebug;
+
 int _stdc main(int argc,char **argv)
 {
   char outfile[PATHLEN];
   long lStackSize;
   long lHeapSize;
-  extern int yydebug;
   char **av;
   char *delim;
   char *dot;

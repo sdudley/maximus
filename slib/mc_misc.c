@@ -21,6 +21,7 @@
     credit=Thanks to Peter Fitzsimmons for this module
 */
 
+#ifndef UNIX
 #include <errno.h>
 #include <conio.h>
 #include <stdio.h>
@@ -50,3 +51,4 @@ int _fast unlock(int fh, long offset, long len)
         return(-1);
 }
 
+#endif

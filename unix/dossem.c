@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-# include <sys/stat.h>
+#include <sys/stat.h>
 #if defined(LINUX)
 # include <sys/file.h>
 #else
@@ -9,6 +9,7 @@
 #endif
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 #include <string.h>
 #include "dossem.h"
 

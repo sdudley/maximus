@@ -130,7 +130,7 @@
     id = __FileHandleIDs[handle];
   #endif
 #else
-  #error Don\'t know how to handle this!
+  #error "Don't know how to handle this!"
 #endif
 
     if (GetFileInformationByHandle((HANDLE)id, &fi))
