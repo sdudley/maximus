@@ -20,9 +20,12 @@
 /**
  * @file	s_hole.c
  * @author	Scott J. Dudley
- * @version	$Id: s_hole.c,v 1.4 2003/07/26 00:03:58 rfj Exp $
+ * @version	$Id: s_hole.c,v 1.5 2003/09/03 13:51:33 paltas Exp $
  *
  * $Log: s_hole.c,v $
+ * Revision 1.5  2003/09/03 13:51:33  paltas
+ * /Linux instead of /UNIX on Linux machines
+ *
  * Revision 1.4  2003/07/26 00:03:58  rfj
  * Squish (and MSGAPI) updates as suggested by Bo Simonsen, including correcting
  * a \ to / for UNIX systems, changes concerning packet file name case, via line
@@ -40,7 +43,7 @@
 #ifndef __GNUC__
 #pragma off(unreferenced)
 #endif
-static __attribute__((unused)) char rcs_id[]="$Id: s_hole.c,v 1.4 2003/07/26 00:03:58 rfj Exp $";
+static __attribute__((unused)) char rcs_id[]="$Id: s_hole.c,v 1.5 2003/09/03 13:51:33 paltas Exp $";
 #ifndef __GNUC__
 #pragma on(unreferenced)
 #endif
@@ -684,7 +687,7 @@ void HoleMoveOut(void)
     if (fexist(GetHpktName(hp->name)))
     {
       MakeOutboundName(SblistToNetaddr(&hp->to, &addr), newname);
-      (void)sprintf(newname+strlen(newname), "%cut", flavour);
+      (void)sprintf(newname+strlen(newname), "%cut", tolower(flavour));
 
       if (BusyFileExist(&addr))
       {

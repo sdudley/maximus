@@ -33,6 +33,8 @@
   #define SQNAME    "Squish/386"
 #elif defined(OS_2)
   #define SQNAME    "Squish/2"
+#elif defined(LINUX)
+  #define SQNAME    "Squish/Linux"
 #elif defined(UNIX)
   #define SQNAME    "Squish/UNIX"
 #else

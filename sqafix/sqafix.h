@@ -146,8 +146,13 @@
 #endif
 
 #ifdef UNIX
-#define SYSTEM          "Unix/Linux"         // Unix or Linux
+# ifdef LINUX
+# define SYSTEM          "Linux"         // Unix or Linux
+# else 
+# define SYSTEM          "Unix"         // Unix or Linux
+# endif
 #endif
+
 
 #ifndef SYSTEM
 #define SYSTEM          "DOS"           // DOS real mode

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_config.c,v 1.3 2003/07/26 00:03:58 rfj Exp $";
+static char rcs_id[]="$Id: s_config.c,v 1.4 2003/09/03 13:51:33 paltas Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -30,7 +30,6 @@ static char rcs_id[]="$Id: s_config.c,v 1.3 2003/07/26 00:03:58 rfj Exp $";
 #include "max.h"
 #include "squish.h"
 #include "s_dupe.h"
-
 
 #define ARGLEN  64
 #define MAXARGS 128

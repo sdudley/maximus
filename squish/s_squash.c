@@ -20,9 +20,12 @@
 /**
  * @file	s_squash.c
  * @author	Scott J. Dudley
- * @version	$Id: s_squash.c,v 1.4 2003/07/26 00:03:58 rfj Exp $
+ * @version	$Id: s_squash.c,v 1.5 2003/09/03 13:51:33 paltas Exp $
  *
  * $Log: s_squash.c,v $
+ * Revision 1.5  2003/09/03 13:51:33  paltas
+ * /Linux instead of /UNIX on Linux machines
+ *
  * Revision 1.4  2003/07/26 00:03:58  rfj
  * Squish (and MSGAPI) updates as suggested by Bo Simonsen, including correcting
  * a \ to / for UNIX systems, changes concerning packet file name case, via line
@@ -43,7 +46,7 @@
 #if !defined(__GNUC__)
 #pragma off(unreferenced)
 #endif
-static char __attribute__((unused)) rcs_id[]="$Id: s_squash.c,v 1.4 2003/07/26 00:03:58 rfj Exp $";
+static char __attribute__((unused)) rcs_id[]="$Id: s_squash.c,v 1.5 2003/09/03 13:51:33 paltas Exp $";
 #if !defined(__GNUC__)
 #pragma on(unreferenced)
 #endif
@@ -549,7 +552,7 @@ void FloName( byte *out, NETADDR * n, byte flavour, word addmode)
   MakeOutboundName(n, out);
   flavptr=out+strlen(out);
 
-  flavptr[0]=(byte) (addmode ? '?' : flav);
+  flavptr[0]=(byte) (addmode ? '?' : tolower(flav));
   flavptr[1]='l';
   flavptr[2]='o';
   flavptr[3]='\0';
@@ -1302,7 +1305,7 @@ static void near RV_Send(byte *line,byte *ag[],NETADDR nn[],word num)
 	  if(flavour == 'F' || flavour == 'O')
 	    (void)sprintf(temp+strlen(temp), "%cut", (int) 'o');
 	  else
-            (void)sprintf(temp+strlen(temp), "%cut", tolower((int)flavour));
+            (void)sprintf(temp+strlen(temp), "%cut", (int) tolower(flavour));
 
           if (! eqstri(mo->name, temp))
           {
@@ -1500,7 +1503,7 @@ static void near RV_Route(byte *line,byte *ag[],NETADDR nn[],word num)
 
         MakeOutboundName(&dest, temp);
 
-        (void)sprintf(temp+strlen(temp), "%cut", tolower((int)(flavour=='F' ? 'O' : flavour)));
+        (void)sprintf(temp+strlen(temp), "%cut", (int)(flavour=='F' ? 'o' : tolower(flavour)));
 
         /* Remap the packet header, if necessary */
 

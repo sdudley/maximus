@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: squish.c,v 1.3 2003/06/13 03:34:13 wesgarland Exp $";
+static char rcs_id[]="$Id: squish.c,v 1.4 2003/09/03 13:51:33 paltas Exp $";
 #pragma on(unreferenced)
 
 /*#define TEST_VER*/
@@ -63,15 +63,14 @@ int _stdc main(int argc, char *argv[])
 
   NW(__fd2n);
 
-
-#if !defined(UNIX)
-# if defined(__FLAT__)
+#if defined(__FLAT__) && !defined(UNIX)
   Hello("SQUISH/386", "SquishMail Conference Processor", version, "1990, " THIS_YEAR);
-# else
-  Hello("SQUISH", "SquishMail Conference Processor", version, "1990, " THIS_YEAR);
-# endif
-#else
+#elif defined(LINUX)
+  Hello("SQUISH/LINUX", "SquishMail Conference Processor", version, "1990, " THIS_YEAR);
+#elif defined(UNIX)
   Hello("SQUISH/UNIX", "SquishMail Conference Processor", version, "1990, " THIS_YEAR);
+#else
+  Hello("SQUISH", "SquishMail Conference Processor", version, "1990, " THIS_YEAR);
 #endif
 
 #ifdef OS_2 /* Serialize Squish's execution */

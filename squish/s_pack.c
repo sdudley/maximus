@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.4 2003/07/26 00:03:58 rfj Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.5 2003/09/03 13:51:33 paltas Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -642,7 +642,7 @@ static void near AddViaLine(byte *mbuf, byte *ctrl)
   /* ^aVia SquishMail 1:249/106.0, Sat Oct 13 1990 at 07:33 UTC\r */
   
   /* Bo: Added new Via: */
-  /* ^aVia 2:236/100 @20030723.160020.UTC Squish/UNIX 1.11\r */
+  /* ^aVia 2:236/100 @20030723.160020.UTC Squish/Linux 1.11\r */
   
   (void)sprintf(temp,
                 "\x01Via %s @%04d%02d%02d.%02d%02d%02d.UTC " SQNAME " " SQVERSION "\r",
