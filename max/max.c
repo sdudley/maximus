@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max.c,v 1.1 2002/10/01 17:51:17 sdudley Exp $";
+static char rcs_id[]="$Id: max.c,v 1.2 2003/06/13 03:25:37 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -71,6 +71,12 @@ int _stdc c_main(int argc,char *argv[])
   /*dmalloc_on(1);*/
 
   Init_Variables();
+
+#if defined(UNIX)
+  chdir(INSTALL_PREFIX);
+  if (!getenv("MAXIMUS"))
+    putenv("MAXIMUS=" INSTALL_PREFIX "/etc/max.prm");
+#endif
 
   if ((ctlname=(char *)malloc(PATHLEN))==NULL)
     maximus_exit(2);
