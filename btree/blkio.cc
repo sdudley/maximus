@@ -17,9 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$Id: blkio.cc,v 1.2 2003/06/04 22:33:43 wesgarland Exp $";
-#pragma on(unreferenced)
+/* $Id: blkio.cc,v 1.3 2004/01/22 09:02:29 wmcbrine Exp $ */
 
 // Block I/O functions for B-tree and database routines
 

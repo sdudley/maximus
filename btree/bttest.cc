@@ -17,9 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$Id: bttest.cc,v 1.2 2003/06/11 02:10:32 wesgarland Exp $";
-#pragma on(unreferenced)
+/* $Id: bttest.cc,v 1.3 2004/01/22 09:02:29 wmcbrine Exp $ */
 
 #include <stdio.h>
 #include <conio.h>
