@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_toss.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: s_toss.c,v 1.3 2003/07/26 00:03:58 rfj Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -684,6 +684,8 @@ static void near Tossing_From(word zone, word net, word node, word point)
 
 /* Abbreviated product table with many common products */
 
+#ifndef UNIX 
+
 static char *products[]=
 { 
   "Fido", "ConfMail", "SEAdog", NULL, NULL, "Opus", "Dutchie", NULL,
@@ -704,6 +706,72 @@ static char *products[]=
   NULL, NULL, NULL, NULL, NULL, NULL, NULL
 };
 
+#else
+
+static char *products[]=
+{ 
+  "Fido", "ConfMail", "SEAdog", "WINdog", "Slick", "Opus", "Dutchie", "WPL",
+  "Tabby", "SWMail", "Wolf-68k/CPM-68k", "QMM", "FrontDoor", "GQMail","FFGate",
+  "FileMgr", "FIDZERCP", "MailMan", "OOPS", "GS-Point", "BGMail", "ComMotion", 
+  "OurBBS", "PCBoard", "WimpLink",
+  "BinkScan", "D'Bridge", "Bink", "Yankee", "UUGate", "Daisy", 
+  "PolarBear", "TheBox",
+  "StarGate", "TMail", "TCOMMail", "Gigo", "RBBSMail", "AppleNetmail", 
+  "Chameleon", 
+  "MajikBoard", "QMail", "Point-And-Click", "Audora", "Fourdog", "MSGPACK", 
+  "AMAX", "Domain_Comm", "LesRobot", "Rose", "Paragon",
+  "BT", "StarNet", "ZzyZx", "QEcho", "BOOM", "PBBS", "TrapDoor", "Welmat",
+  "NetGate", "Odie", "QucikGimme", "dbLink", "TosScan", "Beagle", "Igor", 
+  "TIMS", 
+  "Phoenix", "Frontdoor_APX", "XRS", "Juliet", "Jabberwocky", "XST", 
+  "Mailstorm", 
+  "BIX_Mail", "IMAIL", "FTNGate", "RealMail", "Lora", "TDCS",
+  "InterMail", "RFD", "Yuppie", "EMMA", "QboxMail", "Number_4", "Number_5", 
+  "GSBBS", "Merlin", "TPCS", "Raid", "Outpost", "Nizze", "Armadillo", "rfmail", 
+  "Msgtoss", "Infotex", "GEcho", "CDEHost", "Pktize",  "PC-Rain", "Truffle", 
+  "Foozle", "WhitePointer", "GateWorks", "Portal_of_Power", 
+  "MacWoof", "Mosaic", "TPBEcho", "HandyMail",
+  "EchoSmith", "FileHost", "SFTS", "Benjamin", "RiBBS", "MP", 
+  "Ping", "Door2Europe", "SWIFT", "WMAIL", "RATS",
+  "Harry_TDD", "Squish", "SwiftEcho", "GCCHost", "RPX-MAil", 
+  "Tosser", "TCL", "MsgTrack", "FMail",
+  "ScanToss", "Point_Manager", "IMBINK", "Simplex", "UMTP", "Imdaba", "EE", 
+  "DragonMail", "Prox", "Tick",
+  "RA-Echo", "TrapToss", "Babel", "UMS", "RWMail", "WildMail", 
+  "AlMail", "XCS", "Fone-Link",
+  "Dogfight", "Ascan", "FastMail", "DoorMan", "PhaedoZap", "SCREAM", 
+  "MoonMail", "Backdoor", "MailLink",
+  "MailManager", "BlackStar", "Bermuda", "PT", "UltraMail", "GMD", 
+  "Freemail", "Meliora", "Foodo", "MSBBS",
+  "Boston_BBS", "XenoMail", "XenoLink", "ObjectMatrix", "Mailquestoast", 
+  "Pipbase", "Ezymail", "FastEcho",
+  "IOS", "Communique", "PointMail", "Harvey_Robot", "2daPoint", "CommLink", 
+  "Fronttoss", "SysopPoint", "PTMAIL", "MHS",
+  "DLGMail", "GatePrep", "Spoint", "Turbomail", "PXMail", "NextBBS", 
+  "Echotoss", "Silverbox", "MBMail", "SkyFreq", "ProMailer", 
+  "MegaMail", "YaBom", "TechEcho", "XAP", "EZMail", "Arc-Binkley", "Roser", 
+  "UU2", "NMS", "BBCSCAN", "XBBS", "Lotek", 
+  "Privat_Point", "NoSnail", "SmlNet", "STIR", "RiscBBS", "Hercules", 
+  "AMPRGATE", "BinkEMSI", 
+  "EditMsg", "Roof", "QWKPKT", "Mariscan", "NewsFlash", "Paradise", 
+  "DogMagic", "T-Mail", "JetMail", "Maindoor",
+  "Starnet", "BMB", "BNP", "MailMaster", "MailManager+", "Bloufgate", 
+  "Crosspoint", "DeltaEcho", "ALLFIX", "Netway",
+  "MARSmail", "ITRACK", "GateUtil", "Bert", "Techno", "Automail", "April", 
+  "Amanda", "NmPwd", "FileScan", "FredMail",
+  "TP_Kom", "FidoZerb", "Msgbase", "EMFido", "GS-Toss", "QWKDoor", 
+  "No_Product", NULL, NULL, "The_Brake!", 
+  "Zeus_BBS", "Xenoprobe_Mailer", "None", "Terminate", "TeleMail", "CMBBS", 
+  "Shuttle", "Quater", "Windo",
+  "Xenia", "GMS", "HNET", "Shotgun", "SlipGate", "BBBS", "NewsGate", 
+  "BBBS", "NewsGate", "Ravel",
+  "BeeMail", "QuickToss", "SpaceMail", "Argus", "Hurricane", "Hub_Mailer", 
+  "FDInt", "GPMail", "FTrack",
+  "Nice_Tosser", "Lucky_gate", "McMail", "hpt", "MBSE_BBS", "SBBSEcho",
+"binkd", NULL
+};
+
+#endif
 
 /* Print out product code for a known product */
 

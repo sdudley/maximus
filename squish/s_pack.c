@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.3 2003/06/05 23:17:22 wesgarland Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.4 2003/07/26 00:03:58 rfj Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -414,7 +414,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
             }
 
             /* Only write zone/point kludge lines if NOT doing gaterouting */
-
+	    
             if (! GateRouteMessage(&msg, *mn, &olddest))
               (void)WriteZPInfo(&msg, AddToMsgBuf, ctrl);
 
@@ -640,18 +640,20 @@ static void near AddViaLine(byte *mbuf, byte *ctrl)
   lt=gmtime(&gmt);
 
   /* ^aVia SquishMail 1:249/106.0, Sat Oct 13 1990 at 07:33 UTC\r */
-
+  
+  /* Bo: Added new Via: */
+  /* ^aVia 2:236/100 @20030723.160020.UTC Squish/UNIX 1.11\r */
+  
   (void)sprintf(temp,
-                "\x01Via " SQNAME " %s %s, "
-                  "%s %s %02d %d at %02d:%02d UTC\r",
-                version,
+                "\x01Via %s @%04d%02d%02d.%02d%02d%02d.UTC " SQNAME " " SQVERSION "\r",
                 Address(SblistToNetaddr(config.addr, &n)),
-                weekday_ab[lt->tm_wday],
-                months_ab[lt->tm_mon],
-                lt->tm_mday,
                 lt->tm_year+1900,
+		lt->tm_mon+1,
+		lt->tm_mday,
                 lt->tm_hour,
-                lt->tm_min);
+                lt->tm_min,
+		lt->tm_sec
+		);
 
 
   /* Set 's' to last character of message buffer */
@@ -949,7 +951,8 @@ void HandleAttReqPoll(word action, byte **toscan)
 
     if (eqstri(*p, "to") || eqstri(*p, "from"))
       p++;
-  }
+  } 
+    
 
   if (! *p)
     usage();
@@ -966,6 +969,14 @@ void HandleAttReqPoll(word action, byte **toscan)
   if (*p)
     msg.attr |= (dword)FlavourToMsgAttr(**p);
 
+#ifdef UNIX
+  if (action == ACTION_POLL)
+  {
+    Process_OneAttReqUpd(&msg, "", 0, "", "");  
+    (void)printf("Created poll to: %s\n ", Address(&msg.dest));
+    return;
+  }
+#endif
 
   /* Tell the user about what we're doing */
 

@@ -20,9 +20,17 @@
 /**
  * @file	s_squash.c
  * @author	Scott J. Dudley
- * @version	$Id: s_squash.c,v 1.3 2003/06/18 02:00:17 wesgarland Exp $
+ * @version	$Id: s_squash.c,v 1.4 2003/07/26 00:03:58 rfj Exp $
  *
  * $Log: s_squash.c,v $
+ * Revision 1.4  2003/07/26 00:03:58  rfj
+ * Squish (and MSGAPI) updates as suggested by Bo Simonsen, including correcting
+ * a \ to / for UNIX systems, changes concerning packet file name case, via line
+ * time stamp change, and s_toss.c table filled in (only for UNIX compiles for
+ * now).
+ *
+ * Also updated squish version number to 1.12 beta.
+ *
  * Revision 1.3  2003/06/18 02:00:17  wesgarland
  * Modified to detect when compressed packets wind up with the compressor's
  * extension rather than Squish's intended (e.g. .su0, mo3) extension.
@@ -35,7 +43,7 @@
 #if !defined(__GNUC__)
 #pragma off(unreferenced)
 #endif
-static char __attribute__((unused)) rcs_id[]="$Id: s_squash.c,v 1.3 2003/06/18 02:00:17 wesgarland Exp $";
+static char __attribute__((unused)) rcs_id[]="$Id: s_squash.c,v 1.4 2003/07/26 00:03:58 rfj Exp $";
 #if !defined(__GNUC__)
 #pragma on(unreferenced)
 #endif
@@ -540,8 +548,8 @@ void FloName( byte *out, NETADDR * n, byte flavour, word addmode)
 
   MakeOutboundName(n, out);
   flavptr=out+strlen(out);
-  
-  flavptr[0]=(byte)(addmode ? '?' : flav);
+
+  flavptr[0]=(byte) (addmode ? '?' : flav);
   flavptr[1]='l';
   flavptr[2]='o';
   flavptr[3]='\0';
@@ -571,7 +579,7 @@ void FloName( byte *out, NETADDR * n, byte flavour, word addmode)
 
         if (foundflav != 'F')
         {
-          *flavptr=foundflav;
+          *flavptr=tolower(foundflav);
           break;
         }
       }
@@ -583,7 +591,7 @@ void FloName( byte *out, NETADDR * n, byte flavour, word addmode)
     {
       /* Didn't find anything, so use the requested flavour */
 
-      *flavptr=flav;
+      *flavptr=tolower(flav);
     }
   }
 }
@@ -1288,29 +1296,20 @@ static void near RV_Send(byte *line,byte *ag[],NETADDR nn[],word num)
       }
       else if (noarc)
       {
-        if (flavour=='F' || flavour=='O')
-        {
-          /* Skip over the current packet so that MatchOutNext doesn't go
-           * into an infinite loop.
-           */
-
-          if (mo->fFromHole)
-            mo->hpkt++;
-        }
-        else
-        {
           /* Nothing to archive, so just add to a packet */
 
           MakeOutboundName(&mo->found, temp);
-
-          (void)sprintf(temp+strlen(temp), "%cut", tolower((int)flavour));
+	  if(flavour == 'F' || flavour == 'O')
+	    (void)sprintf(temp+strlen(temp), "%cut", (int) 'o');
+	  else
+            (void)sprintf(temp+strlen(temp), "%cut", tolower((int)flavour));
 
           if (! eqstri(mo->name, temp))
           {
             (void)Merge_Pkts(mo->name, temp);
             HoleRemoveFromList(mo->name);
           }
-        }
+         
       }
       else
       {

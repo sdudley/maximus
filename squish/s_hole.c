@@ -20,9 +20,17 @@
 /**
  * @file	s_hole.c
  * @author	Scott J. Dudley
- * @version	$Id: s_hole.c,v 1.3 2003/06/18 01:58:26 wesgarland Exp $
+ * @version	$Id: s_hole.c,v 1.4 2003/07/26 00:03:58 rfj Exp $
  *
  * $Log: s_hole.c,v $
+ * Revision 1.4  2003/07/26 00:03:58  rfj
+ * Squish (and MSGAPI) updates as suggested by Bo Simonsen, including correcting
+ * a \ to / for UNIX systems, changes concerning packet file name case, via line
+ * time stamp change, and s_toss.c table filled in (only for UNIX compiles for
+ * now).
+ *
+ * Also updated squish version number to 1.12 beta.
+ *
  * Revision 1.3  2003/06/18 01:58:26  wesgarland
  * Based on changes submitted by Bo Simonsen; modified to have lowercase extensions
  * for the ?ut filenames, where the ? is the mail flavour (FLO)
@@ -32,7 +40,7 @@
 #ifndef __GNUC__
 #pragma off(unreferenced)
 #endif
-static __attribute__((unused)) char rcs_id[]="$Id: s_hole.c,v 1.3 2003/06/18 01:58:26 wesgarland Exp $";
+static __attribute__((unused)) char rcs_id[]="$Id: s_hole.c,v 1.4 2003/07/26 00:03:58 rfj Exp $";
 #ifndef __GNUC__
 #pragma on(unreferenced)
 #endif
@@ -614,7 +622,7 @@ void GetFunkyPacketName(char *name, struct _sblist *from, struct _sblist *to, in
        return;
     }
     
-  (void)sprintf(name, "%08lx.%cut", get_unique_number(), tolower((int)flavour));
+  (void)sprintf(name, "%08lx.%cut", get_unique_number(), flavour);
 }
 
 
@@ -676,7 +684,7 @@ void HoleMoveOut(void)
     if (fexist(GetHpktName(hp->name)))
     {
       MakeOutboundName(SblistToNetaddr(&hp->to, &addr), newname);
-      (void)sprintf(newname+strlen(newname), "%cut", tolower((int)flavour));
+      (void)sprintf(newname+strlen(newname), "%cut", flavour);
 
       if (BusyFileExist(&addr))
       {
