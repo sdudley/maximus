@@ -136,8 +136,7 @@
 
   // ATTN: This is color scheme dependant: blink/bkgr bit ... revise later
 
-#define MAKEINVERTEDCOLOR(clr) ((USHORT)(clr)<<4) | (((USHORT)(clr)>>4) & \
-                                (USHORT)0x0F00)
+#define MAKEINVERTEDCOLOR(clr) (((USHORT)(clr)<<4) | (((USHORT)(clr)>>4) & (USHORT)0x0F00))
 
 /////////////////////////////////////////////////////////////////////////////
 // Miscellaneous declarations                                              //
@@ -169,9 +168,7 @@
 #ifdef NDEBUG
 #  define ASSERT(p) ((void)0)
 #else
-#  define ASSERT(p) ((p) ? (void)0 : (void) AuxLog(                     \
-                    "Assertion failed: %s, file %s, line %d",           \
-                    #p, __FILE__, __LINE__ ) )
+#  define ASSERT(p) ((p) ? (void)0 : (void) AuxLog("Assertion failed: %s, file %s, line %d", p, __FILE__, __LINE__ ) )
 #endif
 
   // Include all the memory and string management stuff

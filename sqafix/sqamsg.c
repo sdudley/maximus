@@ -123,7 +123,7 @@
     W32SYSTEMTIME w32st;
 #elif defined (UNIX)
     #include <time.h>
-    timer_t t;
+    time_t t;
 #else
    union REGS regs;
 #endif

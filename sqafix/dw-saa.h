@@ -293,9 +293,7 @@ typedef unsigned int size_t;
 #ifdef NDEBUG
 #  define ASSERT(p) ((void)0)
 #else
-#  define ASSERT(p) ((p) ? (void)0 : (void) fprintf(stderr,             \
-                    "Assertion failed: %s, file %s, line %d\n\a",       \
-                    #p, __FILE__, __LINE__ ) )
+#  define ASSERT(p) ((p) ? (void)0 : (void) fprintf(stderr, "Assertion failed: %s, file %s, line %d\n\a", p, __FILE__, __LINE__ ) )
 #endif
 
   // Shut the Borland compiler complaining about unused assertion vars

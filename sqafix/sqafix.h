@@ -257,8 +257,7 @@
 #ifdef NDEBUG
 #  define ASSERT(p) ((void)0)
 #else
-#  define ASSERT(p) ((p) ? (void)0 : (void) Assert(     \
-                    #p, __FILE__, __LINE__ ) )
+#  define ASSERT(p) ((p) ? (void)0 : (void) Assert(p, __FILE__, __LINE__ ) )
 #endif
 
 /*
