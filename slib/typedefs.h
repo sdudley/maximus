@@ -50,8 +50,12 @@
 #define SIZET_FORMAT	"lu"
 #define POINTER_FORMAT	"p"
 
-#define HAVE_ULONG
-#define HAVE_USHORT
+#include <sys/types.h>
+
+#if defined(LINUX) || defined(SOLARIS)
+# define HAVE_ULONG
+# define HAVE_USHORT
+#endif
 
 /* These legacy max types imply a particular size */
 typedef unsigned INT8	byte;
@@ -71,7 +75,11 @@ typedef unsigned INT32	uint32;
 typedef unsigned INT16	uint16;
 typedef unsigned INT8	uint8;
 
-#ifndef LINUX
+#if defined(SYSV)
+# include <stddef.h>
+#endif
+
+#if (!defined(LINUX) && !defined(_PTRDIFF_T)) || defined(NEED_PTRDIFF_T)
 typedef ptrdiff_t	typeof((char *)1 - (char *)0) /* will that work? */
 #endif
 
