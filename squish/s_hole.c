@@ -20,9 +20,12 @@
 /**
  * @file	s_hole.c
  * @author	Scott J. Dudley
- * @version	$Id: s_hole.c,v 1.7 2003/11/23 13:15:20 paltas Exp $
+ * @version	$Id: s_hole.c,v 1.8 2004/01/13 00:42:14 paltas Exp $
  *
  * $Log: s_hole.c,v $
+ * Revision 1.8  2004/01/13 00:42:14  paltas
+ * Fixed compiler warnings
+ *
  * Revision 1.7  2003/11/23 13:15:20  paltas
  *
  * Fixed flofile error..
@@ -50,7 +53,7 @@
 #ifndef __GNUC__
 #pragma off(unreferenced)
 #endif
-static __attribute__((unused)) char rcs_id[]="$Id: s_hole.c,v 1.7 2003/11/23 13:15:20 paltas Exp $";
+static __attribute__((unused)) char rcs_id[]="$Id: s_hole.c,v 1.8 2004/01/13 00:42:14 paltas Exp $";
 #ifndef __GNUC__
 #pragma on(unreferenced)
 #endif
@@ -131,7 +134,9 @@ static void near SetHpktName(char *hpname, char *setname)
   strcpy(hpname, from);
 
   /* Convert the filename to uppercase */
+#ifndef UNIX  
   upper_fn(hpname);
+#endif
 }
 
 
@@ -345,7 +350,7 @@ void Hole_Read_Netmail_Area(void)
           
           #ifdef DEBUG_HOLE
           (void)printf("Msg #%3ld: %s from %s to ",
-                       mn, nm->name, Address(&xmsg.orig));
+                       (unsigned long) mn, nm->name, Address(&xmsg.orig));
 
           (void)printf("%s\n", Address(&xmsg.dest));
           #endif
@@ -364,7 +369,8 @@ void Hole_Read_Netmail_Area(void)
 
   #ifdef DEBUG_HOLE
   {
-    struct _hpkt *nm, *end;
+//    struct _hpkt *nm, *end;
+    struct _netinf *nm, *end;
 
     (void)printf("To recap:\n\n");
 

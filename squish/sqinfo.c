@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqinfo.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: sqinfo.c,v 1.3 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #define NOVARS
 #define NOVER
@@ -98,7 +100,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
         printf("\n");
 
       if (!findbug)
-        printf("%s frame at %#010lx: (#%u)\n", type, new_frame, count+1);
+        printf("%s frame at %#010lx: (#%u)\n", type, (unsigned long) new_frame, (unsigned) count+1);
 
       msgnum++;
 
@@ -113,7 +115,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
 
       if (new_frame > filesize)
       {
-        printf("\aframe offset too large (file size is %#010lx)!\n",filesize);
+        printf("\aframe offset too large (file size is %#010lx)!\n", (unsigned long) filesize);
         goterr=TRUE;
       }
 
@@ -127,7 +129,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
 
       if (fread((char *)&frame,1,sizeof(SQHDR),sfd) != sizeof(SQHDR))
       {
-        printf("\aerror reading frame at %#010lx\n",new_frame);
+        printf("\aerror reading frame at %#010lx\n", (unsigned long) new_frame);
         goterr=TRUE;
       }
       else
@@ -146,31 +148,31 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
 
           if (fread((char *)&idx, 1, sizeof(SQIDX), ifd) != sizeof(SQIDX))
           {
-            printf("\aerror reading index entry at %#010lx\n",
+            printf("\aerror reading index entry at %#010lx\n", (unsigned long)
                    count*(long)sizeof(SQIDX));
 
             goterr=TRUE;
           }
 
           if (!quiet)
-            printf("idxofs=       %#010lx", idx.ofs);
+            printf("idxofs=       %#010lx", (unsigned long) idx.ofs);
 
           if (idx.ofs != new_frame)
           {
-            printf("\a (should be %08lx!)\n", new_frame);
+            printf("\a (should be %08lx!)\n", (unsigned long) new_frame);
             goterr=TRUE;
           }
           else if (!quiet)
             printf(" (OK)\n");
 
           if (!quiet)
-            printf("umsgid=       %#010lx\n",idx.umsgid);
+            printf("umsgid=       %#010lx\n", (unsigned long)  idx.umsgid);
         }
 
         /************************************************************************/
 
         if (!quiet)
-          printf("id=           %#010lx",frame.id);
+          printf("id=           %#010lx", (unsigned long) frame.id);
 
         if (frame.id==SQHDRID)
         {
@@ -179,7 +181,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
         }
         else
         {
-          printf("\a (Should be %#010lx!)\n",SQHDRID);
+          printf("\a (Should be %#010lx!)\n", (unsigned long) SQHDRID);
           goterr=TRUE;
         }
 
@@ -187,7 +189,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
 
 
         if (!quiet)
-          printf("prev_frame=   %#010lx",frame.prev_frame);
+          printf("prev_frame=   %#010lx", (unsigned long) frame.prev_frame);
 
         if (frame.prev_frame==lframeofs)
         {
@@ -196,7 +198,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
         }
         else
         {
-          printf("\a (Should be %#010lx.)\n",lframeofs);
+          printf("\a (Should be %#010lx.)\n", (unsigned long) lframeofs);
           goterr=TRUE;
         }
 
@@ -204,12 +206,12 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
 
 
         if (!quiet)
-          printf("next_frame=   %#010lx",frame.next_frame);
+          printf("next_frame=   %#010lx", (unsigned long) frame.next_frame);
 
         if (new_frame >= sqbase->end_frame)
         {
           printf("\a (Should be less than end_frame [%#010lx]!)\n",
-                 sqbase->end_frame);
+                 (unsigned long) sqbase->end_frame);
           goterr=TRUE;
         }
         else if (new_frame==frame.next_frame)
@@ -224,13 +226,13 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
         }
         else if (frame.next_frame==NULL_FRAME && new_frame != last_frame)
         {
-          printf("\a Premature link end. Chain should end at %#010lx.\n",last_frame);
+          printf("\a Premature link end. Chain should end at %#010lx.\n", (unsigned long) last_frame);
           goterr=TRUE;
         }
         else if (sqb && frame.next_frame==NULL_FRAME &&
                  (unsigned long)(count+1) != sqb->num_msg)
         {
-          printf("\a\nErr!  Last msg is #%ld, but got chain end after %ld msgs!\n",sqb->num_msg,(long)(count+1));
+          printf("\a\nErr!  Last msg is #%ld, but got chain end after %ld msgs!\n", (unsigned long) sqb->num_msg,(long)(count+1));
           goterr=TRUE;
         }
         else if (!quiet)
@@ -242,7 +244,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
 
 
         if (!quiet)
-          printf("frame_length= %ld",frame.frame_length);
+          printf("frame_length= %ld", (unsigned long) frame.frame_length);
 
         if (new_frame+sizeof(SQHDR)+frame.frame_length > sqbase->end_frame ||
             (frame.next_frame > new_frame &&
@@ -255,7 +257,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
           printf(" (OK)\n");
 
         if (!quiet)
-          printf("msg_length=   %ld",frame.msg_length);
+          printf("msg_length=   %ld", (unsigned long) frame.msg_length);
 
         if ((long)frame.msg_length < (long)sizeof(XMSG) + (long)frame.clen &&
             !fFreeFrame)
@@ -265,7 +267,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
         }
         else if (frame.msg_length > frame.frame_length)
         {
-          printf("\a  (Should be <= %ld!)\n", frame.frame_length);
+          printf("\a  (Should be <= %ld!)\n", (unsigned long)  frame.frame_length);
           goterr=TRUE;
         }
         else if (!quiet)
@@ -274,7 +276,7 @@ int debug_chain(char *name, FILE *sfd, FILE *ifd, struct _sqbase *sqbase,
 
         if (!quiet)
         {
-          printf("clen=         %ld\n",frame.clen);
+          printf("clen=         %ld\n", (unsigned long) frame.clen);
           printf("type=         %s\n",frtype(frame.frame_type));
         }
       }
@@ -339,30 +341,30 @@ int sqvalidate(char *name,FILE *sfd,FILE *ifd)
   if (!quiet)
   {
     printf("len=         %d\n",sqbase.len);
-    printf("num_msg=     %ld\n",sqbase.num_msg);
-    printf("high_msg=    %ld",sqbase.high_msg);
+    printf("num_msg=     %ld\n", (unsigned long) sqbase.num_msg);
+    printf("high_msg=    %ld", (unsigned long) sqbase.high_msg);
   }
 
   if (sqbase.high_msg != sqbase.num_msg)
-    printf("\a (should be %ld!)",sqbase.num_msg);
+    printf("\a (should be %ld!)", (unsigned long) sqbase.num_msg);
 
   if (!quiet)
   {
     printf("\n");
 
-    printf("uid=         %ld\n",sqbase.uid);
+    printf("uid=         %ld\n", (unsigned long) sqbase.uid);
     printf("base=        %s\n",sqbase.base);
-    printf("begin_frame= %#010lx\n",sqbase.begin_frame);
-    printf("last_frame=  %#010lx\n",sqbase.last_frame);
-    printf("last_free_fr=%#010lx\n",sqbase.last_free_frame);
-    printf("free_frame=  %#010lx\n",sqbase.free_frame);
-    printf("end_frame=   %#010lx\n",sqbase.end_frame);
+    printf("begin_frame= %#010lx\n", (unsigned long) sqbase.begin_frame);
+    printf("last_frame=  %#010lx\n", (unsigned long) sqbase.last_frame);
+    printf("last_free_fr=%#010lx\n", (unsigned long) sqbase.last_free_frame);
+    printf("free_frame=  %#010lx\n", (unsigned long) sqbase.free_frame);
+    printf("end_frame=   %#010lx\n", (unsigned long) sqbase.end_frame);
     printf("sz_sqhdr=    %d\n",sqbase.sz_sqhdr);
 /*  printf("sz_sqidx=    %d\n",sqbase.sz_sqidx);*/
-    printf("max_msg=     %ld\n",sqbase.max_msg);
-    printf("skip_msg=    %ld\n",sqbase.skip_msg);
+    printf("max_msg=     %ld\n", (unsigned long) sqbase.max_msg);
+    printf("skip_msg=    %ld\n", (unsigned long) sqbase.skip_msg);
     printf("keep_days=   %u\n", sqbase.keep_days);
-    printf("high_water=  %ld\n\n",sqbase.high_water);
+    printf("high_water=  %ld\n\n", (unsigned long) sqbase.high_water);
   }
 
   divider();

@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_link.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: s_link.c,v 1.3 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #define NOVARS
 
@@ -185,7 +187,7 @@ static long near LinkReadArea(HAREA sq, struct _cfgarea *ar, struct _link **link
     link[nl++]->delta=FALSE;
 
     if ((nl % 25)==0 && (config.flag2 & FLAG2_QUIET)==0)
-      (void)printf("\b\b\b\b\b%" SIZET_FORMAT,nl);
+      (void)printf("\b\b\b\b\b%" SIZET_FORMAT, (unsigned long) nl);
 
     (void)MsgCloseMsg(mh);
   }
@@ -322,7 +324,7 @@ static void near LinkUpdateMsgs(HAREA sq, struct _link **link, long nl)
   for (lnk=0; lnk < (size_t)nl; lnk++)
   {
     if ((lnk % 25)==0 && (config.flag2 & FLAG2_QUIET)==0)
-      (void)printf("\b\b\b\b\b%" SIZET_FORMAT, lnk);
+      (void)printf("\b\b\b\b\b%" SIZET_FORMAT, (unsigned long) lnk);
 
     if (! link[lnk]->delta ||
         (mh=MsgOpenMsg(sq, MOPEN_RW, link[lnk]->mnum))==NULL)

@@ -20,9 +20,12 @@
 /**
  * @file	s_scan.c
  * @author	Scott J. Dudley
- * @version	$Id: s_scan.c,v 1.4 2003/09/03 13:51:33 paltas Exp $
+ * @version	$Id: s_scan.c,v 1.5 2004/01/13 00:42:14 paltas Exp $
  *
  * $Log: s_scan.c,v $
+ * Revision 1.5  2004/01/13 00:42:14  paltas
+ * Fixed compiler warnings
+ *
  * Revision 1.4  2003/09/03 13:51:33  paltas
  * /Linux instead of /UNIX on Linux machines
  *
@@ -35,7 +38,7 @@
 #ifndef __GNUC__
 #pragma off(unreferenced)
 #endif
-static __attribute__((unused)) char rcs_id[]="$Id: s_scan.c,v 1.4 2003/09/03 13:51:33 paltas Exp $";
+static __attribute__((unused)) char rcs_id[]="$Id: s_scan.c,v 1.5 2004/01/13 00:42:14 paltas Exp $";
 #ifndef __GNUC__
 #pragma on(unreferenced)
 #endif
@@ -136,7 +139,7 @@ void Scan_Messages(char *etname, NETADDR *scan, time_t start)
   {
     (void)printf("\nScanned %lu messages (%lu.%lu/second) and "
                  "sent %lu (%lu.%lu/second)\n",
-                 nmsg_scanned,
+                 (unsigned long)nmsg_scanned,
                  (unsigned long)nmsg_scanned/secs,
                  (unsigned long)(nmsg_scanned*10Lu/secs) % 10Lu,
                  (unsigned long)nmsg_sent,
@@ -226,7 +229,8 @@ void Scan_Area(struct _cfgarea *ar, HAREA opensq)
 
   if ((config.flag2 & FLAG2_QUIET)==0)
     (void)printf("Scanning: %-30s (%05lu-%05lu)  -----",ar->name,
-                 ((hwm+1 > hmsg) ? hmsg : hwm+1),hmsg);
+                 (unsigned long) ((hwm+1 > hmsg) ? hmsg : hwm+1),
+		 (unsigned long) hmsg);
 
   if (hwm < hmsg)
   {
@@ -771,12 +775,13 @@ static void near PerformMessageUpdate(HAREA sq, struct _cfgarea *ar,
   HMSG hmsg;
   unsigned len;
   char *txt;
+  UMSGID uid_hwm;
+
+  memset(&uid_hwm, 0, sizeof(UMSGID));
 
   if (!do_modify)
   {
     /* If we're just killing the message, this is a simple job */
-
-    UMSGID uid_hwm;
 
     S_LogMsg("*  Remote delete: %s:%ld", ar->name, msgn);
 

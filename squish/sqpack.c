@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqpack.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: sqpack.c,v 1.3 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #define MSGAPI_HANDLERS
 

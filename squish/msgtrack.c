@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: msgtrack.c,v 1.3 2003/11/28 19:02:40 paltas Exp $";
+static char rcs_id[]="$Id: msgtrack.c,v 1.4 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 /* Copyright 1992 by Lanius Corporation.
    Portions copyright 1987-1991 by Bit Bucket Software.
@@ -49,22 +51,22 @@ static USHORT fKill=FALSE;                  /* Kill bounced msgs? */
 void (cdecl far *pfnLogMsg)(char far *line);/* Write to Squish log. */
 
 
-union stamp_combo * _fast TmDate_to_DosDate(struct tm *tmdate,
-                                             union stamp_combo *dosdate)
+union _stampu * _fast TmDate_to_DosDate(struct tm *tmdate,
+                                             union _stampu *dosdate)
 {
-  dosdate->msg_st.date.da=tmdate->tm_mday;
-  dosdate->msg_st.date.mo=tmdate->tm_mon+1;
-  dosdate->msg_st.date.yr=tmdate->tm_year-80;
+  dosdate->date.da=tmdate->tm_mday;
+  dosdate->date.mo=tmdate->tm_mon+1;
+  dosdate->date.yr=tmdate->tm_year-80;
 
-  dosdate->msg_st.time.hh=tmdate->tm_hour;
-  dosdate->msg_st.time.mm=tmdate->tm_min;
-  dosdate->msg_st.time.ss=tmdate->tm_sec >> 1;
+  dosdate->time.hh=tmdate->tm_hour;
+  dosdate->time.mm=tmdate->tm_min;
+  dosdate->time.ss=tmdate->tm_sec >> 1;
 
   return dosdate;
 }
 
 
-union stamp_combo * _fast Get_Dos_Date(union stamp_combo *st)
+union _stampu * _fast Get_Dos_Date(union _stampu *st)
 {
   time_t timeval;
   struct tm *tim;

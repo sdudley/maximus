@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqfix.c,v 1.4 2003/10/05 13:51:32 paltas Exp $";
+static char rcs_id[]="$Id: sqfix.c,v 1.5 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #define NOVARS
 #define NOVER

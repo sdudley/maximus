@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqset.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: sqset.c,v 1.3 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #define NOVARS
 #define NOVER
@@ -103,8 +105,8 @@ int _stdc main(int argc,char *argv[])
     }
   }
 
-  printf("Settings:  Max Messages   = %lu\n", sqb.max_msg);
-  printf("           Protected Msgs = %lu\n", sqb.skip_msg);
+  printf("Settings:  Max Messages   = %lu\n", (unsigned long) sqb.max_msg);
+  printf("           Protected Msgs = %lu\n", (unsigned long) sqb.skip_msg);
   printf("           Days to keep   = %u\n", sqb.keep_days);
 
   close(sfd);

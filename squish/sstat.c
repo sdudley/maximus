@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sstat.c,v 1.4 2003/11/28 21:23:27 paltas Exp $";
+static char rcs_id[]="$Id: sstat.c,v 1.5 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #define DEBUG
 
@@ -97,8 +99,8 @@ static void near ReadArea(int fd, struct _ahlist *al, struct _tarea *ta)
     
     #ifdef DEBUG
     printf("    Node         = %s\n", Address(&tn.node));
-    printf("        OutMsgs  = %ld\n", tn.out_msgs);
-    printf("        OutBytes = %ld\n", tn.out_bytes);
+    printf("        OutMsgs  = %ld\n", (unsigned long) tn.out_msgs);
+    printf("        OutBytes = %ld\n", (unsigned long) tn.out_bytes);
     #endif
 
     /* Only process the specified nodes */
@@ -170,8 +172,8 @@ static void near ParseStats(int fd)
 
     #ifdef DEBUG
     printf("Area: %s\n", tarea.tag);
-    printf(" InMsgs: %lu\n", tarea.in_msgs);
-    printf("InBytes: %lu\n", tarea.in_bytes);
+    printf(" InMsgs: %lu\n", (unsigned long) tarea.in_msgs);
+    printf("InBytes: %lu\n", (unsigned long) tarea.in_bytes);
     #endif
 
     for (al=ahlist; al; al=al->next)
@@ -245,7 +247,7 @@ static void near CalcTotals(dword *total_in_bytes, dword *total_in_msgs)
     total_in_bytes += al->in_bytes;
     total_in_msgs  += al->in_msgs;
     #ifdef DEBUG
-	printf("Total in bytes: %d\nTotal in msgs: %d\n\n", total_in_bytes, total_in_msgs);
+	printf("Total in bytes: %d\nTotal in msgs: %d\n\n", (int) total_in_bytes, (int) total_in_msgs);
     #endif
   }
 }
@@ -267,20 +269,20 @@ static void near CalculateStats(dword total_in_bytes, dword total_in_msgs)
     printf("\nArea %s\n", al->tag);
 
     printf("  BYTES IN : %8ld (%02d.%02d%% of total bytes in)\n",
-           al->in_bytes*100L,
+    	   (unsigned long) al->in_bytes*100L,
            (int)(al->in_bytes*100/total_in_bytes),
            (int)((al->in_bytes*10000/total_in_bytes) % 100));
 
     printf("  BYTES OUT: %8ld\n",
-           al->total_out_bytes*100L);
+           (unsigned long) al->total_out_bytes*100L);
 
     printf("   MSGS IN : %8ld (%02d.%02d%% of total msgs in)\n",
-           al->in_msgs,
+           (unsigned long) al->in_msgs,
            (int) (al->in_msgs*100/total_in_msgs),
            (int) ((al->in_msgs*10000/total_in_msgs) % 100));
 
     printf("   MSGS OUT: %8ld\n\n",
-           al->total_out_msgs);
+           (unsigned long) al->total_out_msgs);
 
     /* Don't log areas with no output */
 
@@ -308,8 +310,8 @@ static void near CalculateStats(dword total_in_bytes, dword total_in_msgs)
 
       printf("   %-15s %8ld %6ld %3d.%02d%% %3d.%02d%% %6.02f%% %6.02f%%\n",
              Address(&sl->node),
-             sl->out_bytes*100L,
-             sl->out_msgs,
+             (unsigned long) sl->out_bytes*100L,
+             (unsigned long) sl->out_msgs,
              Percent(sl->out_bytes, al->total_out_bytes),
              Percent(sl->out_msgs,  al->total_out_msgs),
              (float)area_percent_bytes,
@@ -334,8 +336,8 @@ static void near CalculateStats(dword total_in_bytes, dword total_in_msgs)
   {
     printf("   %-15s  %05.02f%% %05.02f%%\n",
            Address(&nt->node),
-           nt->total_percent_bytes,
-           nt->total_percent_msgs);
+           (float) nt->total_percent_bytes,
+           (float) nt->total_percent_msgs);
   }
 
 }
@@ -440,9 +442,9 @@ static void near ParseConfig(char *cfg)
   sc.area=NULL;
   sc.do_all=FALSE;
 
-  if (envConfig = getenv("SQUISH"))
+  if ((envConfig = getenv("SQUISH")))
   {
-    if(tmp = strrchr(envConfig, '/'))
+    if((tmp = strrchr(envConfig, '/')))
     {
 	strncpy(cfg, envConfig, tmp - envConfig);
 	cfg[tmp - envConfig] = '\0';

@@ -14,7 +14,7 @@ SQUISH_OBJS :=	squish.obj   s_abbs.obj         s_config.obj    \
                 s_squash.obj s_match.obj        s_log.obj       \
                 s_misc.obj   s_hole.obj         s_link.obj      \
                 s_busy.obj   s_stat.obj         s_sflo.obj      \
-                s_thunk.obj  s_dupe.obj		
+                s_thunk.obj  s_dupe.obj	
 
 SQUISH_OBJS := $(SQUISH_OBJS:.obj=.o) bld.o
 bld.o: bld.h sqver.h

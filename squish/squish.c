@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: squish.c,v 1.6 2003/11/28 21:48:07 paltas Exp $";
+static char rcs_id[]="$Id: squish.c,v 1.7 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 /*#define TEST_VER*/
 #define INITSQUISH
@@ -47,7 +49,7 @@ static word old_emax;
 static int fRunZCore=FALSE;
 
 static struct _args ar={"", "squish.cfg", "", "", "",
-                        TRUE, ACTION_NONE, FALSE, {NULL}, 0};
+                        TRUE, ACTION_NONE, FALSE, 0, {0, 0, 0, 0}};
 
 #ifdef __TURBOC__
 unsigned int __stklen=32767;

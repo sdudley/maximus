@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_toss.c,v 1.8 2003/10/05 13:52:50 paltas Exp $";
+static char rcs_id[]="$Id: s_toss.c,v 1.9 2004/01/13 00:42:14 paltas Exp $";
 #pragma on(unreferenced)
+#endif 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -284,20 +286,20 @@ static void near ReportSpeed(time_t secs)
     return;
 
   (void)printf("\nTossed %lu messages in %lu seconds (%lu.%lu msgs/sec).\n",
-               nmsg_tossed,
-               secs,
+               (unsigned long) nmsg_tossed,
+               (unsigned long) secs,
                (unsigned long)nmsg_tossed/secs,
                (unsigned long)(nmsg_tossed*10Lu/secs) % 10Lu);
 
   if (nmsg_skipped)
     (void)printf("** SKIPPED %lu MESSAGES THAT WERE TOO LONG TO TOSS.\n",
-                 nmsg_skipped);
+                 (unsigned long) nmsg_skipped);
 
   if (config.flag & FLAG_ONEPASS)
   {
     (void)printf("Sent %lu messages in %lu seconds (%lu.%lu msgs/sec).\n",
-                 nmsg_sent,
-                 secs,
+                 (unsigned long) nmsg_sent,
+                 (unsigned long) secs,
                  (unsigned long)nmsg_sent/secs,
                  (unsigned long)(nmsg_sent*10Lu/secs) % 10Lu);
 
@@ -804,7 +806,6 @@ static void near Toss_Pkt(char *pktname, word tflag)
       bad_packet=TRUE;
     }
 
-   
     s=strrchr(in.pktname, PATH_DELIM);
 
     if (s)
@@ -1377,7 +1378,7 @@ static int near TossOneMsg(struct _inmsg *in, int badmsg, word tflag)
   word dupe, insecure;
 
   int dokill=FALSE;
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
   int noscan=0;
 #endif
 
@@ -1545,7 +1546,7 @@ static int near TossOneMsg(struct _inmsg *in, int badmsg, word tflag)
   }
 
 
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
   InvokeTossFeatures(in, &ar, &dokill, &noscan, txtp);
 #endif
 
@@ -1829,7 +1830,7 @@ static int near TossOneMsg(struct _inmsg *in, int badmsg, word tflag)
 
   if ((config.flag2 & FLAG2_QUIET)==0 &&
       ((ar->flag & AFLAG_PASSTHRU)==0 || (config.flag & FLAG_ONEPASS)==0))
-    (void)printf("\b\b\b\b\b%05lu", msgn);
+    (void)printf("\b\b\b\b\b%05lu", (unsigned long) msgn);
 
   #if defined(__WATCOMC__) && !defined(NT)
   fflush(stdout);
@@ -2281,7 +2282,7 @@ static void near TossBadMsgs(struct _cfgarea *ar)
                          buffer+sizeof(XMSG),
                          MsgGetCtrlLen(hmsg), ctrl) > 0)
           {
-            (void)sprintf(in.pktname, "%s:%lu", ar->name, mn);
+            (void)sprintf(in.pktname, "%s:%lu", ar->name, (unsigned long) mn);
 
             /* If it's in bad_msgs, we have no reliable way to determine    *
              * zone or point information.                                   */
