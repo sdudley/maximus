@@ -10,7 +10,7 @@ install_libs: libcompat.so
 
 install: install_libs
 
-libcompat.so: adcase.o dosio.o winstr.o conio.o viocurses.o dossem.o dosproc.o xpunix.o process.o wincomm.o modem.o
+libcompat.so: adcase.o dosio.o winstr.o conio.o viocurses.o dossem.o dosproc.o xpunix.o process.o
 	$(CC) $(CFLAGS) -ggdb -shared $^ -lutil $(LDFLAGS) -o $@
 
 
