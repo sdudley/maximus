@@ -1,12 +1,15 @@
 /**
  * @file 	wincomm.c	WinNT-style Comm functions for UNIX
- * @version	$Id: wincomm.c,v 1.5 2003/07/05 01:03:43 wesgarland Exp $
+ * @version	$Id: wincomm.c,v 1.6 2004/06/07 17:41:37 paltas Exp $
  * @author 	Wes Garland
  * @date	May 13 2003
  * @description	Fudge routines/hooks for the comm library and asyncnt.c.
  * 		Designed to replace WinNT functions of the same names.
  *  
  * $Log: wincomm.c,v $
+ * Revision 1.6  2004/06/07 17:41:37  paltas
+ * Fixed dynamic port speed
+ *
  * Revision 1.5  2003/07/05 01:03:43  wesgarland
  * Robustification: Do not core if we are passed NULL handles
  *
@@ -80,6 +83,12 @@ BOOL SetCommState(hfComm hFile, LPDCB lpDCB)
   lpDCB->fAbortOnError 	= FALSE;
 
   hFile->DCB = *lpDCB;
+
+  if(lpDCB->fDtrControl == DTR_CONTROL_ENABLED)
+    ModemRaiseDTR(hFile->fd, lpDCB->BaudRate, lpDCB->fRtsControl ? RTS_CONTROL_ENABLE : 0);
+  else
+    ModemLowerDTR(hFile->fd);
+
 
   return TRUE;
 }

@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos_os2.c,v 1.12 2004/06/06 21:48:51 paltas Exp $";
+static char rcs_id[]="$Id: fos_os2.c,v 1.13 2004/06/07 17:41:31 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -348,15 +348,9 @@ if (ComIsAModem(hcModem))
 
     void mdm_dtr(char dtr)       /* No return value */
     {
-#ifndef UNIX
       if (dtr)
         com_DTR_on();
       else com_DTR_off();
-#else
-      if (dtr)
-        RAISE_DTR(hcModem);
-      else LOWER_DTR(hcModem);
-#endif      
     }
 
 

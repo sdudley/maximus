@@ -66,6 +66,8 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
     return FALSE;
   }
 
+  CommHandle_setFileHandle(h, fd);
+
   _InitPort(*phc);
 
   if(fd)
@@ -85,7 +87,6 @@ BOOL COMMAPI ModemComClose(HCOMM hc)
     if(!hc)
 	return FALSE;
     
-    LOWER_DTR(hc);    
     close(hc->listenfd);
     unlink(lockname);
     
@@ -222,36 +223,86 @@ DWORD COMMAPI ModemComOutCount(HCOMM hc)
     return(FALSE);
 }
 
-void ModemLowerDTR (HCOMM hc)
+#if 0
+void ModemLowerDTR (int fd)
 {
   struct termios tty;
 
-  tcgetattr (hc->listenfd, &tty);
+  tcgetattr (fd, &tty);
   cfsetospeed (&tty, B0);
   cfsetispeed (&tty, B0);
-  tcsetattr (hc->listenfd, TCSANOW, &tty);
+  tcsetattr (fd, TCSANOW, &tty);
 }
 
-void ModemRaiseDTR (HCOMM hc)
+void ModemRaiseDTR (int fd, int baud, int cts)
 {
   struct termios tty;
+  int ttybaud=0;
 
-  fcntl (hc->listenfd, F_SETFL, FASYNC);
+  fcntl (fd, F_SETFL, FASYNC);
 
-  LOWER_DTR(hc);
-  tcgetattr (hc->listenfd, &tty);
+  tcgetattr (fd, &tty);
 
   tty.c_iflag = 0;
   tty.c_oflag = 0;  
   tty.c_lflag = 0;
 
-  tty.c_cflag = B0 | CS8 | CREAD | CLOCAL | CRTSCTS;
+  tty.c_cflag = B0 | CS8 | CREAD | CLOCAL;
+  if(cts)
+     tty.c_cflag |= CRTSCTS;
 
-  cfsetospeed (&tty, B115200);
-  cfsetispeed (&tty, B115200);
-
-  tcsetattr (hc->listenfd, TCSANOW, &tty);
+  switch(baud)
+  {
+    case CBR_110:
+	ttybaud = B110;
+	break;
+    case CBR_300:
+	ttybaud = B300;
+	break;
+    case CBR_600:
+	ttybaud = B600;
+	break;
+    case CBR_1200:
+	ttybaud = B1200;
+	break;
+    case CBR_2400:
+	ttybaud = B2400;
+	break;
+    case CBR_4800:
+	ttybaud = B4800;
+	break;
+    case CBR_9600:
+	ttybaud = B9600;
+	break;
+    case CBR_14400:
+    case CBR_19200:
+	ttybaud = B19200;
+	break;
+    case CBR_38400:
+	ttybaud = B38400;
+	break;
+    case CBR_56000:
+    case CBR_57600:
+	ttybaud = B57600;
+	break;
+    case CBR_128000:
+    case CBR_115200:
+	ttybaud = B115200;
+	break;
+    case CBR_256000:
+	ttybaud = B230400;
+	break;	
+    default:
+	ttybaud = B115200;
+	break;
+  }
+  
+  cfsetospeed (&tty, ttybaud);
+  cfsetispeed (&tty, ttybaud);
+  
+  tcsetattr (fd, TCSANOW, &tty);
 }
+#endif
 
 
 BOOL COMMAPI ModemComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE

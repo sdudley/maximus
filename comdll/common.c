@@ -207,15 +207,3 @@ BOOL COMMAPI ComResume(HCOMM hc)
 }
 
 
-void RAISE_DTR(HCOMM hc)
-{
-    if(!tcpip)
-	ModemRaiseDTR(hc);
-}
-
-void LOWER_DTR(HCOMM hc)
-{
-    if(!tcpip)
-	ModemLowerDTR(hc);
-}
-
