@@ -12,7 +12,7 @@ endif
 all: libcomm.so
 
 install_libs install: libcomm.so
-	cp -f $^ /var/max/lib
+	cp -f $^ $(LIB)
 
 telnetcomm.o: ipcomm.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DTELNET -c $^ -o $@
