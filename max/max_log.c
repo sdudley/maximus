@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_log.c,v 1.2 2003/06/29 19:26:12 wesgarland Exp $";
+static char rcs_id[]="$Id: max_log.c,v 1.3 2003/08/17 00:38:38 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Log-on routines and new-user junk
@@ -511,11 +511,13 @@ static int near GetName(void)
       if ((usr.bits2 & BITS2_CONFIGURED)==0)
         Get_AnsiMagnEt();
     }
+#ifndef UNIX
     else if (! local)
     {
       doublecheck_ansi();
       doublecheck_rip();
     }
+#endif
 
     free(quest);
     free(lname);
@@ -732,7 +734,11 @@ static void near Get_AnsiMagnEt(void)
     NoWhiteN();
     sprintf(string,"%swhy_ansi",PRM(misc_path));
 
+/* TODO: Check up on this.. (Bo) */
+
+#ifndef UNIX
     x=autodetect_ansi();
+#endif
 
     if (! *linebuf)
       Puts(get_ansi1);
@@ -756,7 +762,11 @@ static void near Get_AnsiMagnEt(void)
       NoWhiteN();
       sprintf(string,"%swhy_rip",PRM(misc_path));
 
+/* TODO: Check up on this.. (Bo) */
+
+#ifndef UNIX
       x=autodetect_rip();
+#endif
 
       if (GetListAnswer(x ? CYnq : yCNq, string, useyforyes, 0, get_rip)==YES)
       {
