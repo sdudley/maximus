@@ -17,7 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: fsend.c,v 1.2 2004/01/22 08:04:28 wmcbrine Exp $ */
+#ifndef __GNUC__
+#pragma off(unreferenced)
+static char rcs_id[]="$Id: fsend.c,v 1.3 2004/01/27 21:31:00 paltas Exp $";
+#pragma on(unreferenced)
+#endif
 
 /*#define XM_NO_CRC*/
 #define MAX_LANG_protocols
@@ -243,8 +247,9 @@ static void near XmPrepareBlock0(struct _xmstuff *px)
 
     strncpy(sh->name, s, sizeof(sh->name)-1);
     sh->name[sizeof(sh->name)-1]='\0';
+#ifndef UNIX
     lower_fn(sh->name);
-
+#endif
     strcpy(sh->program, xfer_id);
     sh->overdrive=FALSE;
 
@@ -258,7 +263,9 @@ static void near XmPrepareBlock0(struct _xmstuff *px)
     /* Copy filename to beginning of block */
 
     strcpy(p=px->xm_buffer, s);
+#ifndef UNIX
     lower_fn(p);
+#endif    
     p += strlen(p)+1;
 
 

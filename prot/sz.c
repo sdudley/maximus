@@ -17,7 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: sz.c,v 1.2 2004/01/22 08:04:28 wmcbrine Exp $ */
+#ifndef __GNUC__
+#pragma off(unreferenced)
+static char rcs_id[]="$Id: sz.c,v 1.3 2004/01/27 21:31:00 paltas Exp $";
+#pragma on(unreferenced)
+#endif
 
 #include <stdio.h>
 #include <signal.h>
@@ -367,7 +371,7 @@ getinsync(int flag)
 static int near
 zsendfdata(void)
 {
-  int c, e, n;
+  int c=0, e, n;
   int newcnt;
   long tcount = 0;
   int junkcount;		/* Counts garbage chars received by TX */
