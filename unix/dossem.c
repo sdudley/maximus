@@ -2,16 +2,12 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <sys/stat.h>
-#if defined(LINUX)
-# include <sys/file.h>
-#else
-# include <flock.h>
-#endif
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
 #include "dossem.h"
+#include "share.h"
 
 /* hack by wes -- just a guess as to how Dos*Sem is supposed to
  * work, based on source-code context. It appears that these
