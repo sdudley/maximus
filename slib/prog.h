@@ -221,24 +221,56 @@ typedef long timer_t;
 #undef PATHLEN
 #endif
 
-#if defined(UNIX)
-# include <endian.h>
-# if __BYTE_ORDER == __BIG_ENDIAN
-#  if !defined(BIG_ENDIAN)
-#   define BIG_ENDIAN
-#  endif
-#  undef LITTLE_ENDIAN
+#if defined(_BIG_ENDIAN) && !defined(BIG_ENDIAN)
+# define BIG_ENDIAN
+#endif
+
+#if defined(_LITTLE_ENDIAN) && !defined(LITTLE_ENDIAN)
+# define LITTLE_ENDIAN
+#endif
+
+#if defined(BIG_ENDIAN) && defined(LITTLE_ENDIAN)
+# error BIG_ENDIAN and LITTLE_ENDIAN cannot both be defined at the same time!
+#endif
+
+#if !defined(BIG_ENDIAN) && !defined(LITTLE_ENDIAN) && defined(UNIX)
+# if defined(LINUX)
+#  include <endian.h>
+# elif defined(__FreeBSD__) || defined(__NetBSD__)
+#  include <machine/endian.h>
+# elif defined(SOLARIS)
+#  include <sys/isa_defs.h>
 # else
-#  if !defined(LITTLE_ENDIAN)
-#   define LITTLE_ENDIAN
-#  endif
-#  undef BIG_ENDIAN
+# include <stddef.h> /* Other candidates: sys/machine.h, sys/endian.h */
 # endif
-#else /* ! UNIX */
-# if !defined(__POSIX__) && !defined(BIG_ENDIAN)
-#  define LITTLE_ENDIAN           /* If compiling on a "back-words" (Intel)  *
-                                 * Otherwise, #define BIG_ENDIAN           *//
+#endif
+
+#if !defined(BIG_ENDIAN) && !defined(LITTLE_ENDIAN) && defined(__BYTE_ORDER)
+# if __BYTE_ORDER == __BIG_ENDIAN
+#  define BIG_ENDIAN
+# else
+#  define LITTLE_ENDIAN
 # endif
+
+#if !defined(BIG_ENDIAN) && !defined(LITTLE_ENDIAN) && !defined(UNIX)
+/* Do OS/2, DOS or Windows run on non-Intel, non-Alpha CPUs?? */
+# define LITTLE_ENDIAN
+#endif
+
+#if defined(_BIG_ENDIAN) && !defined(BIG_ENDIAN)
+# define BIG_ENDIAN
+#endif
+
+#if defined(_LITTLE_ENDIAN) && !defined(LITTLE_ENDIAN)
+# define LITTLE_ENDIAN
+#endif
+
+#if defined(BIG_ENDIAN) && defined(LITTLE_ENDIAN)
+# error BIG_ENDIAN and LITTLE_ENDIAN cannot both be defined at the same time!
+#endif
+
+#if !defined(BIG_ENDIAN) && !defined(LITTLE_ENDIAN)
+# error Either BIG_ENDIAN or LITTLE_ENDIAN must be defined!
 #endif
 
 #ifdef __MSDOS__
