@@ -31,6 +31,10 @@ typedef struct ftscprod_
     char * name;
 } ftscprod;
 
+#ifdef UNIX
+extern struct ftscprod_ products[];
+#endif
+
 /* Internal handle passed between tossing functions */
 
 struct _inmsg
