@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwkup.c,v 1.8 2004/01/11 19:50:27 wmcbrine Exp $";
+static char rcs_id[]="$Id: mb_qwkup.c,v 1.9 2004/01/12 18:54:33 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# QWK uploads, for processing .REP packets
@@ -145,7 +145,6 @@ void QWK_Upload(void)
 static int near Receive_REP(char *name)
 {
   char temp[PATHLEN];
-  char * tmpdir = NULL;
   struct _css css;
   sword protocol;
   long ul_start_time;
@@ -264,7 +263,6 @@ static int near Decompress_REP(char *rep_name)
   struct _arcinfo *ai;
   int ret, fd, ctr;
   static char qwk_busy[]="qwk_busy.$$$";
-  char oldp[PATHLEN];  
   Load_Archivers();
 
 
