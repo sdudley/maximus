@@ -69,11 +69,12 @@ typedef struct _DCB
 #define RTS_CONTROL_HANDSHAKE	3
 #define RTS_CONTROL_TOGGLE	4
 
-#define EVENPARITY		1
-#define MARKPARITY		2
-#define NOPARITY		3
-#define ODDPARITY		4
-#define SPACEPARITY		5
+/* Not sure if these are the right values, but maximus relies on 'N' */
+#define EVENPARITY		'E'
+#define MARKPARITY		'M'
+#define NOPARITY		'N'
+#define ODDPARITY		'O'
+#define SPACEPARITY		'S'
 
 #define ONESTOPBIT		1
 #define ONE5STOPBITS		15
