@@ -108,9 +108,9 @@ void _unalign(void *unaligned, void *aligned, size_t size);
 # define unalign(a,b)		_unalign(a, b, sizeof(*(a)))
 #else
 # define aligndup(a)		(a + 0)
-# define unaligndup_free(a)	do { ; } while(0)
+# define unaligndup_free(a,b)	do { ; } while(0)
 # define alignStatic(a)		(a + 0)
-# define unalign(a)		do { ; } while(0)
+# define unalign(a,b)		do { ; } while(0)
 #endif
 
 #if !defined(_MAX_ALIGNMENT)
