@@ -6,7 +6,6 @@
 **       - usable by either scanf or printf
 */
 
-DeclareCommand(none,		0,	"No Command")
 DeclareCommand(SE,		240,	"End of subnegotiation parameters")
 DeclareCommand(NOP,		241,	"No operation")
 DeclareCommand(DM,		242,	"Data mark")
@@ -26,17 +25,17 @@ DeclareCommand(IAC,		255,	"Interpret as Command")
 #endif
 
 #ifdef DeclareOption
-DeclareOption(none,		0,	0,	"none")
-DeclareOption(ECHO,		1,	0,	"echo")
-DeclareOption(SGA,		3,	1,	"suppress go ahead")
-DeclareOption(STATUS,		5,	2,	"status")
-DeclareOption(TIMING,		6,	3,	"timing mark")
-DeclareOption(TERMTYPE,		24,	4,	"terminal type")
-DeclareOption(NAWS,		31,	5,	"window size")
-DeclareOption(TERMSPEED,	32,	6,	"terminal speed")
-DeclareOption(FLOW, 		33,	7,	"remote flow control")
-DeclareOption(LINEMODE,		34,	8,	"line mode")
-DeclareOption(ENVIRON,		36,	9,	"environment variables")
+DeclareOption(TRANSMIT_BINARY,	0,	0,	"Transmit Binary")
+DeclareOption(ECHO,		1,	1,	"echo")
+DeclareOption(SGA,		3,	2,	"suppress go ahead")
+DeclareOption(STATUS,		5,	3,	"status")
+DeclareOption(TIMING,		6,	4,	"timing mark")
+DeclareOption(TERMTYPE,		24,	5,	"terminal type")
+DeclareOption(NAWS,		31,	6,	"window size")
+DeclareOption(TERMSPEED,	32,	7,	"terminal speed")
+DeclareOption(FLOW, 		33,	8,	"remote flow control")
+DeclareOption(LINEMODE,		34,	9,	"line mode")
+DeclareOption(ENVIRON,		36,	10,	"environment variables")
 #endif
 
 #if !defined(DeclareCommand) && !defined(DeclareOption)
@@ -75,11 +74,12 @@ typedef enum
 static struct telnet_option_info_t
 {
   telnet_option_t	optEnum;
+  telnet_moption_t	optBit;
   const char		*optionName;
   char			optionValue;
-} telnet_Results[]=
+} telnet_OptionList[]=
 {
-#define DeclareOption(a,b,c,d)	{ opt_ ## a, d, b },
+#define DeclareOption(a,b,c,d)	{ opt_ ## a, 1 << c, d, b },
 #include __FILE__
 #undef DeclareOption
 };
