@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_wfc.c,v 1.6 2003/11/23 14:51:28 paltas Exp $";
+static char rcs_id[]="$Id: max_wfc.c,v 1.7 2004/01/13 00:44:56 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Waiting-for-caller routines
@@ -73,6 +73,7 @@ void Wait_For_Caller(void)
     {
       if (Process_Modem_Response(rsp))
 	break;
+      sleep(1);
     }
 #if (COMMAPI_VER > 1)
   }

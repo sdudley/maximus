@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_misc.c,v 1.5 2003/11/23 13:14:05 paltas Exp $";
+static char rcs_id[]="$Id: max_misc.c,v 1.6 2004/01/13 00:44:56 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Miscellaneous routines
@@ -1162,7 +1162,7 @@ void Check_Time_Limit(unsigned long *input_timeout, int *timer2)
     else if (left==5 && !sent_time_5left && fLoggedOn)
       Time5Left();
   }
-
+#if 0
   /* Make sure the user didn't fall asleep... */
   if (input_timeout && timeup(*input_timeout) &&
       (!local || (local && (prm.flags2 & FLAG2_ltimeout))) &&
@@ -1182,6 +1182,7 @@ void Check_Time_Limit(unsigned long *input_timeout, int *timer2)
       *timer2=TRUE;
     }
   }
+#endif  
 }
 
 /* Returns TRUE if the given area is tagged */

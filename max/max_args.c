@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_args.c,v 1.4 2003/06/13 15:00:56 wesgarland Exp $";
+static char rcs_id[]="$Id: max_args.c,v 1.5 2004/01/13 00:44:56 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Command-line argument processing code
@@ -149,16 +149,22 @@ void Parse_Args(char *ctlname,int argc,char *argv[])
   p2=strrchr(prmname,'\\');
 
   if (p2==NULL)
+  {
     p2=strrchr(prmname,'/');
-
+  }
+  
   if (p1)             /* There might be an extension */
+  {
     if (p2)           /* There IS a path */
     {
       if (p2 < p1)    /* Path delim was BEFORE '.', so must be extension */
         *p1='\0';
     }
-    else *p1='\0';    /* No path, so chop it off */
-
+    else
+    { 
+	*p1='\0';    /* No path, so chop it off */
+    }
+  }
   strcpy(ctlname, cfancy_fn(prmname));
 #ifndef UNIX
   strcat(ctlname, ".Ctl");
@@ -250,7 +256,6 @@ static void near Parse_Single_Arg(char *arg)
         strcpy(szMcpPipe, arg+2);
         break;
 #endif
-
       case 'b':             /* Baud rate select */
         if ((baud=atol(arg+2)) != 0L)
         {
@@ -380,7 +385,12 @@ static void near Parse_Single_Arg(char *arg)
 #endif
 
       case 'p':             /* COM port */
-        if (arg[2] != 'd')
+        if (arg[2] == 't')
+	{
+	    tcpip = TRUE;
+	    port=atoi(arg+3)-1;
+	}
+        else if (arg[2] != 'd')
           port=atoi(arg+2)-1;
         else
         {

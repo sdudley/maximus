@@ -20,7 +20,7 @@
 #ifndef __GNUC__
 #pragma off(unreferenced)
 #endif
-static char __attribute__((unused)) rcs_id[]="$Id: asyncnt.c,v 1.4 2003/12/14 17:38:39 paltas Exp $";
+static char __attribute__((unused)) rcs_id[]="$Id: asyncnt.c,v 1.5 2004/01/13 00:44:56 paltas Exp $";
 #ifndef __GNUC__
 #pragma on(unreferenced)
 #endif
@@ -146,8 +146,9 @@ int Cominit(int port)
           hf = (HFILE)port+1;  /* maximus subtracts 1 from the value on the command line. Add it back here. */
           rc = !ComOpenHandle((COMMHANDLE)hf, &hcModem, 8200, 8200);
 #else
-/*	  logit("!Not yet implemented; %s, %s:%i", __FUNCTION__, __FILE__, __LINE__);
-	  _exit(1);*/
+//	  logit("!Not yet implemented; %s, %s:%i", __FUNCTION__, 
+//__FILE__, __LINE__);
+//	  _exit(1);
 	  
 	  rc = !ComOpen(tmp, &hcModem, 8200, 8200);
 #endif

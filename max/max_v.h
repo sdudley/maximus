@@ -339,6 +339,7 @@ extrn char usrname[LEN(sizeof(usr.name))]; /* Name/alias of current user   */
 
 
 extrn char local;                       /* If we're in local mode          */
+extrn char tcpip;
 extrn char displaymode;                 /* Local display mode              */
 extrn char snoop;                       /* If we see what's on the screen. */
 extrn char keyboard;                    /* If we can type.  Implies snoop. */

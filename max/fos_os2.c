@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos_os2.c,v 1.7 2003/12/16 12:31:35 paltas Exp $";
+static char rcs_id[]="$Id: fos_os2.c,v 1.8 2004/01/13 00:44:56 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=FOSSIL interface routines (OS/2)
@@ -244,7 +244,11 @@ if (ComIsAModem(hcModem))
 
     int mdm_blockwrite(int max_chars, char *offset)
     {
+    
+// Looks like this shit is only making trouble
+#ifndef UNIX
       max_chars=min(ComOutSpace(hcModem), max_chars);
+#endif
 
       if (!max_chars)
         return 0;
