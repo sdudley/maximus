@@ -10,7 +10,7 @@ install_libs: libcompat.so
 
 install: install_libs
 
-libcompat.so: dosio.o winstr.o conio.o viocurses.o dossem.o dosproc.o process.o wincomm.o
+libcompat.so: dosio.o winstr.o conio.o viocurses.o dossem.o dosproc.o process.o wincomm.o xpunix.o
 	$(CC) $(CFLAGS) -shared $^ $(LDFLAGS) -o $@
 
 

@@ -1,16 +1,31 @@
-LIB_DIRS  = unix btree slib squish mex prot comdll
-PROG_DIRS = squish max mex util
-DIRS 	  = $(LIB_DIRS) $(PROG_DIRS)
+# @file 	Makefile	Master Makefile for Makefile 3.03 onward
+# @author			Wes Garland
+# @date				May 13th, 2003
+#
+# $Id: Makefile,v 1.3 2003/06/11 19:23:53 wesgarland Exp $
+# $Log: Makefile,v $
+# Revision 1.3  2003/06/11 19:23:53  wesgarland
+# Successfully performs a "make distclean; ./configure; make build; make install"
+#
+#
+
+SQUISH_LIB_DIRS = btree slib unix msgapi squish
+MAX_LIB_DIRS	= slib unix msgapi mex prot comdll 
+LIB_DIRS	= $(SQUISH_LIB_DIRS) $(MAX_LIB_DIRS)
+PROG_DIRS	= squish max mex util
+DIRS		= $(LIB_DIRS) $(PROG_DIRS)
+NO_DEPEND_RULE	:= TRUE
 
 topmost:: header usage
 
 include vars.mk
-MAXIMUS=${PREFIX}/etc/max.prm
+MAXIMUS=$(PREFIX)/etc/max.prm
 
-.PHONY: all clean install mkdirs squish max screwy install_libs install_binaries usage topmost build
+.PHONY: all depend clean install mkdirs squish max install_libs install_binaries \
+	usage topmost build config_install configure reconfig
 
 header::
-	@echo "Maximus-CBCS Master Makefile for UNIX Port"
+	@echo "Maximus-CBCS Master Makefile"
 	@echo 
 
 usage::
@@ -41,36 +56,78 @@ mkdirs:
 
 all:	mkdirs clean squish_install max_install
 
-clean install_binaries install_libs:
+clean:  
+	$(foreach DIR, $(DIRS) configuration-tests, cd $(DIR) && $(MAKE) -k $@; cd ..; )
+	-rm depend.mk.bak depend.mk
+	-rm */depend.mk.bak */depend.mk
+
+distclean: clean
+	-rm slib/compiler_details.h
+	-rm vars.mk vars_local.mk
+
+depend install_binaries install_libs:
 	$(foreach DIR, $(DIRS), cd $(DIR) && $(MAKE) -k $@; cd ..; )
 
 squish_install: mkdirs
-	$(foreach DIR, btree slib squish unix, cd $(DIR) && $(MAKE) install_libs; cd ..; )
+	$(foreach DIR, $(SQUISH_LIB_DIRS), cd $(DIR) && $(MAKE) install_libs; cd ..; )
 	cd squish && $(MAKE) install
 
 max_install: mkdirs
-	$(foreach DIR, $(LIB_DIRS), cd $(DIR) && $(MAKE) install_libs; cd ..; )
+	$(foreach DIR, $(MAX_LIB_DIRS), cd $(DIR) && $(MAKE) install_libs; cd ..; )
 	cd util && $(MAKE)
 	$(foreach DIR, $(PROG_DIRS), cd $(DIR) && $(MAKE) install; cd ..; )
 
 squish:
-	$(foreach DIR, btree slib unix squish, cd $(DIR) && $(MAKE); cd ..; )
+	$(foreach DIR, $(SQUISH_LIB_DIRS), cd $(DIR) && $(MAKE); cd ..; )
+	cd squish && $(MAKE)
 
 max:
-	$(foreach DIR, $(LIB_DIRS), cd $(DIR) && $(MAKE); cd ..; )
+	$(foreach DIR, $(MAX_LIB_DIRS), cd $(DIR) && $(MAKE); cd ..; )
 	cd util && $(MAKE)
 	$(foreach DIR, $(PROG_DIRS), cd $(DIR) && $(MAKE); cd ..; )
 
+configure:
+	./configure "--prefix=$(PREFIX)"
+
 config_install:
-	$(warning config_install has never been tested!)
-	[ ! -f ${PREFIX}/etc/max.ctl ] || echo "This is not a fresh install -- not copying install_tree directory"
-	[ -f ${PREFIX}/etc/max.ctl ] || $(CP) -rp install_tree/* $(PREFIX)
-	cd $(PREFIX)/etc && ../bin/silt max -x
-	cd $(PREFIX)/etc && ../bin/maid -d english
-	cd $(PREFIX)/m && $(foreach FILE, *.mex, ../bin/mex $(FILE:.mex=);)
-	cd $(PREFIX) && bin/mecca $(shell find . -name \*.mec)
-	[ ! -f ${PREFIX}/etc/user.bbs ] || echo "This is not a fresh install -- not creating new user.bbs"
-	[ -f ${PREFIX}/etc/user.bbs ] || cd ${PREFIX}/etc && ../bin/max -c
+	@[ ! -f ${PREFIX}/etc/max.ctl ] || echo "This is not a fresh install -- not copying install tree.."
+	@[ -f ${PREFIX}/etc/max.ctl ] || echo "Copying install tree to ${PREFIX}.."
+	@[ -f ${PREFIX}/etc/max.ctl ] || cp -rp install_tree/* $(PREFIX)
+	@[ ! -f ${PREFIX}/bin/runbbs.sh ] || echo "This is not a fresh install -- not copying runbbs.sh.."
+	@ [ -f ${PREFIX}/bin/runbbs.sh ] || cp scripts/runbbs.sh $(PREFIX)/bin/runbbs.sh
+
+	$(MAKE) reconfig
+
+	@[ ! -f ${PREFIX}/etc/user.bbs ] || echo "This is not a fresh install -- not creating new user.bbs"
+	@[ -f ${PREFIX}/etc/user.bbs ] || echo "Creating user.bbs"
+	@[ -f ${PREFIX}/etc/user.bbs ] || (cd ${PREFIX} && bin/max etc/max -c || /bin/true)
+	@echo
+	@echo "Configuration complete."
+
+reconfig:
+	@echo "Pass one"
+	@echo " - Compiling english.mad (bootstrap)"
+	@cd $(PREFIX)/etc/lang && $(PREFIX)/bin/maid english -p
+
+	@echo " - Compiling MECCA help files"
+	@cd $(PREFIX) && bin/mecca etc/help/\*.mec
+
+	@echo " - Compiling misc MECCA files"
+	@cd $(PREFIX) && bin/mecca etc/misc/\*.mec
+
+	@echo " - Compiling max.ctl"
+	@cd $(PREFIX) && bin/silt etc/max -x
+
+	@echo " - Compiling MEX files"
+	@cd $(PREFIX)/m && $(foreach FILE, *.mex, ../bin/mex $(FILE:.mex=);)
+
+	@echo
+	@echo "Pass two"
+	@echo " - Re-Compiling english.mad "
+	@cd $(PREFIX)/etc/lang && $(PREFIX)/bin/maid english -d -s -p$(PREFIX)/etc/max
+	@echo " - Re-Compiling max.ctl"
+	@sleep 2 # Quell Warnings in max
+	@cd $(PREFIX) && bin/silt etc/max -p
 
 install: mkdirs squish_install max_install config_install
 

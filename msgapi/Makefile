@@ -15,8 +15,8 @@ APIOBJS     :=  msgapi.obJ                                              \
                                                                         \
                 api_sdm.obJ                                    \
                                                                         \
-                bld.obJ
-
+                bld.obJ structrw.o
+	
 
 APIOBJS := $(APIOBJS:.obJ=.o)
 
@@ -35,7 +35,7 @@ API_SDMOBJS :=  api_sdm.o
 .PHONY: all install
 
 all: libmsgapi.so
-install: libmsgapi.so
+install_libs install: libmsgapi.so
 	cp -f $^ $(LIB)
 
 $(BLDOBJS):     bld.h

@@ -40,7 +40,7 @@ skiplist.obJ acomp.obJ    arc_cmd.obJ      \
 arcmatch.obJ bfile.obJ    bprintf.obJ  _ctype.obJ       \
 setfsize.obJ cstrupr.obJ  strnncpy.obJ zeller.obJ       \
 getmax.obJ   prmapi.obJ   strbuf.obJ       \
-$(COMP)_misc.obJ vio.obJ
+$(COMP)_misc.obJ vio.obJ align.obJ
 
 .PHONY: all install install_libs
 
@@ -52,6 +52,7 @@ all: libsmserial.so libmax.so
 #        dv_puts.obJ  dv_scrl.obJ      \
               
 OBJS := $(OBJS:.obJ=.o) os2file.o os2key.o
+DEPEND_FILES=$(OBJS:.o=.c)
 
 libsmserial.so: smserial.o
 	gcc -shared $^ -o $@
@@ -66,3 +67,4 @@ install:  install_libs
 
 clean:
 	-rm *.o *.so
+

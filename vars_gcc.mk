@@ -2,21 +2,25 @@
 
 CPP = $(CC) -E
 LD  := $(LD) -shared
+MDFLAGS += -D__GNUC__
+CFLAGS += -funsigned-bitfields -Wcast-align
 
-ifeq ($(BUILD), PROFILE)
+BUILD:=$(strip $(BUILD))
+
+ifeq ($(BUILD),PROFILE)
   CFLAGS	+= -O2 -pg
-  LDFLAGS	+=  -L$(STATIC_LIB) -static
+  LDFLAGS	+= -L$(STATIC_LIB) -static
   LIB_EXT	:= a
 else
-  LDFLAGS	+=  -L$(LIB) -Xlinker -R$(LIB) 
+  LDFLAGS	+= -L$(LIB) -Xlinker -R$(LIB) $(foreach DIR, $(EXTRA_LD_LIBRARY_PATH), -Xlinker -R$(DIR))
   LIB_EXT	:= so
 endif
 
-ifeq ($(BUILD), RELEASE)
+ifeq ($(BUILD),RELEASE)
   CFLAGS	+= -O2
 endif
 
-ifeq ($(BUILD), DEVEL)
+ifeq ($(BUILD),DEVEL)
   DEBUGMODE	= 1
   CFLAGS	+= -g -Wall -O $(DEBUG_CFLAGS)
   YFLAGS	+= -t

@@ -6,18 +6,30 @@
 # @author	Wes Garland; wes@ninja250.kingston.net
 # @date		May 23 2003
 #
-# $Id: configure,v 1.2 2003/06/06 00:45:06 wesgarland Exp $
+# $Id: configure,v 1.3 2003/06/11 19:23:53 wesgarland Exp $
 #
 
 OUTPUT='vars_local.mk'
+
+necho()
+{
+  if [ -f "/usr/ucb/echo" ]; then
+    /usr/ucb/echo -n $*
+  else
+    if [ -f "/bin/printf" ]; then
+      /bin/printf "%s" %*
+    else
+      echo -n $*
+    fi
+  fi
+}
 
 if [ "${UID}" = "0" ] || [ "`id -u 2>/dev/null`" = "0" ] || [ "${USER}" = "root" ] || [ "${LOGNAME}" = "root" ]; then
   echo
   echo "WARNING WARNING WARNING WARNING WARNING"
   echo
   echo "This script should not be run as root!"
-  echo "Press ^C to abort, or return to continue"
-  echo
+  necho "Press ^C to abort, or enter to continue:"
   read line
   echo 
 fi
@@ -45,10 +57,14 @@ locate()
 find()
 {
   label="$1"
-  prog="$2"
+  progList="$2"
   shift 2
 
-  eval ${label}=\"\`locate ${prog} $*\`\"
+  for prog in `echo ${progList} | sed 's/,/ /g'`
+  do
+    eval ${label}=\"\`locate ${prog} $*\`\"
+    eval [ \"\$${label}\" ] && break
+  done
 
   if eval [ \"\$${label}\" ]; then
     eval echo "Found ${prog} as \$${label}"
@@ -66,15 +82,18 @@ IFS="=${OLDIFS}"
 set -- $* ""
 IFS="${OLDIFS}"
 
+BUILD=DEVEL
+
 while [ "$1" ]
 do
   case "$1" in 
     "--help" | "-h")
       echo "Usage:   ./configure [options]"
       echo "Options:"
-      echo " --prefix=DIR sets the installation directory [${PREFIX}]"
-      echo " --help       generates this help file"
-      echo " --source     sets the location of the source tree [${SRC}]"
+      echo " --prefix=DIR 	sets the installation directory [${PREFIX}]"
+      echo " --help       	generates this help file"
+      echo " --source     	sets the location of the source tree [${SRC}]"
+      echo " --build=[mode]	Sets build mode to DEVEL|DEBUG|PROFILE|RELEASE [${BUILD}]"
       exit 0
     ;;
     "--prefix")
@@ -83,6 +102,15 @@ do
     ;;
     "--source" | "--src")
       SRC="$2"
+      shift 2
+    ;;
+    "--build")
+      BUILD="$2"
+      [ "${BUILD}" != "DEVEL" ] && \
+	[ "${BUILD}" != "RELEASE" ] && \
+	[ "${BUILD}" != "PROFILE" ] && \
+	[ "${BUILD}" != "DEBUG" ] && \
+	echo "Error: --build must be set to DEVEL, DEBUG, PROFILE, or RELEASE" >&2 && exit 1
       shift 2
     ;;
     *)
@@ -102,37 +130,25 @@ if [ ! -f "configure" ] || [ ! -f "vars.mk.configure" ]; then
   exit 1
 fi
 
+[ ! -f "${OUTPUT}" ] && firstTime=yes
 [ -f "${OUTPUT}" ] && mv -f "${OUTPUT}" "${OUTPUT}~"
 
 find CC gcc
-find MAKE make
-find GMAKE gmake
+find MAKE gmake,make
 find AR ar
 find RANLIB ranlib 
-find YACC yacc
-find BISON bison
+find YACC bison,yacc /usr/ccs/bin
 find SED sed
 find RM rm
 find MV mv
 find INSTALL install /usr/ucb
 find UNAME uname
-
-if [ "${BISON}" ]; then
-  [ "${YACC}" ] && echo "Choosing bison in favour of yacc"
-  echo "YACC=${BISON}" >> ${OUTPUT}
-else
-  [ ! "${YACC}" ] && echo "Warning: found neither yacc nor bison!"
-fi
-
-if [ "${GMAKE}" ]; then
-  [ "${MAKE}" ] && echo "Choosing gmake in favour of make (GNU Make is required)"
-  MAKE="${GMAKE}"
-  echo "MAKE=${GMAKE}" >> ${OUTPUT}
-fi
+find MAKEDEPEND makedepend /usr/openwin/bin
 
 [ ! "${SED}" ] && SED=sed
 [ ! "${UNAME}" ] && UNAME=uname
 [ ! "${MAKE}" ] && MAKE=make
+export MAKE
 
 PLATFORM=`${UNAME} -s | ${SED} 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
 
@@ -141,8 +157,8 @@ echo "The file 'vars_${PLATFORM}.mk' will be used for various platform-dependant
 echo "rules and build options."
 echo
 
-if [ -f "${PLATFORM}.mk" ]; then
-  echo "Please insure that it makes sense for your configuration. If it does not,"
+if [ ! -f "${PLATFORM}.mk" ]; then
+  echo "Please insure that it makes sense for your platform. If it does not,"
   echo "fix it, and submit your changes back to the Maximus development team."
 else
   echo "Your platform has not been tested yet; as such the file does not exist."
@@ -150,12 +166,20 @@ else
   echo "Once you get it working, submit it back to the Maximus development team."
 fi
 
+echo
 echo "If you have any installation-specific changes to make, you can edit"
 echo "the file '${OUTPUT}'."
+echo
+if [ "${firstTime}" ]; then
+  necho "Press ^C to abort, or enter to continue:"
+  read line
+fi
+
 echo
 echo "Creating vars.mk; using PREFIX=${PREFIX}"
 echo "PREFIX=${PREFIX}" > vars.mk
 echo "SRC=${SRC}" >> vars.mk
+echo "COMP=unix" >> vars.mk
 echo "PLATFORM=${PLATFORM}" >> vars.mk
 echo "" >> vars.mk
 echo "# Build platform: `uname -a`" >> vars.mk
@@ -175,9 +199,52 @@ cat vars.mk.configure >> vars.mk
 
 echo 
 ${MAKE} -f Makefile usage
+echo
+echo Testing your build environment..
+echo
 
+cd configuration-tests
+${MAKE} clean >/dev/null 2>&1
+./make.sh || exit $?
+
+echo "Testing your C compiler.."
+${MAKE} c_compiler >/dev/null || exit $?
+./c_compiler || (echo "Your C Compiler does not work!" && exit 1)
+echo " - Looks fine to me!"
+
+echo "Determining platform endianness.."
+${MAKE} endian >/dev/null || (err=$? && echo "Error $err compiling endian.c" && exit $err)
+./endian " - Chose %s" 2>/dev/null
+echo
+echo "/* Automatically generated by configure */" > ../slib/compiler_details.h
+echo "/* Generated: `date` */" >> ../slib/compiler_details.h
+echo  >> ../slib/compiler_details.h
+echo "#ifndef _COMPILER_DETAILS_H" >> ../slib/compiler_details.h
+echo "#define _COMPILER_DETAILS_H" >> ../slib/compiler_details.h
+./endian '#define %s' >> ../slib/compiler_details.h || (err=$? && echo " + Error $err running endian test" && exit $err)
+echo >> ../slib/compiler_details.h
+echo "#endif /* _COMPILER_DETAILS_H */" >> ../slib/compiler_details.h
+
+${MAKE} stamp_combo >/dev/null || (err=$? && echo "Error $err compiling stamp_combo.c" && exit $err)
+./stamp_combo || exit $?
+cd ..
+
+if [ ! -d "install_tree" ]; then
+  echo "\007Warning: could not find install_tree. Did you forget to"
+  echo "unpack max-etc-3.03.tar.gz?"
+  exit 1
+fi
+
+echo
 echo "Configuration complete."
 echo
+[ ! -d "${PREFIX}" ] && mkdir -p ${PREFIX} 2>/dev/null
+if [ ! -d "${PREFIX}" ]; then
+  echo "You can build Maximus and Squish without creating ${PREFIX},"
+  echo "however you will probably need to become root to install,"
+  echo "or at least create ${PREFIX} with appropriate permissions."
+  echo
+fi
 echo "Post-Install, it would be wise to make a bbs user and"
 echo "group, and change directory ownerships appropriately."
 echo "'chmod -R bbs:bbs ${PREFIX}' should work nicely."

@@ -62,7 +62,9 @@ m_input.obj     m_lines.obj     f_okay.obj      atexit.obj
 #MOBJS       += stk.obj md5.obj tune.obj uniqren.obj strbuf.obj arc_def.obj \
 #               noise.obj
 
-MOBJS := $(MOBJS:.obj=.o)
+MOBJS := $(strip $(MOBJS:.obj=.o))
+
+DEPEND_FILES = $(MOBJS:.o=.c) max.c date.c
 
 # Protocol objects
 
@@ -78,6 +80,8 @@ OBJS        :=  $(strip $(MAXOBJ) $(MOBJS) $(ZOBJS) cppmain.o)
 all: max
 install: max
 	cp -f $^ $(BIN)
+
+.INTERMEDIARY: date.o
 
 max: $(OBJS) date.o
 

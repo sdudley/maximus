@@ -1,5 +1,3 @@
-BUILD		= DEVEL
-
 CC		= gcc
 CXX		= gcc
 AR		= ar
@@ -11,53 +9,62 @@ MV		= mv -f
 BSD_INSTALL	= install
 UNAME		= uname
 
--include	$(SRC)/vars_local.mk
-
-#PLATFORM	:= $(strip $(shell $(UNAME) -s | $(SED) 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'))
-
+LDFLAGS		= -L.
 OBJ_EXT		:= o
 LIB_EXT		:= so
 LIB_PREFIX	:= lib
 
+-include	$(SRC)/vars_local.mk
+
+#PLATFORM	:= $(strip $(shell $(UNAME) -s | $(SED) 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'))
 #PREFIX		= /var/max
+
 BIN		= $(PREFIX)/bin
 ETC		= $(PREFIX)/etc
 LIBEXEC		= $(PREFIX)/libexec
 LIB		= $(PREFIX)/lib
 STATIC_LIB	= $(SRC)/lib
 
-CXXFLAGS	:= $(CFLAGS)
+H_DIRS		:= unix/include slib msgapi btree max prot mex
+SO_DIRS		:= unix slib msgapi btree prot mex
+LDFLAGS		+= $(foreach DIR, $(SO_DIRS), -L$(SRC)/$(DIR))
+INCLUDES	:= -I. $(foreach DIR, $(H_DIRS), -I$(SRC)/$(DIR))
+CXXFLAGS	:= $(CFLAGS) -fpermissive
 LOADLIBES	= $(EXTRA_LOADLIBES) -lmax -lcompat -lcurses
-INCLUDES	:= -I. -I$(SRC)/unix/include -I$(SRC)/slib -I$(SRC)/max -I$(SRC)/msgapi\
-		  -I$(SRC)/prot -I$(SRC)/btree -I$(SRC)/mex -I$(SRC)/prot 
 
 include		$(SRC)/vars_$(PLATFORM).mk
 
 LOADLIBES	+= $(OS_LIBS)
 CPPFLAGS	= -DUNIX $(EXTRA_CPPFLAGS) $(INCLUDES) $(EXTRA_INCLUDES)
+MDFLAGS		= -D__MAKEDEPEND__
 
 ifneq (,$(findstring gcc,$(CC)))
 include 	$(SRC)/vars_gcc.mk
 endif
 
-.PHONY:		top build_debug
+.PHONY:		top build_debug depend
 
 top:		all
 
 build_debug:
 		@echo
-		@echo "BUILD     = $(BUILD)"
-		@echo "PREFIX    = $(PREFIX)"
-		@echo "CC        = $(CC)"
-		@echo "LD        = $(LD)"
-		@echo "YACC      = $(YACC)"
-		@echo "YFLAGS    = $(YFLAGS)"
-		@echo "CFLAGS    = $(CFLAGS)"
-		@echo "LDFLAGS   = $(LDFLAGS)"
-		@echo "LOADLIBES = $(LOADLIBES)"
-		@echo "CPPFLAGS  = $(CPPFLAGS)"
+		@echo "BUILD        = $(BUILD)"
+		@echo "PREFIX       = $(PREFIX)"
+		@echo "CC           = $(CC)"
+		@echo "CXX          = $(CXX)"
+		@echo "LD           = $(LD)"
+		@echo "YACC         = $(YACC)"
+		@echo "MAKEDEPEND   = $(MAKEDEPEND)"
 		@echo
-
+		@echo "CFLAGS       = $(CFLAGS)"
+		@echo "CXXFLAGS     = $(CXXFLAGS)"
+		@echo "CPPFLAGS     = $(CPPFLAGS)"
+		@echo "LDFLAGS      = $(LDFLAGS)"
+		@echo "LOADLIBES    = $(LOADLIBES)"
+		@echo "YFLAGS       = $(YFLAGS)"
+		@echo "PATH         = $(PATH)"
+		@echo "DEPEND_FILES = $(DEPEND_FILES)"
+		@echo
 
 # Implicit rules for constructing *.c, *.h from yacc input
 # under either bison or yacc. Assumes !yacc == bison.
@@ -79,4 +86,15 @@ else
 	$(YACC) $< -o $@
 endif
 
+ifneq ($(strip $(BUILD)),RELEASE) 
+ifneq ($(strip $(NO_DEPEND_RULE)),TRUE)
+-include depend.mk 
+depend depend.mk: $(SRC)/vars.mk
+	@echo "Building dependencies.."
+	@-touch depend.mk 
+ifneq ($(MAKEDEPEND),) 
+	@-[ "$(DEPEND_FILES)" ] && $(MAKEDEPEND) $(MDFLAGS) -I. $(CPPFLAGS) -f depend.mk $(DEPEND_FILES)
+endif 
+endif
+endif
 
