@@ -17,9 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$id";
-#pragma on(unreferenced)
+/* $Id: f_queue.c,v 1.3 2004/01/22 08:04:27 wmcbrine Exp $ */
 
 /*# name=File area routines: upload/download fileslist management
 */

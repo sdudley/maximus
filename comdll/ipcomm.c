@@ -27,9 +27,13 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.14 2004/01/19 23:37:03 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.15 2004/01/22 08:04:26 wmcbrine Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.15  2004/01/22 08:04:26  wmcbrine
+ * Changed all the "static char rcs_id[]=" stuff to comments. Which works just
+ * as well, but doesn't produce any warnings. :-)
+ *
  * Revision 1.14  2004/01/19 23:37:03  paltas
  * Added some to get freebsd work, and improved maxcomm a bit..
  *
@@ -96,8 +100,6 @@
 #endif
 
 #define TELNET
-
-static char rcs_id[]="$Id: ipcomm.c,v 1.14 2004/01/19 23:37:03 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>

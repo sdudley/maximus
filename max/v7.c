@@ -17,9 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$Id: v7.c,v 1.3 2003/11/23 13:13:33 paltas Exp $";
-#pragma on(unreferenced)
+/* $Id: v7.c,v 1.4 2004/01/22 08:04:27 wmcbrine Exp $ */
 
 /*# name=Version 7 nodelist module
     credit=(C) Copyright 1987-91, Bit Bucket Software, a Delaware Corporation

@@ -17,9 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$Id: max_cho.c,v 1.2 2003/08/16 23:45:33 paltas Exp $";
-#pragma on(unreferenced)
+/* $Id: max_cho.c,v 1.3 2004/01/22 08:04:27 wmcbrine Exp $ */
 
 /*# name=Chat Mode routines (overlayed).  Includes the chat itself, routines
     name=for reading IPCxx.BBS, and for processing inbound messages.

@@ -17,9 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$Id: s_proto.c,v 1.1 2002/10/01 17:57:52 sdudley Exp $";
-#pragma on(unreferenced)
+/* $Id: s_proto.c,v 1.2 2004/01/22 08:04:28 wmcbrine Exp $ */
 
 /*# name=SILT: 'Protocol XXXXX processing logic
 */

@@ -11,12 +11,14 @@
  *  @date	June 5th, 2003
  *
  *  $Log: xpunix.c,v $
+ *  Revision 1.2  2004/01/22 08:04:28  wmcbrine
+ *  Changed all the "static char rcs_id[]=" stuff to comments. Which works just
+ *  as well, but doesn't produce any warnings. :-)
+ *
  *  Revision 1.1  2003/06/11 14:44:51  wesgarland
  *  Initial Revision
  *
  */
-
-static char rcs_id[]="$Id: xpunix.c,v 1.1 2003/06/11 14:44:51 wesgarland Exp $";
 
 #if defined(FLOCK_IS_FCNTL)
 /** Implement flock with fcntl.

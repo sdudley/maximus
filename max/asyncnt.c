@@ -17,13 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef __GNUC__
-#pragma off(unreferenced)
-#endif
-static char __attribute__((unused)) rcs_id[]="$Id: asyncnt.c,v 1.5 2004/01/13 00:44:56 paltas Exp $";
-#ifndef __GNUC__
-#pragma on(unreferenced)
-#endif
+/* $Id: asyncnt.c,v 1.6 2004/01/22 08:04:26 wmcbrine Exp $ */
 
 #if defined(NT) || defined(UNIX)
 

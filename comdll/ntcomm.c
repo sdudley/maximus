@@ -23,9 +23,7 @@
    Copyright 1993, 1994 by Lanius Corporation.  All rights reserved.
 */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$Id: ntcomm.c,v 1.1 2002/10/01 17:49:34 sdudley Exp $";
-#pragma on(unreferenced)
+/* $Id: ntcomm.c,v 1.2 2004/01/22 08:04:26 wmcbrine Exp $ */
 
 #define NO_RUNTIME /* also copy this include to ntcommdl.c! */
 /*#define DEBUG_PIPE*/

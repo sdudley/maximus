@@ -20,9 +20,13 @@
 /**
  * @file	s_hole.c
  * @author	Scott J. Dudley
- * @version	$Id: s_hole.c,v 1.8 2004/01/13 00:42:14 paltas Exp $
+ * @version	$Id: s_hole.c,v 1.9 2004/01/22 08:04:28 wmcbrine Exp $
  *
  * $Log: s_hole.c,v $
+ * Revision 1.9  2004/01/22 08:04:28  wmcbrine
+ * Changed all the "static char rcs_id[]=" stuff to comments. Which works just
+ * as well, but doesn't produce any warnings. :-)
+ *
  * Revision 1.8  2004/01/13 00:42:14  paltas
  * Fixed compiler warnings
  *
@@ -49,14 +53,6 @@
  * for the ?ut filenames, where the ? is the mail flavour (FLO)
  *
  */
-
-#ifndef __GNUC__
-#pragma off(unreferenced)
-#endif
-static __attribute__((unused)) char rcs_id[]="$Id: s_hole.c,v 1.8 2004/01/13 00:42:14 paltas Exp $";
-#ifndef __GNUC__
-#pragma on(unreferenced)
-#endif
 
 #define NOVARS
 #define DEBUG_HOLE

@@ -17,9 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$Id: s_menu.c,v 1.2 2003/06/05 03:18:58 wesgarland Exp $";
-#pragma on(unreferenced)
+/* $Id: s_menu.c,v 1.3 2004/01/22 08:04:28 wmcbrine Exp $ */
 
 /*# name=SILT: 'Section Menu' processing logic
 */

@@ -20,9 +20,13 @@
 /**
  * @file	s_squash.c
  * @author	Scott J. Dudley
- * @version	$Id: s_squash.c,v 1.7 2003/12/14 17:40:19 paltas Exp $
+ * @version	$Id: s_squash.c,v 1.8 2004/01/22 08:04:28 wmcbrine Exp $
  *
  * $Log: s_squash.c,v $
+ * Revision 1.8  2004/01/22 08:04:28  wmcbrine
+ * Changed all the "static char rcs_id[]=" stuff to comments. Which works just
+ * as well, but doesn't produce any warnings. :-)
+ *
  * Revision 1.7  2003/12/14 17:40:19  paltas
  * Fixed different things (can't remember all of it.. )
  *
@@ -48,14 +52,6 @@
  * for the ?ut filenames, where the ? is the mail flavour (FLO)
  *
  */
-
-#if !defined(__GNUC__)
-#pragma off(unreferenced)
-#endif
-static char __attribute__((unused)) rcs_id[]="$Id: s_squash.c,v 1.7 2003/12/14 17:40:19 paltas Exp $";
-#if !defined(__GNUC__)
-#pragma on(unreferenced)
-#endif
 
 #define NOVARS
 

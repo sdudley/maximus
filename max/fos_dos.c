@@ -17,9 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#pragma off(unreferenced)
-static char rcs_id[]="$Id: fos_dos.c,v 1.1 2002/10/01 17:50:57 sdudley Exp $";
-#pragma on(unreferenced)
+/* $Id: fos_dos.c,v 1.2 2004/01/22 08:04:27 wmcbrine Exp $ */
 
 /*# name=FOSSIL interface routines (DOS)
 */
