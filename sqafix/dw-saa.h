@@ -273,7 +273,7 @@
 
   // Declare size_t type
 
-#ifndef _SIZE_T
+#ifndef _SIZE_T
 #define _SIZE_T
 typedef unsigned int size_t;
 #endif
