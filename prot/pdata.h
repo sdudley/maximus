@@ -34,7 +34,7 @@ void ZmStatus(unsigned crc32, unsigned block_size, long size, long sent, time_t 
 int mdm_getct(unsigned timeout);
 void XmSendCAN(void);
 void XmStatus(unsigned flag, unsigned do_crc, long sent,
-              time_t start, word protocol, long size, long last_ack,
+              time_t start, sword protocol, long size, long last_ack,
               unsigned n_err, long block);
 void unique_name (char *fname);
 void ThruStart(void);

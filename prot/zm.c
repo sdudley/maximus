@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: zm.c,v 1.1 2002/10/01 17:54:46 sdudley Exp $";
+static char rcs_id[]="$Id: zm.c,v 1.2 2003/06/05 01:16:01 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*
@@ -646,7 +646,7 @@ zsda32(char *buf, int length, int frameend)
  */
 
 void 
-zsdata(char *buf, int length, int frameend)
+zsdata(unsigned char *buf, int length, int frameend)
 {
   unsigned short crc;
 
