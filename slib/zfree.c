@@ -109,17 +109,26 @@ static long CalcFreeSpace(long lSectorsPerCluster, long lBytesPerSector, long lF
     return CalcFreeSpace(lSectorsPerCluster, lBytesPerSector, lFreeClusters);
   }
 #elif defined(UNIX)
-/* Note: Probably need to use statvfs under SVR4 */
-#include <sys/vfs.h>
+#if defined(SYSV)
+# include <sys/statvfs.h>
+typedef struct statvfs st_statfs;
+# define statfs(a,b) statvfs(a,b)
+#else
+# include <sys/vfs.h>
+typedef struct statfs st_statfs;
+#endif
 
 long zfree(char *path)
 {
-  struct statfs sb;
+  st_statfs sb;
 
   if (statfs(path, &sb))
     return 0; /* Can't stat -> no free space */
 
   return sb.f_bavail * sb.f_bsize;
+#if defined(SYSV)
+# undef statfs
+#endif
 }
 #else
   #error Unknown OS
