@@ -18,15 +18,15 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: t_menu.c,v 1.1 2002/10/01 17:53:14 sdudley Exp $";
+static char rcs_id[]="$Id: t_menu.c,v 1.2 2004/01/11 19:43:21 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 #include "trackp.h"
 
-static void near TrackMenuInsert(void);
 
 #ifdef MAX_TRACKER
 
+static void near TrackMenuInsert(void);
 extern char szTrk[];
 
 /* Modify the owner of an existing message */

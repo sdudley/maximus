@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: t_misc.c,v 1.1 2002/10/01 17:53:14 sdudley Exp $";
+static char rcs_id[]="$Id: t_misc.c,v 1.2 2004/01/11 19:43:21 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*#define TRACK_PERSISTENT*/  /* Only open tracking database once only */
@@ -187,7 +187,7 @@ void InitTracker(void)
     logit(log_cant_open_trk);
     return;
   }
-
+  
   /* Get the list of our names, plus the list of people to exclude */
 
   GetUsList(t);

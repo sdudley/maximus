@@ -21,7 +21,7 @@
 #pragma off(unreferenced)
 #endif
 
-static char __attribute__((unused)) rcs_id[]="$Id: max_fini.c,v 1.2 2003/06/29 20:57:14 wesgarland Exp $";
+static char __attribute__((unused)) rcs_id[]="$Id: max_fini.c,v 1.3 2004/01/11 19:43:21 wmcbrine Exp $";
 
 #ifndef __GNUC__
 #pragma on(unreferenced)
@@ -153,7 +153,9 @@ void FinishUp2(int hangup)
     TagWriteTagFile(&mtm);
   }
 
+#ifdef MAX_TRACKER
   DeinitTracker();
+#endif
 
   usr.time += (int)wasonfor;
   usr.call++;

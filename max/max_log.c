@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_log.c,v 1.5 2003/12/16 12:43:45 paltas Exp $";
+static char rcs_id[]="$Id: max_log.c,v 1.6 2004/01/11 19:43:21 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=Log-on routines and new-user junk
@@ -76,9 +76,9 @@ void Login(char *key_info)
 {
   signed int left;
   int newuser;
-
+  
   Calc_Timeoff();
-
+  
   if (! local && !waitforcaller)
     logit(log_caller_bps, baud);
 
