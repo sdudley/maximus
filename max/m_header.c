@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_header.c,v 1.1 2002/10/01 17:52:42 sdudley Exp $";
+static char rcs_id[]="$Id: m_header.c,v 1.2 2003/06/04 23:51:24 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: Grab message header from user
@@ -160,8 +160,8 @@ static int near IsHeaderOkay(XMSG *msg, PMAH pmah)
    * slightly                                                               */
   
   if ((pmah->ma.attribs & MA_ANON) && isblstr(msg->from))
-    strcpy(msg->from, (pmah->ma.attribs & MA_REAL) ? usr.name :
-           ((pmah->ma.attribs & MA_ALIAS) && *usr.alias) ? usr.alias : usrname);
+    strcpy(msg->from, (pmah->ma.attribs & MA_REAL) ? (char *)usr.name :
+           ((pmah->ma.attribs & MA_ALIAS) && *usr.alias) ? (char *)usr.alias : (char *)usrname);
 
   if (strpbrk(msg->to,"@!")==NULL || strchr(msg->to,' '))
     fancier_str(msg->to);
@@ -300,7 +300,7 @@ int Get_FidoList_Name(XMSG *msg, char *netnode, char *fidouser)
   
 
 #if 1 /* Last, First Middle */
-  for (p=msg->to+strlen(msg->to)-1; p >= msg->to && *p != ' '; p--)
+  for (p=(char *)(msg->to+strlen(msg->to)-1); p >= (char *)msg->to && *p != ' '; p--)
     ;
 
 #else /* Middle Last, First */
@@ -317,7 +317,13 @@ int Get_FidoList_Name(XMSG *msg, char *netnode, char *fidouser)
     
     /* Convert the name to JoHo format */
  
+#if !defined(__GNUC__)
     sprintf(name, "%s %-0.*s", p+1, p-msg->to, msg->to);
+#else
+    /* What the HELL did scott mean by THAT? -- wes */
+    sprintf(name, "%s %s", p+1, (char *)msg->to);
+#endif
+
     name[15]='\0';
     
     while(strlen(name) < 15)
@@ -333,12 +339,17 @@ int Get_FidoList_Name(XMSG *msg, char *netnode, char *fidouser)
   if (! *fidouser)
     return FALSE;
 
+#if !defined(__GNUC__)
   sprintf(name,
           "%s, %-0.*s",
           p+1,
           p-msg->to,
           msg->to);
-
+  /* WTF? */
+#else
+  sprintf(name, "%s %s", p+1, msg->to);
+#endif
+ 
   if ((ulfile=shfopen(fidouser, fopen_readb, O_RDONLY | O_BINARY | O_NOINHERIT))==NULL)
     return FALSE;
 
@@ -420,7 +431,11 @@ static int near Parse_Alias_File(XMSG *msg,char *netnode)
   char *p;
   int gotit;
 
+#ifndef UNIX
   sprintf(temp, "%sNAMES.MAX", PRM(sys_path));
+#else
+  sprintf(temp, "%snames.max", PRM(sys_path));
+#endif
 
   if ((alias=shfopen(temp, fopen_read, O_RDONLY | O_NOINHERIT))==NULL)
     return FALSE;
