@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: disp_dat.c,v 1.1 2002/10/01 17:50:49 sdudley Exp $";
+static char rcs_id[]="$Id: disp_dat.c,v 1.2 2003/06/04 23:12:08 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=.BBS-file display routines (ctrl-F data codes)
@@ -51,7 +51,11 @@ word DisplayDatacode(DSTK *d)
   switch (DispSlowGetChar(d))
   {
     case 1:   /* Quote */
+#ifndef UNIX
       sprintf(d->scratch, "%s.BBS", PRM(quote));
+#else
+      sprintf(d->scratch, "%s.bbs", PRM(quote));
+#endif
 
       if ((quotefile=shfopen(d->scratch, fopen_read, O_RDONLY))==NULL)
         return 0;
