@@ -189,8 +189,61 @@
     return (kpeek() != -1);
   }
 
+#elif defined(UNIX)
+
+#include <unistd.h>
+#include <sys/time.h>
+#include <string.h>
+#include <curses.h>
+
+int kgetch() /* might conflict with newer ncurses */
+{
+  fd_set rfds;
+  struct timeval tv;
+ 
+  FD_ZERO(&rfds);
+  FD_SET(fileno(stdin), &rfds);
+ 
+  tv.tv_sec = 0;
+  tv.tv_usec = 10; /* very short wait! */
+ 
+  if (select(fileno(stdin) + 1, &rfds, NULL, NULL, &tv) <= 0)
+    return -1; /* Nothing pending; don't block! */
+
+  if (stdscr)
+    return getch(); /* curses - preferred way */
+
+  return getchar(); /* fall back to stdio */
+}
+
+int kpeek()
+{
+  int ch;
+
+  ch = kgetch();
+
+  if (stdscr)
+  {
+    if (ch >= 0)
+      ungetch(ch);
+  }
+  else
+  {
+    if (ch >= 0)
+      ungetc(ch, stdin);
+  }
+
+  return ch;
+}
+
+int khit(void)
+{
+  return (kpeek() != -1);
+}
 
 #else
   #error Unknown OS!
 #endif
+
+
 
