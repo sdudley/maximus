@@ -27,9 +27,13 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.7 2003/11/08 15:19:17 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.8 2003/11/15 23:20:19 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.8  2003/11/15 23:20:19  paltas
+ * Speed up telnet, and made Zmodem transfer working.. Dunno about X/Y
+ * modem..
+ *
  * Revision 1.7  2003/11/08 15:19:17  paltas
  * Fixed segfault problem in commdll
  *
@@ -73,7 +77,7 @@
 # error UNIX only!
 #endif
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.7 2003/11/08 15:19:17 paltas Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.8 2003/11/15 23:20:19 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -348,8 +352,10 @@ BOOL COMMAPI ComClose(HCOMM hc)
 
   hc->fDCD = FALSE;		/* TCP/IP shutdown: remove "carrier" signal */
 
-  free((char *)hc->device);
-  free(hc);
+  if(hc->device)
+     free((char *)hc->device);
+/*  if(hc)
+     free(hc);*/
 
   return TRUE;
 }
@@ -390,8 +396,8 @@ ssize_t telnet_write(HCOMM hc, const unsigned char *buf, size_t count)
   if (!hc)
     return -1;
 
-  if (hc->telnetOptions & mopt_TRANSMIT_BINARY)
-    return write(fd, buf, count);
+/*  if (hc->telnetOptions & mopt_TRANSMIT_BINARY)
+    return write(fd, buf, count);*/
 
   iac = memchr(buf, cmd_IAC, count);
   if (!iac)
@@ -434,7 +440,7 @@ ssize_t telnet_write(HCOMM hc, const unsigned char *buf, size_t count)
 ssize_t timeout_read(int fd, unsigned char *buf, size_t count, time_t timeout)
 {
   /* for used by telnet_read to read more buffer w/o blocking */
-  
+ 
   struct timeval	tv;
   int			i;
   fd_set		rfds;
@@ -548,12 +554,14 @@ static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
   unsigned char	*iac, *ch, arg, arg2;
   int		fd = unixfd(hc);
   ssize_t	bytesRead = read(fd, buf, count);	/* Select()ed for read already */
-
+  
+ 
   if (!hc)
     return -1;
 
   if (hc->telnetOptions & mopt_TRANSMIT_BINARY)
-    return bytesRead;
+    goto parse_iac;
+//    return bytesRead;
 
   telnet_read_reread:
   if (bytesRead <= 0)
@@ -568,7 +576,6 @@ static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
      *       during telnet. So how the heck do we do ZMODEM? 
      *	     Probably with IAC WILL TRANSMIT-BINARY.
      */
-
     switch(buf[0])
     {
       case '\0':
@@ -597,20 +604,22 @@ static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
   {
     /* Modify in-buffer eol, or cr sequences to look right */
 
-    for (ch = memchr(buf, '\r', bytesRead);
-	 ch && bytesRead;
-	 ch = memchr(ch, '\r', bytesRead - (ch - buf)))
-    {
-      switch(ch[1])
-      {
-	case '\n':			/* Telnet end-of-line, give max \r\n */ 
-	  ch++; 
-	  break;
-	case '\0':			/* Telnet carriage return, give max \r (consume \0) */
-	  memmove(ch, ch + 1, --bytesRead);
-	  break;
-      }
-    }
+    ch = memchr(buf, '\r', bytesRead);
+    if(ch)
+	do
+	{
+    	    switch(ch[1])
+    	    {
+		case '\n':			/* Telnet end-of-line, give max \r\n */ 
+		    ch++; 
+		    break;
+		case '\0':			/* Telnet carriage return, give max \r (consume \0) */
+		    memmove(ch, ch + 1, --bytesRead);
+		    break;
+    	    }
+	    ch = memchr(ch, '\r', bytesRead - (ch - buf));
+	} while(ch && bytesRead);
+    
 
     /* Pull \0 out of the buffer */
     for (ch = memchr(buf, '\0', bytesRead);
@@ -629,7 +638,8 @@ static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
       return bytesRead;
     }
   }
-
+  
+  parse_iac:
   /* Code below here assumes bytesRead, count >= 1 */
   for (iac = memchr(buf, cmd_IAC, bytesRead);
        bytesRead > 0 && iac && (iac < (buf + bytesRead));
@@ -871,7 +881,7 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
     FD_SET(unixfd(hc), &wfds);
 
     tv.tv_sec = 0;
-    tv.tv_usec = 1;
+    tv.tv_usec = 0;
 
     if (((rready = select(unixfd(hc) + 1, &rfds, NULL, NULL, &tv)) < 0) || (select(unixfd(hc) + 1, NULL, &wfds, NULL, &tv) < 0))
     {
@@ -900,12 +910,17 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
       }
 
       if (hc->fDCD == FALSE)
+      {
 	logit("!Caller closed TCP/IP connection (Dropped Carrier)");
+      }	
     }
 
     skipCheck:
     return hc->fDCD ? 1 : 0;
   }
+
+  if(hc->listenfd == -1)
+    return 0;
 
   /* No "Carrier"? See if we can accept a connection */
   FD_ZERO(&rfds);
@@ -934,7 +949,7 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
        */
 
       close(hc->listenfd);
-      if (fork())
+/*      if (fork())
 	_exit(0);	/* _exit -> no atexit cleanups! */ /* This should NOT be changed to exec; fd limit - Wes */
 
       logit("#pid %i accepted incoming connection and became pid %i", (int)parentPID, (int)getpid());
@@ -974,7 +989,6 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
       hc->peekHack = '\n';
     }
   }
-
   return hc->fDCD ? 1 : 0;
 }
 
@@ -1081,7 +1095,7 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
   if (hc->burstMode)
   {
     tv.tv_sec = 0;
-    tv.tv_usec = 1;
+    tv.tv_usec = 0;
   }
   else
   {
@@ -1102,7 +1116,7 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
   FD_ZERO(&rfds);
   FD_SET(unixfd(hc), &rfds);
 
-  if (select(unixfd(hc) + 1, &rfds, NULL, NULL, &tv) != 0)
+  if (select(unixfd(hc)+1, &rfds, NULL, NULL, &tv))
   {
     bytesRead = telnet_read(hc, pvBuf, dwBytesToRead);
 
@@ -1132,7 +1146,7 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
 
     tv.tv_usec = (hc->ct.ReadIntervalTimeout * 1000) / 16; /* inter char timeout is in 1/16 of a ms */
     tv.tv_sec  = 0;
-    goto ComRead_getData;
+    //goto ComRead_getData;
   }
 
   return retval;
@@ -1154,6 +1168,7 @@ int COMMAPI ComGetc(HCOMM hc)
 
   return (ComRead(hc, &b, 1, &dwBytesRead) == 1) ? b : -1;
 }
+
 
 /** "peek" by reading, and setting peekHack to the value
  *  read. ComRead will return this value as the first
@@ -1253,6 +1268,8 @@ BOOL COMMAPI ComTxWait(HCOMM hc, DWORD dwTimeOut)
   }
   else
   {
+    if(hc->listenfd == -1)
+	return FALSE;
     FD_ZERO(&fds);
     FD_SET(hc->listenfd, &fds);
 
