@@ -1,5 +1,5 @@
-Last Update: max-unix-3.03b, Wed Jun 11 13:47:53 EDT 2003
-Status:      Nearing alpha state
+Last Update: max-unix-3.03b, Thu Jun 12 00:17:12 EDT 2003
+Status:      Getting there.
 
 This archive contains Maximus/UNIX v3.03 and Squish/UNIX v1.11. Maximus
 and Squish are Copyright (c) 1989-2003 by Lanius Corporation and Scott J.
@@ -26,9 +26,8 @@ What's in the archive? Lots of stuff, here are the highlights:
 00-README.1ST:			This file :)
 docs/MaximusSourceDoc.doc:   	Some notes from sjd. Read before hacking.
 HACKING:			Some notes from me (Wes). Read before hacking.
-docs/max_mast.doc:		Maximus docs in MS-Word 8 format.
-docs/max_mast.txt:		Maximus docs in text format, suitable for
-				use with daisy-wheel printers.
+docs/max_mast.doc:		Latest Maximus docs in MS-Word 8 format.
+install_tree/docs/max_mast.pdf: Maximus 3.02 docs  inPDF format (Thanks AC)
 MANIFEST:			A list of what-file-is-where
 QUICKSTART:			How to get up and running quickly.
 
@@ -55,7 +54,12 @@ A2: Machine:  SunOS sun 5.8 Generic sun4u sparc SUNW,Ultra-5_10
     Compiler: gcc version 2.95.2 19991024 (release)
     Make:     GNU Make version 3.79.1
     Yacc:     /usr/ccs/bin/yacc (SUNWbtoo?)
-    (Very little testing due to known major bugs)
+
+A3: Machine:  Linux penguin.home.alexburke.ca 2.4.18-19.8.0 #1 Thu Dec 12 05:39:29 EST 2002 i686 i686 i386 GNU/Linux
+    CPU Type: Little Endian, 32-bits
+    Compiler: gcc (GCC) 3.2 20020903 (Red Hat Linux 8.0 3.2-7)
+    Make:     GNU Make version 3.79.1
+    Yacc:     bison (GNU Bison) 1.35
 
 Q: What do I need to build this release?
 A: Good question. I'd guess, GCC 2.72+, GNU Make 3.79+, Bison/Yacc, 
@@ -77,74 +81,74 @@ A: Squish is a good canditate for that description. Bo Simonsen has
    running on an Intel CPU.
 
    Most of the utilities (maid, silt, ansi2bbs, etc) seem to work.
-   Maximus seems to work, but the Mex VM is BROKEN. At least under
-   Alpha. I'd recommend just removing all your mex files.
+   Maximus seems to work, but the Mex VM is BROKEN. Broken, broken,
+   broken. Busted. I'd recommend just removing all your mex files
+   for now.
 
 Q: How do I install Squish and Maximus?
-A: ./configure
-   - make build
-   - make install
+A: # tar -zxvf max-unix-stable.tar.gz
+   # tar -zxvf max-3.03-etc.tar.gz
+   # cd maximus
+   # ./configure
+   # make build
+   # make install
 
-   This is actually covered a little in-depth in the QUICKSTART file.
+   This is actually covered a little more in-depth in the QUICKSTART file.
  
 Q: How do I install just Squish?
-A: cp -rp install_tree/spool install_tree/etc /var/max
-   ./configure
-   make squish
-   make squish_install
+A: # tar -zxvf max-unix-stable.tar.gz
+   # tar -zxvf max-3.03-etc.tar.gz
+   # cd maximus
+   # ./configure
+   # make squish
+   # make squish_install
+   # mkdir -p /var/max/etc
+   # cp install_tree/spool install_tree/etc/squish.cfg /var/max/etc
 
 Q:  How do I install just Maximus?
-A1: (Old Answer)
-    - Run the DOS installer (the unix installer is screwed)
-    - Copy the files to /var/max somehow. I installed over a SAMBA share, 
-      that made it nice and easy. 
-    ./configure
-    make max_install
-   
-A2: (New Answer)
-    ./configure
-    - cp -rp install_tree/* /var/max
-    - rm /var/max/etc/squish.cfg
-    - make max
-    - make max_install
+A: # tar -zxvf max-unix-stable.tar.gz
+   # tar -zxvf max-3.03-etc.tar.gz
+   # cd maximus
+   # ./configure
+   # make max
+   # make max_install
+   # cp -rp install_tree/* /var/max
+   # rm /var/max/etc/squish.cfg
 
 Q: Where can I expect problems with this release?
 A: Everywhere!
 
 Q: No, more specifically!
 A: Oh.
-   - You may need to try a bunch of times before stuff builds. There
-     are interdependency problems to fix. (As of 3.03b, this should
-     be resolved. Feedback, please)
+   - You may have a hard time building it. Feeback, please.
    - Big Endian machines will not read fido packets, and probably a
      whole horde of other things will blow up.
    - File locking semantics might be broken, so multinode systems 
-     might randomly blow up.
+     might randomly destroy things and frighten users.
    - Semaphores aren't turned on, and besides, your UNIX mailer
      probably doesn't know about Squish, anyhow. So, uh, just
      have the mailer call Squish, like in the bad old DOS days.
      Don't make it a cron job. And make sure your mailer won't
      call two Squishes at once.
-   - There is no serial support yet.
+   - There is no serial support yet. YET. 
 
 Q: What do I do if I find a bug?
 A: Check the Bug Tracker at maximus.sourceforge.net. If it's not
    set up yet (or you can't access the internet), post your
    findings on the FidoNet MUFFIN echo.
 
-Q: What do I do if I fix a bug?
-A: Diff your file and the distribution, with a 5-line context diff.
-   Make sure you include the rcs_id (CVS revision number) tag in
-   file. Send the diff to wes@ninja250.kingston.net. If you are
-   planning on fixing a bunch of things, send along your SourceForge
-   ID.
+Q: I made some changes; how do I send you the diffs?
+A: Hopefully you're using CVS:
+
+   # cvs diff max/changedfile1.c slib/changedfile2.h | /usr/lib/sendmail wes@ninja250.kingston.net
 
 Q: I don't like installing my stuff in /var/max
-A: So change vars.mk, or specify a new prefix on the configure
-   command line.
+A: Change vars.mk, or specify a new prefix on the configure
+   command line. Actually, the latter is probably much wiser.
 
 Q: How can I set up the Binkd mailer to work with Squish?
-A: See sample/binkd
+A: See sample/binkd. If you have a better config, please send it 
+   to me.
 
 Q: I'm not building under LINUX. What do I do?
 A: Read HACKING, notice what configure complains about, and fix it.
@@ -185,9 +189,11 @@ A: They're not, check out those makefile.mk things! Okay, they're not
 Q: Can I use GNU AutoConf to help me build Maximus/Squish?
 A: Download AutoConf. Come up with the Makefile templates, etc.
    Get everything compiling and linking, and send me your .in files.
+   They'd better be good, because I'm not much of an Autoconf fan
+   (too tricky for me ;)
 
 Q: Hey, I have an Intel box, and think it would be neat if I could
-   use and compile the assembly code and make use of it somehow.
+   compile the assembly code and make use of it somehow.
 A: Good for you, so get to work. I don't have an Intel UNIX box, and
    Maximus doesn't need to run under DOS with 8250 UARTs on a
    1024K 386 running DESQview 2.51 anymore.
@@ -222,6 +228,8 @@ A: - Test by using
      little endian platform. Grep for __attribute.*packed to
      find where I've done this. (Later note: Bo scooped some
      from Husky, good for him. That helps Squish a lot)
+     (Later note again: I'll be stealing a bunch more from
+      xmsgapi, it's just what I need)
    - If it cores, send me a stack backtrace (gdb, bt). Keep the
      core, source, binary and libraries around for a while, I may
      need more input.
@@ -241,11 +249,6 @@ A: Wait until I get an alpha release candidate ready. If you
    can't understand this, then you're not ready to run a release
    in this state. Actually, maybe you could convince all of your
    hacker friends to help you out, and publish their changes.
-
-Q: I made some changes; how do I send you the diffs?
-A: Hopefully you're using CVS:
-
-   # cvs diff max/changedfile1.c slib/changedfile2.h | /usr/lib/sendmail wes@ninja250.kingston.net
 
 -- 
 Wes Garland, 1:249/128

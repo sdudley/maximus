@@ -66,7 +66,7 @@ Fri Jun  6 20:22:09 EDT 2003 - Maximus/UNIX 3.03b [pre-release]
 
 	- Many other changes -- see CVS for complete details.
 
-Wed Jun 11 11:01:10 EDT 2003, Maximus/UNIX 3.03b [tagged release]
+Wed Jun 11 11:01:10 EDT 2003, Maximus/UNIX 3.03b [pre-release]
 
 	- More changes to allow support for Sparc and other BIG_ENDIAN 
 	  platforms. Data files are still not binary compatible with other
@@ -95,5 +95,24 @@ Wed Jun 11 11:01:10 EDT 2003, Maximus/UNIX 3.03b [tagged release]
 
 	- Integrated patches from Andrew Clarke to allow building under
 	  FreeBSD.
+
+	- Many other changes; see CVS for details.
+
+Wed Jun 11 23:58:30 EDT 2003, Maximus/UNIX 3.03b [tagged release]
+
+	- Changes to build under GNU CC 3.2. Biggest problem stems from the
+          requirement for a new shared library when executing C++ code as
+	  of GCC 3.0. This means that programs with C++ components must
+	  either link the library with 'gcc', or be linked with g++.
+	  Unfortunately, GNU Make (3.79.1) doesn't know (and can't know?)
+	  anything about this, so the default (implicit) rules get broken.
+
+	- Changes to try and detect whether to declare timer_t.
+
+	- Changes to the configuration scripts for (yet again) cleaner
+	  building. Extensive from-scratch with my buddy's uber-fast
+	  box. I think it's RedHat 8.0.
+
+	- Bugs fixed with respect to non-/var/max install PREFIX
 
 	- Many other changes; see CVS for details.
