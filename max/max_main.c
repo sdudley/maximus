@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_main.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
+static char rcs_id[]="$Id: max_main.c,v 1.3 2003/06/13 03:18:59 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Main menu functions and commands
@@ -451,7 +451,7 @@ static void near Max_Version(void)
   {
     struct utsname name;
 
-    if (uname(&name) == 0)
+    if (uname(&name) != -1) /* Don't change this */
       Printf("%s %s, running on %s hardware (%s)\n", name.sysname, name.release, name.machine, name.nodename);
     else
       Printf("Unknown UNIX-type platform\n");
