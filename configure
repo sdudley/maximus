@@ -6,7 +6,7 @@
 # @author	Wes Garland; wes@ninja250.kingston.net
 # @date		May 23 2003
 #
-# $Id: configure,v 1.5 2003/06/12 00:18:01 wesgarland Exp $
+# $Id: configure,v 1.6 2003/06/12 02:51:59 wesgarland Exp $
 #
 
 OUTPUT='vars_local.mk'
@@ -146,6 +146,7 @@ fi
 [ -f "${OUTPUT}" ] && mv -f "${OUTPUT}" "${OUTPUT}~"
 
 find CC gcc
+find CXX g++,gcc
 find MAKE gmake,make
 find AR ar
 find RANLIB ranlib 
@@ -155,7 +156,7 @@ find RM rm
 find MV mv
 find INSTALL install /usr/ucb
 find UNAME uname
-find MAKEDEPEND makedepend /usr/openwin/bin
+find MAKEDEPEND makedepend /usr/openwin/bin /usr/X11R6/bin
 
 [ ! "${SED}" ] && SED=sed
 [ ! "${UNAME}" ] && UNAME=uname
