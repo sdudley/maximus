@@ -560,12 +560,12 @@ static CHAR_INFO aci[MAX_COL];
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
+#include <signal.h>
 #include "typedefs.h"
 #include "compiler.h"
 #include "dv.h"
 #include "modem.h"
 #include <curses.h>
-#include <signal.h>
 #include "viocurses.h"
  
 static BYTE Vcurattr = 7;

@@ -145,8 +145,14 @@ unsigned long coreleft(void)
   long pagesAvail;
   long pageSize;
 
+#if defined(__FreeBSD__)
+  /* FreeBSD doesn't have _SC_PAGE_SIZE or _SC_AVPHYS_PAGES, so make up a number */
+  pageSize = 64 * 1024;
+  pagesAvail = 42;
+#else
   pageSize = sysconf(_SC_PAGE_SIZE);
   pagesAvail = sysconf(_SC_AVPHYS_PAGES);
+#endif
 
   return pageSize * pagesAvail;
 }

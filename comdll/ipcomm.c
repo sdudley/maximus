@@ -17,9 +17,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: ipcomm.c,v 1.3 2003/06/11 02:12:01 wesgarland Exp $
+/* $Id: ipcomm.c,v 1.4 2003/06/11 17:21:48 wesgarland Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.4  2003/06/11 17:21:48  wesgarland
+ * Andrew Clarke: Minor changes for building under FreeBSD + general touchup
+ *
  * Revision 1.3  2003/06/11 02:12:01  wesgarland
  * Modified API-visible routines to check for a valid comm handle before using it.
  *
@@ -51,11 +54,12 @@
 #define WATCHDOG_LISTEN_TIMEOUT		0	/**< how long to wait between listen->accept */
 #define WATCHDOG_ACTIVITY_TIMEOUT	300	/**< how long to wait between ComRead activity */
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.3 2003/06/11 02:12:01 wesgarland Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.4 2003/06/11 17:21:48 wesgarland Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <signal.h>
 #include <sys/time.h>
 #include <sys/types.h>

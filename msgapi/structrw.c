@@ -13,7 +13,7 @@
 
 /* those defines does only work on little endian machines */
  
-#if defined(_BIG_ENDIAN)
+#if defined(BIG_ENDIAN)
 # define put_dword(ptr, val)     (*(dword *)(ptr) = (val))
 # define put_word(ptr, val)      (*(word *)(ptr) = (val))
 # define get_dword(ptr)          (*(dword *)(ptr))

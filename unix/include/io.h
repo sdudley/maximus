@@ -5,10 +5,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
-#ifdef LINUX
-# include <sys/file.h>
-#endif
+#include <sys/file.h>
 
 #ifndef O_BINARY
 # define O_BINARY 0

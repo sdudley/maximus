@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: dbase.cc,v 1.1 2002/10/01 17:49:28 sdudley Exp $";
+static char rcs_id[]="$Id: dbase.cc,v 1.2 2003/06/11 17:21:38 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #ifdef OS_2
@@ -472,7 +472,9 @@ int CPPEXPORT DBASE::insert(void *pvRecord, int iLength)
     // Loop through all of the index fields to make sure that
     // at least one is different
 
-    for (int j=0; j < uiIndex; j++)
+    int j;
+
+    for (j=0; j < uiIndex; j++)
       if ((*pfFields[j].kf_base)((char *)pvRecord + pfFields[j].uiOfs,
                                  pcBuf + pfFields[j].uiOfs) != 0)
         break;
@@ -920,7 +922,9 @@ int DBASE::lookup_match(void **ppvFields, void *pvFoundRec)
   // not a match (and the template in ppvFields is not a wildcard)
   // we must exit.
 
-  for (int i=0; i < uiIndex; i++)
+  int i;
+
+  for (i=0; i < uiIndex; i++)
     if (ppvFields[i] &&
         (*pfFields[i].kf_base)(ppvFields[i],
                                (char *)pvFoundRec + pfFields[i].uiOfs) != 0)
@@ -946,7 +950,7 @@ int DBASE::_lookup(void **ppvFields, PALIST *ppl, void *pvFoundRec,
   // Handle either forward or backwards searches
 
   if (fForward)
-    pfLook=BTREE::lookup;
+    pfLook=&BTREE::lookup;
 //  else
 //    pfLook=BTREE::lookupr;
 

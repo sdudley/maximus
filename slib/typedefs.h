@@ -86,8 +86,12 @@ typedef unsigned INT8	uint8;
 # include <stddef.h>
 #endif
 
-#if (!defined(LINUX) && !defined(_PTRDIFF_T)) || defined(NEED_PTRDIFF_T)
-typedef ptrdiff_t	typeof((char *)1 - (char *)0) /* will that work? */
+#if (!defined(__FreeBSD__) && !defined(LINUX) && !defined(_PTRDIFF_T)) || defined(NEED_PTRDIFF_T)
+# if defined(__PTRDIFF_TYPE__)
+typedef __PTRDIFF_TYPE__ ptrdiff_t;
+#  else
+typedef long ptrdiff_t; /* pray */
+# endif
 #endif
 
 /* These legacy max types sort of imply a machine interface */

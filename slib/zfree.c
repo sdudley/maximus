@@ -25,6 +25,22 @@
 #include <ctype.h>
 #include <limits.h>
 #include <dos.h>
+
+#if defined(UNIX)
+#if defined(SYSV)
+# include <sys/statvfs.h>
+typedef struct statvfs st_statfs;
+# define statfs(a,b) statvfs(a,b)
+#elif defined(__FreeBSD__)
+#include <sys/param.h>
+#include <sys/mount.h>
+typedef struct statfs st_statfs;
+#else
+# include <sys/vfs.h>
+typedef struct statfs st_statfs;
+#endif
+#endif
+
 #include "prog.h"
 
 static long CalcFreeSpace(long lSectorsPerCluster, long lBytesPerSector, long lFreeClusters);
@@ -109,14 +125,6 @@ static long CalcFreeSpace(long lSectorsPerCluster, long lBytesPerSector, long lF
     return CalcFreeSpace(lSectorsPerCluster, lBytesPerSector, lFreeClusters);
   }
 #elif defined(UNIX)
-#if defined(SYSV)
-# include <sys/statvfs.h>
-typedef struct statvfs st_statfs;
-# define statfs(a,b) statvfs(a,b)
-#else
-# include <sys/vfs.h>
-typedef struct statfs st_statfs;
-#endif
 
 long zfree(char *path)
 {
