@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_xtrn.c,v 1.1 2002/10/01 17:52:10 sdudley Exp $";
+static char rcs_id[]="$Id: max_xtrn.c,v 1.2 2003/06/04 23:53:08 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_chat
@@ -114,7 +114,7 @@ static char * near MakeFullPath(char *cmd)
     if (s)
     {
       (void)strcpy(this, s);
-      Add_Trailing(this, '\\');
+      Add_Trailing(this, PATH_DELIM);
     }
     else
     {
@@ -300,6 +300,8 @@ static char * near GetComspec(void)
     comspec="command.com";
 #elif defined(OS_2) || defined(NT)
     comspec="cmd.exe";
+#elif defined(UNIX)
+    comspec="/bin/sh";
 #else
     #error Unknown OS
 #endif
@@ -501,9 +503,15 @@ int Outside(char *leaving,char *returning,int method,char *parm,
 
       if ((p=firstchar(parm, ctl_delim, 2)) != NULL && *p)
       {
+#ifndef UNIX
         if (task_num)
           sprintf(temp, "%sERRORL%02x.BAT", original_path, task_num);
         else sprintf(temp, "%sERRORLVL.BAT", original_path);
+#else
+        if (task_num)
+          sprintf(temp, "%serrorl%02x.sh", original_path, task_num);
+        else sprintf(temp, "%serrorl.sh", original_path);
+#endif
 
         if ((bat=shfopen(temp, fopen_write, O_WRONLY | O_CREAT | O_TRUNC))==NULL)
           cant_open(temp);
@@ -1232,7 +1240,7 @@ static char * near Add_Task_Number(char *fname, char *new)
     sprintf(tn, "%02x", task_num);
 
     p=strrchr(new, '.');
-    s=strrchr(new, '\\');
+    s=strrchr(new, PATH_DELIM);
 
     if (s)
       s++;
