@@ -17,15 +17,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: trackcom.h,v 1.1 2002/10/01 17:49:31 sdudley Exp $ */
+/* $Id: trackcom.h,v 1.2 2003/06/04 22:35:46 wesgarland Exp $ */
 
 // Common definitions for track.h and trackc.h
 
 #ifndef __TRACKCOM_H_DEFINED
 #define __TRACKCOM_H_DEFINED
+#include "typedefs.h"
 
 #ifndef __MSGAPI_H_DEFINED
-  typedef unsigned long UMSGID;
+  typedef dword UMSGID;
 #endif
 
 #ifndef __MAX_U_H_DEFINED
@@ -73,8 +74,7 @@ typedef struct
 {
   char szArea[MAX_ALEN];        /* Link to the message area cross-ref base */
   UMSGID uid;                   /* Message number of this msg */
-} TRK_LOCATION;
-
+} TRK_LOCATION  __attribute__((packed, aligned(2)));
 
 // Key used in the main message tracking database
 //
@@ -104,7 +104,7 @@ typedef struct
   // Chained data records contain message trail auditing in an ASCII
   // format.
 
-} TRK_MSG_NDX;
+} TRK_MSG_NDX  __attribute__((packed, aligned(2)));
 
 
 // Key used in the "message owner" database
@@ -114,7 +114,7 @@ typedef struct
   TRK_OWNER to;                         // This owner key
   ////////////////////////////////////////////////////////////////
   char szOwner[TRK_ASCII_OWNER_SIZE];   // ASCII user who is owner of msg
-} TRK_OWNER_NDX;
+} TRK_OWNER_NDX  __attribute__((packed, aligned(2)));
 
 
 // Key used in the "area owner" database
@@ -124,7 +124,7 @@ typedef struct
   char szArea[MAX_ALEN];                // Name of this msg area
   /////////////////////////////////////////////////////////////////////
   TRK_OWNER to;                         // Default owner of this area
-} TRK_AREA_NDX;
+} TRK_AREA_NDX __attribute__((packed, aligned(2)));
 
 
 #endif // __TRACKCOM_H_DEFINED
