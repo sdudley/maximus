@@ -39,7 +39,7 @@ char * _stdc fancy_str(char *str)
         *s=(char)tolower(*s);
       else *s=(char)toupper(*s);
 
-      lower=isalnum(*s++);
+      lower=isalnum((int)*s++);
     }
   }
 
