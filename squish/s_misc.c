@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_misc.c,v 1.3 2003/06/13 03:29:08 wesgarland Exp $";
+static char rcs_id[]="$Id: s_misc.c,v 1.4 2003/07/27 02:15:47 rfj Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -1374,11 +1374,15 @@ void MashMsgid(char *begin, dword *msgid_hash, dword *msgid_serial)
 
   /* Make sure that the hex ID is read in correctly */
 
-  if (sscanf(end, "%08" INT32_FORMAT "x", msgid_serial) != 1)
+  if (sscanf(end, "%08" UINT32_XFORMAT "x", msgid_serial) != 1)
   {
     *msgid_serial=*msgid_hash=0L;
     return;
   }
+#ifdef DEBUG
+  S_LogMsg("!DEBUG: MSGID Hash: Begin (%s), End (%s) msgid_serial: %0.8x",
+           begin, end, *msgid_serial);
+#endif
 }
 
 

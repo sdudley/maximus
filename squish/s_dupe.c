@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_dupe.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: s_dupe.c,v 1.3 2003/07/27 02:15:47 rfj Exp $";
 #pragma on(unreferenced)
 
 #include <io.h>
@@ -287,7 +287,10 @@ static int near ReadDupeList(struct _cfgarea *ar)
   dh=*(DUPEHEAD far *)dupebuf;
 
   if (dh.sig != DUPEHEAD_SIG)
+  {
     (void)memset(dupebuf, 0, size);
+    S_LogMsg("!Corrupt header signature corrected in dupe file %s", fname);  
+  }
 
   if (dh.num_dupe >= config.dupe_msgs)
     dh.num_dupe=config.dupe_msgs-1;
@@ -348,7 +351,10 @@ static void near GetDidHeader(DUPEID *pid, PXMSG msg)
    * ASCII date.                                                            */
      
   if (msg->date_written.date.yr == 0)
+  {
     pid->date=crcstr((dword)0xffffffffLu, msg->__ftsc_date);
+    S_LogMsg("!DEBUG: Year is Zero in GetDidHeader in s_dupe.c!  Date CRC used for Dupe Checking is invalid!");
+  }
   else
   {
     char *date=msg->__ftsc_date;
@@ -435,6 +441,11 @@ int IsADupe(struct _cfgarea *ar, XMSG *msg, char *ctrl, dword uid)
 
   for (dptr=dupelist, dend=dptr+dh.num_dupe; dptr < dend; dptr++)
   {
+#ifdef DEBUG
+      S_LogMsg("!DEBUG: CRC is: %0.8x, date is: %0.x, MsgID hash is: %0.8x,"
+               " MsgId serial is: %0.8x", 
+               dptr->crc, dptr->date, dptr->msgid_hash, dptr->msgid_serial);
+#endif
     /* Return TRUE if either the CRC/date or the msgid/serial               *
      * match up.                                                            */
 
