@@ -4,8 +4,8 @@ PROGS := 	maid mecca accem ansi2bbs scanbld ansi2mec cvtusr \
 		editcall mr fixlr setlr fb silt #maxpipe mxpipe32 piper
 
 all: $(PROGS)
-#install: $(PROGS)
-install: maid mecca accem silt fb ansi2bbs
+install: $(PROGS)
+#install: maid mecca accem silt fb ansi2bbs
 	cp -f $^ $(BIN)
 
 maid: EXTRA_LD_LIBRARY_PATH=$(SRC)/slib $(SRC)/unix
