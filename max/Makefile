@@ -104,6 +104,8 @@ $(LANGHDR): $(LANGSRC) ../util/maid
 	../util/maid -d -p $<
 #	cp -f $@ $(SLIBDIR)\$(@:f)
 
+max.o: CPPFLAGS += -DINSTALL_PREFIX=\"$(PREFIX)\"
+
 max.o: $(LANGHDR) all.h proto.h modem.h all.h
 
 static.o max_init.o: max_v.h $(LANGHDR) max_con.h prm.h
