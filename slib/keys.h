@@ -215,6 +215,12 @@
 /* I don't want these under UNIX (?) */
 # define K_PGUP		'^'
 # define K_PGDN		'v'
+# define K_END		'>'
+# define K_HOME		'<'
+# define K_DEL		'\177'
+# define K_STAB		'['
+# define K_CLEFT	'{'
+# define K_CRIGHT	'}'
 #endif /* UNIX */
 
 /* These are common */
