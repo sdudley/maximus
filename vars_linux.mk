@@ -2,8 +2,8 @@
 
 EXTRA_CPPFLAGS	+= -DLINUX
 OS_LIBS		= -lpthread
-CFLAGS          += -fPIC -ggdb
-CXXFLAGS        += -fPIC -ggdb
+CFLAGS          += -fPIC
+CXXFLAGS        += -fPIC
 
 ifeq ($(PREFIX),)
 PREFIX		= /var/max
