@@ -17,9 +17,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+/**
+ * @file	s_scan.c
+ * @author	Scott J. Dudley
+ * @version	$Id: s_scan.c,v 1.3 2003/06/18 01:58:26 wesgarland Exp $
+ *
+ * $Log: s_scan.c,v $
+ * Revision 1.3  2003/06/18 01:58:26  wesgarland
+ * Based on changes submitted by Bo Simonsen; modified to have lowercase extensions
+ * for the ?ut filenames, where the ? is the mail flavour (FLO)
+ *
+ */
+
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_scan.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+#endif
+static __attribute__((unused)) char rcs_id[]="$Id: s_scan.c,v 1.3 2003/06/18 01:58:26 wesgarland Exp $";
+#ifndef __GNUC__
 #pragma on(unreferenced)
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1978,7 +1994,7 @@ void Flush_Outbuf(void)
       else
       {
         (void)sprintf(pktname+strlen(pktname), "%cut",
-                      bl->flavour ? bl->flavour : 'O');
+                      tolower((int)(bl->flavour ? bl->flavour : 'O')));
       }
 
       BusyFileOpen(config, bl->zone, bl->net, bl->node, bl->point);
