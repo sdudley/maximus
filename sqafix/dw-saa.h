@@ -273,11 +273,15 @@
 
   // Declare size_t type
 
-#if !defined(_SIZE_T) && !defined(_SIZE_T_DEFINED) && !defined(_SIZE_T_DEFINED_)
-  #define _SIZE_T 
-  #define _SIZE_T_DEFINED
-  #define _SIZE_T_DEFINED_
-  typedef unsigned int size_t;
+#ifndef _SIZE_T
+#define _SIZE_T
+typedef unsigned int size_t;
+#endif
+#ifndef _SIZE_T_DEFINED
+#define _SIZE_T_DEFINED
+#endif
+#ifndef _SIZE_T_DEFINED_
+#define _SIZE_T_DEFINED_
 #endif
 
   // Redefine the assertion macro
