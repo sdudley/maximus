@@ -154,6 +154,12 @@
                  dispatch table instead of using a linear search,
                  thereby increasing performance from roughly 0.02 to
                  0.03 MIPS, or a 50% raw speed improvement.
+   04.06.07 wwg  Modified grammar's form to include extra productions
+                 const_byte_p, const_word_p, etc., to allow Solaris
+		 (SYSV) yacc to run without failure due to type
+		 clash errors. Theoretically, output will be the
+		 same as these modifications *should* be purely
+		 syntactic sugar.
 */
 
 
@@ -175,7 +181,7 @@
   ATTRIBUTES *curfn=NULL;
 
   #pragma off(unreferenced)
-  static char rcs_id[]="$Id: mex_tab.y,v 1.1 2002/10/01 17:53:57 sdudley Exp $";
+  static char rcs_id[]="$Id: mex_tab.y,v 1.2 2003/06/07 05:54:28 wesgarland Exp $";
   #pragma on(unreferenced)
 
 %}
@@ -208,10 +214,10 @@
 %type <dataobj>  expr useless_expr useful_expr function_call
 %type <dataobj>  expr_list opt_expr
 %type <attrdesc> id_list
-%type <id>       id T_ID
+%type <id>       id 
 %type <range>    range
 %type <arg>      arg_list argument
-%type <constant> T_CONSTBYTE T_CONSTWORD T_CONSTDWORD T_CONSTSTRING const_string
+%type <constant> const_string
 %type <elsetype> else_part
 %type <size>     trailing_part
 %type <opt>      opt_ref
@@ -238,6 +244,13 @@
 %token T_CONSTDWORD
 %token T_CONSTSTRING
 %token T_ID
+
+%type <dataobj> const_byte_p 
+%type <dataobj> const_word_p
+%type <dataobj> const_dword_p
+%type <dataobj> const_string_p
+%type <constant> T_CONSTWORD T_CONSTBYTE T_CONSTDWORD T_CONSTSTRING
+%type <id> T_ID
 
 %%
 
@@ -616,14 +629,30 @@ useful_expr     :       lval_ident T_ASSIGN expr
                                 { $$=$1; }
                 ;
 
-literal         :       T_CONSTBYTE
-                                { $$=byteref(&$1); }
-                |       T_CONSTWORD
-                                { $$=wordref(&$1); }
-                |       T_CONSTDWORD
-                                { $$=dwordref(&$1); }
-                |       const_string
-                                { $$=stringref(&$1); }
+const_byte_p	:	T_CONSTBYTE
+                                { $$ = &$1; }
+                ;
+
+const_word_p	:	T_CONSTWORD
+                                { $$ = &$1; }
+                ;
+
+const_dword_p	:	T_CONSTDWORD
+                                { $$ = &$1; }
+                ;
+
+const_string_p	:	const_string
+                                { $$ = &$1; }
+                ;
+
+literal         :       const_byte_p
+                                { $$=byteref($1); }
+                |       const_word_p
+                                { $$=wordref($1); }
+                |       const_dword_p
+                                { $$=dwordref($1); }
+                |       const_string_p
+                                { $$=stringref($1); }
                 ;
 
 
