@@ -116,3 +116,18 @@ Wed Jun 11 23:58:30 EDT 2003, Maximus/UNIX 3.03b [tagged release]
 	- Bugs fixed with respect to non-/var/max install PREFIX
 
 	- Many other changes; see CVS for details.
+
+Sun Aug 17 01:47:00 CET 2003, Squish, Sqafix and Msgapi
+
+ 	- After serveral fixes in the UNIX version of Squish, is Squish pretty
+	  stable under Linux. The fixes includes correction of MSGID Dupe 
+	  checking, file case fixes. The version number is now 1.12.002 BETA
+	  
+	- Sqafix is finally ported, but it's in a very early version on the
+	  UNIX platform. Some of the routines needs to be rewritten.
+	  
+	- Msgapi is considered stable after making UNIX specific changes
+	
+	  
+	  
+	  

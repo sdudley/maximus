@@ -1,4 +1,4 @@
-$Id: TODO,v 1.4 2003/06/29 21:01:13 wesgarland Exp $
+$Id: TODO,v 1.5 2003/08/16 23:51:03 paltas Exp $
 
 This is a brief list of important tasks which need to completed, and who is looking at them.
 At some point, this file will be moved into the Attic and the bug tracker will get used. Or
@@ -17,8 +17,6 @@ Wes Garland	Change default scripts + configs to user "maximus"	In progress
 Wes Garland	Modify Maximus to support runbbs.bat-style "exit codes" Testing
 		even when we're in dynamic node number mode
 Unassigned	Examine viability of ILO flow control (sugg: Bob Jones) Not Started
-Bo Simonsen	Fix MSGID dupe checking					Unknown
-Bo Simonsen	Fix GateRoute so the old message gets the 'Snt' flag	Unknown
 Wes Garland	Plugable I/O Layer					In progress
 Wes Garland	Serial I/O plug-in					In progress
 Wes Garland	Plain sockets I/O plug-in				In progress
@@ -30,5 +28,4 @@ Wes Garland	Make Maximus / Squish know location of default configs	Checked In
 Wes Garland	Allow Squish to use compressed packets with w/ bad ext	Checked In
 Wes Garland	Fix MEX							In progress
 Wes Garland	Integrate endian-proof read code from xmsgapi		Not Started
-Unassigned	Port SqaFix						Waiting for Source
 Unassigned	Change Maximus, Squish, etc to getopt argv processing	Not Started
