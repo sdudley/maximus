@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: blkio.cc,v 1.1 2002/10/01 17:49:20 sdudley Exp $";
+static char rcs_id[]="$Id: blkio.cc,v 1.2 2003/06/04 22:33:43 wesgarland Exp $";
 #pragma on(unreferenced)
 
 // Block I/O functions for B-tree and database routines
@@ -166,10 +166,21 @@ NNUM CPPEXPORT BLKIO::high_node(void)
 
 int CPPEXPORT BLKIO::lock(NNUM nn)
 {
+#if defined(UNIX)
+  struct flock	lck;
+
+  lck.l_type	= F_WRLCK;			/* setting a write lock */
+  lck.l_whence	= SEEK_SET;			/* offset l_start from beginning of file */
+  lck.l_start	= (off_t)nn * (long)uiBlkSize;	
+  lck.l_len	= nn ? uiBlkSize : (off_t)0;	/* one record, or until the end of the file */
+  
+  return (fcntl(fd, F_SETLK, &lck) < 0) ? FALSE : TRUE;
+#else
   if (fShareLoaded)
     return ::lock(fd, nn * (long)uiBlkSize, 1)==0;
   else
     return TRUE;
+#endif
 }
 
 
@@ -177,9 +188,20 @@ int CPPEXPORT BLKIO::lock(NNUM nn)
 
 int CPPEXPORT BLKIO::unlock(NNUM nn)
 {
+#if defined(UNIX)
+  struct flock	lck;
+
+  lck.l_type	= F_UNLCK;			/* setting not locked */
+  lck.l_whence	= SEEK_SET;			/* offset l_start from beginning of file */
+  lck.l_start	= (off_t)nn * (long)uiBlkSize;	
+  lck.l_len	= nn ? uiBlkSize : (off_t)0;	/* one record, or until the end of the file */
+  
+  return (fcntl(fd, F_SETLK, &lck) < 0) ? FALSE : TRUE;
+#else
   if (fShareLoaded)
     return ::unlock(fd, nn * (long)uiBlkSize, 1)==0;
   else
     return TRUE;
+#endif
 }
 
