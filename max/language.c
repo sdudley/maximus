@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: language.c,v 1.2 2003/06/05 22:43:28 wesgarland Exp $";
+static char rcs_id[]="$Id: language.c,v 1.3 2003/06/11 14:52:19 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_chat
@@ -263,6 +263,17 @@ static void Verify_Language_Date(int fd,char *name)
 
   if (GEdate(&ld, &prmdate))
   {
+    if (EQdate(&ld, &prmdate))
+    {
+      /* Argh -- can't get finer resolution than 1s on
+       * on dates; utime(3c) requires filename not fd
+       * as argument.
+       */
+
+      logit("!Language %s has same date as .PRM file; recompile .PRM file with SILT!", name);
+      return;
+    }
+
     logit("!Old language %s: recompile .PRM file with SILT!", name);
     quit(ERROR_CRITICAL);
   }
