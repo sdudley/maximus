@@ -85,14 +85,35 @@ long _stdc timerset(unsigned int duration)
 
 #elif defined(UNIX)
 
-long _stdc timerset(unsigned int duration)
+/*long _stdc timerset(unsigned int duration)
 {
   #ifndef CLK_TCK
     #define CLK_TCK 100
   #endif
 
   return ((clock() + duration) * ((long)CLK_TCK / 100L));
+}*/
+
+long _stdc timerset(unsigned int duration)
+{
+    struct tm* dt;
+    time_t t;
+    struct timeval tv;
+    
+    t= time(NULL);
+    
+    dt = gmtime(&t);    
+    gettimeofday(&tv, NULL);
+//    tv.tv_usec = (tv.tv_usec + 500) / 1000;
+    tv.tv_usec = tv.tv_usec / 1000;
+
+    return ( ((dt->tm_min % 60)*6000L) +
+             ((dt->tm_sec % 60)*100L) +
+             tv.tv_usec / 10L +
+             (long)duration
+            );
 }
+
 
 #else
   #error Unknown OS
