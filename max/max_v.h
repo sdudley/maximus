@@ -126,7 +126,6 @@ extrn char copyright[] IS("Copyright 1989, " THIS_YEAR " by Lanius Corporation. 
 #if 0
 extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
                                   "Development by Scott Dudley, Peter Fitzsimmons and David Nugent.\n"
-				  "UNIX port by Wes Garland.\n\n"
 
                          LRED "For technical support, send mail to tech@lanius.com or \"Tech\" at 1:249/106.\n"
                          LRED "For more information on Maximus, send mail to sales@lanius.com, or write to:\n\n"
@@ -142,7 +141,7 @@ extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
 
 			LRED "Maxmius is no longer supported by Lanius Corporation, however the source\n"
 			LRED "code for Maximus has been made freely available under the terms of the\n"
-			LRED "GNU Public License (GPL).\n"
+			LRED "GNU General Public License (GPL).\n"
 			LRED "\n"
 			YELLOW "You can download the source code for Maximus on the World Wide Web at\n"
 			YELLOW "at http://maximus.sourceforge.net/, or by FidoNet FREQ at ?:???/???\n"
