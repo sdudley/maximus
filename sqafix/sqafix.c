@@ -264,7 +264,7 @@
 
  static VOID SUBENTRY DoShowLogo(VOID)
  {
-   fprintf(stderr,
+   fprintf(stdout,
 "\n"
 "Squish Echo Area Manager v"VERSION", "__DATE__", "__TIME__"\n"
 "Written by Pete Kvitek of JV Dialogue 1st BBS, 2:5020/6@fidonet\n"
