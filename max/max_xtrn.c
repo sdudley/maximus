@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_xtrn.c,v 1.5 2003/09/12 23:18:24 paltas Exp $";
+static char rcs_id[]="$Id: max_xtrn.c,v 1.6 2003/11/15 23:27:29 paltas Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_chat
@@ -799,21 +799,17 @@ RetProc:
  
   return erl;
 }
-#else
 
+#else
 int Outside(char *leaving,char *returning,int method,char *parm,
             int slogan,int ctltype,char restart_type,
             char *restart_name)
 {
     int erl;
     erl = system(parm);
-    return erl;
+    return 0;
 }
-
 #endif
-
-
-
 
 
 

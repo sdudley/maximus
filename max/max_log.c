@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_log.c,v 1.3 2003/08/17 00:38:38 paltas Exp $";
+static char rcs_id[]="$Id: max_log.c,v 1.4 2003/11/15 23:27:29 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Log-on routines and new-user junk
@@ -508,16 +508,18 @@ static int near GetName(void)
       if (prm.not_configured)
         Display_File(0, NULL, PRM(not_configured));
       /* Test this again, it might have been changed */
+#ifndef UNIX
       if ((usr.bits2 & BITS2_CONFIGURED)==0)
         Get_AnsiMagnEt();
+#endif
     }
-#ifndef UNIX
     else if (! local)
     {
+#ifndef UNIX
       doublecheck_ansi();
       doublecheck_rip();
-    }
 #endif
+    }
 
     free(quest);
     free(lname);
@@ -763,11 +765,9 @@ static void near Get_AnsiMagnEt(void)
       sprintf(string,"%swhy_rip",PRM(misc_path));
 
 /* TODO: Check up on this.. (Bo) */
-
 #ifndef UNIX
       x=autodetect_rip();
 #endif
-
       if (GetListAnswer(x ? CYnq : yCNq, string, useyforyes, 0, get_rip)==YES)
       {
         usr.bits  |= (BITS_RIP | BITS_FSR | BITS_HOTKEYS );

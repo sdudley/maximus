@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_wfc.c,v 1.3 2003/06/06 01:18:58 wesgarland Exp $";
+static char rcs_id[]="$Id: max_wfc.c,v 1.4 2003/11/15 23:27:29 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Waiting-for-caller routines
@@ -79,8 +79,11 @@ void Wait_For_Caller(void)
   else
   {
     while(!ComIsOnline(hcModem))
+    {
+      rsp=Get_Modem_Response();
+      Process_Modem_Response(rsp);
       usleep(250000);
-
+    }
     ComTxWait(hcModem, 1000);
     goto letsgo;
   }
@@ -252,7 +255,8 @@ static char * near Get_Modem_Response(void)
     {
       #ifndef __MSDOS__
       if (!loc_kbhit())
-          ComRxWait(hcModem, 1000L);  /* block for 1 second or until char avail*/
+          if(ComIsAModem(hcModem))
+            ComRxWait(hcModem, 1000L);  /* block for 1 second or until char avail*/
       #endif
 
       if (! mdm_avail())

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos_os2.c,v 1.4 2003/09/12 23:18:24 paltas Exp $";
+static char rcs_id[]="$Id: fos_os2.c,v 1.5 2003/11/15 23:27:29 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=FOSSIL interface routines (OS/2)
@@ -262,24 +262,23 @@ if (ComIsAModem(hcModem))
     int mdm_blockread(int max_chars, char *offset)
     {
       #if defined(NT) || defined(UNIX)
-        DWORD cbBytesRead;
+        DWORD cbBytesRead = 0;
       #else
-        USHORT cbBytesRead;
+        USHORT cbBytesRead = 0;
       #endif
 
-      #if defined(UNIX)
+      #if !defined(NT) && !defined(UNIX)
         char *p=offset;
         char *e=p+max_chars;
         int ch;
 
         while (p < e)
           if ((ch=ComGetc(hcModem)) != -1)
-            *p++=(byte)ch;
+    	    *p++=(byte)ch;
           else break;
 
         cbBytesRead=p-offset;
-
-      #else
+      #else      
         ComRead(hcModem, offset, max_chars, &cbBytesRead);
       #endif
       return (int)cbBytesRead;
@@ -341,9 +340,15 @@ if (ComIsAModem(hcModem))
 
     void mdm_dtr(char dtr)       /* No return value */
     {
+#ifndef UNIX
       if (dtr)
         com_DTR_on();
       else com_DTR_off();
+#else
+      if (dtr)
+        RAISE_DTR(hcModem);
+      else LOWER_DTR(hcModem);
+#endif      
     }
 
 

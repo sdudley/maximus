@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_locl.c,v 1.2 2003/06/04 23:37:33 wesgarland Exp $";
+static char rcs_id[]="$Id: max_locl.c,v 1.3 2003/11/15 23:27:29 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Local command functions
@@ -302,6 +302,7 @@ static int near Parse_Local_Normal(int ch)
       else switch (c)
       {
         case K_ALTC:
+	case K_ALTE:
           chatreq=FALSE;
           ChatMode();      /* else built-in chatmode */
 

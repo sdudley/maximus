@@ -128,6 +128,7 @@
 #define K_DEL   83
 #define K_ALTBS 14
 #define K_STAB  15
+#define K_BS    8
 
 #define K_CLEFT  115
 #define K_CRIGHT 116
@@ -217,7 +218,8 @@
 # define K_PGDN		'v'
 # define K_END		'>'
 # define K_HOME		'<'
-# define K_DEL		'\177'
+# define K_DEL		8
+# define K_BS		0x7f
 # define K_STAB		'['
 # define K_CLEFT	'{'
 # define K_CRIGHT	'}'
@@ -232,7 +234,6 @@
 #define K_CTRLF   6
 #define K_CTRLG   7
 #define K_CTRLH   8
-#define K_BS      8
 #define K_CTRLI   9
 #define K_TAB     9
 #define K_CTRLJ  10
@@ -256,6 +257,6 @@
 #define K_CTRLY  25
 #define K_CTRLZ  26
 
-#define K_VTDEL 127
+#define K_VTDEL  8
 
 #endif /* _KEYS_H */
