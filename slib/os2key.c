@@ -196,6 +196,8 @@
 #include <string.h>
 #include <curses.h>
 
+#include "keys.h"
+
 int kgetch() /* might conflict with newer ncurses - feedback, please -- wes */
 {
   if (stdscr)
@@ -207,6 +209,7 @@ int kgetch() /* might conflict with newer ncurses - feedback, please -- wes */
       ch = -1;
 
     return ch;
+
   }
   else
   {
@@ -226,6 +229,7 @@ int kgetch() /* might conflict with newer ncurses - feedback, please -- wes */
 
     return getchar();
   }
+  
 }
 
 int kpeek()

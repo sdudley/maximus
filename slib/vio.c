@@ -619,10 +619,9 @@ word VidOpen(int has_snow,int desqview,int dec_rows)
     InitPairs();
 
 /* If enabled wouldn't our keytable work */
-
 #if 0
     keypad(stdscr, TRUE);	/* enable keyboard mapping */
-#endif
+#endif    
     cbreak();			/* char-by-char instead of line-mode input */    
     nodelay(stdscr, TRUE);	/* Make getch() non-blocking */
     nonl();			/* No LF->CRLF mapping on output */
@@ -798,7 +797,7 @@ void pascal _WinBlitz(word start_col,           /* offset from left side of scre
       newlineCount++;
 #endif
     tmpattr = cursesAttribute(attr);
-    chbuf[i] = ch | (COLOR_PAIR(tmpattr) | A_BOLD);
+    chbuf[i] = ch | tmpattr;
   }
 
 #ifdef DEBUG_WINBLITZ

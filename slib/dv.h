@@ -57,7 +57,6 @@ extern char near Vid_Bios;
 # define PAGE_OFS    (*((unsigned int far *)MK_FP(0x0000,0x044e)))
 #endif
 
-
 #define CBLACK     ((byte)0)
 #define CBLUE      ((byte)1)
 #define CGREEN     ((byte)2)
@@ -88,6 +87,7 @@ extern char near Vid_Bios;
 #define _WHITE    ((byte)(7 << 4))
 
 #define _BLINK    128
+/* end not unix */
 
 word _fast VidOpen(int has_snow,int desqview,int dec_rows);
 int _fast VidClose(void);
