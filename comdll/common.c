@@ -54,7 +54,7 @@ void SetCommApi()
 
 BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 {
-    SetCommApi();    
+    SetCommApi();
     return ((*CommApi.fComOpen)(pszDevice, phc, dwRxBuf, dwTxBuf));
 }
 

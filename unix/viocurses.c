@@ -100,11 +100,11 @@ int cursesAttribute(unsigned char dosAttribute)
       break;
   }
 
-/*  if (!(dosAttribute & FOREGROUND_INTENSITY))
+  if (!(dosAttribute & FOREGROUND_INTENSITY))
     ch |= A_DIM;
 
   if (dosAttribute & BACKGROUND_INTENSITY)
-    ch |= A_REVERSE;*/
+    ch |= A_REVERSE;
 
   return ch;
 }

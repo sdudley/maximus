@@ -34,7 +34,7 @@ int main(void)
     fd_set rfds, wfds;
     char tmptext[128];
     char lockpath[128];
-    char str[100];
+    char str[128];
     struct dirent * dirp = NULL;
     DIR* dir = NULL;
 
@@ -78,7 +78,7 @@ int main(void)
 
 	if(select(s+1, &wfds, 0, 0, &tv) > 0)
 	{
-    	    if ((t=read(s, str, 100)) > 0) 
+    	    if ((t=read(s, str, 128)) > 0) 
 	    {
                 str[t] = '\0';
 		write(1, str, t);
@@ -99,15 +99,8 @@ int main(void)
 	    
 	if(select(0 + 1, &rfds, 0, 0, &tv) > 0)
 	{
-	    read(0, &c, 1);
-/*	    if(c != 10)
-	    {*/
-    	        write(s, &c, 1);
-/*	    }
-	    else
-	    {
-	        write(s, "\r\n", 2);
-	    }*/
+	    if(t = read(0, str, 128)) 
+    		write(s, str, t);
 	}
     }
 

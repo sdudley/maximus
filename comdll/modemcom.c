@@ -1,3 +1,6 @@
+/* Modem communication modules for Maximus, by Bo Simonsen */
+/* Distributed along with Maximus under the GPL license */
+
 /* Bits "stolen" from BTXE (http://btxe.sourceforge.net) */
 /* Might not work well yet.. */
 
@@ -9,47 +12,38 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/ioctl.h>
+#include <errno.h>
 #include "prog.h"
 #include "ntcomm.h"
 #include "comstruct.h"
 #include "comprots.h"
 
-#if 0
-struct _hcomm
-{
-  /****** Public members available to *any* COMMAPI driver */
-  COMMHANDLE            h;                      /**< "Windows" COMMHANDLE -- con
-tains UNIX fd */
-  BOOL                  burstMode;              /**< FALSE = Nagle algorithm ena
-bled (TCP_NODELAY) */
-  const char            *device;                /**< Name of tcp service or port
- number (ASCIZ) */
-  BOOL                  fDCD;                   /**< Current status of DCD */
-  commHandle_t          handleType;             /**< Type of handle / dl_open st
-ub */
-  COMMTIMEOUTS          ct;                     /**< Timeout values */
- /********* Private for this struct **********/
-  int                   listenfd;
-  signed int		peekHack;
-  BOOL                  burstModePending;       /**< Next write's burstmode */
- 
-} _hcomm;
-#endif
+static char filename[128];
+static char lockname[128];
 
 
 BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 {
   int                   fd = -1;        /**< file descriptor */
-  char filename[128];
+  int pid;
+  FILE* lockfp;
   COMMHANDLE    h = NULL;
   struct termios tios;
 
   memset(filename, 0, 128);
+  memset(lockname, 0, 128);
 
   if(strstr(pszDevice, "com"))
     pszDevice += 3;
     
-  sprintf(filename, "/dev/ttyS%d", atoi(pszDevice)-1);
+    sprintf(filename, "/dev/ttyS%01d", (unsigned) (atoi(pszDevice)-1));
+    sprintf(lockname, "/var/lock/LCK..ttyS%01d", (unsigned) (atoi(pszDevice)-1));
+
+    if(fexist(lockname))
+    {
+        printf("Lock file does allready exist! (%s)", lockname);
+	exit(0);
+    }
 
   fd = open(filename, O_RDWR | O_NDELAY);
   
@@ -58,6 +52,13 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
     printf("Could not open device! (%s)", filename);
     exit(0);
   }
+  else
+  {
+    lockfp = fopen(lockname, "w");
+    fprintf(lockfp, "%08d", getpid());
+    fclose(lockfp);    
+  }
+    
   
   fcntl (fd, F_SETFL, FASYNC);
 
@@ -101,6 +102,8 @@ BOOL COMMAPI ModemComClose(HCOMM hc)
 	return FALSE;
     
     close(hc->listenfd);
+    unlink(lockname);
+    LOWER_DTR(hc);
     
     return TRUE;
 } 

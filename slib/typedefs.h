@@ -64,6 +64,10 @@
 # define HAVE_USHORT
 #endif
 
+#if defined(FREEBSD)
+# define HAVE_USHORT
+#endif
+
 /* These legacy max types imply a particular size */
 typedef unsigned INT8	byte;
 typedef signed INT8	sbyte;

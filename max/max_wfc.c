@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_wfc.c,v 1.7 2004/01/13 00:44:56 paltas Exp $";
+static char rcs_id[]="$Id: max_wfc.c,v 1.8 2004/01/19 23:37:03 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Waiting-for-caller routines
@@ -69,12 +69,9 @@ void Wait_For_Caller(void)
   if (ComIsAModem(hcModem))
   {
 #endif
-    while ((rsp=Get_Modem_Response()) != NULL)
-    {
+  while ((rsp=Get_Modem_Response()) != NULL)
       if (Process_Modem_Response(rsp))
-	break;
-      sleep(1);
-    }
+            break;
 #if (COMMAPI_VER > 1)
   }
   else
@@ -564,6 +561,11 @@ static int near WFC_IdleInternal(void)
 
   Check_For_Message(NULL, NULL);
   Giveaway_Slice();
+#if (COMMAPI_VER > 1)
+  if(ComIsAModem(hcModem))
+      sleep(1);
+#endif
+  
   return 0;
 }
 

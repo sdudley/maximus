@@ -91,7 +91,7 @@ long _stdc timerset(unsigned int duration)
     #define CLK_TCK 100
   #endif
 
-  return (clock() + duration * (long)CLK_TCK / 100L);
+  return ((clock() + duration) * ((long)CLK_TCK / 100L));
 }
 
 #else

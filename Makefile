@@ -2,8 +2,11 @@
 # @author			Wes Garland
 # @date				May 13th, 2003
 #
-# $Id: Makefile,v 1.8 2003/10/05 01:56:37 rfj Exp $
+# $Id: Makefile,v 1.9 2004/01/19 23:37:01 paltas Exp $
 # $Log: Makefile,v $
+# Revision 1.9  2004/01/19 23:37:01  paltas
+# Added some to get freebsd work, and improved maxcomm a bit..
+#
 # Revision 1.8  2003/10/05 01:56:37  rfj
 # Updated master Makefile to not build SqaFix when compiling just Maximus
 # code.
@@ -36,7 +39,7 @@ NO_DEPEND_RULE	:= TRUE
 
 topmost:: header usage
 
--include vars.mk
+include vars.mk
 MAXIMUS=$(PREFIX)/etc/max.prm
 
 .PHONY: all depend clean install mkdirs squish max install_libs install_binaries \
