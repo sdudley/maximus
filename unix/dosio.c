@@ -9,6 +9,8 @@
 # undef sopen
 #endif
 
+/* TODO Add some calls to adaptcase somewhere */
+
 char *fixPathDup(const char *filename)
 {
   /* Remember to free return if it's not filename,
