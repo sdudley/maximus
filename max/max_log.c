@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_log.c,v 1.1 2002/10/01 17:51:47 sdudley Exp $";
+static char rcs_id[]="$Id: max_log.c,v 1.2 2003/06/29 19:26:12 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Log-on routines and new-user junk
@@ -1020,7 +1020,7 @@ static void near Check_For_User_On_Other_Node(void)
 
   char fname[PATHLEN];
 
-  word their_task;
+  unsigned int their_task;
 
   FFIND *ff;
 

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: ued_cmds.c,v 1.1 2002/10/01 17:53:20 sdudley Exp $";
+static char rcs_id[]="$Id: ued_cmds.c,v 1.2 2003/06/29 19:26:11 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Internal user editor (miscellaneous commands)
@@ -1294,7 +1294,7 @@ static int near UFileBusy(void)
 {
   FFIND *ff;
   char temp[PATHLEN];
-  int node, rc=FALSE;
+  unsigned int node, rc=FALSE;
 
   sprintf(temp, active_star, original_path);
 
