@@ -1,5 +1,4 @@
-/*
- * SqaFix 0.99b8
+/* SqaFix 0.99b8
  * Copyright 1992, 2003 by Pete Kvitek.  All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -43,6 +42,7 @@
 
  #include "pathdef.h"
 
+ #include "ffind.h"
 /*
  * This routine calculates hash value for the given string
  */
@@ -1160,7 +1160,9 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
    HDIR hdir = HDIR_CREATE;
    USHORT cSearch = 1;
 #elif defined UNIX
-//
+   FFIND *ff = NULL;
+   char* tmpMask = NULL;
+   char* tmpFile = NULL;
 #elif defined __W32__
    struct _finddata_t ffblk;
    long hfind;
@@ -1190,7 +1192,11 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
      } else {
        xstrcpy(achMask, achPath); achPath[0] = '\0';
      }
+#ifndef UNIX     
      xstrcat(achMask, ".???");
+#else
+     xstrcat(achMask, ".*");
+#endif
    }
 
    // Preserve the current disk and switch to the requested disk
@@ -1244,7 +1250,19 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
      _findclose(hfind);
    }
 #elif defined UNIX
-   // FIXME: How to fix this?
+   tmpMask = (char*) malloc(strlen(achPath)+strlen(achMask)+2);
+   sprintf(tmpMask, "%s/%s", achPath, achMask); 
+   if ((ff = FindOpen(tmpMask, 0)) != NULL)
+     do 
+     {
+       tmpFile = (char*) malloc(strlen(achPath) + strlen(ff->szName) + 2);
+       sprintf(tmpFile, "%s/%s", achPath, ff->szName);
+       unlink(tmpFile);
+       free(tmpFile);
+     } while (FindNext(ff) == 0);
+    FindClose(ff);
+
+   free(tmpMask);
 #else
 #ifdef __TURBOC__
    if (!findfirst(achMask, &ffblk, 0)) {
@@ -1339,7 +1357,9 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
      return NULL;
    }
 
+#ifndef UNIX
    ASSERT(achPath[1] == ':');
+#endif
 
    // Loop through all the existing areas looking for the full path match
 
@@ -1354,7 +1374,9 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
        continue;
      }
 
+#ifndef UNIX
      ASSERT(achPath1[1] == ':');
+#endif
 
 #ifdef DEBUG
 //fprintf(STDAUX, "GetAreaFromPath: %s %s\r\n", achPath, achPath1);
