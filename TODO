@@ -1,0 +1,28 @@
+$Id: TODO,v 1.1 2003/06/23 18:11:38 wesgarland Exp $
+
+This is a brief list of important tasks which need to completed, and who is looking at them. At some
+point, this file will be moved into the Attic and the bug tracker will get used. Or Bugzilla. Anybody
+feel like setting it up? For now, new tasks appear at the top, and disappear in the CHANGES file.
+
+Programmer	Task Description					Status
+--------------- ------------------------------------------------------- --------------
+Unassigned	Make Max local editor input accept LF as CR/LF		Not Started
+Wes Garland	Change default scripts + configs to user "maximus"	In progress
+Wes Garland	Modify Maximus to support runbbs.bat-style "exit codes" Testing
+		even when we're in dynamic node number mode
+Unassigned	Examine viability of ILO flow control (sugg: Bob Jones) Not Started
+Bo Simonsen	Fix MSGID dupe checking					Unknown
+Bo Simonsen	Fix GateRoute so the old message gets the 'Snt' flag	Unknown
+Wes Garland	Plugable I/O Layer					In progress
+Wes Garland	Serial I/O plug-in					In progress
+Wes Garland	Plain sockets I/O plug-in				In progress
+Wes Garland	NVT (telnet) sockets I/O plug-in			In progress
+Wes Garland	Plain sockets Terminal Server->Modem I/O plug-in	Not Started
+Wes Garland	NVT sockets Terminal Server->Modem I/O plug-in		Not Started
+Wes Garland	Switchable Kludge-Line Behaviour (HPT vs. Correct)	Not Started
+Wes Garland	Make Maximus / Squish know location of default configs	Checked In
+Wes Garland	Allow Squish to use compressed packets with w/ bad ext	Checked In
+Wes Garland	Fix MEX							In progress
+Wes Garland	Integrate endian-proof read code from xmsgapi		Not Started
+Unassigned	Port SqaFix						Waiting for Source
+Unassigned	Change Maximus, Squish, etc to getopt argv processing	Not Started
