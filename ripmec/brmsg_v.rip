@@ -1,0 +1,11 @@
+!|1K|Y00000100|c08|R0V15FA78|c0F|R0U14F977|S0107|B0V15F977|c00|R0Z1JF472|c0F
+!|R101KF573|c07|R101KF472|c0E|@1218BROWSE: Message search & retrieval|c01|@1C1\
+QType of messages to show:|1BAA0C0207PE0200080F0007000A0407000000
+!|1U2I2800001T00<>All messages in selected area(s)<>A
+!|1U2I2S00002600<>New messages (everything since last read)<>N
+!|1U2I3C00002H00<>Your mail (everything addressed to YOU)<>Y
+!|1U2I3W00002B00<>Search (specify to/from/subj/body keywords)<>S
+!|1U2I4G00001Y00<>From a specified message # to the last msg<>F
+!|1U2I5000002900<>Quit<>Q
+!|1U2I5K00001R00<>?Help<>?
+!|#|#|#

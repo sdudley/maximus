@@ -1,0 +1,21 @@
+
+Optionally, Maximus can send IBM-specific graphics characters to your
+terminal, which allows Maximus to display real boxes, foreign accents,
+and shading.
+
+                            ÉÍÍÍÍÍÍÍÍÍÍÍ»
+                            º°°°°°°°°°°°º
+                            º°°°°°°°°°°°º
+                            º°°°°°°°°°°°º
+                            º°°°°°°°°°°°º
+                            º°°°°°°°°°°°º
+                            ÈÍÍÍÍÍÍÍÍÍÍÍ¼
+
+If your terminal supports IBM-PC characters, then you should see a
+shaded box above, surrounded by a double-line.  If you don't support
+IBM characters, then you will probably see some letters and punctuation
+symbols.
+
+If you support IBM-PC characters, enter..........  Y
+If you DON'T support IBM-PC characters, enter....  N
+

@@ -1,0 +1,121 @@
+# $Id: maxro.lnk,v 1.1 2002/10/01 17:51:24 sdudley Exp $
+
+
+deb li
+
+name ..\exe\max\max.exe
+option map=..\map\max\max.map
+
+libpath %watcom%\lib286;%watcom%\lib286\dos
+
+path wcr;..\swap2
+
+# Non-overlayed objects
+
+file ..\swap2\checkpat.obj
+file ..\swap2\exec.obj
+file ..\swap2\spawn.obj
+deb li
+
+file
+{
+        cppmain.obj
+        stk.obj
+        max_out.obj max_outl.obj max_outr.obj
+        
+        fos.obj fos_dos.obj
+
+        max_in.obj max_gets.obj
+
+        max_misc.obj
+        log.obj
+        thunk.obj
+        max_chat.obj
+        static.obj
+        language.obj
+        debug.obj
+        atexit.obj
+}
+
+opt dynam
+opt area=32k
+
+begin
+autosection into ..\exe\max\max.ovl
+
+# Overlayed objects
+
+file
+{
+        emsi.obj tagapi.obj max.obj
+
+        mexint.obj max_fman.obj max_mtsk.obj max_inif.obj max_xtrn.obj
+        os2.obj 
+
+        max_ocmd.obj
+        max_sq.obj max_locl.obj
+        max_menu.obj max_rmen.obj max_runo.obj max_fbbs.obj
+        m_read.obj m_misc.obj max_cust.obj max_bar.obj m_lread.obj
+        max_log.obj max_main.obj date.obj max_chng.obj display.obj
+        disp_dat.obj disp_qu.obj disp_max.obj disp_mis.obj uedit.obj
+        ued_cmds.obj ued_disp.obj m_editu.obj m_edit.obj m_mdate.obj
+        max_rip.obj t_add.obj t_disp.obj t_kill.obj t_menu.obj
+        t_misc.obj t_qwk.obj t_report.obj m_full.obj m_isval.obj
+        node.obj v7.obj joho.obj m_browse.obj m_scan.obj m_inq.obj
+        mb_novl.obj api_brow.obj mb_list.obj m_util.obj m_attach.obj
+        l_attach.obj mb_read.obj mb_qwk.obj max_clss.obj max2priv.obj
+        me_misc.obj mb_qwkup.obj m_upload.obj m_change.obj
+        m_enter.obj m_reply.obj m_create.obj m_save.obj m_editor.obj
+        m_for.obj m_header.obj mh_tty.obj mh_graph.obj m_area.obj
+        m_node.obj m_xport.obj m_hurl.obj m_kill.obj m_tag.obj
+        m_restr.obj maxed.obj med_scrn.obj med_move.obj med_add.obj
+        med_del.obj med_quot.obj med_read.obj med_misc.obj
+        max_bor.obj f_isval.obj f_misc.obj f_xfer.obj f_queue.obj
+        f_idx.obj f_down.obj f_tag.obj f_up.obj f_logup.obj
+        f_area.obj f_con.obj f_hurl.obj f_kill.obj f_locate.obj
+        f_titles.obj f_over.obj f_raw.obj f_type.obj
+        rz.obj sz.obj zm.obj rbsb.obj
+        fsend.obj frecv.obj
+        max_fins.obj max_wfc.obj events.obj max_init.obj
+        max_args.obj max_rest.obj
+        max_fini.obj max_mcmd.obj max_prot.obj
+        max_cmod.obj max_cho.obj pdata.obj
+        callinfo.obj max_accs.obj m_lines.obj m_input.obj
+        m_intrin.obj f_okay.obj f_intrin.obj
+
+        mex.obj
+        mexintu.obj mexstat.obj mexfarea.obj mexcall.obj mexoutp.obj
+        mextime.obj mexlang.obj mexrip.obj mexstr.obj mexmarea.obj
+        mexfile.obj mexclass.obj mexuser.obj mexinp.obj mextag.obj
+        mexffind.obj mexxtrn.obj mexrtl.obj
+
+        ..\lib\vmswcr.lib(vm_symt)
+        ..\lib\vmswcr.lib(vm_run)
+        ..\lib\vmswcr.lib(vm_heap)
+        ..\lib\vmswcr.lib(vm_opmth)
+        ..\lib\vmswcr.lib(vm_opflo)
+        ..\lib\vmswcr.lib(vm_opcvt)
+        ..\lib\vmswcr.lib(vm_opfun)
+        ..\lib\vmswcr.lib(vm_opstk)
+        ..\lib\vmswcr.lib(vm_opstr)
+        ..\lib\vmswcr.lib(vm_read)
+        md5.obj
+        tune.obj
+        uniqren.obj
+        strbuf.obj
+        arc_def.obj
+        noise.obj
+}
+
+lib ..\lib\wcrbtrl.lib
+lib ..\lib\wcrtral.lib
+
+end
+
+lib %watcom%\lib286\dos\clibl.lib
+lib ..\lib\wcrlibl.lib
+lib ..\lib\wcrmapil.Lib
+file ..\lib\wcrlibl(fd2n)
+
+option case, cache, quiet
+opt st=16656

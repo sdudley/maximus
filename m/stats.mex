@@ -1,0 +1,79 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: stats.mex
+//
+// Desc: Statistics display
+//
+// Copyright 1990, 1994 by Lanius Corporation.  All rights reserved.
+//
+// $Id: stats.mex,v 1.1 2002/10/01 17:50:41 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+#include <intpad.mh>
+#include <longpad.mh>
+
+#define INCL_global
+#include <language.mh>
+
+int main(string: argv)
+{
+    struct _stamp: now;
+    string: minutes,
+            files,
+            kb,
+            cents,
+            lpc,
+            newline,
+            comma;
+
+    id.instant_video:=0;
+    timestamp(now);
+
+    newline:=str_stat_newline;
+    comma:=str_stat_comma;
+
+    print(str_stat_hdr, stamp_string(now), newline, '\n');
+
+    minutes:=str_stat_minutes;
+    files:=str_stat_file;
+    kb:=str_stat_kb;
+    cents:=str_stat_cents;
+    lpc:=stamp_string(usr.date_pwd_chg);
+
+    print(str_stat_time);
+    print(str_stat_time_online, ulongpadleft(timeon(), 6, ' '),     minutes, newline);
+    print(str_stat_time_remain, ulongpadleft(timeleft(), 6, ' '),   minutes, newline);
+    print(str_stat_time_prev,   uintpadleft(usr.time, 6, ' '),     minutes, newline);
+    print(str_stat_time_calls,  uintpadleft(usr.times, 6, ' '),    newline);
+    print(str_stat_files);
+    print(str_stat_file_ul,     ulongpadleft(usr.up, 6, ' '),       kb, comma, ulongpadleft(usr.nup, 5, ' '),       files, newline);
+    print(str_stat_file_dl,     ulongpadleft(usr.down, 6, ' '),     kb, comma, ulongpadleft(usr.ndown, 5, ' '),     files, newline);
+    print(str_stat_file_dlday,  ulongpadleft(usr.downtoday, 6, ' '),kb, comma, ulongpadleft(usr.ndowntoday, 5, ' '),files, newline);
+    print(str_stat_file_dlavl,  uintpadleft(class_info(usr.priv, CIT_DL_LIMIT) - usr.downtoday, 6, ' '), kb, newline);
+
+    if (usr.credit or usr.debit)
+    {
+        print(str_stat_matrix);
+        print(str_stat_net_credit, uintpadleft(usr.credit, 6, ' '), cents, newline);
+        print(str_stat_net_debit,  uintpadleft(usr.debit, 6, ' '),  cents, newline);
+    }
+
+    if (usr.expdate or usr.expmins)
+    {
+        print(str_stat_subscrip);
+
+        if (usr.expmins)
+            print(str_stat_sub_mins, usr.xp_mins - timeon(), minutes, newline);
+
+        if (usr.expdate)
+            print(str_stat_sub_date, stamp_string(usr.xp_date), newline);
+    }
+
+    print(str_stat_misc);
+    print(str_stat_pwd_chg, lpc, newline, '\n');
+
+    return 0;
+}
+

@@ -1,0 +1,56 @@
+deb all
+path .;w3pd
+sys os2v2 dll initi
+
+name ..\dll\mexvm32.dll
+opt modname=mexvm32
+opt st=32768
+
+opt desc 'MEXVM32 (MEX 32-bit Virtual Machine)'
+opt verb
+opt map=..\map\mex\mexvm32.map
+opt offset=0x3f000000
+
+file
+{
+        vm_dll
+        vm_run
+        vm_heap
+        vm_symt
+        vm_read
+        vm_opcvt
+        vm_opflo
+        vm_opfun
+        vm_opmth
+        vm_opstk
+        vm_opstr
+}
+
+segment class 'CODE' preload executeread share
+opt eliminate
+
+lib clib3r.lib, os2386.lib
+lib ..\lib\w3plibf.lib
+
+export REGS_1.1
+export REGS_2.2
+export REGS_4.3
+export MexExecute.4
+export MexFetch.5
+export MexDSEG.6
+export MexEnterSymtab.7
+export MexStoreByte.8
+export MexStoreWord.9
+export MexStoreDword.10
+export MexStoreString.11
+export MexStoreStringAt.12
+export MexKillString.13
+export MexPtrToVM.14
+export MexStoreByteStringAt.15
+export MexIaddrToVM.16
+export MexStoreHeapByteString.17
+export REGS_6.18
+export MexRTError.19
+
+opt nodef,prot,many,case,newf
+

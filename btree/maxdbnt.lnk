@@ -1,0 +1,53 @@
+sys nt dll initi
+name ..\dll\maxdbnt.dll
+#opt modname=MAXDBNT
+opt map=..\map\btree\maxdbNT.map
+opt verb,case
+path W3n
+
+deb all
+
+file
+{
+                dllc.obj
+                dbase.obj       dbasec.obj
+                track.obj       trackc.obj      
+}
+
+opt eliminate
+
+lib ..\lib\maxbtnt.lib
+lib ..\lib\w3nlibf.lib
+
+exp _TrkOpen.1
+exp _TrkClose.2
+exp _TrkAddMsg.3
+exp _TrkGetStatus.4
+exp _TrkGetPriority.5
+exp _TrkGetAreaOwner.6
+exp _TrkLookupMsg.7
+exp _TrkSetOwner.8
+exp _TrkGetOwner.9
+exp _TrkSetDefaultOwner.10
+exp _TrkGetDefaultOwner.11
+exp _TrkUpdateMsg.12
+exp _TrkDeleteMsg.13
+exp _TrkGetOwnerBtree.14
+exp _TrkGetAreaBtree.15
+exp _TrkGetMsgDbase.16
+exp _TrkLookupMsgI.20
+exp _DbOpen.128
+exp _DbClose.129
+exp _DbInsert.130
+exp _DbLookup.131
+exp _DbLookupI.132
+exp _DbUpdate.133
+exp _DbRemove.134
+exp _DbSize.135
+#exp _DbLookupR.136
+exp _DbObtainLock.137
+exp _DbReleaseLock.138
+#exp _DbFindSeqOpen.139
+#exp _DbFindSeqNext.140
+#exp _DbFindSeqClose.141
+

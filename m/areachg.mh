@@ -1,0 +1,274 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: areachg.mh
+//
+// Desc: Common include file used for changing to a different file/msg
+//       area when RIP graphics are enabled.
+//
+// Copyright 1990, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: areachg.mh,v 1.1 2002/10/01 17:50:28 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+// Generic area change for RIP callers
+
+#define MAXLIST     25      // Maximum areas in areas list
+
+
+    // Function to return a meganum (zero-padded base 36)
+
+string meganum(int: n, int: len)
+{
+  int:    i;
+  string: s;
+  string: digits;
+
+  digits:="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  for (i:=len ; n and i > 0 ; i:=i-1 )
+  {
+    s[i]:=digits[n%36+1];
+    n:=n/36;
+  }
+  while (i > 0)
+  {
+    s[i]:='0';
+    i:=i-i;
+  }
+  return s;
+}
+
+  // Returns whether or not an area is in the current division
+
+int isourdivision(string: divstr, string: areaname)
+{
+  int:    l;
+  string: sub;
+
+  if (divstr = "")
+    return (stridx(areaname, 1, '.') = 0);
+
+  l:=strlen(divstr);
+  sub:=substr(areaname,1,l);
+  if (strupper(sub)<>strupper(divstr))
+    return False;
+  sub:=substr(areaname,l+2,strlen(areaname)-l-1);
+  if (stridx(sub,0,'.'))
+    return False;
+  return True;
+}
+
+
+void main()
+{
+  int:          i,
+                divonly,
+                rc;
+  string:       instring,     // Variable containing input
+                division,     // Current message division
+                divname;      // Name of division
+  struct AREAT: a;
+
+  // Use built-in area selector unless RIP, not local and nothing stacked
+
+  if (usr.rip=0 or id.local or input[1]<>' ')
+  {
+#ifdef MSGAREA
+    msg_area();
+#else
+    file_area();
+#endif
+    goto quit;
+  }
+
+  // Extract current area division from area name
+
+  i:=strridx(ARVAR.name,0,'.');
+  if (i > 0 )
+    division:=substr(ARVAR.name,1,i-1);
+  else
+    division:="";
+
+  instring:=division;
+  divonly:=True;
+
+  // We need only do this once
+
+  print( RIP RIP_KILL RIP_FONTSTY "00000100"
+         RIP_FILLSTY FS_SOLID RCOL_BLACK RIP_BAR "008KHR9G"
+         RIP_COL RCOL_DKGRAY RIP_RECT "0L1NER8B"
+         RIP_COL RCOL_WHITE  RIP_RECT "0K1MEQ8A"
+         RIP_FILLSTY FS_SOLID RCOL_LTGRAY RIP_BAR "0L1NEQ8A"
+         RIP_COL RCOL_RED RIP_TEXTXY "0P1P" ATYPE " AREA SELECTION:"
+         RIP_COL RCOL_DKGRAY RIP_RECT "0M1YEL7L"
+         RIP_COL RCOL_WHITE  RIP_RECT "0N1ZEM7M"
+         RIP_COL RCOL_LTGRAY RIP_RECT "0N1ZEL7L"
+         RIP_END );
+
+  while (True)
+  {
+
+    rc:=AreaFindFirst(a,instring,AFFO_DIV);
+
+    if (division[1]=' ')            // Top level
+    {
+      if (divonly)
+        divname:="<Top Level>";
+      else
+        divname:="<All Areas>";
+    }
+    else if (a.division)            // Division only
+    {
+      division:=a.name;
+      divname:=a.descript;
+      rc:=AreaFindNext(a);
+    }
+
+    do
+    {
+      int:  count, len;
+
+      // Now, paint over the old stuff
+
+      print( RLI RIP_BAR "5U1OEP1X"
+                 RIP_BAR "0O1ZEL7L"
+                 RIP_BAR "0L7NEQ8A"
+                 RIP_COL RCOL_MAGENTA RIP_TEXTXY "5U1P",
+                 divname, '\n' );
+
+      // Set the button style for the areas themselves
+
+      print( RLI RIP_BUTSTY "DW080200ZM02010F0F000700080407000000\n" );
+
+      for (count:=0; rc AND count < MAXLIST; )
+      {
+
+        if ((divonly AND isourdivision(division,a.name)=False) OR
+            (divonly=False and a.division))
+          ; // continue;
+
+        else if (a.division<>2)
+        {
+
+          // Define a button for this area
+
+          print( RLI RIP_BUTDEF "0O", meganum(72+(count*8),2), "00000000<>",
+                      a.descript,"<>", a.name, "^M\n" );
+
+          count:=count+1;
+        }
+
+        // Retrieve the next area
+
+        rc:=AreaFindNext(a);
+      }
+
+      // Now define the buttons for the button bar
+
+        print( RLI RIP_BUTSTY "2K0C0207QQ02000F0F000700020407000000\n"
+               RLI RIP_BUTDEF "0S7T00002900<>Quit<>^M\n" );
+
+      if (divonly)
+        print( RLI RIP_BUTDEF "3K7T00001T00<>All Areas<>=^M\n" );
+
+      // More areas if we think there are some...
+
+      if (rc)
+        print( RLI RIP_BUTDEF "6C7T00002500<>More Areas<>*^M\n" );
+      else if (divonly=False)
+        print( RLI RIP_BUTDEF "6C7T00001T00<>List Again<>*^M\n" );
+
+      // Add the extra buttons if we're in an area division
+
+      if (divonly AND division[1]<>' ')
+      {
+        print( RLI RIP_BUTDEF "947T00002D00<>Level Up<>..^M\n"
+               RLI RIP_BUTDEF "BW7T00002C00<>Top Level<>/^M\n" );
+      }
+      else if (divonly=False)
+        print( RLI RIP_BUTDEF "BW7T00002C00<>Top Level<>/^M\n" );
+
+      print( RLI RIP_END );
+
+      // Get the response
+
+      len:=input_str(instring, INPUT_WORD|INPUT_NOCTRLC|INPUT_NOECHO, 0, 64, "");
+
+      // Kill any further mouse action for now
+
+      print( RIP RIP_KILL RIP_END );
+
+      instring:=strupper(instring);
+
+      if (instring="*")           // More
+      {
+        if (rc=0)   // No more, then go to top
+        {
+          if (divonly)
+            instring:=division;
+          else
+            instring:="";
+        }
+      }
+      else
+      {
+        divonly:=True;
+        rc:=0;
+        AreaFindClose();          // We can safely do this
+
+        if (len=0)                // User quit
+          goto quit;
+        else if (instring="..")   // Up one level
+        {
+          i:=stridx(division,0,'.');
+          if (i > 0)
+            division:=substr(division,1,i-1);
+          else
+            division:="";
+          instring:=division;
+        }
+        else if (instring="/")    // Top level
+        {
+          division:="";
+          instring:="";
+        }
+        else if (instring="=")    // All areas, no divisions
+        {
+          division:="";
+          divonly:=False;
+          instring:="";
+        }
+        else
+        {
+
+          if (AreaFindFirst(a,instring,AFFO_DIV)=False)
+          {
+
+            // Invalid area
+
+          }
+          else if (a.division)
+          {
+            divonly:=True;
+            division:=a.name;
+          }
+          else
+          {
+            AreaSelect(instring);
+            goto quit;
+          }
+          instring:=division;
+        }
+      }
+    }
+    while (rc);
+  }
+
+  quit:
+
+  print( RIP RIP_ERASEWIN RIP_END );
+
+}
+

@@ -1,0 +1,70 @@
+; -------------------
+; EVENTS CONTROL FILE
+; -------------------
+;
+; This file controls "events" within Maximus.  Currently, events are used
+; for two features:
+;
+; 1) Yelling.  Events control when users can yell, which tune is played
+;    when a user does yell, and how many times that tune is played.
+;
+; 2) External programs.  When using the internal Wait-For-Caller
+;    feature, Max can be configured to exit with an errorlevel at
+;    a specific time of day.
+;
+; By default, a separate event file for each node; when starting up,
+; Max will look for a file called EVENTSxx.BBS, where 'xx' is the current
+; task number, in hexadecimal.  (This behaviour can be modified through
+; the '-e' command-line switch.)
+;
+; You can specify up to 48 events in one event file.  Each event has the
+; following format:
+;
+;       Event <day> <start> [end] [flags...]
+;
+; The word "Event" must be present at the beginning of each event line.
+;
+; <day> specifies the days on which this event is to be executed.
+; Valid days are "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", and "Sat".
+; If you want an event to be run every day, specify "All".  To run an
+; event only on weekdays, specify "WkDay".  To run an event only on
+; weekends, specify "WkEnd".  To run an event on a combination of
+; days, separate each day with a "|".  (For example, "Sun|Mon|Tue"
+; would cause that event to be run on Sunday, Monday and Tuesday only.)
+;
+; <start> specifies the starting time for the event, in 24 hour format.
+;
+; [end] specifies the ending time for the event (optional).  Some events
+; may not require an ending time, such as external errorlevels, so this
+; field may be omitted.
+;
+; Following the starting/ending time are zero or more flags.
+; The following flags are supported
+;
+;       exit=<erl>      This tells Maximus to exit with the specified
+;                       errorlevel as soon as the event starts.  This
+;                       is valid only when using WFC mode.
+;
+;       bells=<num>     This specifies the number of bells (or tunes)
+;                       that Max will play when a user yells during
+;                       this event.  THIS FLAG ACTIVATES THE YELL
+;                       FUNCTION FOR THE SPECIFIED TIME PERIOD.
+;
+;       maxyell=<num>   This specifies the maximum number of times
+;                       that a user can yell (without the sysop
+;                       answering) in one session.
+;
+;       tune=<name>     This specifies the tune to play during
+;                       the current event.  <name> is no longer
+;                       restricted to being a number; it can
+;                       be any single word, up to 32 characters
+;                       long.  If no tune is specified, Maximus
+;                       will make simple beeping noises.  To have
+;                       Max select a tune at random, use
+;                       "tune=random".
+
+;Event  All     00:00           exit=20
+;Event  All     02:00           exit=21
+ Event  All     13:00   23:00   bells=3 maxyell=3 tune=random
+;Event  All     23:00           exit=22
+

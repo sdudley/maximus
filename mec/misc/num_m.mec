@@ -1,0 +1,11 @@
+[yellow]
+This prompt selects another area by allowing you to enter the name of the
+area or group to go to from the list displayed.
+[lightcyan]
+
+  Only type the area number or name (displayed in the list to the left of
+  the description) at the prompt. Typing a `number-sign' (a `#') before
+  the area number is unnecessary.
+
+[white]
+[quit]

@@ -1,0 +1,141 @@
+; ***************************************************************************
+; *                                                                         *
+; *  MAXIMUS-CBCS Source Code                                               *
+; *  Copyright 1989, 1990 by Scott J. Dudley.  All rights reserved.         *
+; *                                                                         *
+; *  Direct-video macros                                                    *
+; *                                                                         *
+; *  For complete details of the licensing restrictions, please refer to    *
+; *  the license agreement, which is published in its entirety in MAXIMUS.C *
+; *  and LICENSE.MAX.                                                       *
+; *                                                                         *
+; *  USE OF THIS FILE IS SUBJECT TO THE RESTRICTIONS CONTAINED IN THE       *
+; *  MAXIMUS-CBCS LICENSING AGREEMENT.  IF YOU DO NOT FIND THE TEXT OF THIS *
+; *  AGREEMENT IN ANY OF THE  AFOREMENTIONED FILES, OR IF YOU DO NOT HAVE   *
+; *  THESE FILES, YOU SHOULD IMMEDIATELY CONTACT THE AUTHOR AT ONE OF THE   *
+; *  ADDRESSES LISTED BELOW.  IN NO EVENT SHOULD YOU PROCEED TO USE THIS    *
+; *  FILE WITHOUT HAVING ACCEPTED THE TERMS OF THE MAXIMUS-CBCS LICENSING   *
+; *  AGREEMENT, OR SUCH OTHER AGREEMENT AS YOU ARE ABLE TO REACH WITH THE   *
+; *  AUTHOR.                                                                *
+; *                                                                         *
+; *  You can contact the author at one of the address listed below:         *
+; *                                                                         *
+; *  Scott Dudley           FidoNet 1:249/106                               *
+; *  777 Downing St.        IMEXnet 89:483/202                              *
+; *  Kingston, Ont.         Internet f106.n249.z1.fidonet.org               *
+; *  Canada - K7M 5N3                                                       *
+; *                                                                         *
+; *  Please feel free to contact the author at any time to share your       *
+; *  comments about this software and/or licensing policies.                *
+; *                                                                         *
+; ***************************************************************************
+
+
+LoadRow macro P1,RowTab,VidRow,VidCol   ; Clobbers: AX, BX, CX.  Return in DI.
+        mov     cx, si                  ; Save a copy of SI.
+
+IFDEF   __FARDATA__
+        mov     dx, es
+
+        mov     bx, word ptr [&RowTab&+2]
+        mov     es, bx
+ENDIF
+        mov     bx,&RowTab&             ; Load RowTable[Vid_Row]
+
+        mov     si,&VidRow&
+        shl     si,1                    ; Multiply by 2, sizeof(int)
+
+        mov     di,&VidCol&             ; Get Vid_Col
+
+IF P1 EQ 1
+        dec     di                      ; Subtract one if P1==1
+ENDIF
+
+        shl     di,1                    ; Now multiply by two
+IFDEF __FARDATA__
+        add     di,word ptr es:[bx][si] ; Grab it into AX
+        mov     es,dx                   ; Restore es
+ELSE
+        add     di,word ptr [bx][si]    ; Grab it into AX
+ENDIF
+
+        mov     si,cx                   ; Restore si
+endm
+
+
+; Routine to wait for the retrace, so that we don't get snow when
+; writing to the screen.
+
+SnowCheck macro _Vid_HaveSnow,Alt
+
+        cmp     _Vid_HaveSnow,0
+        je      short AfterSnow@@&Alt&
+
+        ; Save a copy of the AX register
+
+        push    ax
+
+        ; Wait for retrace to pass, so we don't get any snow!
+
+        mov     dx,word ptr _Vid_StatusPort
+
+FirstLoop@@&Alt&:
+        in      al,dx                           ; Wait for retrace to start
+        test    al,8
+        jne     short FirstLoop@@&Alt&
+
+SecondLoop@@&Alt&:
+        in      al,dx                           ; Now wait for it to end
+        test    al,9
+        je      short SecondLoop@@&Alt&
+
+        ; Restore the AX register
+
+        pop     ax
+
+AfterSnow@@&Alt&:
+
+endm
+
+
+BiosGoto macro Row, Col
+;       mov     ah,02
+;       xor     bh,bh
+;       mov     dh,&Row&
+;       mov     dl,&Col&
+;       int     10h
+
+        push    es
+        xor     ax,ax
+        mov     es,ax
+        mov     ah,byte ptr [Row]
+        mov     al,byte ptr [Col]
+        mov     word ptr es:[450h],ax
+        pop     es
+endm
+
+BiosPutc macro Char,Attr
+        mov     ah,09
+        mov     al,byte ptr &Char&
+        xor     bh,bh
+        mov     bl,byte ptr &Attr&
+        mov     cx,1
+        int     10h
+endm
+
+BiosPutcRep macro Char,Attr,Rep
+        mov     ah,09
+        mov     al,&Char&
+        xor     bh,bh
+        mov     bl,&Attr&
+        mov     cx,&Rep&
+        int     10h
+endm
+
+
+BiosPutat macro Row,Col,Char,Attr
+        BiosGoto &Row&,&Col&
+        BiosPutc &Char&,&Attr&
+endm
+
+

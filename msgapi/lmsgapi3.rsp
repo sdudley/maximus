@@ -1,0 +1,5 @@
+icp\msgapi.obf icp\api_sdm.obf icp\api_sq.obf icp\1stchar.obf +
+icp\cvtdate.obf icp\date2bin.obf icp\dosdate.obf icp\fexist.obf +
+icp\ffind.obf icp\flush.obf icp\months.obf icp\ic_misc.obf icp\parsenn.obf +
+icp\qksort.obf icp\stristr.obf icp\strocpy.obf icp\trail.obf icp\_ctype.obf +
+icp\os2.obf

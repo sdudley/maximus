@@ -1,0 +1,70 @@
+# $Id: maxp32d.lnk,v 1.1 2002/10/01 17:51:24 sdudley Exp $
+
+#opt symf
+
+
+name ..\exe\max\maxpd.exe
+opt map=..\map\max\maxpd.map
+
+opt verb,quiet
+debug all
+
+path w3pd
+
+file
+{
+        mex.obj mexint.obj tagapi.obj t_add.obj t_disp.obj t_kill.obj
+        t_menu.obj t_misc.obj t_qwk.obj t_report.obj cppmain.obj max.obj
+        static.obj language.obj api_brow.obj m_area.obj m_browse.obj
+        mb_list.obj mb_read.obj mb_qwk.obj m_util.obj m_attach.obj
+        max_rip.obj l_attach.obj max_menu.obj max_misc.obj
+        mb_qwkup.obj mb_novl.obj m_change.obj m_create.obj m_editor.obj
+        m_editu.obj m_enter.obj m_for.obj m_full.obj m_header.obj
+        mh_graph.obj mh_tty.obj m_hurl.obj m_inq.obj m_intrin.obj
+        m_isval.obj m_kill.obj m_lread.obj m_mdate.obj m_misc.obj m_node.obj
+        m_read.obj m_reply.obj m_save.obj m_scan.obj m_tag.obj m_upload.obj
+        m_xport.obj m_restr.obj me_misc.obj m_edit.obj f_area.obj f_con.obj
+        f_down.obj f_hurl.obj f_intrin.obj f_isval.obj f_kill.obj
+        f_locate.obj f_misc.obj f_over.obj f_raw.obj f_tag.obj
+        f_titles.obj f_type.obj f_up.obj f_logup.obj f_xfer.obj f_idx.obj
+        f_queue.obj
+        maxed.obj med_scrn.obj med_move.obj med_add.obj med_del.obj
+        med_quot.obj med_read.obj med_misc.obj display.obj disp_dat.obj
+        disp_qu.obj disp_max.obj disp_mis.obj uedit.obj ued_cmds.obj
+        ued_disp.obj debug.obj events.obj max_in.obj max_gets.obj
+        max_locl.obj max_out.obj max_outl.obj max_outr.obj max_wfc.obj
+        max_fman.obj max_init.obj max_mtsk.obj max_inif.obj max_args.obj
+        max_rest.obj max_fini.obj max_mcmd.obj max_cust.obj max_rmen.obj
+        max_runo.obj max_main.obj max_chng.obj node.obj max_log.obj
+        max_ocmd.obj max_fbbs.obj max_bor.obj max_cmod.obj
+        max_xtrn.obj max_fins.obj max_chat.obj max_cho.obj max_bar.obj
+        max_clss.obj max2priv.obj
+        log.obj max_sq.obj v7.obj joho.obj os2.obj dos.obj emsi.obj fos.obj
+        fos_dos.obj fos_os2.obj date.obj max_prot.obj async.obj
+        medinit.obj thunk.obj pdata.obj fsend.obj frecv.obj
+        rbsb.obj zm.obj rz.obj sz.obj callinfo.obj max_accs.obj
+        m_input.obj m_lines.obj f_okay.obj
+
+        mexintu.obj mexstat.obj mexfarea.obj mexcall.obj mexoutp.obj
+        mextime.obj mexlang.obj mexrip.obj mexstr.obj mexmarea.obj
+        mexfile.obj mexclass.obj mexuser.obj mexinp.obj mextag.obj
+        mexffind.obj mexxtrn.obj mexrtl.obj atexit.obj
+
+}
+
+option stack=19152
+
+opt newf
+segment class 'CODE' loadoncall executeread share
+
+lib ..\lib\w3plibf.lib
+lib ..\lib\mcp32.lib
+lib ..\lib\maxcomm.lib
+lib ..\lib\msgapi32.lib
+lib ..\lib\mexvm32.lib
+lib ..\lib\maxbt32.lib
+lib ..\lib\maxdb32.lib
+
+opt case
+opt newf
+

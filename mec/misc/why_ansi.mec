@@ -1,0 +1,32 @@
+
+Maximus can optionally send "ANSI codes" to your terminal program.  If
+your terminal does support ANSI, then you'll be able to use colour in
+the menu prompts, cursor movement, and other niceties.
+
+However, your terminal program must have support for these codes, or
+else you'll only see a lot of garbage.  If your terminal program has
+a terminal emulation mode of either "ANSI" or "VT-100", then you
+should switch to it now.
+
+Here's what ANSI codes look like:
+
+        [[31mAAAAA        [[32mBBBBB        [[34mCCCCC[[1;37m
+
+If you can see a bunch of numbers and square brackets, then your
+terminal program does NOT support ANSI graphics, and you should answer
+"N" at the prompt.
+
+If there were three blocks of letters, with no intervening numbers, then
+your terminal program DOES support ANSI, and you should answer "Y"
+at the prompt.
+
+If you own a colour monitor, then the first group of letters should be red,
+the second green, and the third blue.
+
+The answer you give here is not something that is totally permanent.
+Maximus has a CHANGE SETUP menu, and you can toggle your ANSI on or off
+there.
+ 
+   To turn *on* ANSI codes, enter........... Y
+   To turn *off* ANSI codes, enter.......... N
+

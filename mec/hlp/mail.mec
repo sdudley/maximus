@@ -1,0 +1,11 @@
+[include message.inc]
+
+[/Help]
+        [white]This is a "NetMail area".  You can use this area to
+send mail to users on remote systems; by entering a FidoNet network
+address, you can send a message almost anywhere in the world.
+
+        However, sending NetMail costs money, so you'll probably have
+to establish a line of credit with your SysOp before you can send
+anything. [goto next]
+

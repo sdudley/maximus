@@ -1,0 +1,597 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: mexbank.mex
+//
+// Desc: Time bank (and download bytes bank) for Maximus.
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: mexbank.mex,v 1.1 2002/10/01 17:50:37 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+//       Each record is 96 bytes long, consisting of:
+//
+//              string[01..35]  User's name
+//              string[36..44]  Date last used
+//              string[45..52]  Kb Balance
+//              string[53..60]  Time Balance
+//              string[61..68]  Deposited today kb
+//              string[69..76]  Deposited today time
+//              string[77..84]  Withdrawn today kb
+//              string[85..92]  Withdrawn today time
+//              string[93..96]  Blank
+
+#define DEBUG
+
+#define DO_USERNAME     1
+#define DO_LASTDATE     36
+#define DO_BALANCEKB    45
+#define DO_BALANCETIME  53
+#define DO_DEPOSITKB    61
+#define DO_DEPOSITTIME  69
+#define DO_WITHDRAWKB   77
+#define DO_WITHDRAWTIME 85
+
+#define LEN_USERNAME    35
+#define LEN_LASTDATE    9
+#define LEN_VALUE       8
+#define LEN_RECORD      96
+
+#define INCL_mexbank
+
+#include <max.mh>
+#include <prm.mh>
+#include <max_menu.mh>
+#include <intpad.mh>
+#include <language.mh>
+
+#define MB_CFGFILE    "mexbank.ctl"
+
+string: newline;
+
+// Configuable limits
+
+long:   MaxDepositKb,
+        MaxDepositTime,
+        MaxWithdrawKb,
+        MaxWithdrawTime,
+        MinKb,
+        MinTime;
+
+// Current account details
+
+long:   fileOffset,
+        BalanceKb,
+        BalanceTime,
+        DepositKb,
+        DepositTime,
+        WithdrawKb,
+        WithdrawTime;
+
+long:   timeAdjust,
+        kbAdjust;
+
+int:    changed;
+string: Bankdata,
+        Bankhelp;
+
+
+  // packstr()
+  // Packs a string into the record string
+
+void packstr(ref string: s, string: u, int: ofs, int: len)
+{
+  int: c;
+
+  u:=strpad(u, len, ' ');
+  for (c:=1; c <= len; c:=c+1)
+  {
+    s[ofs]:=u[c];
+    ofs:=ofs+1;
+  }
+}
+
+  // packdata()
+  // Packs a record string
+
+void packdata(ref string: s)
+{
+  struct _stamp: now;
+  string: dstr;
+
+  timestamp(now);
+  dstr:=intpadleft(now.date.year,2,'0')+
+       intpadleft(now.date.month,2,'0')+
+       intpadleft(now.date.day,2,'0');
+
+  s:=strpad("", LEN_RECORD, ' ');
+  packstr(s, usr.name,            DO_USERNAME,    LEN_USERNAME);
+  packstr(s, dstr,                DO_LASTDATE,    LEN_LASTDATE);
+  packstr(s, ltostr(BalanceKb),   DO_BALANCEKB,   LEN_VALUE);
+  packstr(s, ltostr(BalanceTime), DO_BALANCETIME, LEN_VALUE);
+  packstr(s, ltostr(DepositKb),   DO_DEPOSITKB,   LEN_VALUE);
+  packstr(s, ltostr(DepositTime), DO_DEPOSITTIME, LEN_VALUE);
+  packstr(s, ltostr(WithdrawKb),  DO_WITHDRAWKB,  LEN_VALUE);
+  packstr(s, ltostr(WithdrawTime),DO_WITHDRAWTIME,LEN_VALUE);
+  // Make it easier to view
+  s[LEN_RECORD-1]:='\r';
+  s[LEN_RECORD-0]:='\n';
+}
+
+string unpackstr(ref string: s, int: ofs, int: len)
+{
+  return strtrim(substr(s, ofs, len), " ");
+}
+
+  // unpackdata()
+  // Unpacks a record string
+
+void unpackdata(ref string: s)
+{
+  struct _stamp: now;
+  string: dstr;
+
+  timestamp(now);
+  // Ignore name (we assume it is the same)
+  dstr:=unpackstr(s, DO_LASTDATE, LEN_LASTDATE);
+  BalanceKb:=strtol(unpackstr(s, DO_BALANCEKB, LEN_VALUE));
+  BalanceTime:=strtol(unpackstr(s, DO_BALANCETIME, LEN_VALUE));
+  // See if we've used the bank earlier today
+  if (now.date.year=strtoi(unpackstr(dstr,1,2)) and
+      now.date.month=strtoi(unpackstr(dstr,3,2)) and
+      now.date.day=strtoi(unpackstr(dstr,5,2)))
+  {
+    DepositKb:=strtol(unpackstr(s, DO_DEPOSITKB, LEN_VALUE));
+    DepositTime:=strtol(unpackstr(s, DO_DEPOSITTIME, LEN_VALUE));
+    WithdrawKb:=strtol(unpackstr(s, DO_WITHDRAWKB, LEN_VALUE));
+    WithdrawTime:=strtol(unpackstr(s, DO_WITHDRAWTIME, LEN_VALUE));
+  }
+}
+
+string datafilename()
+{
+  if (Bankdata[1]=' ' or Bankdata[2]=':' or Bankdata[1]='\\')
+    return Bankdata;
+  return prm_string(PRM_SYSPATH)+Bankdata;
+}
+
+string helpfilename()
+{
+  if (Bankhelp[1]=' ' or Bankhelp[2]=':' or Bankhelp[1]='\\')
+    return Bankhelp;
+  if (stridx(Bankhelp,1,'\\'))
+    return prm_string(PRM_SYSPATH)+Bankhelp;
+  return prm_string(PRM_MISCPATH)+Bankhelp;
+}
+
+    // readdata()
+    // Procedure to read data file for current user's information
+
+int readdata()
+{
+  int:    fd;
+  string: data,username;
+
+  // Reset all current user information
+
+  fileOffset:=-1;
+  BalanceKb:=0;
+  BalanceTime:=0;
+  DepositKb:=0;
+  DepositTime:=0;
+  WithdrawKb:=0;
+  WithdrawTime:=0;
+  changed:=False;
+  timeAdjust:=0;
+  kbAdjust:=0;
+
+  fd:=open(datafilename(),IOPEN_READ);
+  if (fd<>-1)
+  {
+    int:  done;
+    long: atofs;
+
+    atofs:=0;
+    done:=False;
+    while (done=False AND (read(fd,data,LEN_RECORD)=LEN_RECORD))
+    {
+      username:=unpackstr(data,DO_USERNAME,LEN_USERNAME);
+      if (username=usr.name)
+      {
+        // Found the correct user!
+        fileOffset:=atofs;
+        unpackdata(data);
+        done:=True;
+      }
+      atofs:=atofs+LEN_RECORD;
+    }
+
+    close(fd);
+  }
+  return True;
+}
+
+int writedata()
+{
+  int:    fd;
+  string: data;
+
+  packdata(data);
+  fd:=open(datafilename(),IOPEN_RW);
+  if (fd=-1)
+  {
+    fd:=open(datafilename(),IOPEN_RW|IOPEN_CREATE);
+    if (fd=-1)
+    {
+      print(str_mb_fatal);
+      menu_cmd(MNU_PRESS_ENTER,"");
+      return False;
+    }
+  }
+  if (fileOffset=-1)
+    fileOffset:=seek(fd,0,SEEK_END);
+  seek(fd,fileOffset,SEEK_SET);
+  write(fd,data,LEN_RECORD);
+  close(fd);
+  return True;
+}
+
+    // readcfg()
+    // Procedure to read config file
+
+int readcfg(string: argv)
+{
+  string: config;
+  string: tmp, wd;
+  int: fd, linenum;
+
+  if (argv[1]=' ')
+    argv:=MB_CFGFILE;
+  config:=prm_string(PRM_SYSPATH)+argv;
+
+  // Open the config file
+
+  fd:=open(config,IOPEN_READ);
+  if (fd=-1)
+  {
+    log(str_mb_log_configfile+config);
+    print(str_mexbank_hdr, str_mb_cfgfile);
+    menu_cmd(MNU_PRESS_ENTER,"");
+    return False;
+  }
+
+  // We're successful here so this routine will (probably) succeed
+  // In that case, let's set some reasonable defaults so that
+  // unexpected things don't happen if something is missed
+
+  MaxDepositKb      := 1024;
+  MaxDepositTime    := 60;
+  MaxWithdrawKb     := 2048;
+  MaxWithdrawTime   := 60;
+  MinKb             := 0;
+  MinTime           := 2;
+
+  Bankdata          := "MexBank.Dat";
+  Bankhelp          := "MexBank";
+
+  // Read each line...
+
+  linenum:=0;
+  while (readln(fd, config)<>-1 and config[1] <> 0x1a)
+  {
+    int: pos;
+
+    linenum:=linenum+1;
+
+    // Junk trailing comments
+
+    pos:=stridx(config,1,';');
+    if (pos > 0)
+    {
+      config:=substr(config,1,pos-1);
+      pos:=0;
+    }
+
+    // Get first word
+
+    tmp:=strtok(config," \t=",pos);
+
+    // Ignore blank & comment-only lines
+
+    if (tmp[1] <> ' ')
+    {
+      tmp:=strupper(tmp);
+
+      wd:=strtok(config, " \t=", pos);
+
+      if (tmp="BANKDATA")
+        Bankdata:=wd;
+      else if (tmp="BANKHELP")
+        Bankhelp:=wd;
+      else
+      {
+        long: val;
+
+        // All other verbs are values
+
+        val:=strtol(wd);
+
+        if (tmp="MAXDEPOSITKB")
+          MaxDepositKb:=val;
+        else if (tmp="MAXDEPOSITTIME")
+          MaxDepositTime:=val;
+        else if (tmp="MAXWITHDRAWKB")
+          MaxWithdrawKb:=val;
+        else if (tmp="MAXWITHDRAWTIME")
+          MaxWithdrawTime:=val;
+        else if (tmp="MINKB")
+          MinKb:=val;
+        else if (tmp="MINTIME")
+          MinTime:=val;
+        else
+        {
+          close(fd);
+          log(str_mb_log_configerr+itostr(linenum));
+          print(str_mexbank_hdr, str_mb_cfgerr);
+          menu_cmd(MNU_PRESS_ENTER,"");
+          return False;
+        }
+      }
+    }
+  }
+
+  close(fd);
+  return True;
+}
+
+long mb_balance_kb()
+{
+  return BalanceKb-kbAdjust;
+}
+long mb_balance()
+{
+  return BalanceTime-timeAdjust;
+}
+long mb_lefttoday()
+{
+  return class_info(usr.priv,CIT_DAY_TIME)-usr.time-timeon()+timeAdjust;
+}
+long mb_lefttodaykb()
+{
+  return class_info(usr.priv, CIT_DL_LIMIT)-usr.downtoday+kbAdjust;
+}
+long mb_timeleft()
+{
+  return timeleft()+timeAdjust;
+}
+long mb_maxdeposit()
+{
+  long: rc;
+
+  rc:=mb_timeleft() - MinTime;
+  if (rc > (MaxDepositTime-DepositTime))
+    rc:=MaxDepositTime-DepositTime;
+  return rc;
+}
+long mb_maxwithdraw()
+{
+  long: rc;
+
+  rc:=mb_balance();
+  if (rc > (MaxWithdrawTime-WithdrawTime))
+    rc:=MaxWithdrawTime-WithdrawTime;
+  return rc;
+}
+long mb_maxdepositkb()
+{
+  long: rc;
+
+  rc:=mb_lefttodaykb()-MinKb;
+  if (rc > (MaxDepositKb-DepositKb))
+    rc:=MaxDepositKb-DepositKb;
+  return rc;
+}
+long mb_maxwithdrawkb()
+{
+  long: rc;
+
+  rc:=mb_balance_kb();
+  if (rc > (MaxWithdrawKb-WithdrawKb))
+    rc:=MaxWithdrawKb-WithdrawKb;
+  return rc;
+}
+
+string lpad(long: v, int: len)
+{
+  string: s;
+
+  s:=ltostr(v);
+  return strpad("", len-strlen(s), ' ')+s;
+}
+
+
+void display_stats()
+{
+  print(str_mexbank_hdr);
+  print(str_mb_balance_kb,    lpad(mb_balance_kb(),6),        str_mb_kb,   newline);
+  print(str_mb_balance_time,  lpad(mb_balance(),6),           str_mb_mins, newline, newline);
+  print(str_mb_left_time,     lpad(mb_lefttoday(),6),         str_mb_mins, newline);
+  print(str_mb_left_call,     lpad(mb_timeleft(),6),          str_mb_mins, newline);
+  print(str_mb_left_kb,       lpad(mb_lefttodaykb(),6),       str_mb_kb,   newline, newline);
+  print(str_mb_max_dep_kb,    lpad(mb_maxdepositkb(),6),      str_mb_kb,   newline);
+  print(str_mb_max_wdraw_kb,  lpad(mb_maxwithdrawkb(),6),     str_mb_kb,   newline);
+  print(str_mb_max_dep_time,  lpad(mb_maxdeposit(),6),        str_mb_mins, newline);
+  print(str_mb_max_wdraw_time,lpad(mb_maxwithdraw(),6),       str_mb_mins, newline, newline);
+}
+
+#define RES_DEPOSIT   0
+#define RES_WITHDRAW  1
+#define RES_QUIT      2
+
+int get_response()
+{
+  int:  ch;
+  string: keys;
+
+  keys:="|"+str_mb_keys;
+  ch:= input_list(keys, CINPUT_PROMPT | CINPUT_RTNHELP, helpfilename(),
+                 str_mb_invalid, str_mb_prompt);
+  keys:=strupper(keys);
+  return stridx(keys, 1, ch) - 2;
+}
+
+#define TRX_TIME  0
+#define TRX_BYTES 1
+
+int trx_type(string: dorw)
+{
+  int: ch;
+  string: keys;
+
+  keys:="|"+str_mb_torbkeys;
+  ch:= input_list(keys, CINPUT_PROMPT, "",
+                 str_mb_nottorb, dorw+str_mb_time_or_kb);
+  keys:=strupper(keys);
+  return stridx(keys, 1, ch) - 2;
+}
+
+long get_amount(string: dorw)
+{
+  int:    len;
+  string: samount;
+
+  len:=input_str(samount, INPUT_WORD, 0, 10, dorw+str_mb_howmuch);
+  return strtol(samount);
+}
+
+void transaction(int: type)
+{
+  int:  torb;
+  long: amount;
+  string: which;
+
+  if (type=RES_DEPOSIT)
+    which:=str_mb_deposit;
+  else
+    which:=str_mb_withdraw;
+
+  torb:=trx_type(which);
+  if (torb<>-1)
+  {
+    amount:=get_amount(which);
+    if (amount > 0)
+    {
+      int:  adjust;
+
+      adjust:=False;
+      if (type=RES_WITHDRAW)
+      {
+        if (torb=TRX_TIME)
+        {
+          if (amount <= mb_maxwithdraw())
+          {
+            timeAdjust:=timeAdjust+amount;
+            WithdrawTime:=WithdrawTime+amount;
+            adjust:=True;
+          }
+        }
+        else
+        {
+          if (amount <= mb_maxwithdrawkb())
+          {
+            kbAdjust:=kbAdjust+amount;
+            WithdrawKb:=WithdrawKb+amount;
+            adjust:=True;
+          }
+        }
+      }
+      else
+      {
+        if (torb=TRX_TIME)
+        {
+          if (amount <= mb_maxdeposit())
+          {
+            timeAdjust:=timeAdjust-amount;
+            DepositTime:=DepositTime+amount;
+            adjust:=True;
+          }
+        }
+        else
+        {
+          if (amount <= mb_maxdepositkb())
+          {
+            kbAdjust:=kbAdjust-amount;
+            DepositKb:=DepositKb+amount;
+            adjust:=True;
+          }
+        }
+      }
+      if (adjust=False)
+        print(str_mb_toomuch);
+      else
+        print(str_mb_trxok);
+      menu_cmd(MNU_PRESS_ENTER,"");
+    }
+  }
+}
+
+
+    // main()
+    //
+
+int main(string: argv)
+{
+  id.instant_video:=0;
+
+  init_lang_mexbank();
+  newline:=str_mb_newline;
+
+  if (id.local=0 and usr.rip)
+    log(str_mb_log_enter);
+
+  if (readcfg(argv))
+  {
+    if (readdata())
+    {
+      int: res;
+
+      for(res:=-1; res<>RES_QUIT; )
+      {
+        display_stats();
+        res:=get_response();
+
+        if (res=RES_DEPOSIT or res=RES_WITHDRAW)
+          transaction(res);
+      }
+    }
+  }
+
+  print(str_mb_goodbye);
+
+  if (timeAdjust OR kbAdjust)
+  {
+    BalanceTime:=BalanceTime-timeAdjust;
+    BalanceKb:=BalanceKb-kbAdjust;
+    if (writedata())
+    {
+      timeadjustsoft(timeAdjust*60);
+      // Adjust download limits
+      usr.downtoday:=usr.downtoday-kbAdjust;
+      usr.time:=usr.time-timeAdjust;
+      log(str_mb_log_account +
+          ltostr(0-timeAdjust) + str_mb_log_account_mins +
+          ltostr(0-kbAdjust) + str_mb_log_account_kbs);
+      log(str_mb_log_balance +
+          ltostr(BalanceTime) + str_mb_log_account_mins +
+          ltostr(BalanceKb) + str_mb_log_account_kbs);
+    }
+    else
+    {
+      log(str_mb_log_writerr+Bankdata);
+    }
+  }
+
+  return 0;
+}
+

@@ -1,0 +1,92 @@
+[moreoff]
+[yellow]MAIN MENU HELP: [lightcyan]Type the letter of the command you need help with.
+
+[yellow]M[lightcyan])essage Areas     [yellow]F[lightcyan])ile Areas
+[yellow]S[lightcyan])tatistics        [yellow]Y[lightcyan])ell for SysOp
+[yellow]B[lightcyan])ulletin Menu     [yellow]O[lightcyan])ff-Line Reader
+[yellow]C[lightcyan])hange Setup      [yellow]G[lightcyan])oodbye
+[yellow]U[lightcyan])serlist          [yellow]V[lightcyan])ersion of BBS
+[yellow]W[lightcyan])ho Is On?
+[yellow]0[lightcyan]) [lightred]QUIT HELP
+
+[white]Select: [gray menu]mfcgsyuvbow0|
+
+[choice]m[goto Main]
+[choice]f[goto F-File]
+[choice]c[goto Change]
+[choice]g[goto Goodbye]
+[choice]s[goto Statistics]
+[choice]y[goto Yell]
+[choice]u[goto Userlist]
+[choice]v[goto Version]
+[choice]b[goto Bulletin]
+[choice]o[goto OLR]
+[choice]w[goto Who]
+[choice]0[quit]
+[choice]|[quit]
+[top]
+
+[/Main yellow]        MESSAGE MENU
+
+        [white]This option will take you the message menu.  The message
+menu is used for creating, reading and replying to messages.  You can
+enter private (e-mail) messages to other users, and if you change to
+the appropriate area, you can also participate in on-line discussions.  [goto Next]
+
+[/F-File yellow]        FILE MENU
+
+        [white]This option will take you to the files menu.  The files
+menu allows you to send and receive files from this BBS. [goto Next]
+
+[/Change yellow]        CHANGE SETUP
+
+        [white]This option will take you to the Change Setup menu. The
+commands on the CHANGE menu allow you to modify your user profile.
+This menu allows you to set your screen length, change your graphics
+mode, password, toggle the full-screen editor, and so forth. [goto Next]
+
+[include GOODBYE.INC]
+[include STATS.INC]
+
+[/Yell yellow]         YELL
+
+        [white]This command allows you to chat with the SysOp of this
+BBS.  Selecting this command will cause some noise on the SysOp's
+console.  If the SysOp is around he/she will respond to your page.  [goto next]
+
+[/UserList yellow]         USERLIST
+
+        [white]This command will display a list of all active users currently
+on this system. [goto Next]
+
+[/Version yellow]         VERSION
+
+        [white]This displays information about Maximus, including the current
+version number, the compilation date, the FOSSIL, and the current heap
+memory. [goto Next]
+
+[/Bulletin yellow]         BULLETIN
+
+        [white]This command will display the system bulletins.  These bulletins
+are created by your SysOp, and they usually contain some important
+information about using the system. [goto Next]
+
+[/OLR yellow]         OFF-LINE READER
+
+        [white]This command invokes the Maximus Off-Line Reader menu.  This
+menu allows you to download messages in the QWK format, suitable for off-
+line reading and reply.  Once you've downloaded a packet, you can use
+any of the commonly-available QWK readers to read and reply to the
+messages you receive. [goto Next]
+
+[/Who yellow]         WHO IS ON?
+
+        [white]On a multitasking system, this command will show you
+which users (if any) are on the other lines of the system.  If the
+system has only one line, this command may not be available to you.
+[goto Next]
+
+[/Next]
+
+[enter top]
+

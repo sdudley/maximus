@@ -1,0 +1,120 @@
+[cls yellow]Browse
+ÄÄÄÄÄÄ
+
+[white]Browse is a flexible command which allows the user to easily and
+efficiently search through selected messages in any given message
+area.  You can use Browse to list messages in one area, read new
+messages in all areas, or even pack QWK mail bundles.
+
+Browse uses a set of four menus to specify a Browse request:
+
+[yellow]-[white] The first menu allows you to select a set of areas to scan.  For example,
+  you can scan only the current area, only areas selected through the
+  tag command, or all message areas.
+
+[yellow]-[white] The second menu allows you to specify the type of messages to scan.
+  Some sample types are new messages, mail addressed to you, and
+  a keyword search.
+
+[yellow]-[white] The third menu only appears if a keyword search is selected.  This menu
+  will prompt you for the fields to search and a keyword.
+
+[yellow]-[white] Finally, the fourth menu asks you what to do with the selected
+  messages.  You can have Browse list these messages (one to a line),
+  display each message, or place those messages into a QWK mail
+  bundle.
+
+In detail:
+
+
+[yellow]Message Areas
+ÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+[white]Selecting "Current" instructs Max to scan the current area.  This
+query will only act upon messages in the current message area.
+
+Selecting "Tagged" instructs Max to scan any areas which were
+selected through the Tag command.  You can normally select a set of
+tagged areas through the "T" option on the message menu.  Tag allows
+you to individually activate and deactivate any message area, so you
+can perform an operation on a customized set of message areas.
+
+Selecting "All" instructs Max to scan ALL message areas.  Max will
+query every message area that you have access to.
+
+
+[yellow]Message Types
+ÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+[white]Selecting "All" instructs Max to scan all messages in the specified
+area, from message #1 up to the highest message.
+
+Selecting "New" instructs Max to scan all messages which are about
+your lastread pointer for each area.  This option will show you
+messages that you haven't seen before.
+
+Selecting "Your" instructs Max to scan for messages addressed to you.
+Max will only select messages which are ABOVE your lastread pointer
+and have not been read.
+
+Selecting "Search" allows you to perform a keyword search on individual
+messages.  See the next topic for more information.
+
+Selecting "From" tells Max to only scan messages from a certain point
+in each area.  After entering a message number, Max will only scan
+messages using that number and higher.
+
+
+[yellow]Searching
+ÄÄÄÄÄÄÄÄÄ
+
+[white]If you selected the "Search" option in the prior menu, Max will allow you
+to enter a set of fields and keywords to scan.  The first prompt asks
+you to specify the fields to be scanned:
+
+  [yellow]Search where?  (More than one letter may be entered.)
+
+  [yellow]T[gray])o field
+  [yellow]F[gray])rom field
+  [yellow]S[gray])ubject field
+  [yellow]B[gray])ody of message
+  [yellow]?[gray])help
+
+[white]You can enter "T", "F", "S", "B", or any combination of the above.
+Max will only search in the fields you specify.
+
+Next, Max will prompt you for a keyword or phrase to find.  Max will
+scan all of the selected messages for this phrase, allowing you to
+easily pick out messages with a certain topic.
+
+After entering the first keyword, Max will allow you to refine the
+search.  Another keyword can be entered, and you can further refine
+the search using AND and OR operations.
+
+Selecting "Limit" tells Max to only display messages which contain
+BOTH of the specified keywords.  Selecting "Expand" tells Max to
+display messages which contain EITHER of the specified keywords.
+Selecting "Search" tells Max to go ahead with the search.  Up to
+sixteen different keywords may be defined, each connected by a
+different logical AND/OR operator.
+
+
+[yellow]Display
+ÄÄÄÄÄÄÄ
+
+[white]Finally, you must tell Max what to do with the specified messages:
+
+If you select "List", Max will display each message on the screen,
+one to a line.
+
+If you select "Read", Max will display each message in full.  After
+showing each message, a menu allows you to either re-read that
+message, reply to it, or delete it (if possible).
+
+If you select "Pack", Max will place all of the specified messages
+into a QWK mail packet.  This packet can then be downloaded using any
+of the supported protocols, read using an off-line reader, and the
+replies uploaded.  For more information on QWK mail packing, please
+see the off-line reader menu. 
+
+[enter]

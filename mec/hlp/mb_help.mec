@@ -1,0 +1,42 @@
+[white]MEXBANK [lightgreen]is a time and download kilobyte banking facility which you may use
+to accumulate left-over login time or download allocation from one session
+to the next.  You can deposit any unused time or download allowance in one
+session,  and withdraw it in another,  perhaps allowing you  to download a
+file in the later session that you would not normally be able to access at
+at your current level of access.
+
+The main [white]MEXBANK [lightgreen]screen shows your current account balance, the amounts of
+time  and  download bytes  currently available  to you,  and  the  maximum
+amounts that you may currently deposit or withdraw from the bank.
+
+[lightmagenta]Making a Deposit    [cyan]To deposit surplus time or download allowance,  select
+                    [yellow]D[gray])eposit [cyan]from the main prompt,  choose between deposit
+                    [yellow]T[gray])ime [cyan]or [yellow]B[gray])ytes[cyan], and enter the amount.
+
+             [lightblue]NOTE:  [brown]Your sysop will probably have restricted the amount of
+                    time and/or  bytes you are  allowed to deposit  during
+                    any day,  and may also have specified a minimum amount
+                    that  you must retain  for the current login.  If  the
+                    amount you enter exceeds either of these preset limits
+                    or is greater  than the amount  you have available  to
+                    deposit,  you will be told so and the transaction will
+                    be cancelled.
+
+[lightmagenta]Making a Withdrawal [cyan]To withdraw time or download kilobytes  from the bank,
+                    select [yellow]W[gray])ithdraw [cyan]from the main prompt,  choose between
+                    withdraw [yellow]T[gray])ime [cyan]or [yellow]B[gray])ytes[cyan], and enter the amount.
+
+             [lightblue]NOTE:  [brown]Your sysop will probably have restricted the amount of
+                    time and/or  bytes you are  allowed to withdraw during
+                    any day.  If the  amount you enter exceeds  either  of
+                    these  preset limits,  or would exceed your  available
+                    balance, you will be told so  and the transaction will
+                    be cancelled.
+
+[lightgreen]Changes to  your account and time  or download allocation  do not actually
+take  place until  you select [yellow]Q[gray])uit[lightgreen].   At that time,  your transaction  is
+recorded and your  time or download  allocation adjusted  before returning
+you to the BBS menu.[gray]
+
+[white enter gray quit]
+

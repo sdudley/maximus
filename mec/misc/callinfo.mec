@@ -1,0 +1,53 @@
+[delete]\Max\CallInfo.Bbs
+[open]\Max\CallInfo.Bbs
+[write]%n[comment                       Write user's name]
+[islocal write]5[comment                For local, write "5"]
+[islocal goto AfterBaud]
+[b9600   write]3[comment                For 9600, write "3"]
+[b9600   goto AfterBaud]
+[b2400   write]0[comment                For 2400, write "0"]
+[b2400   goto AfterBaud]
+[b1200   write]2[comment                For 1200, write "2"]
+[b1200   goto AfterBaud]
+[write]1[comment                        For 300, write "1"]
+[/AfterBaud
+  write]%c[comment                      User's city]
+[write]%o[comment                       Write priv level]
+[write]%t[comment                       Time left, in minutes]
+[colour write]COLOR
+[endcolour nocolour write]MONO
+[endcolour
+][write]%e[comment                      The user's password]
+[write]%u[comment                       User number]
+[write]%j
+[write]01:23
+[write]01:23 01/02/90
+[write]ABCDEFGH
+[write]0
+[write]99
+[write]0
+[write]9999
+[write]%h[comment                       User's phone number]
+[write]01/01/90 02:34
+[expert write]EXPERT[comment            User's help level]
+[regular write]NOVICE
+[novice write]NOVICE
+[hotflash write]NOVICE
+[write]Xmodem[comment                   User's protocol choice]
+[write]01/01/90
+[write]24[comment                       Number of times on]
+[write]%E[comment                       Screen length]
+[write]45[comment                       Last message read]
+[write]%I[comment                       Total uploads]
+[write]%i[comment                       Total downloads]
+[write]8  { Databits }
+[islocal write]LOCAL
+[isremote write]REMOTE
+[write]COM%P
+[write]11/11/55[comment                 birthdate]
+[write]%W[comment                       baud rate]
+[write]FALSE
+[write]Normal Connection
+[write]01/02/94 01:20
+[write]%k[comment                       Task number]
+[write]4[comment                        Node Number]

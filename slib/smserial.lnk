@@ -1,0 +1,13 @@
+sys os2 dll initi
+
+file wcp\l\smserial.obl
+name ..\dll\smserial.dll
+opt nod, prot, manyauto, modname=smserial, newf
+
+segment class 'CODE' preload executeread share
+opt eliminate,quiet
+
+lib clibdll.lib, doscalls.lib
+
+export BBSSEMSERIALIZE.1
+

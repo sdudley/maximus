@@ -1,0 +1,58 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: chgsex.mex
+//
+// Desc: Routine to select a user's gender
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: chgsex.mex,v 1.1 2002/10/01 17:50:30 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#define INCL_max_chng
+#define INCL_global
+#include <max.mh>
+#include <language.mh>
+
+int main(string: argv)
+{
+    char: ch;
+    string: skeys;
+    int: done;
+
+    skeys := str_sex_keys;
+
+    do
+    {
+        print(str_ask_sex);
+
+        ch := input_ch(CINPUT_DISPLAY | CINPUT_PROMPT, COL_WHITE + str_select_p);
+
+        if (ch >= 'a' and ch <= 'z')    // Uppercase it
+            ch:=ch + 'A' - (ch - 'a');
+
+        done := TRUE;
+
+        if (ch=skeys[1])
+            usr.sex := SEX_MALE;
+        else if (ch=skeys[2])
+            usr.sex := SEX_FEMALE;
+        else if (ch=skeys[3])
+            usr.sex := SEX_UNKNOWN;
+        else
+        {
+            // Ensure that 'ch' is displayable
+
+            if (ch >= 0 and ch < ' ')
+              ch := ' ';
+
+            print("\n'", ch, "'", str_invalid_sex, '\n');
+            done := FALSE;
+        }
+    }
+    while (done = FALSE);
+
+    return 0;
+}
+

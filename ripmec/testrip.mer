@@ -1,0 +1,9 @@
+!|10000[[0:]((File Area::Unchecked/Unsorted File Uploads@SYSOP.Uploads,Decadence: Information & Files List@DEC.Info,Decadence: Offline Mail Readers & Support@DEC.Olr,General: ANSI Art, Pictures & Animations@GEN.Ansi,General: Archivers & BBSing Utilities,@GEN.Arc,General: Atrological Files,GEN.Astr,General: Crafts & Hobbies@GEN.Craft,General: Red Dwarf Fandom@GEN.Dwarf))
+!|10000$?0$#13
+[readln]
+[open]test.fil
+[write]%J
+[open]nul
+!|*|#|#|#
+
+

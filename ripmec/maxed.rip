@@ -1,0 +1,29 @@
+!|S0100|B008ZHR9G|c08|R011NHR8V|c0F|R001MHQ8U|S0107|B011NHQ8U|c08|R5J1QC72D
+!|R5K1RC82E|c0F|R5J1QC62C|R5I1PC62C|Y00000200|c00|@6P1VMaxEd Help|c04|@6O1UMax\
+Ed Help|Y00000100|c00|@0A2ICommand                 VT-100 Ctrl  IBM-PC   Comma\
+nd                 Ctrl|@0A2QÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄÄ   ÄÄÄ\
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄ|c01|@0A32Save message ..........|@0A3CAbort message \
+.........|@0A3MBackspace .............|@0A3WDelete char ...........|@0A46One l\
+ine up ...........|@0A4GOne line down .........|@0A4QPrevious page .........|@\
+0A50Next page .............|@0A5AMove cursor left ......|@0A5KMove cursor righ\
+t .....|@0A5UMove one word left ....|@0A64Move one word right ...|@0A6EStart o\
+f line .........|@0A6OEnd of line ...........|@0A6YToggle insert mode ....|@0A\
+78Edit menu .............|@0A7IClear to end of line ..|@0A7SDelete line ......\
+.....|@0A82Delete right word .....|@AK32Redraw line ...........|@AK3CRedraw sc\
+reen .........|c0B|@5G32     ^z  ^k^d  Alt-S|@5G3CEsc-Esc  ^k^q  Alt-X|@5G3M  \
+   Bs    ^h     Bs|@5G3W    Del    ^g    Del|@5G46     Up    ^e     Up|@5G4G  \
+ Down    ^x   Down|@5G4Q   PgUp    ^r   PgUp|@5G50   PgDn    ^c   PgDn|@5G5A  \
+ Left    ^s   Left|@5G5K  Right    ^d  Right|@5G5U    ---    ^a  ^Left|@5G64  \
+  ---    ^f ^Right|@5G6E   Home  ^q^s   Home|@5G6O    End  ^q^d    End|@5G6Y  \
+  ---    ^v Insert|@5G78    ---  ^k^h    F10|@5G7I    ---  ^q^y    ---|@5G7S  \
+  ---    ^y    ---|@5G82    ---    ^t    ---|@FG32    ^l|@FG3C    ^w|c00|@0A8C\
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄÄ|@AK3MÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄ
+!|c00|RAJ3VHF8L|c0F|RAK3WHG8M|c07|RAK3WHF8L|Y00000200|c00|@CB41Quoting|c04|@CA\
+40Quoting|Y00000100|c00|@AU4LCommand          Ctrl IBM-PC|@AU4VÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\
+Ä ÄÄÄÄ ÄÄÄÄÄÄ|c01|@AU55Quote on/off ...|@AU5FUp 4 lines .....|@AU5PDown 4 line\
+s ...|@AU5ZCopy quote .....|c0E|@EM55^k^r  Alt-Q|@EM5F  ^r   PgUp|@EM5P  ^c   \
+PgDn|@EM5Z^k^c  Alt-C|c0F|@AU6JQuoting  can  only  be  used|@AU6Twhen  you're \
+ replying  to a|@AU73message.  Press ^k^r to open|@AU7Dquote window, and use ^\
+c and|@AU7N^r to position  it where you|@AU7Xwant.  Press  ^k^c  to  copy|@AU8\
+7quote window into message.|Y02000400|c05|@0A8GNote: A "^" means to hold down \
+<Ctrl> and hit the specified key|Y00000100|#|#|#

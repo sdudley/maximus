@@ -1,0 +1,8 @@
+
+Maximus can display the contents of any .ARC, .PAK, .ZIP, .LZH or .ARJ
+file.  Files with one of those extensions contain one or more
+compressed files; these files are kept together for making file
+transfers easier.  Just type in the base name of the archive, and
+Maximus will display the archive's contents.  (No explicit file
+extension is necessary.)
+

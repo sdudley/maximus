@@ -1,0 +1,154 @@
+[moreon]
+[yellow]FILE MENU: [lightcyan]Enter the letter of the command that you need help with.
+
+[yellow]A[lightcyan])rea Change       [yellow]L[lightcyan])ocate a file
+[yellow]G[lightcyan])oodbye (log off) [yellow]D[lightcyan])ownload (receive)
+[yellow]C[lightcyan])ontents          [yellow]V[lightcyan])iew (show)
+[yellow]F[lightcyan])ile Titles       [yellow]S[lightcyan])tatistics
+[yellow]U[lightcyan])pload (send)     [yellow]T[lightcyan])ag Files
+[yellow]J[lightcyan])ump to Messages
+
+[yellow]0[lightcyan]) [lightred]QUIT HELP
+
+[white]Select: [gray menu]alftgduscmtvj0|
+
+[choice]a[goto Area]
+[choice]l[goto LLocate]
+[choice]f[goto File_Titles]
+[choice]v[goto View]
+[choice]g[goto Goodbye]
+[choice]d[goto DDownload]
+[choice]u[goto Upload]
+[choice]j[goto Jjump]
+[choice]s[goto Statistics]
+[choice]c[goto Contents]
+[choice]t[goto Tag]
+
+[choice]0[quit]
+[choice]|[quit]
+[top]
+
+[/Area yellow]        AREA CHANGE
+
+        [white]The Area Change command lets you change to another file
+area.  Most systems have files divided into numerous categories
+(utilities, graphics, music, etc.), so you can use this command to
+access other file areas. [goto Next]
+
+[/LLocate yellow]         LOCATE
+
+        [white]The Locate command allows you to search ALL file areas
+on the system for a particular filename or description.  The text you
+type will be matched anywhere in the file name or description, so
+wildcards are not needed.  If you specify "*" at the prompt, Max will
+only list files which were added since the date of your last call. [goto Next]
+
+[/File_Titles yellow]         FILE TITLES
+
+        [white]The File Titles command displays a list of files and
+descriptions for the current file area.  If you specify a "*" at
+the prompt, Max will only list NEW files at the current area.  In
+addition, you can also perform a search on the current area by
+entering any text string at the prompt.  To list all files, simply
+press <enter>. [goto Next]
+
+[/View yellow]        VIEW
+
+        [white]The View command allows you to display the contents of any ASCII
+text file contained in the current area.  Since Type only works for ASCII
+files, you cannot use this command to display an .EXE, .GIF, or anything
+else except pure ASCII. [goto Next]
+
+[include GOODBYE.INC]
+
+[/DDownload yellow]        DOWNLOAD
+
+        [white]The Download command allows you to receive files from
+the system, assuming your access level is high enough to perform this
+command.  (Some systems may require validation before you're allowed
+to download, so this command may or may not be present.)
+
+        After selecting this command, Maximus may ask you to choose
+a file transfer protocol.  (If you've selected a default protocol
+in the C)hange menu, Max will go right to the next step.)
+
+        Next, you can enter one or more filenames to be downloaded.
+(To download more than one file at the same time, you must be using a
+batch protocol such as Zmodem or SEAlink.)  If you've queued any files
+with the TAG command, those files will be added to the current
+transfer.  You may enter up to 30 filenames to be transferred at once.
+Max will search ALL file areas for the filename you specify, so you
+don't have to change areas before starting a download.
+
+        When specifying filenames, you don't need to specify a file
+extension.  If no extension is given, Max will automatically add a
+".*" to the end of each file you specify.
+
+        In addition to entering filenames, you can also enter several
+commands at the download program.  The "/e" command can be used to
+edit the filename list, "/q" can be used to abort the download, and
+"/g" can be used to automatically log off after the download
+completes.
+
+        After entering the last filename, press <enter> to start the
+transfer.  From that point, you should activate the downloading
+function in your terminal program. [goto Next]
+
+[/Upload yellow]        UPLOAD
+
+        [white]The Upload command lets you send files to this system,
+assuming that your access level is high enough to perform this
+command.  (Some systems may require validation before you're allowed
+to upload, so this command may or may not be present.)
+
+        After selecting this command, Maximus may ask you to choose
+a file transfer protocol.  (If you've selected a default protocol
+in the C)hange menu, Max will go right to the next step.)
+
+        If you're using a batch protocol (such as Zmodem or SEAlink),
+Maximus will automatically start the upload.  Simply tell your program
+the name of the file to send, and everything will be handled automatically.
+
+        However, if you're using a non-batch protocol (such as Xmodem,
+1K-Xmodem or ASCII), you must enter the name of the file that you're
+about to send.  After doing so, you can then start the upload function
+in your terminal program. [goto Next]
+
+[include STATS.INC]
+
+[/Contents yellow]        CONTENTS
+
+        [white]The Contents command allows you to look at the contents
+of a compressed file.  Contents will display the filenames, sizes,
+dates, and other information about each file in the archive you
+specify. The Contents command can view any .ZIP, .ARC, .PAK, .LZH or
+.ARJ file; for other compression methods, you're on your own. [goto Next]
+
+[/Tag yellow]        TAG
+
+        [white]The Tag command allows you to queue a file for downloading
+later in the current session.  Tagging a file simply adds it to an
+internal list of "files to send".  Later, when you select the download
+option, all of the files you tagged can be downloaded at the same time.
+
+        Files can also be tagged while performing a file listing; you
+can use the "t" command at a "More [[Y,n,=,t]?" prompt to tag one of
+the files that you see on-screen.
+
+        Up to 30 files may be tagged at one time.  When entering
+filenames, wildcards ARE allowed, and files can be downloaded from
+any area on the system. [goto next]
+
+[/jjump yellow]        JUMP TO MESSAGES
+
+        [white]This command will take you directly to the message
+areas.  Instead of going back to the main menu and then selecting
+M)essage, the Jump command allows you to directly switch between the
+message and file sections. [goto next]
+
+
+[/next]
+
+[enter top]
+
+

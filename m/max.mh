@@ -1,0 +1,738 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: max.mh
+//
+// Desc: MEX include file for Maximus.  This must be included by all MEX
+//       programs that interface with Maximus routines.
+//
+// Copyright 1990, 1994 by Lanius Corporation.  All rights reserved.
+//
+// $Id: max.mh,v 1.1 2002/10/01 17:50:35 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+// Boolean type definitions
+
+#define TRUE   1
+#define FALSE  0
+
+// Common
+
+#define True              1
+#define False             0
+
+// Query types for class_info()
+
+#define CIT_NUMCLASSES    -1
+#define CIT_DAY_TIME      0
+#define CIT_CALL_TIME     1
+#define CIT_DL_LIMIT      2
+#define CIT_RATIO         3
+#define CIT_MIN_BAUD      4
+#define CIT_MIN_XFER_BAUD 5
+#define CIT_MAX_CALLS     6
+#define CIT_FREE_RATIO    7
+#define CIT_UPLOAD_REWARD 8
+#define CIT_ACCESSFLAGS   9
+#define CIT_MAILFLAGS     10
+#define CIT_USERFLAGS     11
+#define CIT_LEVEL         12
+#define CIT_CLASSKEY      13
+
+#define CIT_BYINDEX       32768     // OR with type to search by class index
+
+// Types for input_str():
+
+// One of the following three options must be used:
+#define INPUT_LB_LINE     0x0001 // Input a line, allowing stacked input
+#define INPUT_NLB_LINE    0x0002 // Input a line, not allowing stacked input
+#define INPUT_WORD        0x0004 // Input a word, allowing stacked input
+
+// Any of the following options can also be specified:
+#define INPUT_ECHO        0x0008 // The character in 'ch' should be echoed
+                                 // back to user, instead of the character
+                                 // actually typed.
+
+#define INPUT_ALREADYCH   0x0010 // The character in 'ch' was already typed
+                                 // by the user and should be inserted at
+                                 // the beginning of the string.
+#define INPUT_SCAN        0x0020 // Allow scan codes to be placed in string
+#define INPUT_NOCTRLC     0x0040 // Don't allow user to ^C to redisplay prompt
+#define INPUT_RSVD1       0x0080 // Reserved
+#define INPUT_NOLF        0x0100 // Don't send an LF at end of input function
+#define INPUT_RSVD2       0x0200 // Reserved
+#define INPUT_WORDWRAP    0x0400 // Permit word-wrapping
+#define INPUT_NOCLEOL     0x0800 // Never issue CLEOL codes
+#define INPUT_DEFAULT     0x1000 // Pretend that the current contents of
+                                 // string 's' were already entered by
+                                 // the user.
+#define INPUT_NOECHO      0x2000 // Disable input echo
+
+// Types for input_ch() and input_list():
+
+#define CINPUT_DISPLAY    0x0001 // Always display the character entered
+                                 // by the user, even if in hotkey mode.
+#define CINPUT_RTNHELP    0x0001 // Valid only for GetListAnswer()
+                                 // Returns to caller if 'help' key after
+                                 // displaying the help file
+#define CINPUT_ACCEPTABLE 0x0002 // 'options' specifies a string of acceptable
+                                 // characters.  The char entered by the user
+                                 // must be contained in that string.
+#define CINPUT_PROMPT     0x0004 // Display the prompt in 'options' before
+                                 // trying to get the character.
+#define CINPUT_RESERVED1  0x0008 // Reserved
+#define CINPUT_SCAN       0x0010 // Return scan codes, if applicable
+#define CINPUT_NOXLT      0x0020 // Don't translate special characters,
+                                 // such as \r and \n, into their ASCII
+                                 // equivilents.  (For example, <enter>
+                                 // will be returned as '\r' with this
+                                 // option, instead of '|'.)
+#define CINPUT_NOCTRLC    0x0040 // Don't allow user to ^C to dump output
+                                 // and redisplay prompt.
+#define CINPUT_P_CTRLC    0x0080 // Only display prompt in 'options' if
+                                 // user presses ^C
+#define CINPUT_NOLF       0x0100 // Don't display LF at end of input function
+#define CINPUT_FULLPROMPT 0x0200 // input_list only:  do not add
+                                 // a bracketed list of acceptable chars
+                                 // to the end of the prompt string.
+                                 // (eg. "[a,b,c,d,?]")
+#define CINPUT_ALLANSWERS 0x0400 // Allow the user to exit by pressing <cr>
+                                 // only
+#define CINPUT_DUMP       0x0800 // Flush output buffer when we get a character
+#define CINPUT_RESERVED2  0x1000 // Reserved
+#define CINPUT_NOUPPER    0x2000 // Don't convert input char to uppercase
+#define CINPUT_AUTOP      0x4000 // Display prompt even if user has hotkeys
+                                 // enabled
+#define CINPUT_ANY        0x8000 // input_list only:  any response allowed,
+                                 // even if not contained in 'list'
+
+// Constants for class_info(CIT_MAILFLAGS)
+
+#define CFLAGM_PVT      0x01000000 // Show private messages
+#define CFLAGM_EDITOR   0x02000000 // External editor access
+#define CFLAGM_LEDITOR  0x04000000 // Local external editor access
+#define CFLAGM_NETFREE  0x08000000 // Netmail is 'free'
+#define CFLAGM_ATTRANY  0x10000000 // Allow 'sysop' attribute overrides
+#define CFLAGM_RDONLYOK 0x40000000 // Allow write priv in readonly area
+#define CFLAGM_NOREALNM 0x80000000 // Don't add ^aREALNAME to msgs
+
+// Constants for class_info(CIT_ACCESSFLAGS)
+
+#define CFLAGA_ULBBSOK  0x00000001 // Uploading .?bs files is ok
+#define CFLAGA_FLIST    0x00000002 // Allow file dloads not in filelist
+#define CFLAGA_FHIDDEN  0x00000004 // See/download 'hidden' files
+#define CFLAGA_UHIDDEN  0x00000008 // Allow 'not in userlist' user view
+#define CFLAGA_HIDDEN   0x00000010 // Always hide in user list
+#define CFLAGA_HANGUP   0x00000020 // Hangup immediately
+#define CFLAGA_NOLIMIT  0x00000040 // Don't check dload limits
+#define CFLAGA_NOTIME   0x00000080 // Don't check time limits
+
+
+
+// Various constants for the user record:
+
+// usr.help
+#define HELP_NOVICE     6
+#define HELP_REGULAR    4
+#define HELP_EXPERT     2
+
+// usr.video
+#define VIDEO_TTY       0
+#define VIDEO_ANSI      1
+#define VIDEO_AVATAR    2
+
+// usr.sex
+#define SEX_UNKNOWN     0
+#define SEX_MALE        1
+#define SEX_FEMALE      2
+
+// usr.def_proto
+//
+// Positive numbers indicate external protocols.
+
+#define PROTOCOL_NONE        (signed char)(-1)
+#define PROTOCOL_XMODEM      (signed char)(-2)
+#define PROTOCOL_YMODEM      (signed char)(-3)
+#define PROTOCOL_XMODEM1K    (signed char)(-4)
+#define PROTOCOL_SEALINK     (signed char)(-5)
+#define PROTOCOL_ZMODEM      (signed char)(-6)
+#define PROTOCOL_YMODEMG     (signed char)(-7)
+
+// Constants for tag_queue_file()
+
+#define FFLAG_NOTIME    0x0004
+#define FFLAG_NOBYTES   0x0008
+#define FFLAG_STAGE     0x0400
+#define FFLAG_SLOW      0x0800
+
+// Constants for open()
+
+#define IOPEN_CREATE    0x01
+#define IOPEN_READ      0x02
+#define IOPEN_WRITE     0x04
+#define IOPEN_RW        0x06
+#define IOPEN_APPEND    0x08
+#define IOPEN_BINARY    0x80
+
+// Constants for seek().where
+
+#define SEEK_SET        0
+#define SEEK_CUR        1
+#define SEEK_END        2
+
+// Constants for shell()
+
+#define IOUTSIDE_RUN      0x01
+#define IOUTSIDE_DOS      0x02
+#define IOUTSIDE_REREAD   0x04
+
+// Strings to be included as part of print() output to change screen attributes
+
+#define COL_BLACK               "\x16\x01\x00"
+#define COL_BLUE                "\x16\x01\x01"
+#define COL_GREEN               "\x16\x01\x02"
+#define COL_CYAN                "\x16\x01\x03"
+#define COL_RED                 "\x16\x01\x04"
+#define COL_MAGENTA             "\x16\x01\x05"
+#define COL_BROWN               "\x16\x01\x06"
+#define COL_GRAY                "\x16\x01\x07"
+#define COL_DKGRAY              "\x16\x01\x08"
+#define COL_LBLUE               "\x16\x01\x09"
+#define COL_LGREEN              "\x16\x01\x0a"
+#define COL_LCYAN               "\x16\x01\x0b"
+#define COL_LRED                "\x16\x01\x0c"
+#define COL_LMAGENTA            "\x16\x01\x0d"
+#define COL_YELLOW              "\x16\x01\x0e"
+#define COL_WHITE               "\x16\x01\x0f"
+#define COL_YELLOWONBLUE        "\x16\x01\x1e"
+#define COL_BLACKONGREEN        "\x16\x01\x20"
+#define COL_REDONGREEN          "\x16\x01\x2c"
+#define COL_WHITEONGREEN        "\x16\x01\x2f"
+
+
+#define AVATAR_ATTR             "\x16\x01"
+#define AVATAR_BLINK            "\x16\x02"
+#define AVATAR_UP               "\x16\x03"
+#define AVATAR_DOWN             "\x16\x04"
+#define AVATAR_LEFT             "\x16\x05"
+#define AVATAR_RIGHT            "\x16\x06"
+#define AVATAR_CLEOL            "\x16\x07"
+#define AVATAR_GOTO             "\x16\x08"
+#define AVATAR_CLS              "\x0c"
+#define AVATAR_RPTCHAR          "\x19"
+#define AVATAR_RPTSEQ           "\x17\x19"
+
+struct _date                    // Date structure
+{
+  char: day;                    // Day of month.   1 = first of month
+  char: month;                  // Month of year.  1 = January
+  char: year;                   // Year - 1980.    0 = 1980
+};
+
+struct _time                    // Time structure
+{
+  char: hh;                     // Hour
+  char: mm;                     // Minute
+  char: ss;                     // Second
+};
+
+
+struct _stamp                   // Date and time structure
+{
+  struct _date: date;
+  struct _time: time;
+};
+
+
+struct _cstat                   // Chat status of a particular user
+{
+    int: task_num;              // User's node number.
+    int: avail;                 // Available for chat?
+    string: username;           // User's name
+    string: status;             // User's status
+};
+
+struct _sys                     // System information
+{
+   int: current_row;            // Cursor's row position (1=top)
+   int: current_col;            // Cursor's column position (1=left)
+   int: more_lines;             // # of lines displayed since last More[Y,n]
+};
+
+struct _msg                     // Information about current message
+{
+  long: current;                // Current message number
+  long: high;                   // Highest message number
+  long: num;                    // Number of messages in area
+  int:  direction;              // Reading direction (1==next, 0==prior)
+};
+
+// For marea.attribs:
+
+#define MA_PVT      0x0001      // Private msgs allowed
+#define MA_PUB      0x0002      // Public msgs allowed
+#define MA_HIBIT    0x0004      // High bit msgs allowed
+
+#define MA_NET      0x0008      // Netmail area
+#define MA_ECHO     0x0010      // Echomail area
+#define MA_CONF     0x0020      // Conference area
+
+#define MA_ANON     0x0040      // Anonymous messages are OK
+#define MA_NORNK    0x0080      // Don't use the REALNAME kludge for this area
+#define MA_REAL     0x0100      // Force  use of       real name for this area
+#define MA_ALIAS    0x0200      // Force  use of alias      name for this area
+#define MA_AUDIT    0x0400      // Use auditing (msg tracking) controls in area
+#define MA_READONLY 0x0800      // Area is read-only
+#define MA_HIDDN    0x1000      // Area does not display on normal area list
+#define MA_ATTACH   0x2000      // Area allows local file attaches
+
+// For marea.type:
+
+#define MSGTYPE_SDM      1      // Area is *.MSG-type
+#define MSGTYPE_SQUISH   2      // Area is Squish-type
+
+struct _marea                   // Information about current msg area
+{
+  string: name;                 // Area name
+  string: descript;             // Area description
+  string: path;                 // Area path
+  string: tag;                  // Area echo tag (if any)
+  string: attachpath;           // Path override for file attaches
+  string: barricade;            // Barricade file
+  int:    division;             // Non-zero means this is a file division (1=begin,2=end)
+  int:    type;                 // Message base type
+  int:    attribs;              // Area attributes
+};
+
+#define FA_SLOW     0x0001      // Slow-access medium: skip existence checks
+#define FA_STAGED   0x0002      // Used staged transfer area for downloads
+#define FA_NONEW    0x0004      // Permanent storage - skip for new file checks
+#define FA_HIDDN    0x0008      // Area does not display on normal area list
+#define FA_DIVBEGIN 0x4000      // A file area division, not a real area
+#define FA_DIVEND   0x8000      // End of file area division
+#define FA_AUTODATE 0x0010      // Auto-date override
+#define FA_MANDATE  0x0020      // Manual date override
+#define FA_MANSIZE  0x0040      // Manual size override
+#define FA_FREETIME 0x0100      // Free download time for all files
+#define FA_FREESIZE 0x0200      // Free download bytes for all files
+
+struct _farea                   // Information about current file area
+{
+  string: name;                 // Area name
+  string: descript;             // Area description
+  string: downpath;             // Download path
+  string: uppath;               // Upload path
+  string: filesbbs;             // Path to files list
+  string: barricade;            // Path to barricade file
+  int:    division;             // Non-zero means this is a file division (1=begin,2=end)
+  int:    attribs;              // Area attributes
+};
+
+struct _usr                     // Information about current user
+{
+  string: name;                 // Caller's name
+  string: city;                 // Callers city and state/province
+  string: alias;                // User's alias
+  string: phone;                // User's phone number
+  unsigned int: lastread_ptr;   // Offset in LASTREAD.BBS/areaname.SQL
+//int:    time_remain;          // Time left for current call
+  string: pwd;                  // User's password
+  unsigned int:    times;       // Number of previous calls to system
+  char:   help;                 // Help level.  Novice=6, regular=4,
+                                // expert=2, hotflash=32.
+  char:   video;                // Video mode.  0=tty, 1=ansi, 2=avatar
+  char:   nulls;                // Number of NULs (delays) after <cr>
+
+  // Bits 1:
+
+  char:   hotkeys;              // 1 = Hotkeys enabled
+  char:   notavail;             // 1 = Not available for chat
+  char:   fsr;                  // 1 = Full-screen reader is enabled
+  char:   nerd;                 // 1 = User is a nerd (cannot yell)
+  char:   noulist;              // 1 = User does not show in userlist
+  char:   tabs;                 // 1 = User can handle tab characters
+  char:   encrypted;            // 1 = User's password is encrypted
+  char:   rip;                  // 1 = User has RIP graphics turned on
+
+  // Bits 2:
+
+  char:   badlogon;             // 1 = Last logon attempt was bad
+  char:   ibmchars;             // 1 = User can handle IBM characters
+  char:   bored;                // 1 = BORED.  0 = MaxEd
+  char:   more;                 // 1 = More prompt enabled
+  char:   configured;           // 1 = City/pwd fields have been filled
+  char:   cls;                  // 1 = User can handle clearscreen
+
+  unsigned int: priv;           // User's priv level.
+
+  string: dataphone;            // User's data phone number
+  unsigned int: time;           // Length of time user has been on-line
+                                // today.
+
+  // Delflag
+
+  char:   deleted;              // This user has been deleted.
+  char:   permanent;            // This user is permanent.
+
+//long:   baud;
+  long:   msgs_posted;          // Number of messages posted
+  long:   msgs_read;            // Number of messages read
+
+  char:   width;                // Width of caller's screen
+  char:   len;                  // Height of caller's screen
+
+  unsigned int: credit;         // Netmail credit, in cents
+  unsigned int: debit;          // Netmail debit, in cents
+
+  // Expiration controls
+
+  unsigned int: xp_priv;        // Demote user to this priv when
+                                // subscription expires.  (Same encoding
+                                // as usr.priv)
+
+  struct _stamp: xp_date;       // If it is past this date, the user has
+                                // expired.
+
+  unsigned long: xp_mins;       // The user has this many minutes left
+                                // before expiring.
+
+  // XPflag
+
+  char:   expdate;              // 1 = Expire based on date in xp_date
+  char:   expmins;              // 1 = Expire based on time in xp_mins
+  char:   expdemote;            // 1 = When expired, demote to xp_priv
+  char:   expaxe;               // 1 = When expired, hang up
+
+  char:   sex;                  // User's sex.  See SEX_xxx definitions
+
+  struct _stamp: ludate;        // Date of user's last call
+
+  string: xkeys;                // User's keys, as a string
+
+  char:   lang;                 // User's current language. 0=first lang,
+                                // 1=second lang, etc.
+
+  signed char: def_proto;       // User's default protocol.  See the
+                                // PROTOCOL_xxx definitions above.
+                                // Positive numbers indicate external
+                                // protocols.
+
+  unsigned long: up;            // Kilobytes uploaded, for all calls
+  unsigned long: down;          // Kilobytes downloaded, for all calls
+  unsigned long: downtoday;     // Kilobytes downloaded today
+
+  string: msg;                  // Current message area
+  string: files;                // Last message area
+
+  char:   compress;             // Default compression program
+  string: dob;                  // Caller's date of birth,
+                                // stored in format yyyy.mm.dd
+                                // eg. 74.03.24
+
+  struct _stamp: date_1stcall;  // Date of user's first call
+  struct _stamp: date_pwd_chg;  // Date of user's last pwd change
+
+  unsigned long: nup;           // Number of files uploaded
+  unsigned long: ndown;         // Number of files downloaded (total)
+  unsigned long: ndowntoday;    // Number of files downloaded (today)
+
+  unsigned int: time_added;     // Time credits for today
+
+  unsigned long: point_credit;  // Total number of point credits
+  unsigned long: point_debit;   // Total number of point debits
+
+  struct _stamp: date_newfile;  // Date of last new-files search
+
+  unsigned int: call;           // Number of previous calls today
+
+};
+
+
+// Session data exported by Max:
+
+struct _instancedata
+{
+  int:  instant_video;            // Status of "instant video"
+  unsigned int: task_num;         // Our task number
+  int:  local;                    // Is the user a local caller?
+  int:  port;                     // COM port number (OS/2: com handle)
+  unsigned long: speed;           // User's baud rate
+  int:  alias_system;             // Is this an alias system?
+  int:  ask_name;                 // Ask for user's real name?
+  int:  use_umsgid;               // Uses umsgid's rather than msg numbers
+};
+
+
+// Used with filefindfirst()
+#define FA_NORMAL   0x00
+#define FA_READONLY 0x01
+#define FA_HIDDEN   0x02
+#define FA_SYSTEM   0x04
+#define FA_VOLUME   0x08
+#define FA_SUBDIR   0x10
+#define FA_ARCHIVE  0x20
+
+// Used by set_output()
+#define DISABLE_NONE    0
+#define DISABLE_LOCAL   1
+#define DISABLE_REMOTE  2
+#define DISABLE_BOTH    3
+
+struct _ffind
+{
+    long:           finddata;
+    string:         filename;
+    unsigned long:  filesize;
+    struct _stamp:  filedate;
+    unsigned int:   fileattr;
+};
+
+#define CALL_LOGON      0x8000       // Caller was logged on!
+#define CALL_CARRIER    0x0001       // Caller lost carrier
+#define CALL_EJECTED    0x0002       // Caller was ejected by sysop or priv
+#define CALL_PAGED_AH   0x0004       // Caller paged after hours
+#define CALL_DLEXCEED   0x0008       // Caller attempted to exceed d/l
+#define CALL_EXPIRED    0x0010       // Caller's subscription expired
+#define CALL_TIMELIMIT  0x0020       // Caller exceeded time limit
+#define CALL_NERD       0x0040       // Caller was nerd'ed
+#define CALL_BARRPWD    0x0080       // Barricade password failure
+
+struct _callinfo
+{
+  string: name;
+  string: city;
+  struct _stamp: login;
+  struct _stamp: logoff;
+  int: task;
+  unsigned int: flags;
+  unsigned int: logon_priv;
+  string: logon_xkeys;
+  unsigned int: logoff_priv;
+  string: logoff_xkeys;
+  unsigned int: filesup;
+  unsigned int: filesdn;
+  unsigned int: kbup;
+  unsigned int: kbdn;
+  unsigned int: calls;
+  unsigned int: read;
+  unsigned int: posted;
+  unsigned int: paged;
+  int: added;
+};
+
+
+// GLOBAL DATA
+
+string: input;                  // Current stacked input string
+struct _instancedata: id;       // Information about current session
+struct _marea: marea;           // Message area information
+struct _farea: farea;           // File area information
+struct _msg: msg;               // Current message information
+struct _usr: usr;               // User record
+struct _sys: sys;               // System information
+
+
+// Static data functions
+
+int create_static_data(string: key, long: size);
+int get_static_data(string: key, ref void: data);
+int set_static_data(string: key, ref void: data);
+int destroy_static_data(string: key);
+
+// Static string functions
+
+int create_static_string(string: key);
+int get_static_string(string: key, ref string: data);
+int set_static_string(string: key, string: data);
+int destroy_static_string(string: key);
+
+// Miscellaneous functions:
+
+int vidsync();
+int shell(int: method, string: cmd);
+void sleep(int: duration);
+void log(string: s);
+long class_info(int: priv, int: CIT);
+int privok(string: privstr);
+string class_abbrev(int: priv);
+string class_name(int: priv);
+string class_loginfile(int: priv);
+unsigned int class_to_priv(string: s);
+int set_output(int: where);
+unsigned int term_length();
+unsigned int term_width();
+unsigned int screen_length();
+unsigned int screen_width();
+
+// Time-related functions
+
+unsigned long time();
+unsigned long timeon();
+unsigned long timeleft();
+long timeadjust(long: delta);
+long timeadjustsoft(long: delta);
+void timestamp(ref struct _stamp: stamp);
+string stamp_string(ref struct _stamp: stamp);
+unsigned long stamp_to_long(ref struct _stamp: st);
+void long_to_stamp(long: time, ref struct _stamp: st);
+
+
+// Miscellaneous Maximus-related commands
+
+string protocol_num_to_name(char: pnum);
+string compressor_num_to_name(char: cnum);
+string language_num_to_name(char: lnum);
+int chat_querystatus(ref struct _cstat: cstat);
+string prm_string(int: stringnum);
+
+// Functions for activating menu commands and displaying MECCA files.
+
+void menu_cmd(int: cmdnum, string: args);
+int display_file(string: filename, ref char: nonstop);
+
+// File areas:  download-related functions
+
+int tag_queue_file(string: filename, int: flags);
+int tag_dequeue_file(int: posn);
+int tag_queue_size();
+int tag_get_name(int: posn, ref int: flags, ref string: filename);
+
+
+// Input functions
+
+char getch();
+char kbhit();
+char localkey();
+int input_str(ref string: s, int: type, char: ch, int: max, string: prompt);
+int input_ch(int: type, string: options);
+int input_list(string: list, int: type, string: help_file,
+               string: invalid_response, string: prompt);
+
+
+// "More [Y,n]"-related commands
+
+void reset_more(ref char: nonstop);
+int do_more(ref char: nonstop, string: colour);
+
+// String functions
+
+unsigned int strlen(string: s);
+int strtoi(string: s);
+long strtol(string: s);
+string itostr(int: i);
+string ltostr(long: l);
+string uitostr(unsigned int: ui);
+string ultostr(unsigned long: ul);
+int strfind(string: str, string: substring);
+int stridx(string: str, int: startpos, int: ch);
+int strridx(string: str, int: startpos, int: ch);
+string strpad(string: str, int: length, char: pad);
+string strpadleft(string: str, int: length, char: pad);
+string substr(string: s, int: pos, int: length);
+string strtok(string: src, string: toks, ref int: pos);
+string strupper(string: s);
+string strlower(string: s);
+string strtrim(string: s, string: x);
+
+// File I/O functions:
+
+int  open    (string: name, int: mode);
+int  read    (int: fd, ref string: s, int: len);
+int  readln  (int: fd, ref string: s);
+int  write   (int: fd, ref string: s, int: len);
+int  writeln (int: fd, string: s);
+long tell    (int: fd);
+long seek    (int: fd, long: pos, int: where);
+int  close   (int: fd);
+
+// I/O functions
+
+void print(...);
+int __printSTRING(string: s);
+int __printINT(int: i);
+int __printLONG(long: l);
+int __printCHAR(char: c);
+int __printUNSIGNED_INT(int: i);
+int __printUNSIGNED_LONG(long: l);
+int __printUNSIGNED_CHAR(char: c);
+
+int ansi_detect();
+int rip_detect();
+
+// Local keyboard state
+
+int keyboard(int: state);
+int iskeyboard();
+int snoop(int: state);
+int issnoop();
+
+// RIP helper functions
+
+void set_textsize(int: cols, int: rows);
+int rip_send(string: filename, int: display);
+int rip_hasfile(string: filename, ref long: filesize);
+
+// Area search related
+
+#define AFFO_NODIV  0
+#define AFFO_DIV    1
+
+int fileareafindfirst(ref struct _farea: fa, string: name, int: flags);
+int fileareafindnext(ref struct _farea: fa);
+int fileareafindprev(ref struct _farea: fa);
+void fileareafindclose();
+int fileareaselect(string: name);
+
+void file_area();
+
+int msgareafindfirst(ref struct _marea: ma, string: name, int: flags);
+int msgareafindnext(ref struct _marea: ma);
+int msgareafindprev(ref struct _marea: ma);
+void msgareafindclose();
+int msgareaselect(string: name);
+
+void msg_area();
+
+// Filesystem related
+
+int rename(string: oldname, string: newname);
+int remove(string: filename);
+int filecopy(string: fromname, string: toname);
+int fileexists(string: filename);
+long filesize(string: filename);
+int filedate(string: filename, ref struct _stamp: filedate);
+
+int filefindfirst(ref struct _ffind: ff, string: filename, int: attribs);
+int filefindnext(ref struct _ffind: ff);
+void filefindclose(ref struct _ffind: ff);
+
+// Caller file
+
+int call_open();
+void call_close();
+long call_numrecs();
+int call_read(long: recno, ref struct _callinfo: ci);
+
+// User file
+
+int userfindopen(string: name, string: alias, ref struct _usr: u);
+int userfindnext(ref struct _usr: u);
+int userfindprev(ref struct _usr: u);
+void userfindclose();
+
+long userfilesize();
+int userupdate(ref struct _usr: u, string: origname, string: origalias);
+int usercreate(ref struct _usr: u);
+int userremove(ref struct _usr: u);
+int userfindseek(long: rec, ref struct _usr: u);
+
+// Special & modem support
+
+int time_check(int: state);
+void chatstart();
+int dcd_check(int: state);
+int mdm_command(string: cmdstring);
+void mdm_flow(int: state);
+int carrier();
+long xfertime(int: protocol, long: bytes);
+

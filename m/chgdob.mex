@@ -1,0 +1,175 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: chgdob.mex
+//
+// Desc: Routine to change a user's date of birth
+//
+// Copyright 1994, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: chgdob.mex,v 1.1 2002/10/01 17:50:30 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+//#define DEBUG
+
+// Uncomment whichever one is appropriate
+
+#define USDATE          // Use mm.dd.yyyy
+//#define EUDATE        // Use dd.mm.yyyy
+//#define JPDATE        // Use yyyy.mm.dd
+
+#ifdef USDATE
+#define DGT_1   temp_month
+#define DGT_2   temp_day
+#define DGT_3   temp_year
+#elifdef EUDATE
+#define DGT_1   temp_day
+#define DGT_2   temp_month
+#define DGT_3   temp_year
+#elifdef JPDATE
+#define DGT_1   temp_year
+#define DGT_2   temp_month
+#define DGT_3   temp_day
+#else
+#error One of USDATE, EUDATE or JPDATE must be defined!
+#endif
+
+#include <max.mh>
+#define INCL_max_chng
+#include <language.mh>
+
+int getdigit(ref string: instr)
+{
+  int: p, i, l;
+  string: temp;
+
+  p:=0;
+  l:=strlen(instr);
+  i:=1;
+  while (i <= l)
+  {
+    if (instr[i] >= '0' AND instr[i] <= '9')
+      p:=(p*10)+(instr[i]-'0');
+    else l:=i;
+    i:=i+1;
+  }
+  instr:=substr(instr,i,strlen(instr)-i+1);
+  return p;
+}
+
+int substrtoi(ref string: s, int: start, int: len)
+{
+  string: t;
+
+  t:=substr(s,start,len);
+  return strtoi(t);
+}
+
+int main(string: argv)
+{
+  struct _stamp: now;           // Current date/time
+  int: this_year;
+  int: ok;
+  int: notreq;
+
+  string: instr;                // String read from user
+  string: temp;                 // Temporary string used for parsing date
+  int: temp_day;                // Binary day of birth
+  int: temp_month;              // Binary month of birth
+  int: temp_year;               // Binary year of birth
+  int: len;                     // Length of string entered by user
+  int: pos;
+
+  timestamp(now);
+  this_year:=now.date.year+1980;
+  if (argv[1]=' ')
+    notreq:=1;
+  else
+    notreq:=0;
+
+  for ( ok:=0; ok=0; )
+  {
+
+    // Print prompt and get instr from user
+
+    len := input_str(instr, INPUT_WORD, 0, 120, str_ask_dob);
+
+    // Exit if user pressed <enter> and one is not required
+
+    if ((len=0) and notreq)
+    {
+      ok:=1;
+    }
+    else
+    {
+
+      // use existing date of birth is user pressed <enter>
+
+      if (len = 0)
+      {
+          string: t;
+
+          temp_year:=substrtoi(usr.dob,1,4);
+          temp_month:=substrtoi(usr.dob,6,2);
+          temp_day:=substrtoi(usr.dob,9,2);
+      }
+      else
+      {
+
+          // Parse all digits
+
+          DGT_1 := getdigit(instr);
+          DGT_2 := getdigit(instr);
+          DGT_3 := getdigit(instr);
+          len   := strlen(instr);
+
+      }
+
+      if (DGT_1=0 OR DGT_2=0 OR DGT_3=0 OR len<>0)
+        print(str_invalid_dob, '\n');
+      else
+      {
+
+        // Fix year if only two digits entered
+
+        if (temp_year < 100)
+        {
+          temp_year:=temp_year+((this_year/100)*100);
+
+          if (temp_year > this_year)
+            temp_year := temp_year - 100;
+        }
+
+        // Now, validate all fields
+
+        if (temp_year < 1900 OR temp_year > (now.date.year + 1980))
+          print(str_invalid_dob, str_invalid_dob_year, '\n');
+
+        else
+        {
+          if (temp_month < 1 or temp_month > 12)
+            print(str_invalid_dob, str_invalid_dob_mon, '\n');
+
+          else if (temp_day < 1 or temp_day > 31)
+            print(str_invalid_dob, str_invalid_dob_day, '\n');
+
+          else  // instr ok
+          {
+
+            // Format the user's DOB as "yyyy.mm.dd"
+            // and store in user record
+
+            usr.dob := itostr(temp_year) + "." +
+                      itostr(temp_month) + "." +
+                      itostr(temp_day);
+            ok:=1;
+          }
+        }
+      }
+    }
+  }
+
+  return 0;
+}
+
+

@@ -1,0 +1,32 @@
+[ckoff rip ripsend]mailbox.icn
+!|Y00000100|c08|R0Q0QC86K|c0F|R0P0PC76J|S0107|B0Q0QC76J|c00|R0U0UC26E|c0F|R0V0VC36F|c07|R0V0VC26E|1I111100010mailbox.icn
+!|c01|@5014Would you like to check the msg|@501Eareas for mail addressed to you?
+!|1K|Y00000100|1B5K0G0207QE02010F0F080700020407000000
+!|Y00000100
+!|1U5U2800002600<>Not right now, thanks\!<>n
+!|1U5U3C00001T00<>Check All areas<>a
+!|1U5U4G00002400<>Check Local areas only<>l
+!|c08|@5K5Z[sys_name]
+!|#|#|#
+[menu]nal|
+!|S0100|B0P0PC86K|#|#|#
+[endrip norip]
+[white]
+Would you like to check the message areas for mail addressed to you?
+
+  [yellow]N[cyan][nocolor])[endcolor]ot right now, thanks!
+  [      ]Check [yellow]A[cyan][nocolor])[endcolor]ll areas
+  [      ]Check [yellow]L[cyan][nocolor])[endcolor]ocal areas only
+
+[white]Select: [cyan menu]nal|
+[endrip ckon hline]
+[choice]n[quit]
+[white]Checking for your mail...  [lightcyan]press ^C or ^K or interrupt[gray]
+[rip textsize 80 33 endrip hline]
+[choice]l[Key_Poke]LYR 
+[choice]a[Key_Poke]AYR 
+[choice]n[Key_Poke]Q 
+[choice]|[Key_Poke]Q 
+[menu_cmd Msg_Browse]
+[rip textsize 0 0 endrip quit]
+

@@ -1,0 +1,16 @@
+
+[yellow on blue]Outside games:[white]
+
+[yellow]1[gray]) Stud Poker
+[yellow]2[gray]) Dungeon
+[yellow]3[gray]) Card Guppies
+[yellow]Q[gray]) Quit
+
+[white]Select: [cyan][menu]123Q|
+[choice]|[top]
+[choice]1[ dos       ]C:\Max\Outside\Stud.Bat
+[choice]2[ xtern_run ]C:\Max\Outside\Dungeon.Exe
+[choice]3[ dos       ]C:\Max\Outside\Guppy.Bat
+[choice]Q[quit]
+[top]
+

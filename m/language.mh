@@ -1,0 +1,14 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: language.mh
+//
+// Desc: MEX include file to select the default language.
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: language.mh,v 1.1 2002/10/01 17:50:32 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <../lang/english.mh>
+

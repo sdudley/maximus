@@ -1,0 +1,29 @@
+sys os2v2
+
+name ..\exe\install\install.exe
+opt map=..\map\install\install.map
+opt stub=..\exe\install\instr.exe
+opt symf=..\sym\install\install.sym
+opt verb
+
+opt st=16k
+opt newf
+opt quiet
+
+path w3p;
+
+deb all
+
+file
+{
+  install.obj cvt202.obj
+  wdearc.obj wio.obj
+
+  decode.obj
+  maketree.obj maketbl.obj huf.obj
+}
+
+
+lib ..\lib\w3ptuif.lib
+lib ..\lib\w3plibf.lib
+

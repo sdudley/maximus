@@ -1,0 +1,16 @@
+
+Maximus is asking whether or not you want your message to be private.
+
+`Private' doesn't necessarily mean that nobody else except the
+recipient will read your message; the SysOp can read all messages
+posted on the system, no matter who they are addressed to.  However,
+your message will be safe from normal callers.
+
+On the other hand, if you leave a public message, it can be read
+by anyone.  Public messages are good for contacting more than one
+person, since they can be read by anyone who comes into the message
+area in question.
+
+    If you wish to leave a PRIVATE message, enter.... Y
+    If you wish to leave a PUBLIC message, enter..... N
+

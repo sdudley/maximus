@@ -1,0 +1,18 @@
+[cls lightgreen]ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ [yellow]Editing               [lightgreen]³ [yellow]Browsing              [lightgreen]³ [yellow]Maintenance         [lightgreen]³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ [yellow]U[gray])ser Data            [lightgreen]³ [yellow]+[gray]) Next User          [lightgreen]³ [yellow]"[gray]) Undo Changes     [lightgreen]³
+³ [yellow]A[gray])ccess Control       [lightgreen]³ [yellow]-[gray]) Prior User         [lightgreen]³ [yellow]=[gray]) Display Password [lightgreen]³
+³ [yellow]I[gray])nformation          [lightgreen]³ [yellow]~[gray]) Find User          [lightgreen]³ [yellow]/[gray]) Redraw Screen    [lightgreen]³
+³ [yellow]F[gray])lags                [lightgreen]³ [yellow]`[gray]) Repeat Find        [lightgreen]³ [yellow]|[gray]) Purge Users      [lightgreen]³
+³ [yellow]S[gray])ettings             [lightgreen]³ [yellow]C[gray])reate User          [lightgreen]³ [yellow]J[gray]) Jump to Last     [lightgreen]³
+³ [yellow]E[gray])xpiry               [lightgreen]³ [yellow]D[gray])elete User          [lightgreen]³ [yellow]Q[white]) QUIT!            [lightgreen]³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+[gray]To edit any of the information in the various data fields,
+first press the key corresponding to that screen area (U)ser,
+A)ccess, I)nformation, etc.), and then press the key for the data
+item that you wish to change.
+
+[white enter]
+

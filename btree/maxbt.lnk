@@ -1,0 +1,43 @@
+sys os2 dll initi
+name ..\dll\maxbt.dll
+opt modname=MAXBT
+opt map=..\map\btree\maxbt.map
+opt verb
+path WCp
+
+deb all
+
+file
+{
+                dllc.obj
+                btreec.obj
+
+                btree.obj       bt_open.obj     bt_look.obj
+                bt_ins.obj      bt_rem.obj      #bt_lookr.obj
+
+                btnode.obj      palist.obj      
+
+                blkio.obj       bbuf.obj        
+                blkiobuf.obj
+}
+
+lib ..\lib\wcplibl.lib
+
+segment class 'CODE' preload executeread share
+opt eliminate
+
+
+exp BTREENEW.1
+exp BTREEDELETE.2
+exp BTOPEN.3
+exp BTCLOSE.4
+exp BTLOOKUP.5
+exp BTINSERT.6
+exp BTVALIDATE.7
+exp BTREMOVE.8
+exp PALISTNEW.9
+exp PALISTDELETE.10
+exp BTERROR.11
+opt prot,many,case
+opt quiet
+opt newf

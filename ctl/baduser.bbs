@@ -1,0 +1,17 @@
+; This file is a list of all of the names which Maximus will NOT allow
+; on the system.  If any word in this file is matched to the first, last,
+; or entire name of the user, then they will not be allowed on, and the
+; file \MAX\MISC\BAD_USER.BBS will be displayed to them.
+
+John Doe
+Jane Doe
+Damn
+Ass
+Asshole
+ConfMail
+QM
+QMail
+Maximus
+Nobody In Particular
+-=| SquishMail |=-
+

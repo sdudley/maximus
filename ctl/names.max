@@ -1,0 +1,32 @@
+sjd,Scott Dudley,1:249/106
+bug,Scott Dudley,1:249/106,Bug report!
+*afix,Areafix,1:123/456,mypassword
+
+end
+
+; This file acts as a list of aliases and short-forms for entering
+; NetMail messages.  This file allows users to enter short-forms in
+; the "To:" field of NetMail messages, which will cause the rest of
+; the message header to be filled out automatically.
+;
+; The format of each line in NAMES.MAX is:
+;
+; <alias>,<name>,<address>[,<subject>]
+;
+; <alias> is the short-form to be entered in the "To:" field.  Entering
+; this text will cause the translated name and address to be placed
+; in the message header.
+;
+; <name> is the true name to be used.  This will replace the short-form
+; in the To: field.
+;
+; <address> is the full 4D address of the addressee.
+;
+; <subject> is optional; this text will be placed into the subject line
+; when entering a message.
+;
+; If a "*" is placed before <alias>, that short-form will be only usable
+; by callers with a priv of SYSOP.  This may be useful for protecting
+; Areafix passwords, and for other short-forms that you don't want your
+; callers to be able to access.
+

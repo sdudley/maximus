@@ -1,0 +1,39 @@
+sys os2 pmc
+
+name ..\exe\squish\squishp.exe
+
+deb all
+file WCp\squish.obj
+file WCp\s_abbs.obj
+file WCp\s_config.obj
+file WCp\s_scan.obj
+file WCp\s_toss.obj
+file WCp\s_pack.obj
+file WCp\s_squash.obj
+file WCp\s_match.obj
+file WCp\s_log.obj
+file WCp\s_misc.obj
+file WCp\s_hole.obj
+file WCp\s_link.obj
+file WCp\s_busy.obj
+file WCp\s_stat.obj
+file WCp\s_sflo.obj
+file WCp\s_thunk.obj
+file WCp\s_dupe.obj
+file WCp\bld.obj
+
+lib ..\lib\WCplibl.lib
+lib ..\lib\msgapi.lib
+lib ..\lib\smserial.lib
+
+opt map=..\map\squish\squishp.map
+opt verb
+
+opt q
+opt st=8192
+opt newf
+opt map, verb, quiet
+#opt case
+
+segment class 'CODE' loadoncall executeread share
+

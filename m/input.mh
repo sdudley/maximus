@@ -1,0 +1,66 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: input.mh
+//
+// Desc: MEX include file for input routines
+//
+// Copyright 1990, 1994 by Lanius Corporation.  All rights reserved.
+//
+// $Id: input.mh,v 1.1 2002/10/01 17:50:32 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+// Read a character, with echoing to the console.
+
+char getchp()
+{
+  char: ch;
+  
+  ch:=getch();
+
+  if (ch='\r')
+    print('\n');
+  else print(ch);
+}
+
+// Read a sequence of characters into the string 's'
+
+void readstr(ref string: s)
+{
+  char: ch;
+  int: n;
+
+  n:=1;
+
+  s := "";
+
+  while (1)
+  {
+loop:
+    ch:=getchp();
+
+    if (ch=8)
+    {
+        string: new;
+
+        if (n <> 1)
+        {
+                n := n - 1;
+                new := substr(s, 1, strlen(s)-1);
+                s := new;
+        }
+        print(" \b");
+        goto loop;
+    }
+
+    if (ch='\r')
+      goto done;   // break;
+
+    s[n]:=ch;
+    n:=n+1;
+  }
+
+done:
+  ;
+}
+

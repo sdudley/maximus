@@ -1,0 +1,65 @@
+; Patch for WATCOM C 10.6's main2o32 source file.
+;
+; This change fixes the DosExitList order so that our own
+; program's atexit() routines get called before those of
+; any other DLL that we have linked with, as it should be!
+;
+; sjd 980601
+
+
+
+.386p
+                NAME    main2o32
+                EXTRN   __CMain :BYTE
+                EXTRN   DosExitList :BYTE
+                EXTRN   __os2_exit :BYTE
+                EXTRN   __OS2MainInit_ :BYTE
+                EXTRN   __InitRtns :BYTE
+DGROUP          GROUP   CONST,CONST2,_DATA,_BSS
+_TEXT           SEGMENT BYTE PUBLIC USE32 'CODE'
+                ASSUME  CS:_TEXT ,DS:DGROUP,SS:DGROUP
+                PUBLIC  __OS2Main 
+__OS2Main:      push    ebx
+                push    ecx
+                push    edx
+                sub     esp,00000008H
+                mov     eax,00000001H
+                mov     ecx,dword ptr [esp+24H]
+                mov     ebx,dword ptr [esp+20H]
+                mov     edx,dword ptr [esp+18H]
+                call    near ptr __InitRtns
+                mov     eax,esp
+                call    near ptr __OS2MainInit_
+                push    offset __os2_exit
+;
+;;               push    00009f01H
+; sjd980601
+;
+; Fixes a problem with WC 10.6 that causes Max's
+; atexit() routines to be called before MsgAPI's!
+;
+                push    00000001H
+;
+                call    near ptr DosExitList
+                add     esp,00000008H
+                call    near ptr __CMain
+                add     esp,00000008H
+                pop     edx
+                pop     ecx
+                pop     ebx
+                ret     
+_TEXT           ENDS
+
+CONST           SEGMENT DWORD PUBLIC USE32 'DATA'
+CONST           ENDS
+
+CONST2          SEGMENT DWORD PUBLIC USE32 'DATA'
+CONST2          ENDS
+
+_DATA           SEGMENT DWORD PUBLIC USE32 'DATA'
+_DATA           ENDS
+
+_BSS            SEGMENT DWORD PUBLIC USE32 'BSS'
+_BSS            ENDS
+
+                END

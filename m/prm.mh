@@ -1,0 +1,156 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: prm.mh
+//
+// Desc: MEX .prm interface.  These constants can be used for retrieving
+//       strings from the Maximus .PRM file, via the prm_string()
+//       function.
+//
+// Copyright 1994, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: prm.mh,v 1.1 2002/10/01 17:50:39 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#define PRM_SYSOP         0      // Sysop's name
+#define PRM_SYSNAME       1      // BBS name
+#define PRM_MDMBUSY       2      // Modem busy string
+#define PRM_SYSPATH       3      // System path
+#define PRM_MISCPATH      4      // Misc files path
+#define PRM_NETPATH       5      // Nodelist files path
+#define PRM_TEMPPATH      6      // Temp files path
+#define PRM_IPCPATH       7      // IPC path
+#define PRM_USERBBS       8      // Path to User.Bbs
+#define PRM_LOGNAME       9      // Name of log file
+#define PRM_CHATPROG     10      // Name of chat program
+#define PRM_CHATBEGIN    11      // File to display at start of chat
+#define PRM_CHATEND      12      // File to display at end of chat
+#define PRM_LOCALEDITOR  13      // Local editor command
+#define PRM_NOTFOUND     14      // File: name entered not in user file
+#define PRM_RESERVED1    15
+#define PRM_LOGO         16      // File: logo
+#define PRM_BADLOGON     17      // File: last logon was bad
+#define PRM_WELCOME      18      // File: welcome
+#define PRM_QUOTE        19      // File: quotes
+#define PRM_NEWUSER1     20      // File: New user #1 (password)
+#define PRM_NEWUSER2     21      // File: New user #2 (welcome)
+#define PRM_ROOKIE       22      // File: Rookie (welcome)
+#define PRM_APPLIC       23      // File: New user questionairre
+#define PRM_BYEBYE       24      // File: Logoff
+#define PRM_OUTSIDE      25      // File: Going outside...
+#define PRM_RETURN       26      // File: Returning from outside
+#define PRM_DAYLIMIT     27      // File: Been on too long today
+#define PRM_NOTFIRST     28      // File: Not first call today (timewarn)
+#define PRM_TOOSLOW      29      // File: Find a slower BBS...
+#define PRM_BARRICADE    30      // File: Area is barricaded
+#define PRM_SHELLTOOS    31      // File: Shelling on Alt-J
+#define PRM_BACKFROMOS   32      // File: Back from Alt-J
+#define PRM_NOSUCHAREA   33      // File: Area does not exist
+#define PRM_ACCESS       34      // Root name of user classes database
+#define PRM_XFERBAUD     35      // File: Explains minimmum file xfer baud
+#define PRM_FILEAREAS    36      // File: File area display
+#define PRM_NOSPACE      37      // File: No space for upload
+#define PRM_NAMEFORMAT   38      // File: Explains DOS filenames
+#define PRM_UPLOADLOG    39      // Log file for uploads
+#define PRM_FILEHDR      40      // File area header format
+#define PRM_FILEFORMAT   41      // File area formatfor entries
+#define PRM_FILEFOOTER   42      // File area footer format
+#define PRM_PROTOCOLS    43      // Dump file for protocol screen
+#define PRM_MSGAREAS     44      // File: Msg area display
+#define PRM_ECHOTOSS     45      // Echotoss name
+#define PRM_NOMAIL       46      // File: mailchecker if no mail found
+#define PRM_MSGHDR       47      // Msg area header format
+#define PRM_MSGFORMAT    48      // Msg area formatfor entries
+#define PRM_MSGFOOTER    49      // Msg area footer format
+#define PRM_HLPEDITOR    50      // Help for msg editor
+#define PRM_HLPREPLACE   51      // Help for msg editor E)dit
+#define PRM_HLPINQUIRE   52      // Help for msg editor I)nquire
+#define PRM_HLPLOCATE    53      // Help for files L)ocate
+#define PRM_HLPCONTENTS  54      // Help for files C)ontents
+#define PRM_HLPFSE       55      // Help for full screen editor
+#define PRM_HLPSCAN      56      // Help for msg S)can
+#define PRM_HLPLIST      57      // Help for msg L)ist
+#define PRM_EXPROTOP_01  58      // External protocol programs
+#define PRM_EXPROTOP_02  59
+#define PRM_EXPROTOP_03  60
+#define PRM_EXPROTOP_04  61
+#define PRM_EXPROTOP_05  62
+#define PRM_EXPROTOP_06  63
+#define PRM_EXPROTOP_07  64
+#define PRM_EXPROTOP_08  65
+#define PRM_EXPROTOP_09  66
+#define PRM_EXPROTOP_10  67
+#define PRM_EXPROTOP_11  68
+#define PRM_EXPROTOP_12  69
+#define PRM_EXPROTOP_13  70
+#define PRM_EXPROTOP_14  71
+#define PRM_EXPROTOP_15  72
+#define PRM_EXPROTOP_16  73
+#define PRM_EXPROTON_01  74      // External protocol names
+#define PRM_EXPROTON_02  75
+#define PRM_EXPROTON_03  76
+#define PRM_EXPROTON_04  77
+#define PRM_EXPROTON_05  78
+#define PRM_EXPROTON_06  79
+#define PRM_EXPROTON_07  80
+#define PRM_EXPROTON_08  81
+#define PRM_EXPROTON_09  82
+#define PRM_EXPROTON_10  83
+#define PRM_EXPROTON_11  84
+#define PRM_EXPROTON_12  85
+#define PRM_EXPROTON_13  86
+#define PRM_EXPROTON_14  87
+#define PRM_EXPROTON_15  88
+#define PRM_EXPROTON_16  89
+#define PRM_TIMEFORMAT   90      // Time format string
+#define PRM_DATEFORMAT   91      // Date format string
+#define PRM_MAREADAT     92      // Root name of message area database
+#define PRM_FAREADAT     93      // Root name of file area database
+#define PRM_MENUPATH     94      // Default menus path
+#define PRM_FIRSTMENU    95      // Name of first menu
+#define PRM_EDITMENU     96      // Name of edit menu
+#define PRM_ACHGKEYS     97      // Area change keys
+#define PRM_TUNES        98      // Tunes file
+#define PRM_LANGPATH     99      // Path to language files
+#define PRM_LANG_01     100      // Language file names
+#define PRM_LANG_02     101
+#define PRM_LANG_03     102
+#define PRM_LANG_04     103
+#define PRM_LANG_05     104
+#define PRM_LANG_06     105
+#define PRM_LANG_07     106
+#define PRM_LANG_08     107
+#define PRM_MDMINIT     108      // Modem init string
+#define PRM_MDMRING     109      // Modem ring
+#define PRM_ANSWER      110      // Modem answer string
+#define PRM_CONNECT     111      // Modem connect
+#define PRM_HIMSGAREA   112
+#define PRM_NEWMSGAREA  113      // Msg area to put new users in
+#define PRM_HIFILEAREA  114
+#define PRM_NEWFILEAREA 115      // File area to put new users in
+#define PRM_FIDOUSER    116      // FIDOUSER.LST file for v6 nodelists
+#define PRM_CMMTAREA    117      // Comment area to put comments in
+#define PRM_ARCCTL      118      // Control file for archiver names
+#define PRM_OLRNAME     119      // Filename to use for OLR packets
+#define PRM_OLRPATH     120      // Path for off-line related
+#define PRM_OLRPHONE    121      // Phone number for OLR packets
+#define PRM_VIRUSCHK    122      // Batch file to run after uploads
+#define PRM_PROTOCOLMAX 123      // Compiled protocol data file
+#define PRM_TRKPRIVVIEW 124      // Priv req to see track info
+#define PRM_TRKPRIVMOD  125      // Priv req to modify track info
+#define PRM_TRKBASE     126      // Base name for tracking database
+#define PRM_TRKEXCLUDE  127      // File containing list of names to exclude
+#define PRM_STAGEPATH   128      // Directory used for CDROM downloads
+#define PRM_ATTCHBASE   129      // Base name of local attach database
+#define PRM_ATTCHPATH   130      // Directory for local file attaches
+#define PRM_ATTACHARC   131      // Archiver type for local attach storage
+#define PRM_INBOUND     132      // FTS-1 inbound directory
+#define PRM_RIPPATH     133      // Path for .RIP and .ICN storage
+#define PRM_HLPHDR      134      // Help for message header entry
+#define PRM_HLPENTRY    135      // Help for message body entry
+#define PRM_CONFIG      136      // File: displayed before configuration
+#define PRM_MCPPIPE     137      // MCP pipe name
+#define PRM_MAREANAME   138      // Message area data file name
+#define PRM_FAREANAME   139      // File area data file name
+#define PRM_CALLERS     140      // Callers log
+

@@ -1,0 +1,29 @@
+LIBRARY MSGAPI INITINSTANCE
+
+DESCRIPTION "MSGAPI - Copyright 1992 by Scott J. Dudley.  All rights reserved."
+
+HEAPSIZE 0
+STACKSIZE 0
+PROTMODE
+DATA MULTIPLE
+
+EXPORTS
+        MSGOPENAREA                             @1
+        MSGOPENAPI                              @2
+        MSGVALIDATE                             @3
+        MSGCLOSEAPI                             @4
+        CONVERTCONTROLINFO                      @5
+        COPYTOCONTROLBUF                        @6
+        CVTCTRLTOKLUDGE                         @7
+        GETCTRLTOKEN                            @8
+        NUMKLUDGES                              @9
+        REMOVEFROMCTRL                          @10
+        SQUISHSETMAXMSG                         @11
+        WRITEZPINFO                             @12
+        _msgapierr                              @13   ; variable, not a f()
+        SQUISHHASH                              @14
+        INVALIDMH                               @15
+        INVALIDMSGH                             @16
+        MSGFREECTRLTOKEN                        @17                     ; |
+        MSGFREECTRLBUF                          @18                     ; |
+

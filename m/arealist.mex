@@ -1,0 +1,186 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: arealist.mex
+//
+// Desc: Program to display a list of message or file areas.  If the
+//       MSGAREA constant is defined, this will display a list of
+//       message areas.  If FILEAREA is defined, this will display
+//       a list of file areas.
+//
+// Copyright 1990, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: arealist.mex,v 1.1 2002/10/01 17:50:29 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+
+#define MSGAREA
+
+#ifdef FILEAREA
+#define ATYPE "file"
+#define AREAT _farea
+#define ARVAR farea
+#define AreaFindFirst fileareafindfirst
+#define AreaFindNext  fileareafindnext
+#define AreaFindClose fileareafindclose
+#define AreaSelect    fileareaselect
+#endif
+
+#ifdef MSGAREA
+#define ATYPE "msg"
+#define AREAT _marea
+#define ARVAR marea
+#define AreaFindFirst msgareafindfirst
+#define AreaFindNext  msgareafindnext
+#define AreaFindClose msgareafindclose
+#define AreaSelect    msgareaselect
+#endif
+
+
+int isourdivision(string: divstr, string: areaname)
+{
+  int:    l;
+  string: sub;
+
+  l:=strlen(divstr);
+  sub:=substr(areaname,1,l);
+  if (strupper(sub)<>strupper(divstr))
+    return False;
+  sub:=substr(areaname,l+2,strlen(areaname)-l-1);
+  if (stridx(sub,1,'.'))
+    return False;
+  return True;
+}
+
+int main()
+{
+  int:    done, i, levels, first, divonly;
+  string: aname;
+  string: division;
+  string: tmp;
+  char:   nonstop;
+  struct AREAT: a;
+
+  first:=True;
+  divonly:=False;
+
+  // Set initial division name
+
+  i:=strridx(ARVAR.name,0,'.');
+  if (i>0)
+    division:=substr(ARVAR.name,1,i-1);
+  else
+    division:="";
+
+  do
+  {
+    int: len;
+
+    len := input_str(aname, INPUT_WORD|INPUT_NOCTRLC|INPUT_DEFAULT,
+                           0, 64, COL_WHITE "\nSelect " ATYPE " area: ");
+
+    print('\n');
+
+    if (len=0)
+    {
+      if (first<>True)
+        return 0;
+      aname:="?";
+    }
+
+    if (aname="..")
+    {
+      i:=stridx(division,1,'.');
+      if (i>0)
+        division:=substr(division,1,i-1);
+      else
+        division:="";
+      aname:="?";
+    }
+
+    if (aname[1]='/')         // Top level list requested
+    {
+      aname:=substr(aname,2,strlen(aname)-1);
+      // List all top level areas
+      division:="";
+      if (aname[1]=' ')
+        aname:="?";
+    }
+
+    first:=False;
+    divonly:=False;
+    if (aname[1]='?')         // Area list requested
+    {
+      aname:=division;
+
+      // List just current division
+
+      i:=AreaFindFirst(a, aname, AFFO_DIV) and (division="" OR a.division);
+      divonly:=True;
+    }
+    else if (aname[1]='=')
+    {
+      aname:="";
+      // List all areas regardless of division
+      i:=AreaFindFirst(a, aname, AFFO_NODIV);
+    }
+    else
+    {
+      if (division[1]=' ')
+        i:=AreaFindFirst(a, aname, AFFO_DIV);
+      else
+      {
+        tmp:=division+"."+aname;
+        i:=AreaFindFirst(a, tmp, AFFO_DIV);
+        if (i=False)
+          i:=AreaFindFirst(a, aname, AFFO_DIV);
+      }
+      if (i=False)
+        print("Search on '", aname, "' failed.\n");
+      else
+      {   // It's a division, so list all of it
+
+        if (a.division)
+        {
+          divonly:=True;
+          division:=a.name;
+        }
+        else
+        {
+          AreaSelect(aname);
+          return 0;
+        }
+      }
+    }
+
+    // If listing only the division, skip past the division record
+
+    if (i and divonly and division[1]<>' ')
+      i:=AreaFindNext(a);
+
+    levels:=1;
+    reset_more(nonstop);
+    while (i and do_more(nonstop, COL_CYAN) and levels)
+    {
+      if (a.division=2)
+      {
+        if (divonly)
+          levels:=levels-1;
+      }
+      else
+      {
+        if (divonly and a.division=1)
+          levels:=levels+1;
+        if (divonly=False OR isourdivision(division, a.name))
+          print(COL_LGREEN " ", strpad(a.name,16,' '), COL_GRAY, " ... ", COL_LCYAN, a.descript, '\n');
+      }
+      i:=AreaFindNext(a);
+    }
+    AreaFindClose();
+  }
+  while(done=False);
+
+  return 0;
+}
+

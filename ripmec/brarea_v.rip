@@ -1,0 +1,12 @@
+!|1K|Y00000100|c08|R0V15FA78|c0F|R0U14F977|S0107|B0V15F977|c00|R0Z1JF472|c0F
+!|R101KF573|c07|R101KF472|c0E|@1218BROWSE: Message search & retrieval|c01|@1C1\
+QWhich areas do you wish to search:|1B9Q0C0207PE0200080F0007000A0407000000
+!|1U2I2800001V00<>Current area only<>C
+!|1U2I2S00002C00<>Tagged areas selected through T)ag command<>T
+!|1U2I3C00002F00<>Select areas by Wildcard<>W
+!|1U2I3W00001Z00<>Select areas in a specific Group<>G
+!|1U2I4G00002400<>Local and netmail areas only<>L
+!|1U2I5000001T00<>Search All areas<>A
+!|1U2I5K00002900<>Quit<>Q
+!|c01|@1C66Which areas (use "*" as wildcard):|c08|R196LEY6Y|c0F|R186KEX6X|c07
+!|R196LEX6X|w060U1U0U00|e|#|#|#

@@ -1,0 +1,23 @@
+
+
+[msg_local   ]  [lightgreen] You are entering a message into an area [lightmagenta]LOCAL[lightgreen] to this BBS.
+[msg_matrix  ]  [yellow    ] You are entering a message into a [lightmagenta]NETMAIL[yellow] area to someone on another
+[msg_matrix  ]  [yellow    ] BBS.
+[msg_echo    ]  [lightred  ] You are entering a message into an [lightmagenta]ECHOMAIL[lightred] conference which is to be
+[msg_echo    ]  [lightred  ] transmitted and read on other BBSes.
+[msg_conf    ]  [lightgreen] You are entering a message into a [lightmagenta]PUBLIC CONFERENCE[lightgreen] which is to be
+[msg_conf    ]  [lightgreen] transmitted and read on other BBSes.
+[comment
+
+   SysOps can enter a private msg in any area, so the line below
+   does not display for SysOps.
+
+]
+[acs <SysOp][msg_attr P  ]  [gray      ] This area allows entry of [yellow]PRIVATE[gray] messages.
+[msg_attr A  ]  [gray      ] This area allows you to [yellow]SEND FILES[gray] to other users.
+[colour]
+[            ]  [gray      ] Move between fields by using the [magenta]<up>[gray] and [magenta]<down>[gray] cursor keys, or by
+[            ]  [gray      ] completing each field and pressing [magenta]<enter>[gray] to move to the next.
+[            ]  [gray      ] Press [magenta]<escape>[gray] if you wish to abort entry of this message.
+[endcolour gray quit]
+

@@ -1,0 +1,50 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: headfile.mex
+//
+// Desc: Header routines for the FILE menu
+//
+// Copyright 1990, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: headfile.mex,v 1.1 2002/10/01 17:50:31 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+
+#define INCL_f_area
+#include <language.mh>
+
+int main(string: argv)
+{
+    string: last_area;
+    string: last_area_id;
+
+    id.instant_video:=0;
+
+    if (input[1] <> ' ')
+        return 0;
+
+    // Find out what our last file area was
+
+    last_area_id := "headfile:last_area";
+    create_static_string(last_area_id);
+    get_static_string(last_area_id, last_area);
+
+    // If we are just entering the file menu, or if we just changed
+    // areas, then redisplay the appropriate header.
+
+    if (argv="1" or farea.name <> last_area)
+        print(str_file_sect_hdr);
+
+    // Store the name of the new file area
+
+    set_static_string(last_area_id, farea.name);
+
+    // Now display info about this area
+
+    print(str_file_menu_hdr, farea.name, str_file_menu_sep, farea.descript, str_file_hdr_end);
+
+    return 0;
+}
+

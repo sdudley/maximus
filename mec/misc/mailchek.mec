@@ -1,0 +1,3 @@
+[white]Do you wish to check for mail [[Y,n]? [gray menu]yn|
+[choice]n[quit]
+[msg_checkmail]

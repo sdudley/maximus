@@ -1,0 +1,145 @@
+[/TopMenu cls]
+                 [yellow on blue]ÚÄÄÄÄÄÄÄÄÄÄÄ¿[white]
+                 [yellow on blue]³ [FG white]Chat Help [FG yellow]³[white]
+                 [yellow on blue]ÀÄÄÄÄÄÄÄÄÄÄÄÙ[white]
+
+
+        [yellow]B[gray])ackground on multi-node chatting
+        [yellow]C[gray])ommands usable inside chat mode
+        [yellow]Q[gray])uit
+
+        [white]Select: [cyan menu]bcq
+[choice]B[goto Background]
+[choice]C[goto Cmds]
+[choice]Q[quit]
+
+[/Background cls]
+
+     [white]You are now inside the Maximus multi-line chat.  This section
+allows you to interactively "talk" to other users, who are logged onto
+other nodes of this BBS.
+
+     There are two distinct modes for the multi-line chat: PRIVATE
+chat mode, and PUBLIC chat mode.
+
+
+                       [yellow on blue]ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿[white]
+                       [yellow on blue]³ [FG white]Private Chats [FG yellow]³[white]
+                       [yellow on blue]ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ[white]
+
+     [lightgreen]The private chat mode allows you to talk with one specific
+user only, without allowing anyone else to enter the conversation.
+
+     [yellow]To initiate a private chat, simply select the `P)age User' option
+from the chat menu, and select the task number of the user you wish to
+page.  (The task numbers can be seen from the main chat menu.) Maximus
+will then place you into chat mode, while you wait for the other user
+to respond to your page.  As soon as the other user enters chat mode,
+you'll see a "User Name joins the conversation" message appear, and
+you'll know that you can now talk to each other.
+
+     [lightcyan]On the other hand, if you find yourself being paged by another
+user, and you wish to chat with him/her, you should stop whatever it
+is you're doing, and proceed to the CHAT menu.  Once you're there,
+simply select the `A)nswer Page' option, and enter the task number of
+the node that paged you.  This will immediately put you in chat with
+the other node.  Once you're in chat mode, simply type in the text you
+wish to send to the other caller, and press return when you're done.
+Everything you type will be transmitted a line at a time, and will
+appear on the other user's screen shortly after you've typed it.
+
+
+                        [yellow on blue]ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿[white]
+                        [yellow on blue]³ [FG white]Public Chats [FG yellow]³[white]
+                        [yellow on blue]ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ[white]
+
+
+     [lightgreen]In addition to the private chat mode, there is also a PUBLIC chat
+mode.  If you're chatting on one of the public "CB channels", any
+number of people can join in on the conversation, which is
+functionally similar to a CB radio.
+
+     [yellow]Maximus has 255 "Virtual CB Channels".  Since users of a large
+multi-line system may want to hold more than one conversation at once,
+Maximus allows one to use more than one CB channel.  CB channels are
+completely separate, and hence, you only receive or send to users who
+are operating on the same channel.
+
+     [lightcyan]Before you enter a public CB channel, it's a good idea to check
+the list of tasks and users, which can be seen from the chat menu, to
+see if anyone else is using one of the CB channels.  If so, then
+select that channel number through the "CB chat" command.  Once you're
+on the CB channel, it's usually good manners to wait for a few
+seconds, to get an idea of what the other users are talking about, and
+to make sure that you don't interrupt anyone else.
+ 
+[white enter]
+[goto TopMenu]
+
+[/Cmds cls]
+                       [yellow on blue]ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿[white]
+                       [yellow on blue]³ [FG white]Chat Commands [FG yellow]³[white]
+                       [yellow on blue]ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ[white]
+
+     [white]While you are inside chat mode, whether it be a public or private
+chat, there are several operations which are available to you,
+in addition to chatting itself.
+
+     To enter one of the special chat commands, simply enter the
+command, as the FIRST thing on the line.  In other words, although
+typing `/w' at the beginning of the line will work, if you have the
+text `/w' in the middle of a sentence, it will be interpreted as
+normal text.
+
+
+[yellow]/w      [white]- Who Is On.  This command displays a list of all callers who
+          are in the same conversation you are.  If you're in a private
+          chat with another node, then this will display their name.
+          If you're on a public CB channel, then this command will
+          display a list of users who are participating on the same
+          channel.  If nobody else is on the same channel, or if the
+          other caller hasn't answered your page, then Maximus
+          will indicate that you are alone in this conference.
+
+[yellow]/q      [white]- Quit.  This command will exit chat mode, and return you to
+          the chat menu.  Other callers in the same conversation will
+          see a "User Name leaves the conversation" message, so that
+          they realize that you've left.
+
+[yellow]/?      [white]- Displays this help file.
+
+     [white]In addition to these commands, you can also "talk" to the other
+users in the same conference, by simply typing in your message.  The
+text will be automatically transmitted to everyone who is on the same
+CB channel (or the other user involved in a private chat), and will
+appear on their screens.  Here's what an sample chat session might
+look like:
+
+        [yellow]Entering chat mode.  Type `/q' to quit, `/w' to list users on
+        this channel, and `/?' for help.
+
+        [lightred]Joe User[lightmagenta] joins the conversation.
+
+        [lightgreen][[Joe User            ]: [yellow]Hi there, Scott.  How's it going?
+        [lightgreen][[Scott Somebody      ]: [yellow]
+        [lightgreen][[Scott Somebody      ]: [yellow]Not bad.  Did you see what Rasputin
+        [lightgreen][[Scott Somebody      ]: [yellow]was doing the other day?  She had
+        [lightgreen][[Scott Somebody      ]: [yellow]this really boffo program.  It
+
+                [gray]...
+
+     [white]Chat sessions can continue for as long as wanted, or until you
+overrun your daily time limit.  Once you're finished your chat, you can
+use the `/q' command to exit chat mode, and return to the rest of the
+system.
+
+     [white]Finally, one small point about public (or CB) chats: since
+text is only transmitted to other users a line at a time, it can be
+difficult to determine whether or not someone else has finished typing,
+or if they have something else to say.  It's good manners to type
+"ga" (Go Ahead) at the end of a paragraph, so that the other users
+know that it's their turn.
+
+[white enter]
+[goto TopMenu]
+

@@ -1,0 +1,59 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: headchat.mex
+//
+// Desc: Header file for the CHAT menu
+//
+// Copyright 1990, 1994 by Lanius Corporation.  All rights reserved.
+//
+// $Id: headchat.mex,v 1.1 2002/10/01 17:50:31 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+#include <max_menu.mh>
+
+#define INCL_max_chat
+#include <language.mh>
+
+int main(string: argv)
+{
+    struct _cstat: cstat;
+
+    if (input[1] <> ' ')
+        return 0;
+
+    // Defer video writes
+
+    id.instant_video:=0;
+
+    // Display chat section banner
+
+    print(str_ch_chat_sect);
+
+    // Display list of active nodes
+
+    menu_cmd(MNU_CHAT_WHO_IS_ON, "");
+
+    // Query the status of our own task
+
+    cstat.task_num:=id.task_num;
+
+    // If we can find ourselves, display the chat availability flag
+
+    if (chat_querystatus(cstat) <> 0)
+    {
+        print(str_ch_youare);
+
+        if (cstat.avail = 0)
+            print(str_ch_us_noavail);
+
+        print(str_ch_availforchat);
+    }
+
+    print("\n");
+
+    return 0;
+}
+
+

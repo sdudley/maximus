@@ -1,0 +1,25 @@
+[acs extra][hangup]
+
+[lightred]You entered an invalid password!
+
+[yellow]Do you want to leave a message to the SysOp explaining this situation?
+
+[white]If you can convince the sysop that you are who you say you are (the
+best way to do that would be to provide your real name, phone number,
+and any other details that you may have entered in your original
+log-on), he/she might be willing to give you a new password. 
+
+If you do request a different password, it would be best to leave at
+LEAST 72 hours before your log-on next attempt.  There are no
+guarantees that changes will be made by then, but they're not likely
+to be made before then either.
+
+[yellow]Remember!  If you want [lightred blink]ANYTHING [yellow]done, make SURE to suggest an
+alternate password!
+
+[white]Leave a message to [sysop_name] [[Y,n]? [gray ansreq menu]yn|
+[choice]n[goto DoTheHangup]
+[leave_comment]
+[/DoTheHangup hangup]
+
+[comment - Thanks to Paul Marwick for providing this MECCA file.]

@@ -1,0 +1,23 @@
+[cls onexit]Misc\Bulletin
+
+[yellow]Welcome to [sys_name], [user]!
+
+Since you are a new user, keep some of these tips in mind:
+
+1) [white]Try to make your messages meaningful.  Also, when replying to someone
+   else's message, it is a good idea to quote the last sentence or
+   paragraph of the original message, just so that the recipient
+   remembers what the message thread is about.  A message containing
+   just "I agree" is not very useful unless you know the context.
+
+   To quote a message using BORED (the line-oriented editor), choose
+   the 'Q' option from the menu.  To quote using MaxEd (the full
+   screen editor), type <ctrl-n> for help and read the section on
+   quoting.
+
+[yellow]2) [white]Try not to be a "file sponge."  It takes a lot of
+   time and effort to maintain a current files section, and if you
+   take a lot of files, please try to give some files too.
+
+[enter]
+

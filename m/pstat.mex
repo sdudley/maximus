@@ -1,0 +1,119 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: pstat.mex
+//
+// Desc: Sample MEX program to display a list of running processes under
+//       OS/2.
+//
+// Copyright 1990, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: pstat.mex,v 1.1 2002/10/01 17:50:39 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+
+
+int toupper(int: ch)
+{
+    if (ch >= 'a' and ch <= 'z')
+        ch := ch - 'a' + 'A';
+
+    return ch;
+}
+
+int isxdigit(int: ch)
+{
+    return (ch >= '0' and ch <= '9') or
+           (toupper(ch) >= 'A' and toupper(ch) <= 'F');
+}
+
+void create_pstat_log()
+{
+    print(COL_LMAGENTA "\nScanning OS/2 process table...");
+
+    shell(IOUTSIDE_DOS, "del pstat.$$$");
+    shell(IOUTSIDE_DOS, "pstat >pstat.$$$");
+
+    print("\n\n");
+}
+
+void extract_process_name(ref string: line, ref string: name)
+{
+    int: posn;
+    int: ch;
+
+    posn := 31;
+
+    while (1)
+    {
+        ch := toupper(line[posn]);
+
+        if (ch = ':' or ch = '\\' or ch='/' or ch='.' or
+            isxdigit(ch) or (ch >= 'A' and ch <= 'Z'))
+        {
+            posn := posn + 1;
+        }
+        else
+        {
+            goto done;
+        }
+    }
+
+done:
+    name := substr(line, 31, posn - 31);
+}
+
+
+void parse_pstat_log()
+{
+    int: fd;
+    char: nonstop;
+    string: line;
+
+    fd:=open("pstat.$$$", IOPEN_READ);
+
+    if (fd = -1)
+    {
+        log("!Error reading statistics file");
+        return;
+    }
+
+    reset_more(nonstop);
+
+    print(COL_LGREEN "The following processes are currently running:\n"
+          COL_WHITE);
+
+    // Repeat until we hit EOF
+
+    while (readln(fd, line) <> -1)
+    {
+        if (isxdigit(line[2]) and
+            isxdigit(line[3]) and
+            isxdigit(line[4]) and
+            isxdigit(line[5]))
+        {
+            string: name;
+
+            extract_process_name(line, name);
+            print("  ", name, "\n");
+        }
+
+        if (do_more(nonstop, COL_WHITE) = 0)
+            goto done;
+    }
+
+    print(COL_LGREEN "  <end of list>");
+
+done:
+
+    close(fd);
+}
+
+int main(string: args)
+{
+    create_pstat_log();
+    parse_pstat_log();
+    return 0;
+}
+

@@ -1,0 +1,102 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: logo.mex
+//
+// Desc: Sample MEX program that can be used to display a random
+//       logo file upon log-on.
+//
+//       The number 'RANDOM' (defined below) indicates the number of logo
+//       files to use.  The files should be called:
+//
+//              Misc\Logo01.Bbs
+//              Misc\Logo02.Bbs
+//               ...
+//              Misc\Logonn.Bbs
+//
+//       By default, these files are only shown to callers who have
+//       ANSI or RIP graphics enabled.  To use a different file for
+//       callers with no graphics, uncomment the TTYLOGO define and
+//       create a Misc\Ttylogo display file.
+//
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: logo.mex,v 1.1 2002/10/01 17:50:32 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+// The number of screens to display
+#define RANDOM 6
+
+// Uncomment for different logo files for ansi vs. tty
+//#define TTYLOGO
+
+#include <max.mh>
+#include <prm.mh>
+#ifdef RANDOM
+#include <rand.mh>
+#include <intpad.mh>
+#endif
+
+#define INCL_max_init
+#include <language.mh>
+
+int main()
+{
+  char: nonstop;
+  string: logo;
+#ifdef RANDOM
+  int: which;
+
+  srand(time());
+#endif
+
+  usr.more:=False;
+  usr.video:=VIDEO_TTY;
+  usr.ibmchars:=0;
+
+  print("\n!|*|e|#|#|#\n" AVATAR_CLS);
+
+  print(str_logo1,'\n');
+  print(str_logo2,"\n\n");
+
+  if (id.local OR id.speed > 300)
+  {
+    int: gotansi;
+
+    gotansi:=ansi_detect();
+
+    if (gotansi)
+    {
+      usr.video:=VIDEO_ANSI;
+      usr.ibmchars:=1;      // Not really a fair assumption..
+    }
+
+  }
+
+  logo:=prm_string(PRM_MISCPATH)+"Logo";
+
+#ifdef TTYLOGO
+  if (usr.video<>VIDEO_ANSI)
+    logo:=prm_string(PRM_MISCPATH) + "Ttylogo";
+  else
+  {
+#endif
+
+#ifdef RANDOM
+    // Determine which logoXX to use
+    which:=(rand()%RANDOM)+1;
+    // Now add the digits to the filename
+    logo:=logo+intpadleft(which, 2, '0');
+#endif
+
+#ifdef TTYLOGO
+  }
+#endif
+
+  reset_more(nonstop);
+  display_file(logo,nonstop);
+
+  return 0;
+}
+

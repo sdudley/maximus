@@ -1,0 +1,92 @@
+; $Id: mexbank.lh,v 1.1 2002/10/01 17:50:36 sdudley Exp $
+;
+; Language file for MEXBank: Maximus Time Bank
+
+=mexbank
+
+mexbank_hdr=            CLS YELONBLUE CLEOL "MEXBank: " WHITONBLUE "The Maximus Time/Kilobyte Bank" GRAY "\n\n\n";
+@RIP mexbank_hdr=       GRAY "\r!|w0000000010|Y00000100|*|S0107|B0202HO6U|c08|R0101HR6X|c08|R0101HQ6W|c0F|R0000HP6V|c0F|R0X0XGM4O|c00\n"
+                        "!|R0Y0YGN4P|S0107|B0Y0YGM4O|S0101|B0202HO0C|c0F|L010DHP0D|c08|L020EHO0E\n"
+                        "!|c0E|@0804MEXBank:|c0F|@2404The Maximus Time/Kilobyte Bank\n";
+mb_balance_kb=          YELLOW "  Current balance (kb) " GRAY "........." LGREEN " : " LCYAN;
+@RIP mb_balance_kb=     "\r!|c01|@2G18Current balance (kb)|c00|@7818.........|c02|@9G18:|c04|mA018|T";
+mb_balance_time=        YELLOW "  Current balance (time) " GRAY "......." LGREEN " : " LCYAN;
+@RIP mb_balance_time=   "\r!|c01|@2G1ICurrent balance (time)|c00|@7O1I.......|c02|@9G1I:|c04|mA01I|T";
+mb_kb=                  GRAY " kb";
+@RIP mb_kb=             "|c08|T kb\n";
+mb_mins=                GRAY " mins";
+@RIP mb_mins=           "|c08|T mins\n";
+mb_left_time=           YELLOW "  Time left today " GRAY ".............." LGREEN " : " LCYAN;
+@RIP mb_left_time=      "\r!|c01|@2G22Time left today|c00|@6422..............|c02|@9G22:|c04|mA022|T";
+mb_left_call=           YELLOW "  Time left this call " GRAY ".........." LGREEN " : " LCYAN;
+@RIP mb_left_call=      "\r!|c01|@2G2CTime left this call|c00|@702C..........|c02|@9G2C:|c04|mA02C|T";
+mb_left_kb=             YELLOW "  KBytes available today " GRAY "......." LGREEN " : " LCYAN;
+@RIP mb_left_kb=        "\r!|c01|@2G2MKBytes available today|c00|@7P2M.......|c02|@9G2M:|c04|mA02M|T";
+mb_max_dep_kb=          YELLOW "  Maximum kb deposit " GRAY "..........." LGREEN " : " LCYAN;
+@RIP mb_max_dep_kb=     "\r!|c01|@2G36Maximum kb deposit|c00|@6T36...........|c02|@9G36:|c04|mA036|T";
+mb_max_dep_time=        YELLOW "  Maximum mins deposit " GRAY "........." LGREEN " : " LCYAN;
+@RIP mb_max_dep_time=   "\r!|c01|@2G3QMaximum mins deposit|c00|@713Q..........|c02|@9G3Q:|c04|mA03Q|T";
+mb_max_wdraw_kb=        YELLOW "  Maximum kb withdrawal " GRAY "........" LGREEN " : " LCYAN;
+@RIP mb_max_wdraw_kb=   "\r!|c01|@2G3GMaximum kb withdrawal|c00|@793G.........|c02|@9G3G:|c04|mA03G|T";
+mb_max_wdraw_time=      YELLOW "  Maximum mins withdrawal " GRAY "......" LGREEN " : " LCYAN;
+@RIP mb_max_wdraw_time= "\r!|c01|@2G40Maximum mins withdrawal|c00|@7H40........|c02|@9G40:|c04|mA040|T";
+mb_prompt=              YELLOW "\nD" GRAY ")eposit, " YELLOW "W" GRAY ")ithdraw or " YELLOW "Q" GRAY ")uit";
+@RIP mb_prompt=         "\r!|1K|1B2S0I020WLU03010F080F0700020407000000\n"
+                        "!|1U285K00001W00<>Deposit<>D\n"
+                        "!|1U5K5K00002F00<>Withdraw<>W\n"
+                        "!|1U8W5K00002900<>Quit<>Q\n"
+                        "!|1UC85K00002000<>Help<>?\n"
+                        "!|#|#|#\n";
+mb_invalid=             LRED "Use 'D' for D)eposit, 'W' for W)ithdraw or 'Q' to Quit\n";
+@RIP mb_invalid=        "\r!|c04|@2A6ESelect 'D' for D)eposit, 'W' for W)ithdraw or 'Q' to Quit\n";
+mb_keys=                "dwq?";
+mb_cfgfile=             LRED "MEXBank configuration file error - please inform sysop!\n\n";
+@RIP mb_cfgfile=        "\r!|c00|R1L4XFJ59|c0F|R1M4YFK5A|S0104|B1N4ZFI58\n"
+                        "!|c0F|@2150MEXBank configuration file error - please inform the sysop\\!\n";
+mb_cfgerr=              LRED "Error in MEXBank configuration - please inform sysop!\n\n";
+@RIP mb_cfgerr=         "\r!|c00|R1L4XFJ59|c0F|R1M4YFK5A|S0104|B1N4ZFI58\n"
+                        "!|c0F|@2850Error in MEXBank configuration - please inform the sysop\\!\n";
+mb_fatal=               LRED "A fatal error occurred while processing your transaction.\n"
+                        "Please inform sysop!\n\n";
+@RIP mb_fatal=          "\r!|c00|R1L4XFJ5J|c0F|R1M4YFK5K|S0104|B1N4ZFI5I\n"
+                        "!|c0F|@2850A fatal error occurred while processing your transaction.\n"
+                        "!|@2859             Please inform the sysop\\!\n";
+mb_time_or_kb=          " " YELLOW "T" WHITE ")ime or " YELLOW "B" WHITE ")ytes";
+@RIP mb_time_or_kb=     "\r!|S0107|B025CHO6U|1K|1B2S0I020WLU03010F080F0700020407000000\n"
+                        "!|1U285K00002C00<>Time<>T\n"
+                        "!|1U5K5K00001U00<>Bytes<>B\n"
+                        "!|1U8W5K00002900<>Quit<>^M\n"
+                        "!|1UC85K00002000<>Help<>?\n"
+                        "!|#|#|#";
+mb_torbkeys=            "tb";
+mb_nottorb=             LRED "Use 'T' for T)ime, 'B' for B)ytes or ENTER to quit.\n";
+@RIP mb_nottorb=        "\r!|c04|@2U6ESelect 'T' for T)ime, 'B' for B)ytes or ENTER to quit\n";
+mb_deposit=             WHITE "\nDeposit";
+@RIP mb_deposit=        "\r!|c0E|@1650Deposit:\n";
+mb_withdraw=            WHITE "\nWithdraw";
+@RIP mb_withdraw=       "\r!|c0E|@1650Withdraw:\n";
+mb_howmuch=             " how much? ";
+@RIP mb_howmuch=        "\r!|S0107|B025CHO6U|c00|R1L5G765T|c0F|R1M5H775U|S0107|B1N5I755S\n"
+                        "!|c00|@235KHow much?|m4B5K|w0J0P0T0P00|#|#|#\n"
+                        HOME HOME BLUEONWHIT CLEOL;
+mb_toomuch=             "\n" LRED "Sorry, the amount you entered exceeds the preset limits or exceeds\n"
+                        "your current allowance of time or download bytes.\n\n";
+@RIP mb_toomuch=        "\r!|S0107|B025CHO6U|c00|R1L4XFJ5J|c0F|R1M4YFK5K|S0104|B1N4ZFI5I|c0F\n"
+                        "!|@2851Sorry, the amount you entered exceeds the preset limits or\n"
+                        "!|@285Aexceeds your current allowance of time or download bytes.\n";
+mb_trxok=               WHITE "\n\nTRANSACTION ACCEPTED - KAAA-CHING!\n\n";
+@RIP mb_trxok=          "!|S0107|B025CHO6U|c00|R1L4XFJ5T|c0F|R1M4YFK5U|S0102|B1N4ZFI5S|c0F\n"
+                        "!|@4G5ATRANSACTION ACCEPTED - KAAA-CHING\\!\n";
+mb_goodbye=             CLS WHITE "\n\nGoodbye. Thanks for using MEXBank!\n";
+@RIP mb_goodbye=        "\r!|*|#|#|#\n" CLS WHITE "\n\nGoodbye. Thanks for using MEXBank!\n";
+mb_newline=             "\n";
+@RIP mb_newline=        "";
+mb_log_enter=           "> MEXBANK RIP caller using MEXBank";
+mb_log_writerr=         "!MEXBANK Problem writing to MEXBank data file";
+mb_log_configfile=      "!MEXBANK Error accessing config file: ";
+mb_log_configerr=       "!MEXBANK Config error line #";
+mb_log_account=         ">$MEXBANK Account adjusted: ";
+mb_log_balance=         ">$MEXBANK Account balance: ";
+mb_log_account_mins=    " mins ";
+mb_log_account_kbs=     " kb";
+

@@ -1,0 +1,8 @@
+[include message.inc]
+
+[/Help]
+        [white]This area is a local message area; messages entered in this area are
+local only, and won't be sent to any other bulletin board systems.  This
+type of area is best for local messages, or messages that are only of
+concern to someone who is on the same BBS you are. [goto next]
+

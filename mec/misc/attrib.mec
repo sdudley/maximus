@@ -1,0 +1,21 @@
+[rip]
+!|w0006271010|H|e|#|#|#[endrip hline]
+[          ][          ]      [lightgreen]Key     [    ]Action
+[          ][          ]      [          ]อออออออ [    ]อออออออออออออออออออออออออออออออออออ
+[          ][msg_attr P]      [yellow    ]P       [gray]To toggle the PRIVATE flag
+[msg_matrix][msg_attr C]      [yellow    ]C       [gray]To toggle crash status
+[          ][msg_attr A]      [yellow    ]A       [gray]To attach a file
+[          ][msg_attr R]      [yellow    ]R       [gray]To toggle the Received flag
+[msg_matrix][msg_attr S]      [yellow    ]S       [gray]To toggle the Sent flag
+[msg_matrix][msg_attr F]      [yellow    ]F       [gray]To toggle the Forward flag
+[msg_matrix][msg_attr O]      [yellow    ]O       [gray]To toggle the Orphan flag
+[msg_matrix][msg_attr K]      [yellow    ]K       [gray]To kill the message after packing
+[msg_matrix][msg_attr H]      [yellow    ]H       [gray]To keep message on hold for pickup
+[msg_matrix][msg_attr G]      [yellow    ]G       [gray]To request a file
+[msg_matrix][msg_attr !]      [yellow    ]!       [gray]To request a receipt
+[msg_matrix][msg_attr $]      [yellow    ]$       [gray]To toggle the receipt flag
+[msg_matrix][msg_attr T]      [yellow    ]T       [gray]To request a trail
+[msg_matrix][msg_attr U]      [yellow    ]U       [gray]To place an update request
+[          ][          ]      [yellow    ]<enter> [gray]To proceed to the next field
+
+[white enter]

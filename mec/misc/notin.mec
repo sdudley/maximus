@@ -1,0 +1,8 @@
+
+
+[yellow]Sorry, but the SysOp isn't available right now.  Do you wish to
+leave a message to [sysop_name] [[Y,n]? [gray menu]yn|
+[choice]n[quit]
+[leave_comment]
+[quit]
+

@@ -1,0 +1,560 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: card.mex
+//
+// Desc: 21-like game for Maximus
+//
+// Copyright 1990, 1994 by Lanius Corporation.  All rights reserved.
+//
+// $Id: card.mex,v 1.1 2002/10/01 17:50:29 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+#include <rand.mh>
+#include <input.mh>
+#include <swap.mh>
+
+// white \x0f
+// yellow \x0e
+// white on green \x2f
+// red on green \x2c  (low intensity - \x24)
+// black on green \x20
+
+// A card consists of a number (face) and a suit (suit)
+
+struct card
+{
+  char: face;
+  char: suit;
+};
+
+struct hand
+{
+  array [1..52] of struct card: cards;
+  int: n_cards;
+};
+
+// Hands for the deck of cards, the user, and the computer
+
+struct hand: deck, user, comp;
+
+// Number of times the user and computer has won
+
+int: user_wins, comp_wins;
+
+
+// Create a deck of cards.  Cards are numbered from 2 to 14, with
+// 11-14 representing Jack, Queen, King and Ace (respectively).
+
+void create_deck()
+{
+  int: i;
+
+  i:=0;
+
+  while (i < 52)
+  {
+    // Make sure that all cards are from 2-14
+
+    deck.cards[i+1].face:=(i % 13)+2;
+
+    // The suit is from 0-3
+
+
+    deck.cards[i+1].suit:=((i / 13) % 4)+3;
+
+    i:=i+1;
+  }
+
+  deck.n_cards:=52;
+}
+
+
+
+
+// Print out the deck of cards.  This prints out each cards' number and
+// suit.
+
+void print_deck()
+{
+  int: i;
+
+  i:=1;
+
+  while (i <= deck.n_cards)
+  {
+    print("Card #", i, ": deck=", (int)deck.cards[i].face,
+          ", suit=", deck.cards[i].suit, "\n");
+
+    i:=i+1;
+  }
+}
+
+
+// Shuffle a deck of cards.  Take a created deck and place the cards in
+// random order.
+
+void shuffle_deck()
+{
+  int: i;
+  int: c1, c2;
+
+  i:=1;
+  
+  print(COL_LRED "Shuffling the deck...\n" COL_WHITE);
+
+  vidsync();
+
+  while (i <= 100)
+  {
+    c1:=(rand() % 52)+1;
+    c2:=(rand() % 52)+1;
+
+    swapc(deck.cards[c1].face, deck.cards[c2].face);
+    swapc(deck.cards[c1].suit, deck.cards[c2].suit);
+
+    i:=i+1;
+  }
+}
+
+
+// Find out whether the user wants to play another hand.
+
+int play_hand()
+{
+  char: ch;
+  
+top:
+
+  print(COL_WHITE "Do you want to play a hand of Blackjack [Y,n]? ");
+
+  ch:=getchp();
+
+  if (ch <> '\r')
+    print('\n');
+
+  print('\n');
+  
+  if (ch='N' or ch='n')
+    return 0;
+  else if (ch='Y' or ch='y' or ch='\r')
+    return 1;
+  else goto top;
+}
+
+
+
+// Calculate the sum of a hand of cards, taking aces into account.
+
+int sum_cards(struct hand: hnd)
+{
+  int: aces, sum, n;
+
+  sum:=0;
+  aces:=0;
+  n:=1;
+
+  while (n <= 26 and n <= hnd.n_cards)
+  {
+//    print("Card #", n, " is `", (int)hnd.cards[n].face, "'.  Sum=", sum, '\n');
+
+    if (hnd.cards[n].face <= 10)
+      sum := sum + hnd.cards[n].face;
+    else if (hnd.cards[n].face >= 11 and hnd.cards[n].face <= 13)
+      sum := sum + 10;
+    else if (hnd.cards[n].face=14)
+      aces:=aces+11;
+    else print("\aBug!  Unknown card type.\n");
+
+    n:=n+1;
+  }
+
+
+  while (aces > 0)
+  {
+    if (sum+aces > 21)
+    {
+      if (aces > 10)
+        aces := aces - 10;
+      else
+      {
+        sum := sum + aces;
+        aces := 0;
+      }
+    }
+    else
+    {
+      sum:=sum+aces;
+      aces := 0;
+    }
+  }
+  
+  return sum;
+}
+
+
+// Take a card off the top of the deck, and return its value
+
+void deal_card(ref struct hand: hnd)
+{
+  // If we're out of cards, recreate the deck
+    
+  if (deck.n_cards=0)
+  {
+    create_deck();
+    shuffle_deck();
+  }
+  
+  hnd.n_cards:=hnd.n_cards+1;
+
+  hnd.cards[hnd.n_cards].face:=deck.cards[deck.n_cards].face;
+  hnd.cards[hnd.n_cards].suit:=deck.cards[deck.n_cards].suit;
+
+  deck.n_cards:=deck.n_cards-1;
+}
+
+
+// Take a card from the deck and put it in the user's hand
+
+void user_card()
+{
+  deal_card(user);
+}
+
+
+// Take a card from the deck and put it in the computer's hand
+
+void comp_card()
+{
+  deal_card(comp);
+}
+
+
+// Display the name of a particular card
+
+void __printSTRUCT_CARD(ref struct card: crd)
+{
+  string: temp, s;
+
+  s:="";
+
+  if (crd.face >= 2 and crd.face <= 10)
+    s:=itostr(crd.face);
+  else if (crd.face=11)
+    s[1]:='J';
+  else if (crd.face=12)
+    s[1]:='Q';
+  else if (crd.face=13)
+    s[1]:='K';
+  else if (crd.face=14)
+    s[1]:='A';
+
+  temp[1]:=crd.suit;
+  s:=s+temp;
+
+  if (s[3]=' ')
+    s[3]:=' ';
+
+  print(s);
+}
+
+void card_top(int: n_card)
+{
+  int: i;
+
+  i:=1;
+  
+  while (i <= n_card)
+  {
+    print(COL_WHITEONGREEN "ÚÄÄÄÄ¿" COL_GRAY " ");
+    i:=i+1;
+  }
+
+  print('\n');
+}
+
+void card_bot(int: n_card)
+{
+  int: i;
+
+  i:=1;
+  
+  while (i <= n_card)
+  {
+    print(COL_WHITEONGREEN "ÀÄÄÄÄÙ" COL_GRAY " ");
+    i:=i+1;
+  }
+
+  print('\n');
+}
+
+void card_mid(int: n_card)
+{
+  int: i;
+
+  i:=1;
+  
+  while (i <= n_card)
+  {
+    print(COL_WHITEONGREEN "³    ³" COL_GRAY " ");
+    i:=i+1;
+  }
+
+  print('\n');
+}
+
+
+// Display a hand of cards on the screen
+
+void display_cards(ref struct hand: hnd, int: hide_card)
+{
+  int: i;
+//  string: cname;
+  struct card: crd;
+  
+  card_top(hnd.n_cards);
+  card_mid(hnd.n_cards);
+
+  i:=1;
+
+  while (i <= hnd.n_cards)
+  {
+    if (i <= hide_card)
+      print(COL_WHITEONGREEN "³ úú ³" COL_GRAY " ");
+    else
+    {
+      // Pad the card's name to three characters
+
+      print(COL_WHITEONGREEN "³ ");
+
+      if (hnd.cards[i].suit=5 or hnd.cards[i].suit=6)
+        print(COL_BLACKONGREEN);
+      else
+        print(COL_REDONGREEN);
+
+      print(hnd.cards[i], COL_WHITEONGREEN "³" COL_GRAY " ");
+    }
+
+    i:=i+1;
+  }
+
+  print('\n');
+
+  card_mid(hnd.n_cards);
+  card_bot(hnd.n_cards);
+  print("\n");
+}
+
+
+void display_user_card()
+{
+  print(COL_YELLOW "\nYour cards:\n\n");
+  
+  display_cards(user, 0);
+}
+
+void display_comp_card(int: hide)
+{
+  print(COL_YELLOW "The computer's cards:\n\n");
+  
+  display_cards(comp, hide);
+}
+
+
+// Sum the cards currently in the user's hand
+
+int sum_user_card()
+{
+  return (sum_cards(user));
+}
+
+
+// Sum the cards currently in the computer's hand
+
+int sum_comp_card()
+{
+  return (sum_cards(comp));
+}
+
+
+
+// Check to see if the computer is over 21.
+
+int check_comp_bust()
+{
+  return (sum_comp_card() > 21);
+}
+
+
+// Check to see if the user is over 21.
+
+int check_user_bust()
+{
+  return (sum_user_card() > 21);
+}
+
+
+
+// Get an option from the user.
+
+int play_user_hand()
+{
+  char: opt;
+
+  if (check_user_bust())
+    return 0;
+
+top:
+
+  print(COL_WHITE "H)it or S)tay? ");
+
+  opt:=getchp();
+  print("\n\n");
+
+  if (opt='s' or opt='S')
+    return 0;
+  else if (opt='h' or opt='H')
+  {
+    user_card();
+    display_user_card();
+  }
+  else goto top;
+
+  return 1;
+}
+
+int play_comp_hand()
+{
+  if (sum_comp_card() < 16)
+  {
+    print(COL_LRED "The computer takes a hit.\n");
+
+    comp_card();
+    display_comp_card(1);
+  }
+  else
+  {
+    print(COL_LRED "The computer stays.\n\n");
+    return 0;
+  }
+
+  return 1;
+}
+
+// Play a hand of 21
+
+int do_hand()
+{
+  int: user_won;
+  char: dont_play_comp, dont_play_user;
+
+  user.n_cards:=0;
+  comp.n_cards:=0;
+
+  user_card();      // Deal two cards to each player
+  comp_card();
+  user_card();
+  comp_card();
+
+  display_user_card();
+  display_comp_card(1);
+
+  dont_play_user:=0;
+  dont_play_comp:=0;
+
+  while (play_user_hand() <> 0)
+  {
+    if (check_user_bust())
+      goto done;
+  }
+
+  while (play_comp_hand() <> 0)
+  {
+    if (check_comp_bust())
+      goto done;
+  }
+
+done:
+
+  print(COL_YELLOWONBLUE AVATAR_CLEOL "Final cards:" COL_WHITE "\n");
+
+  display_user_card();
+  display_comp_card(0);
+
+  print("\n");
+
+  if (check_user_bust())
+  {
+    print(COL_LRED "\aYou busted!  The computer wins.\n");
+    comp_wins:=comp_wins+1;
+  }
+  else if (check_comp_bust())
+  {
+    print(COL_LRED "\aThe computer busted!  You win.\n");
+    user_wins:=user_wins+1;
+  }
+  else
+  {
+    print(COL_LGREEN "\nYour score was ", sum_user_card(), ".  ");
+    print("The computer's score was ", sum_comp_card(), ".  ");
+
+    if (sum_user_card() > sum_comp_card())
+    {
+      user_wins:=user_wins+1;
+      print(COL_LRED AVATAR_BLINK "You win!" COL_GRAY "\n");
+    }
+    else
+    {
+      comp_wins:=comp_wins+1;
+      print(COL_LRED AVATAR_BLINK "The computer wins!" COL_GRAY "\n");
+    }
+  }
+
+  print(COL_YELLOW  "\nTotal wins:   ", user_wins, '\n');
+  print(              "Total losses: ", comp_wins, "\n\n");
+}
+
+
+void initialize()
+{
+  // Initialize the random number generator
+
+  srand(time());
+
+  // Set a few system variables
+
+  user_wins:=0;
+  comp_wins:=0;
+
+  // Create the deck of cards, and do the initial shuffle.
+    
+  create_deck();
+  shuffle_deck();
+}
+
+
+
+int main()
+{
+  id.instant_video:=0;
+
+  print(AVATAR_CLS COL_LGREEN "Max21 - \"BlackJack\" to the Max!\n");
+  print("ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n\n");
+
+  print(COL_WHITE "This game was written entirely in " COL_YELLOW "MEX" COL_WHITE ","
+        " the " COL_YELLOW "M" COL_WHITE "aximus " COL_YELLOW "EX" COL_WHITE
+        "tension Language.\n\n");
+
+  initialize();
+
+  // Kludge because we haven't implemented "do { blah; } while (y);" yet
+
+  do_hand();
+
+  while (play_hand())
+    do_hand();
+
+  print(COL_LRED "Thanks for playing Max21!\n");
+}
+

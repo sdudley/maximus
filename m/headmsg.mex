@@ -1,0 +1,176 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: headmsg.mex
+//
+// Desc: Header routines for the MESSAGE menu
+//
+// Copyright 1990, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: headmsg.mex,v 1.1 2002/10/01 17:50:32 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+
+#define INCL_global
+#define INCL_m_area
+#include <language.mh>
+
+string padleft(string: s, int: len, int: ch)
+{
+  return strpad("", len - strlen(s), ch) + s;
+}
+
+int main(string: argv)
+{
+    string: brackets, brackets_col;
+    string: ltos_current, ltos_high;
+    string: last_area_id;
+    string: last_area;
+    string: fname;
+
+    int: bracketlen;
+    char: nonstop;
+
+    // If we have stacked input, don't display this screen!
+
+    if (input[1] <> ' ')
+        return 0;
+
+    id.instant_video := 0;
+
+    // Access the static object "headmsg:last_area" and store
+    // it in the last_area variable.  This contains the name
+    // of the last message area.  We use this to determine
+    // whether or not to display the new area header.
+
+    last_area_id := "headmsg:last_area";
+    create_static_string(last_area_id);
+    get_static_string(last_area_id, last_area);
+
+    // If we are just entering the message menu, display the message menu
+    // header.
+
+    if (argv="1" or marea.name <> last_area)
+    {
+        print(str_msg_sect);
+
+        if (msg.num=0)
+            print(str_msg_nomsgs);
+        else
+        {
+            print(str_msg_thereare1, msg.num, str_msg_thereare2,
+                  str_msg_highest, msg.high, "\n" COL_WHITE);
+
+            if (msg.current=0)
+              print(str_msg_haventread);
+            else if (msg.current=msg.high)
+              print(str_msg_nonew);
+            else
+              print(str_msg_lastread, msg.current, str_msg_lastread_end);
+        }
+
+        if (usr.rip and id.local=False)
+          print("\n\n\n\n\n\n\n\n\n");
+    }
+
+    print(str_msg_menu_intro);
+
+    // If the user changed to another area, display the rules file
+    // and/or the area description.
+
+    if (marea.name <> last_area)
+    {
+        nonstop := 0;
+
+        // If the user has read no messages, display the area's
+        // description.
+
+        if (msg.current = 0)
+        {
+          if (marea.type = MSGTYPE_SQUISH)
+            fname := marea.path + ".dsc";
+          else
+            fname := marea.path + "descript.bbs";
+
+          if (fileexists(fname))
+            display_file(fname, nonstop);
+        }
+
+
+        // Always display the area's rules.
+
+        if (marea.type = MSGTYPE_SQUISH)
+          fname := marea.path + ".sqr";
+        else
+          fname := marea.path + "rules.bbs";
+
+        if (fileexists(fname))
+          display_file(fname, nonstop);
+    }
+
+    // Set the static 'last_area' variable to indicate that we are now in
+    // the current message area.
+
+    set_static_string(last_area_id, marea.name);
+
+    ltos_current := ltostr(msg.current);
+    ltos_high := ltostr(msg.high);
+
+    // Now display the banner indicating the current message
+
+    if (usr.rip and id.local=False)
+    {
+
+        // If we're snooping, we can keep track of where the user is
+
+        set_output(DISABLE_REMOTE);
+
+        print( "\n" COL_LGREEN, str_lbracket, COL_LRED, ltos_current,
+                    " / " COL_LRED, ltos_high,
+                    COL_LGREEN, str_rbracket, "  "
+                    COL_LMAGENTA, marea.name, COL_GRAY " ... "
+                    COL_LCYAN, marea.descript, COL_GRAY "\n");
+
+        set_output(DISABLE_NONE);
+
+        // Now, output the RIP version from the language file
+
+        brackets := str_msg_lbracket + padleft(ltos_current,5,' ') +
+                   str_msg_separator + strpad(ltos_high,5,' ') +
+                   str_msg_rbracket;
+
+        print(brackets, str_msg_menu_hdr, marea.name,
+              str_msg_menu_sep, marea.descript,
+              "|#|#|#\n" );
+
+    }
+    else
+    {
+        brackets := str_msg_lbracket + ltos_current +
+                   str_msg_separator + ltos_high +
+                   str_msg_rbracket + "  ";
+
+        // Display the name of the current area
+
+        print("\r" COL_LGREEN, str_msg_lbracket, COL_LRED, ltos_current,
+                   str_msg_separator, COL_LRED, ltos_high,
+                   COL_LGREEN, str_msg_rbracket, "  ",
+                   str_msg_menu_hdr, marea.name,
+                   str_msg_menu_sep, marea.descript, '\n');
+
+        // Don't need this for RIP callers
+
+        print(strpad("", strlen(brackets), ' '), str_msg_enter_prompt1);
+
+        if (msg.direction = 1)
+            print(str_msg_dir_next);
+        else
+            print(str_msg_dir_prev);
+
+        print(str_msg_enter_prompt2);
+    }
+
+    return 0;
+}
+

@@ -1,0 +1,122 @@
+TIT_DIALOG(dlgCopyPath, -1, -1, BORDER_SINGLE, 0, 46, 11, "´ OS/2 DLL Path Ã")
+  DLG_INF("Paths to your OS/2 DLL directory:", 0, 1)
+
+  DLG_STV("20:80; ~DLL System Directory ",     1, 3, szDirDll, ValDir)
+
+  DLG_OK (";  ~OK  ",                        10, 5)
+  DLG_CAN(";~Cancel",                        23, 5)
+END_MENU
+
+TIT_DIALOG(dlgUpDir, -1, -1, BORDER_SINGLE, 0, 43, 14, "´ Maximus System Path Ã")
+  DLG_INF("Paths to your Maximus system:", 0, 1)
+
+  DLG_STV("20:80;    ~Base Directory ",     1, 3, szDirBase,  ValBase)
+  DLG_STV("20:62;    ~Misc Directory ",     1, 4, szDirMisc,  ValDir)
+  DLG_STV("20:62;    ~Help Directory ",     1, 5, szDirHlp,   ValDir)
+  DLG_STV("20:62;~Language Directory ",     1, 6, szDirLang,  ValLanguage)
+
+  DLG_OK (";  ~OK  ",                         7, 8)
+  DLG_CAN(";~Cancel",                        20, 8)
+END_MENU
+
+TIT_DIALOG(dlgFido, -1, -1, BORDER_SINGLE, 0, 45, 19, "´ Network Configuration Ã")
+  DLG_STV("22:30 ;   Network ~Address ",     1, 1, szFidoAddr, FidoValAddr)
+
+  DLG_STV("22:120;Nodelist ~Directory ",     1, 3, szFidoPath, ValDir)
+
+  DLG_INF("Nodelist Type",                   0, 5)
+
+  DLG_RAD( "0; ~No nodelist ",                1, 7, &iFidoNodeVer)
+  DLG_RAD( "5; Version ~5   ",                1, 8, &iFidoNodeVer)
+  DLG_RAD( "6; Version ~6   ",                1, 9, &iFidoNodeVer)
+  DLG_RAD( "7; Version ~7   ",                1,10, &iFidoNodeVer)
+  DLG_RAD("42; ~FrontDoor   ",                1,11, &iFidoNodeVer)
+
+  DLG_OK (";  ~OK  ",                       10,13)
+  DLG_CAN(";~Cancel",                       23,13)
+END_MENU
+
+TIT_DIALOG(dlgVersion, -1, -1, BORDER_SINGLE, 0, 43, 12, "´ Target OS Ã")
+  DLG_INF("Select the target operating system(s):", 1, 1)
+
+  DLG_CHK("1; ~DOS version",                  1, 3, &iVerType)
+  DLG_CHK("2; ~OS/2 version",                 1, 4, &iVerType)
+
+  DLG_OK (";  ~OK  ",                         7, 6)
+  DLG_CAN(";~Cancel",                        20, 6)
+END_MENU
+
+#ifdef COMMERCIAL /* different dialog for the commercial version */
+
+TIT_DIALOG(dlgWelcome, -1, -1, BORDER_SINGLE, MENU_NHOT, 70, 18, "´ Maximus Installation Ã")
+  DLG_INF("Welcome to Maximus/commercial!  This program will",         1,  1)
+  DLG_INF("automatically install Maximus from the distribution",       1,  2)
+  DLG_INF("floppy.  You should change to the drive containing",        1,  3)
+  DLG_INF("the distribution disk before running this program.",        1,  4)
+
+  DLG_INF("**NOTE**  If you are already using Maximus "VERSION", you", 1,  6)
+  DLG_INF("need not run this program!  The freeware version of",       1,  7)
+  DLG_INF("Maximus is identical to the commercial version",            1,  8)
+  DLG_INF("(except in terms of licensing), so you do not need",        1,  9)
+  DLG_INF("to reinstall.",                                             1, 10)
+
+  DLG_INF("Please select one of the buttons on the right to",          1, 12)
+  DLG_INF("either install a NEW copy of Maximus or UPGRADE an",        1, 13)
+  DLG_INF("existing version of the program.",                          1, 14)
+
+  DLG_BUA(";  ~New  ",                           56, 1, DlgButNew)
+  DLG_BUA(";~Upgrade",                           56, 5, DlgButUpgrade)
+  DLG_CAN( ";~Cancel ",                          56, 9)
+END_MENU
+
+#else /* noncommercial (.zip file) installation */
+
+TIT_DIALOG(dlgWelcome, -1, -1, BORDER_SINGLE, MENU_NHOT, 70, 16, "´ Maximus Installation Ã")
+  DLG_INF("Welcome to Maximus!  This program will install a new",      1,  1)
+  DLG_INF("copy of Maximus, or optionally, upgrade an existing",       1,  2)
+  DLG_INF("version of Maximus.",                                       1,  3)
+
+  DLG_INF("This program is completely automated.  Simply select",      1,  5)
+  DLG_INF("the options that you desire (using either a keyboard",      1,  6)
+  DLG_INF("or a mouse) and the installation program will copy",        1,  7)
+  DLG_INF("the necessary files.",                                      1,  8)
+
+  DLG_INF("Please select one of the buttons on the right to",          1, 10)
+  DLG_INF("either install a NEW copy of Maximus or UPGRADE an",        1, 11)
+  DLG_INF("existing version of the program.",                          1, 12)
+
+  DLG_BUA(";  ~New  ",                           56, 1, DlgButNew)
+  DLG_BUA(";~Upgrade",                           56, 5, DlgButUpgrade)
+  DLG_CAN( ";~Cancel ",                          56, 9)
+END_MENU
+#endif
+
+TIT_DIALOG(dlgConfig, -1, -1, BORDER_SINGLE, 0, 49, 20, "´ System Configuration Ã")
+  DLG_STR("34:60;  ~BBS Name ",     1, 1, szCfgName)
+  DLG_STR("34:36;~SysOp Name ",     1, 2, szCfgSysop)
+
+  DLG_INF("COM Port",               0, 4)
+
+  DLG_RAD("0; COM~1:",      1, 6, &iCfgPort)
+  DLG_RAD("1; COM~2:",     13, 6, &iCfgPort)
+  DLG_RAD("2; COM~3:",     25, 6, &iCfgPort)
+  DLG_RAD("3; COM~4:",     37, 6, &iCfgPort)
+  DLG_RAD("4; COM~5:",      1, 7, &iCfgPort)
+  DLG_RAD("5; COM~6:",     13, 7, &iCfgPort)
+  DLG_RAD("6; COM~7:",     25, 7, &iCfgPort)
+  DLG_RAD("7; COM~8:",     37, 7, &iCfgPort)
+    
+  DLG_INF("Modem Speed",            0, 9)
+    
+  DLG_RAD("300  ;   300 bps",    1,11, &iCfgSpeed)
+  DLG_RAD("1200 ;  1200 bps",   16,11, &iCfgSpeed)
+  DLG_RAD("2400 ;  2400 bps",   31,11, &iCfgSpeed)
+  DLG_RAD("9600 ;  9600 bps",    1,12, &iCfgSpeed)
+  DLG_RAD("19200; 19200 bps",   16,12, &iCfgSpeed)
+  DLG_RAD("38400; 38400 bps",   31,12, &iCfgSpeed)
+
+  DLG_OK (";  ~OK  ",                    11,14)
+  DLG_CAN(";~Cancel",                    24,14)
+END_MENU
+
+

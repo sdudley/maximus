@@ -1,0 +1,108 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: class.mex
+//
+// Desc: Displays class information
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: class.mex,v 1.1 2002/10/01 17:50:30 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+#include <max_menu.mh>
+
+struct classinfo
+{
+  unsigned int: priv;
+  unsigned int: key;
+  string:       abbrev;
+  string:       desc;
+  unsigned int: cume;
+  unsigned int: time;
+  unsigned int: call;
+  unsigned int: dlkb;
+  unsigned long: baud;
+  unsigned long: xfer;
+  unsigned int: free;
+  unsigned int: ratio;
+  unsigned int: reward;
+};
+
+string callstr(unsigned int: call)
+{
+  if (call=65535)
+    return "-";
+  return uitostr(call);
+}
+
+void
+getclassinfo( ref struct classinfo: info, int: index )
+{
+  info.priv   := class_info(index,CIT_BYINDEX|CIT_LEVEL);
+  info.key    := class_info(index,CIT_BYINDEX|CIT_CLASSKEY);
+  info.cume   := class_info(index,CIT_BYINDEX|CIT_DAY_TIME);
+  info.time   := class_info(index,CIT_BYINDEX|CIT_CALL_TIME);
+  info.call   := class_info(index,CIT_BYINDEX|CIT_MAX_CALLS);
+  info.dlkb   := class_info(index,CIT_BYINDEX|CIT_DL_LIMIT);
+  info.baud   := class_info(index,CIT_BYINDEX|CIT_MIN_BAUD);
+  info.xfer   := class_info(index,CIT_BYINDEX|CIT_MIN_XFER_BAUD);
+  info.free   := class_info(index,CIT_BYINDEX|CIT_FREE_RATIO);
+  info.ratio  := class_info(index,CIT_BYINDEX|CIT_RATIO);
+  info.reward := class_info(index,CIT_BYINDEX|CIT_UPLOAD_REWARD);
+  info.abbrev := class_abbrev(info.priv);
+  info.desc   := class_name(info.priv);
+}
+
+int
+__printSTRUCT_CLASSINFO( ref struct classinfo: info)
+{
+  print( COL_WHITE,   substr(strpad(info.desc,18,' '),1,18),
+         COL_YELLOW,  strpadleft(uitostr(info.priv),7,' '),
+         COL_LRED,    "  ", (char)info.key, ' ',
+         COL_CYAN,    strpadleft(uitostr(info.cume),5,' '),
+         COL_MAGENTA, strpadleft(uitostr(info.time),5,' '),
+         COL_LBLUE,   strpadleft(callstr(info.call),5,' '),
+         COL_LMAGENTA,strpadleft(uitostr(info.dlkb),6,' '),
+         COL_LGREEN,  strpadleft(ltostr(info.baud),6,' '),
+         COL_GREEN,   strpadleft(ltostr(info.xfer),6,' '),
+         COL_RED,     strpadleft(itostr(info.free),6,' '),
+         COL_GRAY,    strpadleft(uitostr(info.ratio),6,' '),
+         COL_LCYAN,   strpadleft(itostr(info.reward),5,' '),
+         COL_GRAY
+       );
+}
+
+int
+main()
+{
+  int: i, classes;
+  struct classinfo: info;
+
+  id.instant_video := 0;
+
+  classes := (int)class_info(0,CIT_NUMCLASSES);
+  if (classes)
+  {
+
+    print(AVATAR_CLS COL_YELLOWONBLUE AVATAR_CLEOL
+          "Available Privilege levels" COL_GRAY "\n\n");
+
+    print(COL_WHITE
+    "Abbrev              Level Key Cume Time Clls DL kb Baud   Xfer Thrsh Ratio Rewd\n"
+    COL_GRAY
+    "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄ ÄÄÄ ÄÄÄÄ ÄÄÄÄ ÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄ\n"
+    );
+
+    for ( i := 0; i < classes; i := i + 1 )
+    {
+      getclassinfo( info, i );
+      print( info, '\n' );
+    }
+
+    print('\n');
+    menu_cmd(MNU_PRESS_ENTER, "");
+  }
+}
+

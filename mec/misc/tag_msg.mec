@@ -1,0 +1,18 @@
+
+
+The TAG command permits users to select and deselect specific message
+areas.  This area information is stored across calls, so you only have
+to select areas once.
+
+Once you have selected a set of areas, these areas can be
+automatically scanned when you perform a BROWSE command.  After
+selecting B)rowse, simply enter T)agged instead of All or Current, and
+you will be able to read/list/pack messages from the tagged areas
+only.
+
+To select or deselect an area, simply enter that area's number
+at the prompt.  To display a list of available areas,
+enter a forward slash ('/').
+
+To quit the TAG function, simply press <enter>.
+

@@ -1,0 +1,57 @@
+sys os2v2 dll initi
+name ..\dll\maxdb32.dll
+opt modname=MAXDB32
+opt map=..\map\btree\maxdb32.map
+opt verb
+path W3p
+
+deb all
+
+file
+{
+                dllc.obj
+                dbase.obj       dbasec.obj
+                track.obj       trackc.obj      
+}
+
+segment class 'CODE' preload executeread share
+opt eliminate
+
+lib ..\lib\maxbt32.lib
+lib ..\lib\w3plibf.lib
+
+exp TrkOpen.1
+exp TrkClose.2
+exp TrkAddMsg.3
+exp TrkGetStatus.4
+exp TrkGetPriority.5
+exp TrkGetAreaOwner.6
+exp TrkLookupMsg.7
+exp TrkSetOwner.8
+exp TrkGetOwner.9
+exp TrkSetDefaultOwner.10
+exp TrkGetDefaultOwner.11
+exp TrkUpdateMsg.12
+exp TrkDeleteMsg.13
+exp TrkGetOwnerBtree.14
+exp TrkGetAreaBtree.15
+exp TrkGetMsgDbase.16
+exp TrkLookupMsgI.20
+exp DbOpen.128
+exp DbClose.129
+exp DbInsert.130
+exp DbLookup.131
+exp DbLookupI.132
+exp DbUpdate.133
+exp DbRemove.134
+exp DbSize.135
+#exp DbLookupR.136
+exp DbObtainLock.137
+exp DbReleaseLock.138
+#exp DbFindSeqOpen.139
+#exp DbFindSeqNext.140
+#exp DbFindSeqClose.141
+
+opt many,case
+opt newf
+

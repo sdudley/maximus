@@ -1,0 +1,36 @@
+[delete]C:\Max\Chain.Txt
+[open]C:\Max\Chain.Txt
+[write]%u[ comment           Write the user's user number   ]
+[write]%Z[ comment           Write the user's user name     ]
+[write]%r[ comment           Write the user's real name     ]
+[write][   comment           Write the user's call sign     ]
+[write]35[ comment           Write the user's age           ]
+[write]M[  comment           Write the user's sex           ]
+[write]0.0[ comment          Write the user's credit        ]
+[write]01/01/90[ comment     Write when user last called    ]
+[write]80[ comment           Write user's screen width      ]
+[write]24[ comment           Write user's screen length     ]
+[write]%o[ comment           Write user's priv level        ]
+[acs =sysop][write]1[ comment    Write if is a Sysop or not     ]
+[acs !=sysop][write]0[ comment    Ditto                          ]
+[acs asstsysop][write]1[comment Write if is an AsstSysop or not]
+[acs <asstsysop][write]0[ comment    Ditto                  ]
+[write]%g[ comment           Write if user has graphics     ]
+[islocal  write]0[ comment   Write if user is local or not  ]
+[isremote write]1[ comment   Write if user is local or not  ]
+[write]%T[ comment           Write user's time left in secs ]
+[write]C:\Max\Misc\
+[write]C:\Max\Misc\
+[write]C:\Max\Max.Log
+[write]%b[ comment           Write baud rate                ]
+[write]%P[ comment           Write COM port                 ]
+[write]Maximus-CBCS
+[write]%S %s[ comment        Write SysOp's name             ]
+[write]80518[ comment        The use for these values is    ]
+[write]27[ comment           unknown.  However, they were   ]
+[write]317649[ comment       taken from a sample CHAIN.TXT  ]
+[write]2667[ comment         file from an actual WWIV 4.20  ]
+[write]1186[ comment         system.                        ]
+[write]27
+[write]8N1
+[write]%W[ comment           DTE rate on line 31            ]

@@ -1,0 +1,13 @@
+
+Maximus has a built-in full screen editor which is accessible to
+callers using either ANSI or AVATAR graphics.  MaxEd, the MAXimus
+EDitor, is more of a word processor than a full-screen editor, since
+you can use the cursor keys to move around your message, correct
+mistakes, insert words in the middle of a paragraph, etc.
+
+If you don't (or can't) use MaxEd, then you must use BORED, the
+Maximus Basic-ORiented EDitor, a "standard" BBS line editor.
+
+  To use the MaxEd editor, enter.............. Y
+  To use the BORED editor, enter.............. N
+ 

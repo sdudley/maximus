@@ -1,0 +1,8 @@
+!|1K|Y00000100|c08|R0V15FA4Q|c0F|R0U14F94P|S0107|B0V15F94P|c00|R0Z1JF44K|c0F
+!|R101KF54L|c07|R101KF44K|c0E|@1218BROWSE: Message search & retrieval|c01|@1C1\
+QDisplay what:|1BAK0C0207PE0200080F0007000A0407000000
+!|1U2I2800002A00<>Read (show entire message)<>R
+!|1U2I2S00002400<>List (show message to/from/subj one per line)<>L
+!|1U2I3C00002800<>Pack (pack in QWE format for download)<>P
+!|1U2I3W00002900<>Quit<>Q
+!|#|#|#

@@ -1,0 +1,85 @@
+[moreoff cls yellow]HELP for the OFFLINE READER
+
+[white]The Maximus Offline Reader function allows you to pack up messages from
+your areas of interest, download them, then read and reply to offline.
+You then call back and upload your "reply bundle".  You will need
+offline reader software to perform your reading and replying. The
+Maximus Offline Reader function supports any QWK format reader. This
+format is widely used and you will find your QWK reader will also work
+with such systems as PC Board and Remote Access.  Two popular offline
+readers are SLMR and XRS (with QWK conversion utility).  Check to see if
+the sysop has these available for download.  Be sure to check out the
+[lightcyan]Browse [white]and [lightcyan]Tag [white]functions.  Select any of the following functions for
+more detailed information.
+
+[/help yellow]READER: [lightcyan]Type the letter of the command that you need help with:
+
+[yellow]T[lightcyan])ag Area            [yellow]U[lightcyan])pload Replies
+[yellow]B[lightcyan])rowse Messages     [yellow]P[lightcyan])rotocol Default
+[yellow]D[lightcyan])ownload New Msgs   [yellow]A[lightcyan])rchiver Default
+[yellow]R[lightcyan])estrict Date
+
+[yellow]0[lightcyan]) [lightred]QUIT HELP
+
+[white]Select: [gray menu]tduapr|0
+
+[choice]t[goto tag]
+[choice]d[goto ddownload]
+[choice]u[goto upload]
+[choice]p[goto protocol]
+[choice]a[goto compress]
+[choice]r[goto restdate]
+[choice]0[quit]
+[choice]|[quit]
+[goto help]
+
+
+[/restdate yellow]        RESTRICT DATE
+
+        [white]This command allows you to specify the minimum date
+required to pack messages into a QWK packet.  Messages which arrived
+on the system before the date that you specify will not be packed
+into the QWK packet.  This setting remains in effect for the current
+session only. [goto next]
+
+[/tag yellow]        TAG AREA
+
+        [white]Select which areas you would like to pack with the offline reader
+using the "Download New Messages" function. [goto next]
+
+[/ddownload yellow]        DOWNLOAD NEW MESSAGES
+
+        [white]Maximus will pack all new messages in your Tagged areas (see TAG AREA
+function), then present them for you to download.  Do not forget that
+you can select a default download protocol from the CHANGE Menu (choose
+at the MAIN Menu). [goto next]
+
+[/upload yellow]        UPLOAD REPLIES
+
+[white]After reading and replying offline, your offline reader will prepare a
+bundle for upload called <bbsname>.REP.  This option is where you will
+upload your reply bundle.  After the upload, Maximus will show you the
+message headers as they are moved to the correct message areas.  Do not
+forget that you can select a default upload protocol from the CHANGE
+menu (choose at the MAIN Menu). [goto next]
+
+[/protocol yellow]        PROTOCOL DEFAULT
+
+        [white]You may specify your default file transfer protocol here.  Once you
+select a protocol, it will be used for all file transfers to and from
+the Maximus BBS and you will not be asked to select a protocol each time
+you want to transfer messages or files. [goto next]
+
+[/compress yellow]        ARCHIVER DEFAULT
+
+        [white]You may specify your message compression method here.  Once you select a
+compression method, you will not be asked to select a compression method
+each time you download messages for your offline reader. [goto next]
+
+
+[/next]
+
+[enter]
+
+[goto help]
+

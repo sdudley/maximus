@@ -1,0 +1,36 @@
+deb all
+sys nt dll initi
+n ..\dll\ntcomm.dll
+
+f w3n\ntcomm.obj
+f w3n\ntcommdl.obj
+
+lib kernel32
+
+#opt modname=ntcomm
+opt q
+opt nodef
+
+exp _ComOpenHandle.1
+exp _ComOpen.2
+exp _ComClose.3
+exp _ComIsOnline.4
+exp _ComWrite.5
+exp _ComRead.6
+exp _ComGetc.7
+exp _ComPeek.8
+exp _ComPutc.9
+exp _ComRxWait.10
+exp _ComTxWait.11
+exp _ComInCount.12
+exp _ComOutCount.13
+exp _ComOutSpace.14
+exp _ComPurge.15
+exp _ComGetHandle.16
+exp _ComGetDCB.17
+exp _ComSetDCB.18
+exp _ComSetBaudRate.19
+exp _ComPause.20
+exp _ComResume.21
+exp _ComWatchDog.22
+

@@ -1,0 +1,124 @@
+
+; Generic colour definitions used through the text
+
+#define BLACK           \x16\x01\x00
+#define BLUE            \x16\x01\x01
+#define GREEN           \x16\x01\x02
+#define CYAN            \x16\x01\x03
+#define RED             \x16\x01\x04
+#define MAGENTA         \x16\x01\x05
+#define BROWN           \x16\x01\x06
+#define GRAY            \x16\x01\x07
+#define GREY            \x16\x01\x07
+#define LBLACK          \x16\x01\x08
+#define LBLUE           \x16\x01\x09
+#define LGREEN          \x16\x01\x0a
+#define LCYAN           \x16\x01\x0b
+#define LRED            \x16\x01\x0c
+#define LMAGENTA        \x16\x01\x0d
+#define YELLOW          \x16\x01\x0e
+#define WHITE           \x16\x01\x0f
+
+#define BLKONWHIT       \x16\x01\x70
+#define BLUEONWHIT      \x16\x01\x71
+#define REDONWHIT       \x16\x01\x74
+#define WHITONWHIT      \x16\x01\x77
+#define MAGONBLUE       \x16\x01\x1d
+#define WHITONBLUE      \x16\x01\x1f
+#define YELONBLUE       \x16\x01\x1e
+#define DKGRAYONWHIT    \x16\x01\x78
+
+; Various AVATAR sequences
+
+#define BLINK           \x16\x02
+#define CLS             \x0c
+#define CLEOL           \x16\x07
+#define UP              \x16\x03
+#define DOWN            \x16\x04
+#define LEFT            \x16\x05
+#define RIGHT           \x16\x06
+#define GOTO            \x16\x08
+#define HOME            \x16\x08\x01\x01
+#define CHATTR          \x16\x01%c
+#define ATTR            \x16\x01%c
+
+; Built-in menu colours
+
+#define COL_MNU_NAME    \x16\x01\x0e
+#define COL_MNU_HILITE  \x16\x01\x0e
+#define COL_MNU_OPTION  \x16\x01\x07
+
+; File area colours
+
+#define COL_FILE_NAME   \x16\x01\x0e
+#define COL_FILE_SIZE   \x16\x01\x05
+#define COL_FILE_DATE   \x16\x01\x02
+#define COL_FILE_DESC   \x16\x01\x03
+#define COL_FILE_FIND   \x16\x01\x0e
+#define COL_FILE_OFFLN  \x16\x01\x04
+#define COL_FILE_NEW    \x16\x01\x03\x16\x02
+
+; Message reader colours
+
+#define COL_MSG_FROM    \x16\x01\x03
+#define COL_MSG_FROMTXT \x16\x01\x0e
+#define COL_MSG_TO      \x16\x01\x03
+#define COL_MSG_TOTXT   \x16\x01\x0e
+#define COL_MSG_SUBJ    \x16\x01\x03
+#define COL_MSG_SUBJTXT \x16\x01\x0e
+#define COL_MSG_ATTR    \x16\x01\x0a
+#define COL_MSG_DATE    \x16\x01\x0a
+#define COL_MSG_ADDR    \x16\x01\x03
+#define COL_MSG_LOCUS   \x16\x01\x09
+#define COL_MSG_BODY    \x16\x01\x03
+#define COL_MSG_QUOTE   \x16\x01\x07
+#define COL_MSG_KLUDGE  \x16\x01\x0d
+
+; Full screen reader colours
+
+#define COL_FSR_MSGNUM  \x16\x01\x1c
+#define COL_FSR_LINKS   \x16\x01\x1e
+#define COL_FSR_ATTRIB  \x16\x01\x1e
+#define COL_FSR_MSGINFO \x16\x01\x1e
+#define COL_FSR_DATE    \x16\x01\x1f
+#define COL_FSR_ADDR    \x16\x01\x1e
+#define COL_FSR_STATIC  \x16\x01\x1f
+#define COL_FSR_BORDER  \x16\x01\x1b
+#define COL_FSR_LOCUS   \x16\x01\x0f
+
+#define RIP_FSR_AREA    |c04
+#define RIP_FSR_MSGNUM  |c01
+#define RIP_FSR_LINKS   |c05
+#define RIP_FSR_ATTRIB  |c02
+#define RIP_FSR_MSGINFO |c01
+#define RIP_FSR_DATE    |c06
+#define RIP_FSR_ADDR    |c0A
+#define RIP_FSR_STATIC  |c08
+#define RIP_FSR_BORDER  |c0F
+#define RIP_FSR_LOCUS   |c03
+
+; Full screen reader screen positions
+
+#define POS_FSR_TOP     \x16\x08\x01\x01
+#define POS_FSR_MID     \x16\x08\x02\x01
+#define POS_FSR_FROM    \x16\x08\x03\x01
+#define POS_FSR_TO      \x16\x08\x04\x01
+#define POS_FSR_SUBJ    \x16\x08\x05\x01
+#define POS_FSR_BOTTOM  \x16\x08\x06\x01
+#define POS_FSR_BODY    \x16\x08\x07\x01\x16\x01\x03
+#define POS_FSR_MSGNUM  \x16\x08\x02\x07
+#define POS_FSR_HIGH    \x16\x08\x02\x12
+#define POS_FSR_LINKS   \x16\x08\x02\x18
+#define POS_FSR_ATTRIB  \x16\x08\x02\x28
+#define POS_FSR_FRTEXT  \x16\x08\x03\x07
+#define POS_FSR_FRDATE  \x16\x08\x03\x28
+#define POS_FSR_FRADDR  \x16\x08\x03\x3b
+#define POS_FSR_TOTEXT  \x16\x08\x04\x07
+#define POS_FSR_TODATE  \x16\x08\x04\x28
+#define POS_FSR_TOADDR  \x16\x08\x04\x3b
+#define POS_FSR_SUBJTXT \x16\x08\x05\x07
+#define POS_FSR_BODY    \x16\x08\x07\x01
+
+
+
+

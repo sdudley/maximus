@@ -1,0 +1,67 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: forcepwd.mex
+//
+// Desc: Routine to force the user to change his/her password after a
+//       certain interval.
+//
+// Copyright 1994, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: forcepwd.mex,v 1.1 2002/10/01 17:50:31 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+#include <max_menu.mh>
+
+#define INCL_max_chng
+#include <language.mh>
+
+#define FORCED_CHANGE_DAYS 30       // Force user to change pwd every 30 days
+
+#define HOURS_DAY       24L
+#define MINUTES_HOUR    60L
+#define SECONDS_MINUTE  60L
+
+int main()
+{
+    long: now;                  // Today's date
+    long: must_chg_by;          // Date by which user must change password
+    long: last_chg;             // Date of last change
+    string: old_pwd;
+
+    // Get current time and date of last password change.
+
+    now := time();
+    last_chg := stamp_to_long(usr.date_pwd_chg);
+
+    // Add the number of seconds necessary to find the date for
+    // a required password change.
+
+    must_chg_by := last_chg + (FORCED_CHANGE_DAYS * HOURS_DAY *
+                              MINUTES_HOUR * SECONDS_MINUTE);
+
+    // If the user has never changed his/her password, or if the must-change
+    // date has passed, force the user to change his/her password.
+
+    if (usr.date_pwd_chg.date.year = 0 or
+        now >= must_chg_by)
+    {
+
+        // Store the user's original password to ensure that it is actually
+        // changed.
+
+        old_pwd := usr.pwd;
+
+        print(str_force_pwd_chg);
+
+        while (old_pwd = usr.pwd)
+        {
+            menu_cmd(MNU_CHG_PASSWORD, "");
+
+            if (old_pwd = usr.pwd)
+                print(str_new_pwd_error);
+        }
+    }
+}
+

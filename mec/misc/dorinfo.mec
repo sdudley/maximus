@@ -1,0 +1,17 @@
+[delete]Dorinfo1.Def
+[open]Dorinfo1.Def
+[write]%N[ comment           Write the BBS name             ]
+[write]%S[ comment           Write the SysOp's first name   ]
+[write]%s[ comment           Write the SysOp's last name    ]
+[islocal write]COM0[ comment          Write the COM port    ]
+[isremote write]COM%P[comment       (local is always COM0)  ]
+[write]%b BAUD,N,8,1[comment Write the baud rate            ]
+[write] 0[ comment           Say that we're not networked   ]
+[write]%A[ comment           Write the user's first name    ]
+[write]%B[ comment           Write the user's last name     ]
+[write]%c[ comment           Write the user's city          ]
+[write]%g[ comment           Write the user's graphics      ]
+[write]%o[ comment           Write the user's security level]
+[write]%t[ comment           Write the user's time remaining]
+[write]-1[ comment           Say that we're using a FOSSIL  ]
+[quit      comment           And we're done!                ]

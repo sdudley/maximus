@@ -1,0 +1,1098 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: regress.mex
+//
+// Desc: Regression tests for the MEX compiler and run-time environment.
+//
+// Copyright 1990, 1994 by Lanius Corporation.  All rights reserved.
+//
+// $Id: regress.mex,v 1.1 2002/10/01 17:50:40 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+
+// Test the ability to append to strings by writing to an SRVAL
+
+void string_test_1()
+{
+    string: s;
+    string: t;
+    int: x;
+
+    x := 0;
+
+    s := "hello";
+
+    while (x <= 9)
+    {
+        t[1] := '0'+x;
+        s:=s+t;
+        x := x+1;
+    }
+
+    if (s = "hello0123456789")
+        print("passed: string_test_1\n");
+    else
+        print("FAILED: string_test_1\n");
+}
+
+
+// Test ability to access SLVAL beyond length of string and then access
+// an SRVAL beyond the length of the string
+
+void string_test_2()
+{
+    string: s;
+
+    s[1] := s[3];
+    s[2] := 'U';
+
+    if (s = " U")
+        print("passed: string_test_2\n");
+    else
+        print("FAILED: string_test_2\n");
+}
+
+
+// Test character->string conversions, a small amount of subscript
+// manipulation, and SRVAL.
+
+void string_test_3()
+{
+    string: s1;
+    string: s2;
+    int: flag;
+
+    flag := 1;
+
+    s1[3] := ' ';
+
+    if (s1 <> "   ")
+        flag := 0;
+
+    s2 := "KA";
+
+    if (s2 <> "KA")
+        flag := 0;
+
+    if (s2[3] = ' ')
+        s2[3] := ' ';
+
+    if (s2 <> "KA ")
+        flag := 0;
+
+    if (flag <> 0)
+        print("passed: string_test_3\n");
+    else
+        print("FAILED: string_test_3\n");
+}
+
+
+
+// Test pass-by-reference strings and SRVAL/SLVAL references.
+
+void __string_test_4(int: i, ref string: s)
+{
+    string: rev;
+    rev[1]:='7';
+    s[1] := rev[1];
+}
+
+void string_test_4()
+{
+    int: num;
+    string: s;
+    string: s2;
+    int: flag;
+
+    flag := 1;
+
+    __string_test_4(num, s);
+
+    if (s <> "7")
+        flag := 0;
+
+
+    s := "FOO BAR";
+
+    __string_test_4(num, s);
+
+    if (s <> "7OO BAR")
+        flag := 0;
+
+    s2 := "grotty" + s + "string";
+
+    if (s2 <> "grotty7OO BARstring")
+        flag := 0;
+
+    if (flag = 1)
+        print("passed: string_test_4\n");
+    else
+        print("FAILED: string_test_4\n");
+
+}
+
+
+// Test the ability to return strings and evaluate SRVALs.
+
+string __string_test_5(string: s2, int: len)
+{
+    string: s;
+
+    s := s2;
+    s [len] := ' ';
+    return s;
+}
+
+void string_test_5()
+{
+    string: s;
+
+    s := __string_test_5("foo2", 8);
+
+    if (s = "foo2    ")
+        print("passed: string_test_5\n");
+    else
+        print("FAILED: string_test_5\n");
+}
+
+
+// Test using SLVALs on pass-by-reference strings, and test
+// catenation of characters to pass-by-reference strings.
+
+void __string_test_6_2(ref string: s, ref string: rc)
+{
+    int: i;
+
+    i := 1;
+    rc := "";
+
+    while (s[i] <> ' ')
+    {
+        string: cat;
+
+        cat := "";
+        cat[1] := s[i];
+
+        rc := rc + cat;
+        i := i + 1;
+    }
+}
+
+void __string_test_6(string: s, ref string: rc)
+{
+    int: i;
+
+    i := 1;
+    rc := "";
+
+    while (s[i] <> ' ')
+    {
+        string: cat;
+
+        cat := "";
+        cat[1] := s[i];
+
+        rc := rc + cat;
+        i := i + 1;
+    }
+}
+
+void string_test_6()
+{
+    string: s;
+    string: rc;
+    int: flag;
+
+    s := "woof";
+
+    flag := 1;
+
+    rc := "blah";
+
+    __string_test_6(s, rc);
+
+    if (rc <> "woof")
+        flag := 0;
+
+    rc := "blah";
+
+    __string_test_6_2(s, rc);
+
+    if (rc <> "woof")
+        flag := 0;
+
+    if (flag <> 0)
+        print("passed: string_test_6\n");
+    else
+        print("FAILED: string_test_6\n");
+}
+
+
+
+// Test copying a string to itself
+
+void __string_test_7(ref string: s)
+{
+    s := s;
+}
+
+void string_test_7()
+{
+    string: s;
+    int: i;
+
+    s := "bar";
+
+    i := 0;
+
+    while (i < 1000)
+    {
+        __string_test_7(s);
+        i := i + 1;
+    }
+
+    if (s = "bar")
+        print("passed: string_test_7\n");
+    else
+        print("FAILED: string_test_7\n");
+}
+
+
+// Test heap allocation functions to ensure that string return values
+// do not cause a leak in the heap.  We will get a fatal run-time error
+// if the heap fills up.
+
+void string_test_8()
+{
+    int: i;
+    string: s1, s2;
+
+    s1 := "foo bar baz";
+
+    i:=0;
+
+    while (i < 500)
+    {
+        s2 := substr(s1, 4, 3);
+        i := i + 1;
+    }
+
+    print("passed: string_test_8\n");
+}
+
+
+void array_test_1()
+{
+    array [1..5] of array [1..5] of int: ar;
+    int: i, j;
+
+    i:=1;
+
+    while (i <= 5)
+    {
+        j:=1;
+
+        while (j <= 5)
+        {
+            ar[i][j]:=i*j;
+            j:=j+1;
+        }
+
+        i:=i+1;
+    }
+
+    if (ar[1][1] = 1 and
+        ar[1][2] = 2 and
+        ar[1][3] = 3 and
+        ar[1][4] = 4 and
+        ar[1][5] = 5 and
+        ar[2][1] = 2 and
+        ar[2][2] = 4 and
+        ar[2][3] = 6 and
+        ar[2][4] = 8 and
+        ar[2][5] = 10 and
+        ar[3][1] = 3 and
+        ar[3][2] = 6 and
+        ar[3][3] = 9 and
+        ar[3][4] = 12 and
+        ar[3][5] = 15 and
+        ar[4][1] = 4 and
+        ar[4][2] = 8 and
+        ar[4][3] = 12 and
+        ar[4][4] = 16 and
+        ar[4][5] = 20 and
+        ar[5][1] = 5 and
+        ar[5][2] = 10 and
+        ar[5][3] = 15 and
+        ar[5][4] = 20 and
+        ar[5][5] = 25)
+    {
+        print("passed: array_test_1\n");
+    }
+    else
+    {
+        print("FAILED: array_test_1\n");
+    }
+}
+
+void array_test_2()
+{
+    array [1..1] of int: ar;
+    int: flag;
+
+    flag := 1;
+
+    ar[1] := 3;
+
+    if (ar[1] <> 3)
+        flag := 0;
+
+    ar[1] := 9;
+
+    if (ar[1] <> 9)
+        flag := 0;
+
+    if (flag = 1)
+        print("passed: array_test_2\n");
+    else
+        print("FAILED: array_test_2\n");
+
+}
+
+void array_test_3()
+{
+    array [1..10] of int: ar;
+    int: flag;
+    int: i;
+
+    i:=1;
+
+    while (i <= 10)
+    {
+        ar[i]:=11-i;
+        i:=i+1;
+    }
+  
+    flag := 1;
+
+    i:=1;
+  
+    if (ar[ar[i]] <> 1)
+        flag := 0;
+
+    i:=2;
+  
+    if (ar[ar[i]] <> 2)
+        flag := 0;
+
+    i:=3;
+  
+    if (ar[ar[i]] <> 3)
+        flag := 0;
+
+    i:=4;
+  
+    if (ar[ar[i]] <> 4)
+        flag := 0;
+
+    i:=5;
+  
+    if (ar[ar[i]] <> 5)
+        flag := 0;
+
+    i:=6;
+  
+    if (ar[ar[i]] <> 6)
+        flag := 0;
+
+    i:=7;
+  
+    if (ar[ar[i]] <> 7)
+        flag := 0;
+
+    i:=8;
+  
+    if (ar[ar[i]] <> 8)
+        flag := 0;
+
+    i:=9;
+  
+    if (ar[ar[i]] <> 9)
+        flag := 0;
+
+    i:=10;
+  
+    if (ar[ar[i]] <> 10)
+        flag := 0;
+
+    if (flag <> 0)
+        print("passed: array_test_3\n");
+    else
+        print("FAILED: array_test_3\n");
+}
+
+
+void coerce_test_1()
+{
+    int: i;
+    long: j;
+    int: flag;
+
+    flag := 1;
+
+    i := 20134;
+    j := 2;
+    i := j;
+
+    if (i <> 2)
+        flag := 0;
+
+    j := 37630;
+    i := j;
+
+    if (i <> 37630)
+        flag := 0;
+
+    if (flag <> 0)
+        print("passed: coerce_test_1\n");
+    else
+        print("FAILED: coerce_test_1\n");
+}                        
+
+void coerce_test_2()
+{
+    array [1..5] of char: ca;
+    char: ch;
+
+    ca[1] := 'A';
+
+    ch := ca[1] + 3;
+
+    if (ch = 'D')
+        print("passed: coerce_test_2\n");
+    else
+        print("FAILED: coerce_test_2\n");
+}
+
+
+void bit_test_1()
+{
+    int: i;
+    int: flag;
+
+    flag := 1;
+
+////////////////////
+
+    i := 7 & 68;
+
+    if (i <> 4)
+        flag := 0;
+
+////////////////////
+
+    i := 7 | 68;
+
+    if (i <> 71)
+        flag := 0;
+
+////////////////////
+
+    i := 7 shr 1;
+
+    if (i <> 3)
+        flag := 0;
+
+////////////////////
+
+    i := 7 shl 1;
+
+    if (i <> 14)
+        flag := 0;
+
+////////////////////
+
+    i := 1 and 2;
+
+    if (i <> 1)
+        flag := 0;
+
+////////////////////
+
+    i := 1 and 0;
+
+    if (i <> 0)
+        flag := 0;
+
+////////////////////
+
+    i := 0 and 0;
+
+    if (i <> 0)
+        flag := 0;
+
+////////////////////
+
+    i := 1 or 2;
+
+    if (i <> 1)
+        flag := 0;
+
+////////////////////
+
+    i := 1 or 0;
+
+    if (i <> 1)
+        flag := 0;
+
+////////////////////
+
+    i := 0 or 0;
+
+    if (i <> 0)
+        flag := 0;
+
+////////////////////
+
+    if (flag <> 0)
+        print("passed: bit_test_1\n");
+    else
+        print("FAILED: bit_test_2\n");
+}
+
+
+
+// Test function calling and arguments
+
+int __func_test_1(int: i, char: c)
+{
+    if (i = 12 and c = 'e')
+        return 18923;
+    else
+        return 9740;
+}
+
+void func_test_1()
+{
+    int: i;
+    array [1..20] of char: sc;
+
+    i := __func_test_1(3*4, 'c'+2);
+
+    if (i = 18923)
+        print("passed: func_test_1\n");
+    else
+        print("FAILED: func_test_1\n");
+}
+
+
+
+// Test the ability to manipulate expressions
+
+int: g1;
+
+void expr_test_1()
+{
+    int:  i1, i2, i3, i4;
+    char: c1, c2, c3;
+    long: dw1, dw2;
+    int: flag;
+
+    flag := 1;
+
+    dw1 := 7;
+    dw2 := 7;
+
+    g1 := 3;
+
+    i1 := 3;
+    i2 := 3;
+    i3 := 5;
+
+    c1 := 9;
+    c2 := 6;
+    c3 := 2;
+
+    if (c1=c2)      // false
+        i1 := -1;
+
+    if (i1=i2)      // true
+        i2 := 2;     // i1=3, i2=2, i3=5
+
+    if (dw1=dw2)    // true
+        i3 := 3;     // i1=3, i2=2. i3=3
+
+    c1:=g1;          // c1=9
+
+    i1:=i2+i3*(i1+ (4*i3)/(i1+i2));  // i1 = 2+3*(3+(4*3)/(3+2))
+                                    //    = 2 + 3*(3+12/5)
+                                    //    = 2 + 3*(3+2)
+                                    //    = 2 + 3*5
+                                    //    = 17
+    if (i1 <> 17)
+        flag := 0;
+
+    c1:=c2+c3*(c1+ c3/(c1+c2));      // c1 = 6 + 2*(3+2/(3+6))
+                                    //    = 6 + 2*(3+0)
+                                    //    = 12
+    if (c1 <> 12)
+        flag := 0;
+
+    i1:=c2+c2*i2;                    // i1 = 6 + 6*2 = 18
+
+    if (i1 <> 18)
+        flag := 0;
+
+    if (flag = 1)
+        print("passed: expr_test_1\n");
+    else
+        print("FAILED: expr_test_1\n");
+
+}
+
+
+// Test the ability to deal with globally-allocated data
+
+array [1..10] of int: ar;
+
+void __alloc_test_1()
+{
+    if (ar[1] =  1 and
+        ar[2] =  4 and
+        ar[3] =  9 and
+        ar[4] = 16 and
+        ar[5] = 25 and
+        ar[6] = 36 and
+        ar[7] = 49 and
+        ar[8] = 64 and
+        ar[9] = 81 and
+        ar[10]=100)
+    {
+        print("passed: alloc_test_1\n");
+    }
+    else
+    {
+        print("FAILED: alloc_test_1\n");
+    }
+}
+
+void alloc_test_1()
+{
+    int: i;
+
+    i := 1;
+
+    while (i <= 10)
+    {
+        ar[i] := i*i;
+        i := i + 1;
+    }
+
+    __alloc_test_1();
+}
+
+
+// Test flow control using goto's
+
+void goto_test_1()
+{
+        int: flag;
+        int: ctr;
+
+        flag := 0;
+        ctr := 0;
+
+test:
+
+        if (flag = 2)
+        {
+            flag := flag + 1;            // 3) flag = 3
+            ctr := ctr * 2;              //    ctr = 24
+            goto final;
+        }
+
+
+        if (flag = 0)
+        {
+            ctr := ctr + 3;              // 1) ctr = 3
+            flag := 1;                   //    flag = 1
+            goto test;
+        }
+
+        {
+                if (flag = 1)           // 2) ctr = 12
+                {                       //    flag = 2
+                    ctr := ctr * 4;
+                    flag := 2;
+                    goto test;
+                }
+
+                test3:
+                    ;
+        }
+
+final:
+    if (flag = 3)
+    {
+        ctr := ctr * 2;                  // 4) ctr = 48
+        flag := flag + 1;                //    flag = 4
+    }
+
+    if (ctr = 48 and flag = 4)
+        print("passed: goto_test_1\n");
+    else
+        print("FAILED: goto_test_1\n");
+}
+
+
+// Test flow of control through if statements
+
+void if_test_1()
+{
+    int: flag;
+    int: a;
+    int: b;
+
+    flag := 1;
+    a := 1;
+    b := 0;
+
+    if (a and b)
+        flag := 0;
+    else if (b and b or b and a)
+        flag := 0;
+    else if (a or b)
+        ;
+
+    if (a or b)
+        ;
+    else if (b and b or b and a)
+        flag := 0;
+    else if (a or b)
+        flag := 0;
+
+    if (a and b)
+        flag := 0;
+    else if (b and b or b and a)
+        flag := 0;
+    else
+        ;
+
+    if (flag <> 0)
+        print("passed: if_test_1\n");
+    else
+        print("FAILED: if_test_1\n");
+
+}
+
+
+// Test passing structures by argument
+
+struct foo
+{
+    char: face;
+    char: suit;
+};
+
+void __args_test_1(ref struct foo: s, ref int: flag)
+{
+    if (s.face = 6)
+        flag := 1;
+    else
+        flag := 0;
+
+    s.face := 2;
+}
+
+void args_test_1()
+{
+    struct foo: s;
+    int: flag;
+
+    flag := 0;
+
+    s.face := 6;
+    __args_test_1(s, flag);
+
+    if (flag = 1 and s.face = 2)
+        print("passed: args_test_1\n");
+    else
+        print("FAILED: args_test_1\n");
+
+}
+
+
+
+void __args_test_2(ref char: card, ref char: face)
+{
+    card := 45;
+    face := 78;
+}
+
+// Test pass-by-references of variables within structures
+
+void args_test_2()
+{
+    array [1..1] of struct foo: str;
+
+    str[1].suit := 22;
+    str[1].face := 22;
+
+    __args_test_2(str[1].suit, str[1].face);
+
+    if (str[1].suit = 45 and str[1].face = 78)
+        print("passed: args_test_2\n");
+    else
+        print("FAILED: args_test_2\n");
+}
+
+
+
+
+// Test to ensure that nested scopes are handled properly.
+
+int: i;
+
+void scope_test_1()
+{
+    int: flag;
+
+
+    i := 2;
+
+    {
+        int: i;
+
+        flag := 1;
+
+        i := 4;
+
+        {
+            int: i;
+            int: j;
+
+            i := 5;
+            j := 2;
+
+            if (i <> 5)
+                flag := 0;
+
+            {
+                int: j;
+
+                i := 6;
+                j := 4;
+
+                if (i <> 6)
+                    flag := 0;
+
+                if (j <> 4)
+                    flag := 0;
+            }
+
+            if (j <> 2)
+                flag := 0;
+
+            if (i <> 6)
+                flag := 0;
+        }
+
+        if (i <> 4)
+            flag := 0;
+    }
+
+    if (i <> 2)
+        flag := 0;
+
+    if (flag <> 0)
+        print("passed: scope_test_1\n");
+    else
+        print("FAILED: scope_test_1\n");
+}
+
+
+struct _fp1
+{
+    int: rsvd;
+    string: s;
+};
+
+struct _fp2
+{
+    string: s;
+};
+
+void _scopy_child_1(ref struct _fp1: fp)
+{
+    int: i;
+
+    // See if SCOPY properly kills memory when copying to a string
+    // in a reference structure, where the string is not the first
+    // in the structure.
+
+    for (i:=0; i < 1000; i:=i+1)
+        fp.s := "aaaaaaaaaaaaaaaaaaaaaaaaa";
+}
+
+
+void _scopy_child_2(ref struct _fp2: fp)
+{
+    int: i;
+
+    for (i:=0; i < 1000; i:=i+1)
+        fp.s := "aaaaaaaaaaaaaaaaaaaaaaaaa";
+
+}
+
+void scopy_test_1()
+{
+    struct _fp1: fp;
+
+    _scopy_child_1(fp);
+    print("passed: scopy_test_1\n");
+}
+
+void scopy_test_2()
+{
+    struct _fp2: fp;
+
+    _scopy_child_2(fp);
+    print("passed: scopy_test_2\n");
+}
+
+
+void assign_test_1()
+{
+    int: i;
+
+    i := 2;
+
+    if (i = 2)
+       print("passed: assign_test_1\n");
+    else
+       print("FAILED: assign_test_1\n");
+}
+
+
+int sign_test_sub(int: i1, int: i2, int: i3, int: i4, int: i5,
+                  unsigned int: i6, unsigned int: i7,
+                  unsigned int: i8, unsigned int: i9, unsigned int: i10)
+{
+  return (i1=2 and i2=2 and i3=2 and i4=2 and i5=2 and i6=2 and i7=2 and
+          i8=2 and i9=2 and i10=2);
+}
+
+
+int si1()
+{
+  return 1;
+}
+
+unsigned int ui1()
+{
+  return 1;
+}
+
+void sign_test_1()
+{
+  int: i;
+  unsigned int: j;
+
+  i := 1;
+  j := 1;
+
+  i := sign_test_sub(i+j, 1+j, j+1, i+1, 1+i,
+                     i+j, 1+j, j+1, i+1, 1+i);
+
+  if (i)
+      print("passed: sign_test_1\n");
+  else
+      print("FAILED: sign_test_1\n");
+}
+
+void sign_test_2()
+{
+  int: i;
+
+  i := sign_test_sub(si1()+ui1(), 1+ui1(), ui1()+1, si1()+1, 1+si1(),
+                     si1()+ui1(), 1+ui1(), ui1()+1, si1()+1, 1+si1());
+
+  if (i)
+      print("passed: sign_test_2\n");
+  else
+      print("FAILED: sign_test_2\n");
+}
+
+
+int sign_test_sub2(...);
+
+int: globsign;
+
+int __sign_test_sub2UNSIGNED_INT(unsigned int: i)
+{
+  globsign := globsign + i;
+}
+
+int __sign_test_sub2INT(int: i)
+{
+  globsign := globsign + i;
+}
+
+void sign_test_3()
+{
+  int: i;
+
+  globsign := 0;
+
+  sign_test_sub2(ui1()+1, 0, ui1(), 0);
+
+  if (globsign = 3)
+      print("passed: sign_test_3\n");
+  else
+      print("FAILED: sign_test_3\n");
+}
+
+
+int main(string: args)
+{
+    int: i;
+
+    for (i := 1; i <= 20; i := i+1)
+    {
+        print("Pass #", i, "/20\n");
+
+        assign_test_1();
+        string_test_1();
+        string_test_2();
+        string_test_3();
+        string_test_4();
+        string_test_5();
+        string_test_6();
+        string_test_7();
+        string_test_8();
+        array_test_1();
+        array_test_2();
+        array_test_3();
+        coerce_test_1();
+        coerce_test_2();
+        bit_test_1();
+        func_test_1();
+        expr_test_1();
+        alloc_test_1();
+        goto_test_1();
+        if_test_1();
+        args_test_1();
+        args_test_2();
+        scope_test_1();
+        scopy_test_1();
+        scopy_test_2();
+        sign_test_1();
+        sign_test_2();
+        sign_test_3();
+    }
+
+    return 0;
+}
+

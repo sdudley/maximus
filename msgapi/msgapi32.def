@@ -1,0 +1,27 @@
+LIBRARY MSGAPI32 INITINSTANCE
+
+DESCRIPTION "MSGAPI - Copyright 1992 by Scott J. Dudley.  All rights reserved."
+
+HEAPSIZE 0
+STACKSIZE 0
+PROTMODE
+DATA MULTIPLE
+
+EXPORTS
+        MsgOpenArea                             @1
+        MsgOpenApi                              @2
+        MsgValidate                             @3
+        MsgCloseApi                             @4
+        ConvertControlInfo                      @5
+        CopyToControlBuf                        @6
+        CvtCtrlToKludge                         @7
+        GetCtrlToken                            @8
+        NumKludges                              @9
+        RemoveFromCtrl                          @10
+        SquishSetMaxMsg                         @11
+        WriteZPInfo                             @12
+        msgapierr                               @13   ; variable, not a f()
+        SquishHash                              @14
+        InvalidMh                               @15
+        InvalidMsgh                             @16
+

@@ -1,0 +1,23 @@
+[locate 21 1 white]Next bulletin [[Y,n]? [lightgreen menu]1234567890-=\!@#$%^&*()_+qwertyuiopasdfghjklzxcvbnm~`<>?/'"
+[choice]N[goto nope]
+[colour locate  5 1 cleol]
+[locate  6 1 cleol]
+[locate  7 1 cleol]
+[locate  8 1 cleol]
+[locate  9 1 cleol]
+[locate 10 1 cleol]
+[locate 11 1 cleol]
+[locate 12 1 cleol]
+[locate 13 1 cleol]
+[locate 14 1 cleol]
+[locate 15 1 cleol]
+[locate 16 1 cleol]
+[locate 17 1 cleol]
+[locate 18 1 cleol]
+[locate 19 1 cleol]
+[locate 20 1 cleol]
+[locate 21 1 cleol endcolour nocolour]
+[endcolour yellow locate  2 14 quit]
+
+[/nope cls link]Misc\Mailchek
+[exit]

@@ -1,0 +1,83 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: taglist.mex
+//
+// Desc: Displays the user's tagged file list
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: taglist.mex,v 1.1 2002/10/01 17:50:41 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+#include <max.mh>
+
+int __printSTRUCT__STAMP(ref struct _stamp: ss)
+{
+  print(substr(stamp_string(ss),1,9));
+}
+
+int main()
+{
+  int: qsize, fnum, flags, pos;
+  long: fsize;
+  struct _stamp: fdate;
+  string: filename, rootname;
+  char: nonstop;
+
+  qsize := tag_queue_size();
+
+  print(COL_WHITE "\nYou currently have ", qsize, " files tagged for download.\n\n");
+
+  if (qsize)
+  {
+    nonstop := False;
+
+    for ( fnum := 0; fnum < qsize AND do_more(nonstop, COL_CYAN); fnum := fnum + 1 )
+    {
+      tag_get_name( fnum, flags, filename );
+
+      // We need to strip off the path name for display
+
+      pos := strridx(filename, 0, '\\');
+      if (pos=0)
+      rootname := filename;
+      else rootname := substr(filename, pos+1, strlen(filename)-pos+1);
+
+      print(COL_YELLOW, strpad(rootname,16,' '), ' ');
+
+      fsize := filesize(filename);
+
+      // Now display the file details
+
+      if (fsize=-1)
+      {
+
+        // Dequeue it if it isn't there...
+
+        print(COL_WHITE, "** file no longer exists and has been dequeued **\n");
+        tag_dequeue_file(fnum);
+        fnum := fnum - 1;
+        qsize := tag_queue_size();
+      }
+      else
+      {
+
+      // Otherwise, tell the user the size & date
+
+        print(COL_LMAGENTA, strpadleft(ltostr(fsize),10,' '), ' ');
+        filedate(filename, fdate);
+        print(COL_LGREEN, fdate, ' ');
+        fsize := xfertime(PROTOCOL_ZMODEM, fsize);
+        print(COL_LCYAN, "(time: ", strpadleft(ltostr(fsize/60),2,'0'), ':',
+                                    strpadleft(ltostr(fsize%60),2,'0'), ")");
+        print(COL_GRAY, '\n');
+      }
+    }
+    print('\n');
+  }
+
+  return 0;
+}
+

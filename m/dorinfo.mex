@@ -1,0 +1,103 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: dorinfo.mex
+//
+// Desc: DORINFOx.DEF generation program
+//
+// Copyright 1990, 1994 by Lanius Corporation.  All rights reserved.
+//
+// $Id: dorinfo.mex,v 1.1 2002/10/01 17:50:31 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+#include <prm.mh>
+
+// get_firstlast takes 'name' and splits it into the two
+// components 'first' and 'last'.  This is typically used to
+// split the sysop or user's name into two parts for various
+// external programs.
+
+void get_firstlast(string: name, ref string: first, ref string: last)
+{
+    int: space;
+
+    space:=strfind(name, " ");
+
+    if (space = 0)
+    {
+      first := name;
+      last := "NLN";
+    }
+    else
+    {
+      first := substr(name, 1, space-1);
+      last := substr(name, space+1, strlen(name)-space+1);
+    }
+}
+
+
+// Write the DORINFOx.DEF file for this task
+
+int main()
+{
+    string: file;           // Name of file to write
+    string: first, last;    // First/last names of user/sysop
+    int: fd;                // Handle for file functions
+    int: priv;              // Numeric xBBS-style priv level
+
+
+    // Construct the filename to use
+
+    file:="dorinfo" + itostr(id.task_num) + ".def";
+
+
+    // Try to create the file
+
+    fd:=open(file, IOPEN_CREATE | IOPEN_WRITE);
+
+    if (fd=-1)
+    {
+        log("!Couldn't create " + file);
+        return 1;
+    }
+
+    // Now write all of the necessary information to the drop file.
+
+    writeln(fd, prm_string(PRM_SYSNAME));      // BBS name
+
+    get_firstlast(prm_string(PRM_SYSOP), first, last); // Sysop name
+    writeln(fd, first);             // Sysop first name
+    writeln(fd, last);              // Sysop last name
+
+    if (id.local)                   // COM port
+        writeln(fd, "COM0");
+    else
+        writeln(fd, "COM" + itostr(id.port));
+
+    writeln(fd, ltostr(id.speed) + " BAUD,N,8,1"); // line parameters
+    writeln(fd, " 0");              // Not networked
+
+    get_firstlast(usr.name, first, last);
+
+    writeln(fd, strupper(first));   // User's first name
+    writeln(fd, strupper(last));    // User's last name
+    writeln(fd, usr.city);          // User's city
+
+    if (usr.video=0)
+        writeln(fd, "0");           // No graphics
+    else
+        writeln(fd, "1");           // ANSI or AVATAR
+
+    // Now write user's numeric priv level and number of
+    // minutes remaining.
+
+    writeln(fd, itostr(usr.priv));  // Privilege level
+    writeln(fd, itostr(timeleft()));// Time limit
+    writeln(fd, "-1");              // -1 means we have a FOSSIL
+
+    close(fd);
+    return 0;
+}
+
+

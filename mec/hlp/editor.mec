@@ -1,0 +1,105 @@
+[moreoff]
+[yellow]EDIT HELP: [lightcyan]Type the letter of the command you need help with.
+
+[yellow]S[lightcyan])ave              [yellow]A[lightcyan])bort
+[yellow]I[lightcyan])nsert            [yellow]D[lightcyan])elete
+[yellow]T[lightcyan])o                [yellow]J[lightcyan])Subject
+[yellow]L[lightcyan])ist              [yellow]E[lightcyan])dit
+[yellow]C[lightcyan])ontinue          [yellow]Q[lightcyan])uote
+[acs sysop][yellow]R[lightcyan])ead from Disk    [yellow]H[lightcyan])andling
+
+[yellow]0[lightcyan]) [lightred]QUIT HELP
+[white]Select: [gray menu]saleidcqtjrh0|
+
+[choice]s[goto SSave]
+[choice]a[goto Abort]
+[choice]l[goto List]
+[choice]e[goto Edit]
+[choice]i[goto Insert]
+[choice]d[goto DDelete]
+[choice]c[goto Continue]
+[choice]q[goto QQuote]
+[choice]t[goto To]
+[choice]j[goto subJect]
+[acs sysop][choice]r[goto ReadDisk]
+[acs sysop][choice]h[goto Handling]
+[choice]0[quit]
+[choice]|[quit]
+[top]
+
+[/SSave yellow]        SAVE
+
+        [white]Saves the message you just entered. [goto Next]
+
+[/Abort yellow]        ABORT
+
+        [white]Abort the message you just entered, without saving it. [goto Next]
+
+[/List yellow]        LIST
+
+        [white]List the message you just entered, including line numbers. [goto Next]
+
+[/Edit yellow]        EDIT
+
+        [white]This command allows you to edit a line in your message.  First
+of all, enter the line number that you wish to edit.  (If you can't
+remember the line number, use L)ist to display your message.)
+
+        After entering the line number, enter the text that you wish
+to find, followed by the text you wish to replace it with.  If you
+want to insert at the beginning of the line, just press <enter> for
+the "Text to replace" prompt. [goto Next]
+
+[/Insert yellow]        INSERT
+
+        [white]This command inserts a blank line into your message.  The blank
+line will be inserted into your message just BEFORE the line number you
+specify. [goto Next]
+
+[/DDelete yellow]        DELETE
+
+        [white]This command deletes one or more lines from your message.
+Simply type the beginning and the ending line; Maximus will delete all
+of the lines in the range you specify. [goto Next]
+
+[/Continue yellow]        CONTINUE
+
+        [white]This command will now let you continue entering your message.
+If you're using the full-screen editor, this command will place you back
+in the editing screen.  If you're using the line editor, this command
+will put you back at the line-entry prompt. [goto Next]
+
+[/QQuote yellow]        QUOTE
+
+        [white]This command lets you quote text from the message that
+you're replying to.  Type a '?' to list the original message, and then
+enter the starting and ending numbers of the lines you wish to quote.
+The lines you specify will be automatically copied into the message
+body, including quote initials. [goto Next]
+
+[/To yellow]        TO
+
+        [white]This command lets you change the addressee of your message. [goto Next]
+
+[/subJect yellow]        SUBJECT
+
+        [white]This command lets you change the subject of your message. [goto Next]
+
+[/ReadDisk yellow]        READ FROM DISK
+
+        [white]This option allows you to import a text file into the
+editor.  Simply type the path and filename of the file to import, and
+as much of the file will be placed into the edit buffer as possible.
+This command is only available to SysOps. [goto Next]
+
+[/Handling yellow]        HANDLING
+
+        [white]This option allows you to modify the message attributes
+of a NetMail message.  You can also toggle the status of the private
+and local bits from this menu.  This command is only available to
+SysOps. [goto Next]
+
+[/Next]
+
+[enter top]
+

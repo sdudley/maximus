@@ -1,0 +1,45 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: callers.mex
+//
+// Desc: Lists previous callers
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: callers.mex,v 1.1 2002/10/01 17:50:29 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+
+void main()
+{
+  char: nonstop;
+  long: calls, pos;
+  struct _callinfo: ci;
+
+  id.instant_video := 0;
+
+  if (call_open())
+  {
+    calls := call_numrecs();
+    reset_more(nonstop);
+    print(COL_WHITE "Name                      Node Calls Login              Logout\n"
+                    "컴컴컴컴컴컴컴컴컴컴컴컴� 컴컴 컴컴� 컴컴컴컴컴컴컴컴컴 컴컴컴컴컴컴컴컴컴\n");
+
+    for (pos := calls - 1; pos >= 0 AND call_read(pos, ci) AND do_more(nonstop,COL_CYAN); pos := pos - 1)
+    {
+      if (ci.flags & CALL_LOGON)
+      {
+        print(COL_LCYAN,    strpad(ci.name,25,' '),
+              COL_LMAGENTA, strpadleft(itostr(ci.task),5,' '),
+              COL_LRED,     strpadleft(itostr(ci.calls),6,' '), ' ',
+              COL_YELLOW,   strpad(stamp_string(ci.login),19,' '),
+              COL_WHITE,    strpad(stamp_string(ci.logoff),19,' '),
+              '\n');
+      }
+    }
+    call_close();
+  }
+}
+

@@ -1,0 +1,5 @@
+
+[yellow]What topic do you wish to chat about?  (one line)
+[lightgreen]> [gray ansreq readln]
+[log]+User yelled about "%J"
+[quit]

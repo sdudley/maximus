@@ -1,0 +1,22 @@
+
+
+Now, you must choose your password.
+
+A password is one word (with no spaces).  Passwords can be anywhere
+from 4 to 15 characters long, and can include letters or numbers.
+Uppercase and lowercase letters are treated identically.
+
+Tips:
+
+   1) Write down your password somewhere (or store it in your terminal
+      program's dialing directory), so you'll remember it for next
+      time.
+
+   2) Don't use the same password on more than one system.  Since the
+      SysOp of each system you call has access to your password,
+      there's nothing from stopping them from logging in as you on
+      someone else's system.
+
+   3) For better security, use a long password (at least 6
+      characters).
+

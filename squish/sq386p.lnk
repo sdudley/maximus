@@ -1,0 +1,29 @@
+deb all
+sys os2v2 pmc
+file W3p\bld.obj
+file W3p\squish.obj
+file W3p\s_abbs.obj
+file W3p\s_config.obj
+file W3p\s_scan.obj
+file W3p\s_toss.obj
+file W3p\s_pack.obj
+file W3p\s_squash.obj
+file W3p\s_match.obj
+file W3p\s_log.obj
+file W3p\s_misc.obj
+file W3p\s_hole.obj
+file W3p\s_link.obj
+file W3p\s_busy.obj
+file W3p\s_stat.obj
+file W3p\s_sflo.obj
+file W3p\s_thunk.obj
+file W3p\s_dupe.obj
+opt quiet
+opt verb,map=..\map\squish\sq386p.map
+name ..\exe\squish\sq386p.exe
+option stack=5632
+lib ..\lib\W3plibf.lib
+lib ..\lib\msgapi32.lib
+lib ..\lib\smserial.lib
+segment class 'CODE' loadoncall executeread share
+opt case,newf

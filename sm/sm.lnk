@@ -1,0 +1,19 @@
+sys os2v2_pm
+deb all
+name ..\exe\sm\sm
+opt symf=..\sym\sm\sm.sym
+path w3p
+opt verb,newf
+opt map=..\map\sm\sm.map
+
+file
+{
+        sm.obj          sm_view.obj     ezfont.obj      pmdebug.obj
+        sm_th.obj       sm_msg.obj
+}
+
+opt st=8k,he=1k
+opt prot,quiet,desc 'Session Monitor'
+lib ..\lib\mcp32
+lib ..\lib\w3plibf
+

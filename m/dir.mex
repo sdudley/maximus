@@ -1,0 +1,114 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: dir.mex
+//
+// Desc: Demonstration of a directory viewer in MEX
+//
+//       Functions demonstrated:
+//              reset_more()
+//              do_more()
+//              filefindfirst()
+//              filefindnext()
+//              filefindend()
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: dir.mex,v 1.1 2002/10/01 17:50:30 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#include <max.mh>
+
+string longpadleft(long: i, int: len, int: ch)
+{
+  string: ltos;
+  string: rc;
+
+  ltos:=ltostr(i);
+
+  rc:=strpad("", len - strlen(ltos), ch);
+
+  return rc + ltos;
+}
+
+void main()
+{
+  char: nonstop;
+  string: filespec, tmp;
+  struct _ffind: ff;
+
+  // Get filespec from user (from stacked commands buffer is ok too)
+
+  if (input_str(filespec,INPUT_WORD,0,0,COL_WHITE "Filespec: ")=0)
+    filespec:="*";
+  if (filefindfirst(ff, filespec, FA_SUBDIR|FA_ARCHIVE|FA_READONLY))
+  {
+
+    // Ok, we're going to have some output, so init the pager
+
+    reset_more(nonstop);
+
+    // We found a subdir first, so let's check it
+    // to see if we found the exact directory
+
+    if ((ff.fileattr & FA_SUBDIR))
+    {
+      int: spec;
+
+      // See if we asked for a full subdir, and if so, assume *.* within
+
+      spec:=strridx(filespec,0,'\\');
+      if (spec > 0)
+      {
+
+        // Compare what we got with what we asked for
+
+        spec:=spec;
+        tmp:=strupper(substr(filespec,spec+1,strlen(filespec)-spec));
+        if (tmp=strupper(ff.filename))
+        {
+
+          // Yes, its a full dir, so close the current search
+
+          filefindclose(ff);
+
+          // Append the assumed *.*
+
+          filespec:=filespec+"\\*.*";    // All files in this subdir
+
+          // And reinit the search. In theory, this should never fail
+
+          filefindfirst(ff, filespec, FA_SUBDIR|FA_ARCHIVE|FA_READONLY);
+        }
+      }
+    }
+    do
+    {
+
+      // Display the directory entry itself
+
+      print(COL_CYAN AVATAR_CLEOL, strpad(ff.filename,18,' '),
+                                    stamp_string(ff.filedate));
+
+      // Fancy display for directories
+
+      if (ff.fileattr & FA_SUBDIR)
+        print("         <DIR>");
+      else
+        print(longpadleft(ff.filesize, 14, ' '));
+
+      // And skip to next line...
+
+      print('\n');
+    }
+
+    // Keep going until we run out, or user stops us
+
+    while (filefindnext(ff) AND do_more(nonstop, COL_WHITE));
+
+    // Be nice and close the directory
+
+    filefindclose(ff);
+  }
+}
+

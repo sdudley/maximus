@@ -1,0 +1,24 @@
+sys os2 dll initi
+
+deb all
+
+file wcp\maxblas2,wcp\blastos2
+name ..\dll\maxblas2.dll
+opt modname=MAXBLAS2
+opt prot,nodef,manyauto
+lib os2
+
+exp SBLASTINIT32.1
+exp SBLASTTERM32.2
+exp SBLASTVOCENABLE32.3
+exp SBLASTVOCPLAY32.4
+exp SBLASTFMOUTLEFT32.5
+exp SBLASTFMOUTRIGHT32.6
+exp SBLASTFMOUTALL32.7
+exp SBLASTFMNOTEALL32.8
+exp SBLASTFMNOTELEFT32.9
+exp SBLASTFMNOTERIGHT32.10
+
+lib ..\lib\maxblast.lib
+opt st=8k
+opt newf

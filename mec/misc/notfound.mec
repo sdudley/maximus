@@ -1,0 +1,11 @@
+
+Your name was not found in my user records.  If you are indeed a new
+user, then answer `Y' to the following prompt, and proceed to log on.
+Otherwise, type `N' and enter your name correctly.
+
+NOTE!  Please make sure that your name, as shown below, is
+capitalized correctly!  Maximus will try to properly capitalize
+names, if possible, but you must manually enter the correct version
+of names such as "McDonald".  This is only necessary on your first
+logon; subsequent logons will use the capitalization which you
+specify here.

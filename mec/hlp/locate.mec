@@ -1,0 +1,21 @@
+
+[yellow]LOCATE
+
+[white]The Locate command searches ALL FILE AREAS for a certain file
+or description.  (To search only the current area, use the F)iles command
+instead.)
+
+To search for text in either the filename or description, simply enter
+it at the prompt.  L)ocate does not use wildcards; instead, it searches
+for the text you entered anywhere inside the filename or description.
+
+For example, if you type "ZIP", you might be presented with the
+following display:
+
+   [cyan]test.[yellow]ZIP       [magenta]4096 [green]06-07-89[blink]* [cyan]this is a test upload
+   [cyan]pkz102.exe   [magenta]112934 [green]12-01-89[blink]* [cyan]this is an un[yellow]ZIP[cyan]ping utility
+
+[white]In addition, you can instruct Locate to display only NEW files by
+specifying a "*" at the prompt.
+
+[white]

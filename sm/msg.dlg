@@ -1,0 +1,14 @@
+DLGINCLUDE 1 "G:\DEV\PM\SM\MSG.H"
+
+DLGTEMPLATE IDD_MSG LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Send Message", IDD_MSG, 1, 1, 275, 48, WS_VISIBLE, FCF_SYSMENU | 
+            FCF_TITLEBAR | FCF_DBE_APPSTAT
+    BEGIN
+        ENTRYFIELD      "Message from SysAdmin: ", IDD_MSG_ENTRY, 52, 30, 
+                        214, 9, ES_MARGIN
+        LTEXT           "Message", IDD_MSG_TEXT, 11, 30, 37, 9
+        DEFPUSHBUTTON   "Send", IDD_MSG_SEND, 74, 7, 40, 14
+        PUSHBUTTON      "Cancel", DID_CANCEL, 135, 7, 40, 14
+    END
+END

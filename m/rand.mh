@@ -1,0 +1,39 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: rand.mh
+//
+// Desc: MEX header to generate random numbers.  Call srand() with any number
+//       to set the seed, and then call rand() to obtain pseudo-random
+//       numbers between 0 and 65535 inclusive.
+//
+// Copyright 1990, 1994 by Lanius Corporation.  All rights reserved.
+//
+// $Id: rand.mh,v 1.1 2002/10/01 17:50:39 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+// This is used by both srand() and rand()
+
+long: seed;
+
+
+int srand(int: newseed)
+{
+  // Simply set the seed to the value we were given
+
+  seed:=(long)newseed;
+}
+
+
+int rand()
+{
+  // Calculate a new seed using the magic number.
+
+  seed:=(seed * 0x015a4e35)+1;
+
+  // Now calculate the new magic number, using ((seed >> 16) & 0x7fff)
+
+  return ((seed shr 16) & 0x7fff);
+}
+
+

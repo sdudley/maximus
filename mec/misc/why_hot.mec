@@ -1,0 +1,12 @@
+
+Maximus has a `hotkeys' capability; this allows the user to select
+menu options without having to press <enter> after each selection.
+
+Normally, to Y)ell for the system operator, one would have to type "Y"
+and then <enter> at the main menu.  However, if hotkeys are turned on,
+the yell command would be activated after pressing "Y" (without an
+<enter> keystroke).
+
+        To enable hotkeys, type............  Y
+        If you don't want hotkeys, type....  N
+

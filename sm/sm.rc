@@ -1,0 +1,35 @@
+#include <os2.h>
+#include "smrc.h"
+#include "msg.h"
+
+#define FCF_DBE_APPSTAT
+
+
+pointer ID_RESOURCE sm.ico
+
+
+/* Message-sending dialog */
+
+rcinclude msg.dlg
+
+
+/* Pop-up window for the menu options */
+
+MENU ID_POPUP
+{
+//  MENUITEM "~Start",                    IDM_START
+//  MENUITEM "S~top...",                  IDM_STOP
+//  MENUITEM SEPARATOR
+  MENUITEM "~View",                     IDM_VIEW
+//  MENUITEM "~Log File...",              IDM_LOG
+  MENUITEM "~Message...",               IDM_MESSAGE
+  MENUITEM SEPARATOR
+
+  SUBMENU  "~Global",                   IDM_GLOBAL, MIS_SUBMENU
+  {
+//    MENUITEM "~Start",                  IDM_GLOBALSTART
+//    MENUITEM "S~top...",                IDM_GLOBALSTOP
+    MENUITEM "~Message...",             IDM_GLOBALMESSAGE
+  }
+}
+

@@ -1,0 +1,34 @@
+
+[yellow]TAG FILE
+
+[white]The T)ag command is used to place filenames in a queue, and
+defer the download of the files until a later point in the call.  In
+other words, one can Tag/Add up to thirty files (even across file areas),
+and then download all of the files in one fell swoop.
+
+The special commands available on the Tag menu are:
+
+    [yellow]A)dd -  [white]This option is used to ADD a file to the tag queue.
+            (The file must be in the current area.)  One the
+            file is tagged, Maximus will add the filename
+            to its internal list, and display a short status
+            report.  Wildcards ARE supported, but only
+            30 files can be tagged at one time.
+
+            Note: The ADD command can also be accessed by
+            entering the "t" character from any
+            "More [[Y,n,t,=]" prompt in the file areas.
+
+    [yellow]L)ist - [white]This command will display a list of all files
+            which were queued by the A)dd command, and
+            the time required to download each file.
+
+  [yellow]D)elete - [white]The Delete command will remote a specified
+            file from the tag queue.  This option is
+            useful if a file had been tagged previously,
+            but is no longer required.
+
+   [yellow]C)lear - [white]The Clear command removes all tagged files
+            from the tag queue.
+
+[white enter]

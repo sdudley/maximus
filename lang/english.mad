@@ -1,0 +1,1859 @@
+; $Id: english.mad,v 1.1 2002/10/01 17:50:25 sdudley Exp $
+;
+; ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+; ³                             ENGLISH.MAD                             ³
+; ³            Maximus Language File (English), Version 3.01            ³
+; ³  Copyright 1991, 1995 by Lanius Corporation.  All rights reserved.  ³
+; ³                                                                     ³
+; ³ This file contains the Maximus language definition for the English  ³
+; ³ language.  To create your own language file for Maximus, use this   ³
+; ³ file as a starting point.  First, copy ENGLISH.MAD to some other    ³
+; ³ filename.  Then, edit the strings inside the language file to       ³
+; ³ suit the language to which you are translating.  Finally, MAID      ³
+; ³ the new language file, add it to LANGUAGE.CTL, and run SILT.        ³
+; ³                                                                     ³
+; ³ However, if you simply want to modify the English language to suit  ³
+; ³ your own tastes, you can edit this file freely.  However, you will  ³
+; ³ still have to MAID this language file and recompile with SILT.      ³
+; ³                                                                     ³
+; ³ A few notes on translations:                                        ³
+; ³                                                                     ³
+; ³ 1) This file is organized into "heaps".  Each heap starts with a    ³
+; ³    colon at the beginning of a line, followed by the name of the    ³
+; ³    heap.  Example heaps are ":global", ":sysop" and ":max_main".    ³
+; ³                                                                     ³
+; ³    All heaps are processed identically, with one exception.  The    ³
+; ³    "sysop" heap is only loaded once, and it's loaded from the FIRST ³
+; ³    language file defined in LANGUAGE.CTL.  This heap will always be ³
+; ³    used for SysOp log entries and local screen displays, no matter  ³
+; ³    what language the user selects.  Therefore, it IS okay to        ³
+; ³    translate the strings in the ":sysop" heap.                      ³
+; ³                                                                     ³
+; ³ 2) Language file strings can be of almost any length, so feel free  ³
+; ³    to add or delete characters.                                     ³
+; ³                                                                     ³
+; ³ 3) THE ORDER OF STRINGS WITHN THIS FILE IS IMPORTANT!  Do not       ³
+; ³    add or delete any lines in any of the heaps.                     ³
+; ³                                                                     ³
+; ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+; This section starts off with several macro definitions:
+
+#define VER             3.01
+#define BETA_TEST
+#define YEAR            1989, 1995
+
+#define LBRACKET        [
+#define RBRACKET        ]
+
+; For Swedish 7-bit, comment out the above and uncomment the following
+; two definitions:
+;
+;#define LBRACKET        (
+;#define RBRACKET        )
+
+;MERICAN Change this to "color" for American spelling
+
+#define COLOUR          colour
+
+;MERICAN Change this to "mm-dd-yyyy" for American format.
+;
+; If you change DATESTR, don't forget to also recompile
+; chgdob.mex with the right USDATE/EUDATE/JPDATE define!
+
+#define DATESTR         mm-dd-yyyy
+;#define DATESTR        dd-mm-yyyy
+;#define DATESTR        yyyy-mm-dd
+
+#include <colors.lh>
+#include <rip.lh>
+
+; Next comes the global heap.  These strings are displayed to the user
+; in many places throughout the BBS:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Global Heap                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:global
+
+@MEX left_x=            "\x16\x19\x02" LEFT "%c";
+located=                WHITE "\nLocated %d match%s.\n";
+pl_match=               "es";
+wrong_pwd=              "\aWrong! (Try #%d)\n";
+@MEX end_prompt=        RBRACKET ": ";
+@MEX bed_lu=            CYAN "Type \"" WHITE "?" CYAN "\" by itself to list users.\n";
+@MEX dot_slash_n=       ".\n";
+@MEX r_cleol=           "\r" CLEOL;
+paddr=                  " (%d/%d)";
+bs_sn=                  "\\\n";
+@MEX max_tear=          "--- Maximus";
+@MEX cleol=             CLEOL;
+@MEX cantkill=          LRED "\nCan't kill msg.\n" WHITE;
+addrfmt=                "%s%s    %s%0.34s (%s) %0.30s\n";
+@MEX orig_addr=         "Orig:";
+@MEX dest_addr=         "Dest:";
+@MEX endavailmsg=       CLS "End of available messages in this area%s.\n";
+@MEX remain_pvt=        ", or remaining messages are private";
+@MEX msgnotavail=       WHITE "\nThat message isn't available.\n";
+@MEX abortmsg=          CLEOL "Throw message away";
+@MEX toomanylines=      "Too many lines.\n";
+@MEX tryagain=          "Try again: ";
+znnp=                   "%d:%d/%d.%d";
+xferaborted=            WHITE "\n\nTransfer aborted.\n";
+xfercomplete=           WHITE "\n\nTransfer completed.";
+cps_rating=             YELLOW "  (CPS=%lu, %02lu%%)\n";
+@MEX unlisteddest=      WHITE "\n\nUnlisted destination address.\n";
+baudtoolowforxfer=      WHITE "You must call at %u bps to send or receive files.\n";
+xtrn_caller=            "%s%s %s -p%%p -b%%b -t%%k -m%%d -f%%D -r%%t";
+iseenoxhere=            LRED "I see no \"%s\" here.\n" WHITE;
+dontunderstand=         WHITE "\nI don't understand \"%c\".\n\n";
+no_undrstnd=            "I don't understand \"%c\".  ";
+printfstringtoolong=    "Err!  %srintf string too long!\n";
+@MEX err999_1=          WHITE "\nError!  Files cannot be uploaded in local mode.\n";
+@MEX err999_2=          "Press ENTER to continue ";
+searchingfor=           WHITE "\nSearching for \"%s\".\n%c";
+errwriting=             " \a\aError writing message! (disk full?)\n";
+idxnode=                "%snodelist.idx";
+datnode=                "%snodelist.dat";
+sysnode=                "%snodelist.sys";
+@MEX pressentertoskip=  "Press ENTER to skip item.";
+@MEX sp_public=         " public";
+@MEX sp_private=        " private";
+@MEX cantskip=          "\n\nYou can't skip this question.\n";
+asctime_format=         "%H:%M:%S %a %b %d %Y\n";
+@MEX useyforyes=        "Use \"Y\" for YES and \"N\" for NO.  ";
+@MEX useyforyesns=      "Use \"Y\" for YES, \"N\" for NO, and \"=\" for non-stop.  ";
+@MEX useyforyesnst=     "Use \"Y\" for YES, \"N\" for NO, and \"T\" to tag file.  ";
+@MEX unlisted_system=   CYAN "%s:    " GREEN "Unlisted system (%s)\n";
+@MEX unlisted_node=     "Unlisted node";
+@MEX more_prompt=       "More";
+@MEX Tag=               "T";
+@MEX MoreYnTag=         "Ynt=";
+@MEX CYn=               "Yn";
+@MEX yCN=               "yN";
+@MEX Yne=               "Yn=";
+@MEX CYnq=              "Yn?";
+@MEX yCNq=              "yN?";
+@MEX Yes=               "Y";
+@MEX No=                "N";
+@MEX M_nonstop=         "=";
+quote_format=           "\x16\x08%c\x01%s" CLEOL " %s> %s";
+norm_format=            "\x16\x08%c\x01%s" CLEOL "%s";
+@MEX areadoesntexist=   WHITE "\nThat area doesn't exist!\n";
+@MEX done_ex=           "Done!\n";
+@MEX tnx4ul=            WHITE "\nThanks for the upload, %s.\n";
+@MEX press_enter_s=     "Press ENTER to continue ";
+@RIP press_enter_s=     RIP RIP_QUERY "0000$SMF$\n"
+                        RLI RIP_KILL RIP_FONTSTY "00000100" RIP_BUTSTY "HN0A0207PE0200000F080700020F07000000\n"
+                        RLI RIP_BUTDEF "019000002700<>Press OK to continue<>^M"
+                        RIP_END;
+@MEX usr_pwd=           "Password: ";
+@MEX unavailable=       WHITE "Sorry!  That option is not available at the present time.\n";
+@MEX e_save=            " Save ";
+@MEX e_quit=            " Quit ";
+@MEX select_p=          "Select: ";
+@MEX userdoesntexist=   WHITE "That user doesn't exist!\n";
+ck_for_help=            YELONBLUE "Press Control-N for help.";
+@MEX l_invalid_pwd=     " INVALID PASSWORD";
+@MEX invalid_pwd=       BLINK "\n\aINVALID PASSWORD\a\n" CYAN;
+time_added_for_ul=      LGREEN "\n%ld:%02ld" YELLOW " minutes added for upload.\n\n";
+@MEX yes=               "YES";
+@MEX no=                "NO";
+@MEX s_ansi=            "ANSI";
+@MEX s_avatar=          "AVATAR";
+@MEX s_tty=             "TTY";
+@MEX enter_city=        "Please enter your city and state/province: ";
+@RIP enter_city=        RIP RIP_KILL RIP_END "Please enter your city and state/province: ";
+@MEX enter_phone=       "Please enter your phone number " LBRACKET "(xxx) yyy-zzzz" RBRACKET ": ";
+@RIP enter_phone=       RIP RIP_KILL RIP_END "Please enter your phone number " LBRACKET "(xxx) yyy-zzzz" RBRACKET ": ";
+@MEX enter_name=        "Please enter your alias: ";
+@RIP enter_name=        RIP RIP_KILL RIP_END "Please enter your alias: ";
+@MEX msg_aborted=       CLS WHITE CLEOL "\n" CLEOL "\n" CLEOL "Message aborted.\n" CLEOL "\n" CLEOL;
+node_listing=           " %5d," CYAN " %s, %s\n";
+@MEX pad_zone=          YELLOW "ZONE  ";
+@MEX pad_region=        YELLOW "REGION";
+@MEX pad_net=           YELLOW "NET   ";
+@MEX pad_none=          YELLOW "      ";
+@MEX ordinal_th=        "th";
+@MEX ordinal_st=        "st";
+@MEX ordinal_nd=        "nd";
+@MEX ordinal_rd=        "rd";
+file_ar_name=           LGREEN "File area " LMAGENTA "%s" GRAY " ... " CYAN "%s";
+message_name=           LGREEN "%sarea " LMAGENTA "%s" GRAY " ... " CYAN "%s\n";
+@MEX space_over=        "\r" CLEOL "                          \r";
+@MEX s_on=              "ON";
+@MEX s_off=             "OFF";
+four_blanks#=           "ÄÄÄÄ";
+moreyn_blank=           "              \r";
+moreynns_blank=         "\r                  \r";
+lzh_type=               "%-15.15s %8lu %8lu %-02.2d.%d%% %02d-%02d-%02.2d %02u:%02u:%02u %s %-8.8s %04X\n";
+@MEX exper=             "EXPERT";
+@MEX regul=             "REGULAR";
+@MEX novic=             "NOVICE";
+@MEX proto_none=        "None";
+@MEX eq_help=           "=help";
+erl_xx=                 "ErrorLevel %s";
+@MEX no_last=           "NLN";
+hfl_prmpt=              ATTR "\x08\x08" CLEOL "  SPACE>" ATTR " \x08" ATTR;
+@MEX w_select_c=        WHITE "Select: " CYAN;
+; LEAVE THIS UNTRANSLATED!  This is used for the "Area_Change" menu command!
+@MEX mnu_msg=           "message";
+srchng=                 "\r\x16\x01%cSearching: %-10s" CLEOL;
+@RIP srchng=            RIP RIP_FONTSTY "00000100" RIP_COL "08" RIP_RECT "0101HR0C\n"
+                        RLI RIP_COL "0B" RIP_RECT "0000HQ0B" RIP_FILLSTY "0101" RIP_BAR "0101HQ0B\n"
+                        RLI RIP_MOVE "0403\n"
+                        RLI RIP_COL "07" RIP_TEXT "Searching: \n"
+                        RLI RIP_COL "%02X" RIP_TEXT "%s"
+                        RIP_END;
+bad_menu_opt=           "!Bad menu opt %02x";
+@MEX yep=               "YES";
+@MEX nope=              "NO ";
+@MEX no_wildcard=       "\n%s doesn't need the \"*\" or \"?\" characters to search for a\nspecific file/description.  (A \"*\" alone can be used to look for new\nfiles.)\n\n";
+@MEX no_wc1=            "Anything you type will be matched anywhere in the filename or description;\n";
+@MEX no_wc2=            "For example, searching for \"AB\" will match both ABCD.ARC and BABAR.DOC.\n";
+err_writ=               "Error writing \"%s\".  (Disk full?)\n";
+@MEX dtsf=              "Date to search from, or press <enter> for ";
+@MEX bad_date=          "Invalid date.  Search aborted.\n";
+date_str=               "%02d-%02d-%02d";
+datestr=                "%02d%02d%02d";
+scan_str=               "%d-%d-%d";
+file_offline=           "%soffline\x19 %c";
+@MEX s_matrix=          "Matrix ";
+@MEX s_echo=            "Echo ";
+@MEX s_msg=             "Msg.";
+@MEX s_conf=            "Conference ";
+@MEX which_area=        WHITE "Which area (\"?\"=list)? ";
+gray_n=                 GRAY "\n";
+time_fmt=               "%02d:%02d:%02d";
+time_loc=               "\x16\x08\x01%c%s" GRAY "\n";
+list_option=            YELLOW "  %d" WHITE ") %s\n";
+msgattr_keys=           "PCRSAFOKLHXG!$TU";
+@MEX sysop_txt=         "Sysop";
+@MEX menu_start=        LBRACKET COL_MNU_OPTION;
+@MEX menu_end=          COL_MNU_NAME RBRACKET ": ";
+listanswer_left=        " " LBRACKET;
+listanswer_right=       RBRACKET "? ";
+@MEX please_wait=       YELLOW "\nPlease wait...";
+@MEX gen_none=           "None";
+xp_minutes=              "%lu minutes";
+; Used to separate every group of three digits in long numbers
+@MEX number_comma=       ",";
+@MEX achg_help=         YELLOW "For more areas, type \"" LGREEN ".." YELLOW "\" to go up one level or \"" LGREEN "/" YELLOW "\" for top level areas.\n\n";
+@MEX bar_access=        "Access code: ";
+bar_priv_huh=           "!Barricade file priv, \"%s\"?";
+@MEX sex_male=          "Male";
+@MEX sex_female=        "Female";
+@MEX sex_unknown=       "";
+; Separators for numbers.  ie. "1,000,000.00"
+@MEX thousand_sep=      ",";
+@MEX decimal_sep=       ".";
+@MEX lbracket=          LBRACKET;
+@MEX rbracket=          RBRACKET;
+@MEX stat_hdr=          CLS LGREEN "Your statistics for ";
+@RIP stat_hdr=          RIP RIP_RESET RIP_FONTSTY "00000100\n"
+                        RLI RIP_COL "01" RIP_RECT "0101HR0A" RIP_COL "0B" RIP_RECT "0000HQ09" RIP_FILLSTY "0109" RIP_BAR "0101HQ09\n"
+                        RLI RIP_COL "08" RIP_RECT "0L0HH87I" RIP_COL "0F" RIP_RECT "0K0GH77H" RIP_FILLSTY "0107" RIP_BAR "0L0HH77H\n"
+                        RLI RIP_COL "08" RIP_RECT "0T0NH07A" RIP_COL "0F" RIP_RECT "0U0OH17B\n"
+                        RLI RIP_COL "0E" RIP_TEXTXY "0402Your statistics for ";
+@MEX stat_time=         YELLOW "TIME\n";
+@RIP stat_time=         RIP RIP_COL "00" RIP_RECT "1C0W6B18" RIP_COL "0F" RIP_RECT "1D0X6C19" RIP_FILLSTY "0108" RIP_BAR "1D0X6B18" RIP_COL "0E" RIP_TEXTXY "1W0ZTIME" RIP_END;
+@MEX stat_files=        YELLOW "FILES\n";
+@RIP stat_files=        RIP RIP_COL "00" RIP_RECT "1C2G6B2S" RIP_COL "0F" RIP_RECT "1D2H6C2T" RIP_FILLSTY "0108" RIP_BAR "1D2H6B2S" RIP_COL "0E" RIP_TEXTXY "1W2JFILES" RIP_END;
+@MEX stat_matrix=       YELLOW "MATRIX\n";
+@RIP stat_matrix=       RIP RIP_COL "00" RIP_RECT "1C406B4C" RIP_COL "0F" RIP_RECT "1D416C4D" RIP_FILLSTY "0108" RIP_BAR "1D406B4C" RIP_COL "0E" RIP_TEXTXY "1W43MATRIX" RIP_END;
+@MEX stat_subscrip=     YELLOW "SUBSCRIPTION\n";
+@RIP stat_subscrip=     RIP RIP_COL "00" RIP_RECT "1C546B5G" RIP_COL "0F" RIP_RECT "1D556C5H" RIP_FILLSTY "0108" RIP_BAR "1D546B5G" RIP_COL "0E" RIP_TEXTXY "1W57SUBSCRIPTION" RIP_END;
+@MEX stat_misc=         YELLOW "MISCELLANEOUS\n";
+@RIP stat_misc=         RIP RIP_COL "00" RIP_RECT "1C686B6K" RIP_COL "0F" RIP_RECT "1D696C6L" RIP_FILLSTY "0108" RIP_BAR "1D686B6K" RIP_COL "0E" RIP_TEXTXY "1W6BMISCELLANEOUS" RIP_END;
+@MEX stat_minutes=      GRAY " minutes";
+@RIP stat_minutes=      RIP_COL "03" RIP_TEXT " minutes";
+@MEX stat_file=         GRAY " files";
+@RIP stat_file=         RIP_COL "03" RIP_TEXT " files";
+@MEX stat_kb=           GRAY " kb";
+@RIP stat_kb=           RIP_COL "03" RIP_TEXT " kb";
+@MEX stat_cents=        GRAY " cents";
+@RIP stat_cents=        RIP_COL "03" RIP_TEXT " cents";
+@MEX stat_time_online=  GRAY " Time on line, this call..........   " CYAN;
+@RIP stat_time_online=  RIP RIP_MOVE "2S1E" RIP_COL "01" RIP_TEXT "Time on line, this call " RIP_COL "08" RIP_TEXT "..........   " RIP_COL "05" RIP_TEXT;
+@MEX stat_time_remain=  GRAY " Time remaining for this call.....   " CYAN;
+@RIP stat_time_remain=  RIP RIP_MOVE "2S1M" RIP_COL "01" RIP_TEXT "Time remaining for this call " RIP_COL "08" RIP_TEXT ".....   " RIP_COL "05" RIP_TEXT;
+@MEX stat_time_prev=    GRAY " Time of previous calls today.....   " CYAN;
+@RIP stat_time_prev=    RIP RIP_MOVE "2S1U" RIP_COL "01" RIP_TEXT "Time of previous calls today " RIP_COL "08" RIP_TEXT ".....   " RIP_COL "05" RIP_TEXT;
+@MEX stat_time_calls=   GRAY " Calls to date....................   " CYAN;
+@RIP stat_time_calls=   RIP RIP_MOVE "2S22" RIP_COL "01" RIP_TEXT "Calls to date " RIP_COL "08" RIP_TEXT "....................   " RIP_COL "05" RIP_TEXT;
+@MEX stat_file_ul=      GRAY " UL (from you)....................   " CYAN;
+@RIP stat_file_ul=      RIP RIP_MOVE "2S2Y" RIP_COL "01" RIP_TEXT "UL (from you) " RIP_COL "08" RIP_TEXT "....................   " RIP_COL "05" RIP_TEXT;
+@MEX stat_file_dl=      GRAY " DL (to you)......................   " CYAN;
+@RIP stat_file_dl=      RIP RIP_MOVE "2S36" RIP_COL "01" RIP_TEXT "DL (to you) " RIP_COL "08" RIP_TEXT "......................   " RIP_COL "05" RIP_TEXT;
+@MEX stat_file_dlday=   GRAY " DL today.........................   " CYAN;
+@RIP stat_file_dlday=   RIP RIP_MOVE "2S3E" RIP_COL "01" RIP_TEXT "DL today " RIP_COL "08" RIP_TEXT ".........................   " RIP_COL "05" RIP_TEXT;
+@MEX stat_file_dlavl=   GRAY " DL available for today...........   " CYAN;
+@RIP stat_file_dlavl=   RIP RIP_MOVE "2S3M" RIP_COL "01" RIP_TEXT "DL available for today " RIP_COL "08" RIP_TEXT "...........   " RIP_COL "05" RIP_TEXT;
+@MEX stat_net_credit=   GRAY " Credits (on account).............   " CYAN;
+@RIP stat_net_credit=   RIP RIP_MOVE "2S4I" RIP_COL "01" RIP_TEXT "Credits (on account) " RIP_COL "08" RIP_TEXT ".............   " RIP_COL "05" RIP_TEXT;
+@MEX stat_net_debit=    GRAY " Debits (expenditures)............   " CYAN;
+@RIP stat_net_debit=    RIP RIP_MOVE "2S4Q" RIP_COL "01" RIP_TEXT "Debits (expenditures) " RIP_COL "08" RIP_TEXT "............   " RIP_COL "05" RIP_TEXT;
+@MEX stat_sub_mins=     GRAY " Minutes remaining................   " CYAN;
+@RIP stat_sub_mins=     RIP RIP_MOVE "2S5M" RIP_COL "01" RIP_TEXT "Minutes remaining " RIP_COL "08" RIP_TEXT "................   " RIP_COL "05" RIP_TEXT;
+@MEX stat_sub_date=     GRAY " Expiry date......................   " CYAN;
+@RIP stat_sub_date=     RIP RIP_MOVE "2S5U" RIP_COL "01" RIP_TEXT "Expiry date " RIP_COL "08" RIP_TEXT "......................   " RIP_COL "05" RIP_TEXT;
+@MEX stat_pwd_chg=      GRAY " Last password change.............   " CYAN;
+@RIP stat_pwd_chg=      RIP RIP_MOVE "2S6Q" RIP_COL "01" RIP_TEXT "Last password change " RIP_COL "08" RIP_TEXT ".............   " RIP_COL "05" RIP_TEXT;
+rip_disabled=           RIP RIP_RESET RIP_END CLS WHITE
+                        "\nThe system has detected too many RIP protocol errors and has"
+                        "\nautomatically disabled RIP terminal graphics.\n\n";
+@MEX press_enter_c=     "\n";
+@RIP press_enter_c=     RIP RIP_FILLSTY "0100" RIP_BAR "008WHR9Q" RIP_FONTSTY "00000100\n"
+                        RLI RIP_QUERY "0000$RMF$" RIP_END;
+@MEX end_rip=           "\n!|*|*|#|#|#\r           \r";
+menu_name_col=          COL_MNU_NAME;
+menu_high_col=          COL_MNU_HILITE;
+menu_opt_col=           COL_MNU_OPTION;
+maxed_init=             CLS;
+@RIP maxed_init=        RIP RIP_KILL RIP_FONTSTY "00000100" RIP_FILLSTY "0100\n"
+                        RLI RIP_BAR "008YHR9Q" RIP_FONTSTY "00000100" RIP_TEXTWIN "0007271400\n"
+                        RLI RIP_COL "08" RIP_RECT "018YHR99" RIP_COL "0F" RIP_RECT "008XHQ98" RIP_FILLSTY "0107\n"
+                        RLI RIP_BAR "018YHQ98" RIP_BUTSTY "1O080207PE02010F0F000700060407000000" RIP_FONTSTY "02000400\n"
+                        RLI RIP_BUTDEF "059000000000<>Save<>^z\n"
+                        RLI RIP_BUTDEF "1Y9000000000<>Abort<>^[^[\n"
+                        RLI RIP_BUTDEF "3R9000000000<>Quote<>^k^r\n"
+                        RLI RIP_BUTDEF "5K9000000000<>Copy<>^k^c\n"
+                        RLI RIP_BUTDEF "7D9000000000<>PgDn<>^c\n"
+                        RLI RIP_BUTDEF "969000000000<>PgUp<>^r\n"
+                        RLI RIP_BUTDEF "AZ9000000000<>Redraw<>^w\n"
+                        RLI RIP_BUTDEF "CS9000000000<>Menu<>^k^h\n"
+                        RLI RIP_BUTDEF "EL9000000000<>Help<>^n\n"
+                        RLI RIP_COL "0F" RIP_TEXTXY "GL8XMaxEd" RIP_COL "04" RIP_TEXTXY "GK8WMaxEd\n"
+                        RLI RIP_FONTSTY "00000100" RIP_END;
+@MEX stat_comma=        ", " CYAN;
+@RIP stat_comma=        RIP_TEXT ", " RIP_COL "05" RIP_TEXT;
+@MEX stat_newline=      "\n";
+@RIP stat_newline=      RIP_END;
+; This string is sent at the beginning of the list, tag, scan,
+; track (and other commands) to put the RIP cursor in the right
+; position:
+rip_autoerase=          "\r!|*\n";
+
+; The following strings are displayed to the sysop.  This heap should
+; also be translated, as the 'sysop' heap from the FIRST language file
+; in language.ctl is always used, regardless of the user's current
+; language setting.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                             SysOp Heap                                   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:sysop
+
+pwd_is=                 "Password: %s";
+entering=               "Entering";
+exiting=                "Exiting";
+the_chatmode=           " CHAT mode";
+log_bad_pwd=            "!Bad pwd \"%s\"";
+external_prog=          "#External program: \"%s\"";
+return_prog=            ":Return from: \"%s\" (%d)";
+so_and_so_calling=      "+%s calling";
+denied_access=          ":DENIED ACCESS: %sarea %s";
+cantfind=               "!Can't find \"%s\"";
+cantopen=               "!Can't open \"%s\" (%d)";
+cantwrite=              "!Can't write \"%s\"";
+cantread=               "!Can't read \"%s\"";
+cantmove=               "!Can't move \"%s\" to \"%s\"";
+cant_unlink=            "Can't unlink \"%s\"\n";
+usingeditor=            " Using editor";
+outofeditor=            " Out of editor";
+msgto=                  "#Msg to %s%s, area %s, #%d";
+chgdmsg=                "#Altered msg to %s%s, area %s, #%d";
+inputtimeout=           "!Input timeout";
+ltooslow=               "!Too slow (current=%lu, needed=%u)";
+cf_barricade=           "!Can't find barricade file %s";
+nomls=                  "!No mem for lastread scan";
+lvl5_reqd=              "!Level 5 FOSSIL required";
+log_begin_mt=           "+Begin, v%s (task=%u)";
+log_begin_1t=           "+Begin, v%s";
+log_syscrash1=          "!System crash detected on task %d";
+log_syscrash2=          "!User on-line at time of crash was %s";
+log_user_off_line=      "+%s off-line. Calls=%d, Len=%ld, Today=%ld";
+log_max_end=            ":End, v%s (%d)\n";
+log_ret_from_app=       "+Return from external application";
+@DOS log_no_fossil=     "!FOSSIL isn't loaded";
+@OS2 log_no_fossil=     "!Communications driver not properly installed";
+@NT log_no_fossil=      "!Communications driver not properly installed";
+log_err_msgapi=         "!Couldn't initialize message API";
+log_got_null_ptr=       ">!User off-line by NULL pointer!";
+brain_lapse=            "!Temporary brain lapse.  Name=\"%s\"?";
+log_ft_yuhu=            ">!Fall-through YooHoo?";
+log_axe=                ">!Sysop axed caller";
+log_pv_change=          ":Priv set to %s";
+log_pvchg=              ">!PORT VAR CHANGED! Please report to author.";
+log_got_ansi=           "!ANSI sequence found, area %s msg %ld";
+log_lread_xlink=        "!Err: Lastread ptr xlinked for '%s' (%d)";
+no_class_rec=           "!%s, can't find class record";
+inv_ccmd=               "!Invalid custom format command: \"%%%c\"";
+log_max_nest=           "!Maximum nested link limit exceeded; %s aborted";
+log_farea=              ":File area %s";
+log_dllim=              ":Dnld req. would exceed limit";
+log_exc_ratio=          ":Dnld req. would exceed ratio";
+log_sending_to=         " Sending to %s at %ld bps";
+log_getting_from=       " Receiving from %s at %ld bps";
+log_disp=               "=Display %s%s";
+bad_ul_path=            "!Invalid UL path, area %s";
+supp_path=              "!User supplied path \"%s\"";
+udev=                   "!User gave device/path \"%s\"";
+ullog_format=           "%s UL %s%s (%ldb), %s %s\n";
+ul_renamed=             "!Upload \"%s\" renamed to \"%s\"";
+log_msga=               ":Msg.area %s";
+log_msgfrom=            "#MsgFrom: %s -=> %s";
+log_read_msg=           " Read msg#%ld, area %s";
+log_check_mail=         " User scanning for mail";
+log_kill=               "#Killed #%ld, area %s";
+log_fwd=                "#Fwd msg. to %s, area %s, #%d";
+log_charge=             "+Matrix charge %d";
+log_bal=                ":Low matrix balance, %d cents";
+log_chat=               ":%s%s";
+log_tlimit=             ">!Time limit";
+log_byebye=             ">:Caller dropped carrier";
+log_bad_erl=            ">!Invalid outside errorlevel";
+log_badex1=             ">!| Xtern_Run needs .EXE or .COM extension";
+@NT  log_badex2=        ">!| Use Xtern_Dos for .BAT or other!";
+@DOS log_badex2=        ">!| Use Xtern_Dos for .BAT or other!";
+@OS2 log_badex2=        ">!| Use Xtern_Os2 for .CMD or other!";
+log_badnf=              ">!Program not found!";
+log_badnm=              ">!Not enough memory to execute program";
+log_badee=              ">!Execution error (errno=%d)";
+log_badom=              "!Unknown outside method";
+log_ul=                 "=UL-%c %s%s";
+log_dl=                 "=DL-%c %s";
+log_dump=               ">!Sysop dumped caller";
+log_no_menu_mem=        ">!Not enough mem to read menu";
+chat_nest=              "*** Can't nest CHAT mode, exit current .BBS file first ***";
+chat_on=                "SysOp: <esc> to exit chat, or <Alt-C> to toggle capture buffer";
+chat_capoff=            "CAPTURE OFF";
+chat_capon=             "CAPTURE ON";
+chat_logmsg#=           "****** BEGIN CHAT on %s at %s with %s ******\n\n";
+chat_logend#=           "\n****** END CHAT on %s at %s ******\n\n";
+log_user_yelling=       ":%s is yelling";
+log_ch_pwd=             ":User changing password";
+log_inv_pwd=            "!Invalid current pwd \"%s\"";
+log_cb_start =          "#Entered CB channel %d";
+log_pvt_start=          "#Private chat with %s (node %d)";
+log_exit_chat=          "#Exit multi-line chat";
+min_add=                "%d minute%s added (%d remain)";
+min_less=               "%d minute%s removed (%d remain)";
+key_on=                 "Keyboard: ON";
+pv_lock=                "Priv locked at %s";
+on_snoop=               "Snoop: ON";
+off_snoop=              "Snoop: OFF";
+pv_unlock=              "Priv unlocked";
+cume_zero=              "Daily cume zeroed";
+pv_change=              "Priv Modified (%s)";
+togkey=                 "Key #%c toggled. (Now %s)";
+key_off=                "Keyboard: OFF";
+stat_0=                 "\n" CLEOL;
+stat_1=                 CLEOL "  Name: %-20.20s  Alias: %-20.20s  Bps: %ld\n";
+stat_2=                 CLEOL "  Priv: %-20.20s  Phone: %-20.20s  Dob: %04u.%02u.%02u\n";
+stat_3=                 CLEOL "\x16\x01%c"
+                              "  Last: %-20.20s   City: %-20.20s  %s\n";
+stat_4=                 CLEOL "    Width: %-8d    Length: %-5d TimeOnline: %-5d   TimeLeft: %d\n";
+stat_5 =                CLEOL "      Msg: %-10s";
+stat_6 =                      "    File: %-10s Calls: %-5d  TimeToday: %d\n";
+stat_7 =                CLEOL "     Help: %-8s      Tabs: %-5s      Nulls: %-5d  IBM chars: %s\n";
+stat_8 =                CLEOL "    Video: %-8s     MaxEd: %-5s       More: %-5s        CLS: %s\n";
+stat_9 =                CLEOL " DL today: %-8ld  DL total: %-5lu   UL total: %-5lu    Hotkeys: %s\n";
+stat_10=                CLEOL "   Credit: %-5u        Debit: %-5u  SubAction: %-6s SubExpire: %s\n";
+stat_11=                CLEOL "      RIP: %-8s\n";
+stat_12=                CLEOL " <Alt-C> Chat mode           #) 1-8, toggle user keys  !) Toggle yell noise\n";
+stat_13=                CLEOL "      A) Local keyboard on   S) Set priv level        ^x) Hang up\n";
+stat_14=                CLEOL "      N) Snoop ON     <Up/PgUp> Time up (1 or 5)  <Alt-D> Hang up w/noise\n";
+stat_15=                CLEOL "      O) Snoop OFF    <Dn/PgDn> Time down (1 or 5)     Z) Zero daily time\n";
+stat_16=                CLEOL "      L) Lock priv level     U) Unlock priv level <Alt-N> Toggle NERD flag";
+stat_mins=              "%ld min";
+stat_hangup=            "HangUp";
+stat_demote=            "Demote";
+ch_req=                 BLINK "C'REQ" WHITE;
+log_not_in_ulist=       "!%s not in userlist";
+log_applic=             ":Application";
+log_cust=               "+Custom welcome for %s";
+log_caller_bps=         ":Caller at %ld bps";
+turf_hidden=            ">!Hanging up on HIDDEN caller";
+bad_uword=              ">!Bad word in username";
+log_given=              "#Given %d min.";
+log_event_err=          "!Event syntax err: \"%s\"";
+log_bad_evt_time=       "!Invalid event time: \"%s\"";
+log_hurl=               "#Hurl area %s #%ld to area %s";
+log_maxfiles_sync=      "!MAXFILES.IDX out of sync: run FB.EXE";
+log_qwk_download=       ":Download QWK packet";
+log_qwk_upload=         ":Upload QWK packet";
+log_qwk_msg_to=         "#QWK msg to %s, area %s #%ld";
+log_start_browse=       ":Browsing msg areas";
+sysop_yes=              "YES";
+sysop_no=               "NO";
+log_exc_daylimit=       "!User exceeded daily time limit";
+log_free_time_dl=       "=Free DL: reimbursed %ld seconds";
+log_free_bytes_dl=      "=Free DL: reimbursed %ld Kb";
+nerd_toggled=           "NERD setting toggled (now %s)";
+sys_on=                 "ON";
+sys_off=                "OFF";
+cantcreate=             "!Can't create \"%s\"";
+log_err_compr=          "!Archiver error (errorlevel %d)";
+type_keys_to_toggle=    YELLOW "\nSysOp: Type letters/numbers of keys to toggle.  <enter> to save changes, or\n<esc> to restore old keys.\n\n" CYAN;
+copen_log=              "\aCan't open log file \"%s\"\n";
+line_noise=             "û ký¯[Æ\rœÞw“žUV Uq€>V&ó\"Fƒ’Áù";
+yell_toggle=            "Yell noise toggled (now %s)";
+priv_1=                 "Use <up> and <down>";
+priv_2=                 "to adjust priv level.";
+priv_3=                 "Press <enter> when done.";
+priv_keys=              "Keys: ";
+sys_aborted=            "\nChanges aborted.\n";
+log_qwk_bad_date=       "!Bad date in QWK msg";
+log_repacking_mtag=     ":Automatically repacking MTAG.DAT";
+log_error_pack=         "!Error packing mtag %d";
+log_bad_bar_pwd=        "!Bad pwd for barricade area %s: \"%s\"";
+log_mcp_err_1#=         "!Cannot connect to MCP program at '%s'";
+log_mcp_err_2#=         "!Error starting MCP server (SYS%04d)";
+log_qwk_busy=           "!QWK packer busy on other node (%s left behind?)";
+log_mex_no_reentrancy=  "!Only one MEX program can be run at a time";
+brackets_encrypted=     "<encrypted>";
+log_invalid_acs=        "!Invalid ACS definition: '%s'";
+log_attach_upload=      ":Upload local file attach";
+log_attach_download=    ":Download local file attach";
+log_err_open_attach_db= "!Error opening file attach database (%s)";
+log_err_upd_attach_db=  "!Error updating file attach database";
+log_err_noarea=         "!Attach for unknown area %s";
+@MEX lxferaborted=      "~File transfer aborted";
+log_err_ripsend=        ">#RIP block send protocol error, retry %d";
+log_abort_ripsend=      ">#RIP block send/display aborted";
+log_rip_enabled_ndt=    ">:RIP not detected but enabled by caller";
+so_and_so_realname=     ":Real name: %s";
+so_and_so_alias=        ":Alias: %s";
+log_display_file=       "> Displaying RIP file %s";
+log_disable_rip=        "!Too many RIP send failures; RIP disabled.";
+log_searchingfor=       " File locate for \"%s\"";
+log_starting_mcp=       ":Starting MCP server process";
+log_no_mcp=             "!MCP server '%s' not found.  IPC features disabled!";
+called_with_idx_0=      "%s called with index of 0";
+log_invalid_acs_key=    "!Invalid ACS key: '%c'";
+log_cant_open_trk=      "!Can't open tracking subsystem!";
+log_err_setting_owner=  "!Error setting track owner %s/%s";
+log_tracking=           "%%Tracking %s:%ld -> %s";
+log_track_cantadd1=     "!\\ Can't add message %s:%ld to tracking db!";
+log_track_cantadd2=     "!/ (Maybe no default owner assigned?)";
+log_err_updating_stat=  "!Error updating tracking status to TS_OPEN!";
+log_trk_kludges=        "!Can't get memory for track kludges!";
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Initialization Heap                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:max_init
+
+@MEX logo1=             "Maximus " VER;
+@MEX logo2=             "Copyright " YEAR " by Lanius Corp.";
+err_startup_tlong=      "Startup directory name too long!\n";
+mtask_detected=         " %s detected";
+@MEX user_text=         "User";
+found_nptr=             "Found a null pointer!  Please call back and report to SysOp!\n\a";
+@RIP found_nptr=        RIP RIP_RESET RIP_FILLSTY "0104" RIP_BAR "018AHS8K" RIP_COL "0F" RIP_TEXTXY "088CFound a null pointer!  Please call back and report to SysOp\!" RIP_END "\a";
+reserved1=              "";
+pls_rsp=                CYAN "\n\aPlease respond: ";
+@RIP pls_rsp=           RIP RIP_FILLSTY "0104" RIP_BAR "018AHS8K" RIP_COL "0F" RIP_TEXTXY "088CPlease respond\!" RIP_END "\a";
+min5_left=              CYAN "\n\aYOU HAVE ONLY 5 MIN. LEFT.\a\n";
+@RIP min5_left=         RIP RIP_FILLSTY "0104" RIP_BAR "018AHS8K" RIP_COL "0F" RIP_TEXTXY "088CYOU HAVE ONLY 5 MINTUES LEFT\!" RIP_END "\a";
+almost_up=              CYAN "\n\aTIME ALMOST UP.\a\n";
+@RIP almost_up=         RIP RIP_FILLSTY "0104" RIP_BAR "018AHS8K" RIP_COL "0F" RIP_TEXTXY "088CTIME ALMOST UP." RIP_END "\a";
+time_up=                CYAN "\n\aTIME LIMIT.\a\n";
+@RIP time_up=           RIP RIP_FILLSTY "0104" RIP_BAR "018AHS8K" RIP_COL "0F" RIP_TEXTXY "088CTIME UP." RIP_END "\a";
+time_file=              "%sTIMEUP";
+grunged_exe=            "!Grunged MAX.EXE";
+what_first_name=        "What is your name%s: ";
+what_last_name=         "What is your LAST name%s: ";
+s_alias=                ;
+@MEX invalid_punct=     "Invalid punctuation.\n\n";
+uc_warn=                "Warning!  -c parameter specified, but USER.BBS already exists!\n";
+@MEX pvt_system=        "\nThis is a private system.\n";
+@MEX get_ansi1=         "Does your system support\n";
+@MEX get_ansi2=         "ANSI screen controls";
+@MEX get_rip=           "Remote Imaging Protocol (RIP)";
+@MEX get_fsed=          "Use the MaxEd full-screen editor";
+@MEX get_ibmpc=         "Use IBM-PC characters";
+@MEX get_hotkeys=       "Use \"hotkeys\"";
+tlimit1=                "Your daily time limit is %u minutes.\n";
+tlimit2=                "You have logged %u minutes.\n";
+get_pwd1=               "Please enter the password you wish to use: ";
+bad_pwd1=               "\nA password is a single word (no spaces).\nIt must be 4 to 15 letters (or numbers) long.\n\n";
+bad_pwd2=               "\nYou entered \"%s\" the first time, but \"%s\" the second.\n\n";
+check_pwd2=            "Please re-enter your password for verification: ";
+cs_logging_on=          "Caller logging in";
+@MEX ansi_autodetect=   "\x1b[6n\r    \r";
+@MEX rip_autodetect=    RIP "|1F000000xyzy+$$$.icn\r                       \r";
+@MEX chat_start=        WHITE "\nCHAT: start\n";
+@RIP chat_start=        RIP RIP_TEXTWIN "0000271710" RIP_COL "00" RIP_ERASEWIN RIP_END WHITE "\nCHAT: start\n";
+@MEX chat_end=          WHITE "\nCHAT: end\n";
+searching_for_user=     "(searching)";
+searching_for_user_back="\r           \r";
+check_ansi=             "You have ANSI graphics enabled, but ANSI cannot be detected.\n\nDo you wish to disable ANSI graphics";
+check_rip=              "You have RIP graphics enabled, but RIP graphics cannot be detected.\n\nDo you wish to disable RIP graphics";
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           File-area Heap                                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:f_area
+
+deny_file=              "file ";
+file_prmpt=             "File area " LBRACKET "Area, \"%c\"=Prior, \"%c\"=Next, \"%c\"=List" RBRACKET ": ";
+file_title=             "Files: " LBRACKET "\"*\"=new, <enter>=all, or type a partial filename" RBRACKET ": ";
+@RIP file_title=        RIP RIP_KILL RIP_FILLSTY "0100" RIP_BAR "008MHS9Q\n"
+                        RLI RIP_TEXTWIN "0002271210" RIP_HOME RIP_COL "00\n"
+                        RLI RIP_ERASEWIN RIP_END "\r"
+                        "Files: " LBRACKET "\"*\"=new, <enter>=all, or type a partial filename" RBRACKET ": ";
+@MEX ze_file_cmd=       "The Files command";
+@MEX ze_loc_cmd=        "Locate";
+@MEX loc_banner=        WHITE "\nLOCATE (search ALL file areas)\n";
+@MEX note_helpnf=       "\nType \"?\" for help, or \"*\" to list new files.\n\n";
+@MEX loc_file=          "Enter the text to find: ";
+fbbs_counter=           LBRACKET "%4d" RBRACKET " ";
+bytes_for_ul=           WHITE "\nThere are " YELLOW "%s" WHITE " bytes available for uploads in this area.\n";
+@MEX noupl=             WHITE "\nYou can't upload in this area.\n";
+desc_many=              WHITE "\nPlease describe %s (up to three lines; press <enter> on\na blank line to end):\n";
+dupe_file=              LRED "The file %s already exists on this system!\n";
+checking_ul=            YELLOW "\nPlease wait.  Verifying %s...\n";
+@MEX exc_daily_lim=     LRED "That would exceed your download limit.\n";
+exc_ratio=              LRED "\nThat would exceed your download:upload ratio of %d:1.\n";
+@MEX exc_time_limit=    LRED "That would exceed your time limit.\n";
+file_offl=              LRED "The file \"%s\" is stored off-line.\n";
+@MEX file_dl_tagged=    "Download tagged files";
+@MEX file_hangup_text=  "hang up";
+pause_msg=              YELLOW "Hit <enter> (or wait %u seconds) to %s, or hit <esc> to abort:\n";
+pause_time=             "\r%-2d";
+@MEX fname_mask=        "Filename mask: ";
+@MEX avail_proto=       YELLOW "\nAvailable protocols:\n\n";
+proto_box_top=          LCYAN " Ú\x19Ä%c¿\n";
+proto_box_mid=          " ³ " YELLOW "%c" GRAY ")%-*.*s " LCYAN "³\n";
+proto_box_bot=          " À\x19Ä%cÙ\n\n" WHITE;
+@MEX proto_quit=        "Quit";
+@MEX file_ul=           "File to upload? ";
+file_dl=                "File(s) to download (#%u): ";
+file1_dl=               "File to download (#%u): ";
+@MEX file_only1=        WHITE "That protocol can only transfer one file at a time.\n";
+@MEX how_dl=            YELLOW "Type \"/q\" on a blank line to abort download.  Type \"/e\" to edit the\ndownload list.  Type \"/g\" to start the download and log off afterwards.\nFor a normal download, simply press <enter>.\n\n";
+@MEX method_download=   "download";
+@MEX method_tag=        "tag";
+@MEX down_fnam=         YELLOW "\n\nFile: " LGREEN;
+down_fsiz=              YELLOW "Size: " WHITE "%ld bytes (%ld Xmodem blocks)\n";
+down_ftim=              YELLOW "Time: " WHITE "%d minutes and %d seconds (estimated)\n";
+down_fmode=             YELLOW "Mode: " WHITE "%s\n\n";
+@MEX start_receive=     LRED "Begin your download now, or hit <Ctrl-X> several times to cancel.\n\n" WHITE;
+mode_bg=                YELLOW "\n\nMode: " WHITE "%s\n" LRED "Begin sending now, or hit <Ctrl-X> several times to cancel.\n\n" WHITE;
+file_max_expand=        LRED "\nBatch transfer limit of %u files exceeded.\n";
+file_stats=             YELLOW "(%u) " LMAGENTA "%-12s " LGREEN "(%02u:%02u, %ld bytes)  ";
+dup_filename=           LRED "File %s already selected!\n";
+; /e=edit, /g=goodbye_after_dl, /q=quit
+@MEX file_dl_keys=      "EGQ";
+@MEX file_to_kill=      "File to kill? ";
+delete_yn=              "Delete %s";
+@MEX lfbrfbe=           "Leave file but remove FILES.BBS entry";
+@MEX hurl_what=         "Hurl what? ";
+hurled_file=            "Hurling %s to %s...\n";
+@MEX type_which=        "Display which file? ";
+@MEX type_for_text=     WHITE "\nView is for TEXT FILES.\n";
+@MEX dot_zip=           ".zip";
+@MEX dot_pak=           ".pak";
+@MEX dot_arc=           ".arc";
+@MEX dot_lzh=           ".lzh";
+@MEX dot_arj=           ".arj";
+@MEX contents_of=       "Display the contents of which archive? ";
+bad_arc=                WHITE "\nFile \"%s\" is not a ZIP/LZH/ARC/PAK/ARJ, or file damaged.\n";
+sarc=                   "\nSearching archive: %s ";
+ziphdr1=                " Length  Method   Size   Ratio   Date   Time   CRC-32  Attr Name\n";
+ziphdr2=                "ÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄ ÄÄÄÄ\n";
+zip_store=              "Stored ";
+zip_shrunk=             "Shrunk ";
+zip_reduce=             "ReduceX";
+zip_implode=            "Implode";
+unknown=                "Unknown";
+zip_format=             "%8lu %-7s %7lu %-02.2d.%d%% %02d-%02d-%02d %02d:%02d %08lx %s%c %-0.17s\n";
+zip_cmnt=               "Comment: %s\n";
+zip_encrypt=            "Warning!  File \"%s\" is encrypted!\n";
+zip_trail1=             "ÄÄÄÄÄÄÄÄ         ÄÄÄÄÄÄÄ ÄÄÄÄÄ                              ÄÄÄÄ\n";
+zip_trail2=             "%8ld        %8ld %-02.2d.%d%%                              %d\n";
+arc_h1=                 "\n\n      Name       Length    Size   Ratio   Date     Time   Attr   Type   CRC\n";
+arc_h2=                 "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄ\n";
+arc_t1=                 "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄÄ\n";
+arc_t2=                 "%15d %8ld %8ld %-02.2d.%d%%\n";
+@MEX full_ovr_path=     "Enter FULL override path: ";
+file_enter_tag=         "(%u) Filename(s) to tag: ";
+@RIP file_enter_tag=    RIP RIP_KILL RIP_FONTSTY "00000100" RIP_FILLSTY "0100" RIP_BAR "008MHS9Q\n"
+                        RLI RIP_COL "08" RIP_RECT "018UI196" RIP_COL "0F" RIP_RECT "008THQ95\n"
+                        RLI RIP_FILLSTY "0107" RIP_BAR "018UHQ95" RIP_COL "01" RIP_TEXTXY "048W(%u) Filename(s) to tag:\n"
+                        RLI RIP_TEXTWIN "0P14271400" RIP_END
+                        HOME BLUEONWHIT CLEOL;
+file_tag_total=         YELLOW "\nTotal: " LGREEN "%ld bytes " YELLOW "(%ld:%02ld)\n";
+@MEX no_tagged=         LRED "No files are tagged.\n";
+file_untag=             "File number to detag " LBRACKET "1-%d, or A)ll" RBRACKET ": ";
+@MEX file_untagged=     YELLOW "File " LMAGENTA "%s " YELLOW "detagged.\n";
+@MEX tag_menu=          "Tag: " LBRACKET "A)dd, L)ist, D)elete, C)lear, Q)uit, ?=help" RBRACKET ": ";
+@MEX file_edit_menu=    "Edit: " LBRACKET "L)ist, D)elete, C)lear, Q)uit, ?=help" RBRACKET ": ";
+@MEX all_untagged=      "File queue is now empty.\n";
+@MEX tag_keys=          "ALDC?Q";
+@MEX file_no_wc=        LRED "This command does not support wildcards.\n";
+zip_deflate=            "Deflate";
+@MEX file_sect_hdr=     CLS YELONBLUE CLEOL "The FILES Section" GRAY;
+@RIP file_sect_hdr=     RIP RIP_RESET RIP_FONTSTY "00000100" RIP_COL "08" RIP_RECT "010HHR0S\n"
+                        RLI RIP_COL "09" RIP_RECT "000GHQ0R" RIP_FILLSTY "0101" RIP_BAR "010HHQ0R\n"
+                        RLI RIP_COL "0E" RIP_TEXTXY "040JThe FILES Section" RIP_END;
+@MEX file_menu_hdr=     LGREEN "\n\nFile area " LMAGENTA;
+@RIP file_menu_hdr=     RIP RIP_TEXTWIN "0002271210" RIP_COL "08" RIP_RECT "0101HR0C\n"
+                        RLI RIP_COL "0F" RIP_RECT "0000HQ0B" RIP_FILLSTY "0107" RIP_BAR "0101HQ0B\n"
+                        RLI RIP_MOVE "0403" RIP_COL "02" RIP_TEXT "File Area " RIP_COL "05" RIP_TEXT;
+@MEX file_menu_sep=     GRAY " ... " CYAN;
+@RIP file_menu_sep=     RIP_COL "00" RIP_TEXT ": " RIP_COL "01" RIP_TEXT;
+badupload=              LRED "\nThe filename '%s' is not acceptible as an upload to this BBS.\n";
+file_name_col=          COL_FILE_NAME;
+file_size_col=          COL_FILE_SIZE;
+file_date_col=          COL_FILE_DATE;
+file_desc_col=          COL_FILE_DESC;
+file_found_col=         COL_FILE_FIND;
+file_offline_col=       COL_FILE_OFFLN;
+file_new_col=           COL_FILE_NEW;
+@MEX file_hdr_end=      "\n\n";
+@RIP file_hdr_end=      RIP_END "\n\n\n";
+fbbs_more_prompt=       "More";
+@RIP fbbs_more_prompt=  RIP RIP_KILL RIP_FONTSTY "00000100" RIP_FILLSTY "0100" RIP_BAR "008PHS9Q\n"
+                        RLI RIP_COL "08" RIP_RECT "018Y4L9A" RIP_COL "0F" RIP_RECT "008X4K99\n"
+                        RLI RIP_FILLSTY "0107" RIP_BAR "018Y4K99" RIP_COL "01" RIP_TEXTXY "0A90More?\n"
+                        RLI RIP_BUTSTY "1E080207PE0201080F000700020407000000\n"
+                        RLI RIP_BUTDEF "1L9000002H00<>Yes<>Y\n"
+                        RLI RIP_BUTDEF "349000002600<>No<>N\n"
+                        RLI RIP_END;
+fbbs_more_promptt=      "More";
+@RIP fbbs_more_promptt= RIP RIP_KILL RIP_FONTSTY "00000100" RIP_FILLSTY "0100" RIP_BAR "008PHS9Q\n"
+                        RLI RIP_COL "08" RIP_RECT "018Y7I9A" RIP_COL "0F" RIP_RECT "008X7H99\n"
+                        RLI RIP_FILLSTY "0107" RIP_BAR "018Y7H99" RIP_COL "01" RIP_TEXTXY "0A90More?\n"
+                        RLI RIP_BUTSTY "1E080207PE0201080F000700020407000000\n"
+                        RLI RIP_BUTDEF "1L9000002H00<>Yes<>Y\n"
+                        RLI RIP_BUTDEF "349000002600<>No<>N\n"
+                        RLI RIP_BUTSTY "2O080207PE0200080F000700020407000000\n"
+                        RLI RIP_BUTDEF "4N9000002C00<>Tag Files<>T\n"
+                        RLI RIP_END;
+fbbs_more_blank=        "\r" CLEOL;
+@RIP file_more_blank=   RIP RIP_KILL RIP_FILLSTY "0100" RIP_BAR "008MHS9Q"
+                        RIP_TEXTWIN "0002271210" RIP_GOTOXY "0010" RIP_END "\r";
+file_clear_tag=         CLEOL;
+@RIP file_clear_tag=    RIP RIP_KILL RIP_FILLSTY "0100" RIP_BAR "008MHS9Q"
+                        RIP_TEXTWIN "0002271210" RIP_GOTOXY "0010" RIP_END "\r";
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                               Editor Heap                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:max_bor
+
+last_line=              "This is your last line.\n";
+list_from=              CYAN "   From: " YELLOW "%s\n";
+list_to  =              CYAN "     To: " YELLOW "%s\n";
+list_subj=              CYAN "Subject: " YELLOW "%s\n\n";
+bed_to=                 GRAY "\nTo: " YELLOW "%s\n\n";
+bto=                    "     To: ";
+bfrom=                  GRAY "\nFrom: " YELLOW "%s\n\n";
+bfromsp=                "   From: ";
+bsubj=                  GRAY "\nSubject: " YELLOW "%s\n\n";
+bsubject=               "Subject: ";
+edlist_quit=            YELLOW "Q" GRAY ")uit\n\n" WHITE;
+line_del_from=          "Delete FROM which line number: ";
+line_del_to=            "Delete TO which line number: ";
+deld=                   "\nLines deleted.\n";
+ins_bef=                "Insert a line BEFORE which line: ";
+line_ins=               "\nLine inserted.\n";
+line_edit_num=          "Type the line number you wish to change: ";
+rep_what=               "Replace what: ";
+noroom=                 "\nNot enough room.  Aborted.\n\n";
+editl1=                 YELLOW "\nType what you want to put into the line\n";
+editl2=                 "at the beginning.\n\n";
+editl3=                 "instead of \"%s\".\n\n";
+e_numch=                LGREEN "You can put as many as %d characters\nhere.\n\n" WHITE;
+new_st=                 "New: ";
+not_reply=              WHITE "\nMessage is not a reply.\n";
+qstart=                 "Start quoting FROM line# (\"?\" displays message): ";
+qend=                   "End quoting AT line#: ";
+sstmt=                  "\nSOCIAL STMT:  Quoting more than 15 lines at a time is bad practice.\n";
+blfmt1=                 GRAY     "%2d: " YELLOW "%s";
+; The offsets of these message attributes match MSGKEY_xxx defs in max_msg.h
+@MEX msg_attr0$=        "Private";
+@MEX msg_attr1=         "Crash";
+@MEX msg_attr2=         "Received";
+@MEX msg_attr3=         "Sent";
+@MEX msg_attr4=         "Attach File";
+@MEX msg_attr5=         "Forward";
+@MEX msg_attr6=         "Orphan";
+@MEX msg_attr7=         "Kill/Sent";
+@MEX msg_attr8=         "Local";
+@MEX msg_attr9=         "Hold";
+@MEX msg_attr10=        "Xx2";
+@MEX msg_attr11=        "Get File";
+@MEX msg_attr12=        "!Receipt Request";
+@MEX msg_attr13=        "$Return Receipt";
+@MEX msg_attr14=        "Trail Req.";
+@MEX msg_attr15=        "Update Req.";
+word_not_found=         "\n\"%s\" not found.\n";
+@MEX happy=             WHITONBLUE "\aDon't worry, be happy!\x19 \x23" CYAN;
+max_status=             YELONBLUE CLEOL "^Z=save" WHITONBLUE "  To: %0.20s, Re: %0.27s";
+end_widget=             WHITE "-end-%s";
+end_widget2=            WHITE "-end-" GRAY;
+status_insert=          MAGONBLUE " Insert";
+insrt_ovrwrt=           MAGONBLUE "       ";
+max_not_reply=          YELONBLUE CLEOL "\aNot a reply";
+import_file=            "File (specify a FULL path): ";
+@MEX max_no_understand= WHITONBLUE CLEOL "\aI don't understand.  %s";
+@MEX abortchange=       CLEOL "Throw away changes";
+req_graph=              "\nMaxEd requires a non-TTY video mode, and a 79x24 monitor.\n\n";
+@MEX cant_change_field= LRED "You cannot change that field.\n" WHITE;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Message-Area Heap                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:m_area
+
+@MEX msg_abbr=          "msg.";
+msg_prmpt=              "Message area " LBRACKET "Area, \"%c\"=Prior, \"%c\"=Next, \"%c\"=List" RBRACKET ": ";
+savedmsg1=              CLEOL CLS WHITE CLEOL "Saving your message";
+savedmsg2=              " (#%ld).\n";
+savedmsg3=              " (%s:#%ld).\n";
+msg_tlong=              "\n" CLEOL "\aMessage too long -- Truncated.\n" CLEOL;
+@MEX comment_fr=        "Log-off comment";
+inrefto=                WHITE "\nRe: %s";
+atag_quest=             LCYAN LBRACKET "Enter area(s) to tag, \"?\"=list areas, \"-\"=delete all, <enter>=Quit" RBRACKET WHITE "\nTag Area: ";
+atag_done=              YELLOW "Area " LGREEN "%s" YELLOW " %stagged.\n";
+notag=                  "un";
+@MEX atag_help=         WHITE "\nPlease enter the area numbers to tag/untag.\n";
+at_equals_tagged=       YELLOW "Areas marked with an \"@\" are currently tagged.\n";
+@MEX atag_cant=         LRED "Error: too many areas tagged.  Delete some areas and try again.\n";
+@MEX ncredit=           YELLOW "\n\nYou don't have enough credit.\n" WHITE;
+warn_splow=             WHITE "\aWarning!  Space low in message area -- possibly not enough space\nto save message.\n\n";
+warn_mleft=             WHITE "\nWarning!  Only %d minutes left.\n";
+strt_any=               "Start message anyway";
+rd_only=                WHITE "\nThis area is read-only.\n";
+@MEX this_be=           "This will be a";
+@MEX pl_n=              "n";
+@MEX th_e=              " EchoMail";
+this_area=              " message in area %s." GRAY "\n\n";
+@MEX gmsg_l2p5=         "Type \"?\" to list users.";
+@MEX apvt=              "Private";
+@MEX edmsg=             "Enter destination address.";
+@MEX naddr=             "Network address: ";
+@MEX eto=               CYAN "     To: " YELLOW;
+mroute_sysop=           YELLOW "Message routed to the sysop, %s.\n";
+nowto=                  CYAN "     To: " YELLOW "%s\n";
+@MEX keep_subj=         "Press <enter> by itself to keep this subject.\n\n";
+@MEX new_subj=          "New subject: " YELLOW;
+pefon=                  CYAN "\nPress <enter> to use your own name.\n";
+@MEX n_from=            "   From: " YELLOW;
+a_noex=                 WHITE "\n\nWarning!  Attached file \"%s\" does not exist!\n";
+p_for_pvt_or_q_for_help="Type \"P\" to toggle private flag or press \"?\" for more help.";
+pvt_or_attach_or_help=  "Type \"P\" for private flag, \"A\" to attach a file or \"?\" for more help.";
+enter_msg_attrs=        "Enter message attributes (\"?\" for help) or press <enter> to continue.";
+enter_msg_attrs_attach= "Type \"A\" to attach a file, (\"?\" for more help) or <enter> to continue.";
+keep_to=                "Press <enter> for \"%s\".\n\n";
+mfrom=                  "%sFrom:    %s%-38.38s %s";
+net_orig=               "Orig";
+mto=                    "%sTo:      %s%-38s %sMsg #%ld, %s\n";
+net_dest=               "Dest";
+subj_colon=             "Subject:";
+files_colon=            "File(s):";
+this_reply=             WHITE "\n*** This is a reply to #%ld";
+see_also=               WHITE "*** See also #%ld";
+and=                    " and";
+comma=                  ",";
+endofline=              ".\n";
+dot_spsp=               ".  ";
+msgar_name=             "\nMessage ";
+msgn_prompt=            "#: ";
+@MEX attribs0$=         "Pvt";
+@MEX attribs1=          "Crash";
+@MEX attribs2=          "Rec'd";
+@MEX attribs3=          "Sent";
+@MEX attribs4=          "w/File";
+@MEX attribs5=          "Fwd";
+@MEX attribs6=          "Orphan";
+@MEX attribs7=          "Kill";
+@MEX attribs8=          ;
+@MEX attribs9=          "Hold";
+@MEX attribs10=         ;
+@MEX attribs11=         "FReq";
+@MEX attribs12=         "RcptReq";
+@MEX attribs13=         "Rcpt";
+@MEX attribs14=         "AudtReq";
+@MEX attribs15=         "UpdReq";
+@MEX del_msg=           "Delete this message";
+@MEX kill_which=        "Kill which (\"=\" for current)? ";
+kill_done=              LRED "\nMessage #%ld deleted.\n";
+@MEX fwd_which=         "Forward which message (\"=\" for current)? ";
+where_to_fwd=           WHITE "Forward into which area number " LBRACKET "<enter>=current, \"?\"=list" RBRACKET ": ";
+fwd_to=                 WHITE "Forwarded to %s at %s (#%ld)\n";
+org_area#=              "* Original Area: %s\r";
+orig_from#=             "* Original From: %s (%s)\r";
+orig_to#=               "* Original To  : %s (%s)\r";
+orig_subj#=             "* Original Subj: %s\r";
+@MEX get_route_file=    "Route file (use a FULL path): ";
+@MEX hurl_which=        "Hurl which message (\"=\" for current)? ";
+@MEX hurl_cant=         LRED "Can't move msg.\n" WHITE;
+hurling=                "\nHurling #%ld from area %s to area %s...\n";
+@MEX xport_which=       "Export which message (\"=\" for current)? ";
+@MEX xport_where=       "Export to where (Specify a FULL path): ";
+@MEX xporting=          "Exporting...\n";
+xp_hdr1#=                "Area %s, Msg#%ld, %s\n";
+xp_hdr2#=                "   From: %-36s %s%s%s\n";
+xp_hdr3#=                "     To: %-36s %s%s%s\n";
+xp_hdr4#=                "Subject: %s\n\n";
+ms_1=                   YELLOW "\nMATRIX CHARGE SUMMARY REPORT:\n";
+ms_2=                   CYAN "  Payments....... %5u cents\n";
+ms_3=                   CYAN "  Charges........ %5u cents\n";
+ms_4=                   CYAN "  This message... %5u cents\n";
+ms_5=                   CYAN "  Balance........ %5u cents\n";
+balance_adjusted=       LRED "\nBalance adjusted by +%d cents to compensate for original msg.\n";
+replying_to_area=       "* Replying to a message originally in area %s\r\r";
+@MEX reader_more_prompt="More";
+@RIP reader_more_prompt=RIP RIP_KILL RIP_FONTSTY "00000100\n"
+                        RLI RIP_FILLSTY "0100" RIP_BAR "008XHI9Q" RIP_COL "08" RIP_RECT "018YHR9A\n"
+                        RLI RIP_COL "0F" RIP_RECT "008XHQ99" RIP_FILLSTY "0107" RIP_BAR "018YHQ99\n"
+                        RLI RIP_COL "01" RIP_TEXTXY "0A90More?\n"
+                        RLI RIP_BUTSTY "1E080207PE0201080F000700020407000000\n"
+                        RLI RIP_BUTDEF "1L9000002H00<>Yes<>Y\n"
+                        RLI RIP_BUTDEF "349000002600<>No<>N\n"
+                        RLI RIP_BUTDEF "4N9000001P00<>=Cont<>=\n"
+                        RLI RIP_BUTDEF "669000001600<>*Again<>*\n"
+                        RLI RIP_BUTDEF "7P9000002800<>Prev<>^@K\n"
+                        RLI RIP_BUTDEF "989000001X00<>Next<>^@M\n"
+                        RLI RIP_BUTDEF "AR9000001900<>-orig<>-\n"
+                        RLI RIP_BUTDEF "CA9000001700<>+reply<>+\n"
+                        RLI RIP_BUTDEF "DT9000002A00<>Reply<>R\n"
+                        RLI RIP_BUTSTY "2A080207PE0200080F000700020407000000\n"
+                        RLI RIP_BUTDEF "FC9000001100<>PvtReply<>%\n"
+                        RLI RIP_END;
+@MEX reader_more_blank= "\r" CLEOL;
+@RIP reader_more_blank= RIP RIP_FILLSTY "0100" RIP_BAR "008RHS9Q" RIP_END;
+reader_box_top=         POS_FSR_TOP COL_FSR_BORDER CLEOL "Ä " COL_FSR_MSGINFO "%s: %s " COL_FSR_BORDER "\x19Ä%c";
+@RIP reader_box_top=    RIP RIP_FILLSTY "0100" RIP_BAR "008GHR9P" RIP_TEXTWIN "0007271110" RIP_FONTSTY "00000100" RIP_KILL "\n"
+                        RLI RIP_COL "08" RIP_RECT "0101HR0C" RIP_COL "0F" RIP_RECT "0000HQ0B" RIP_FILLSTY "0107" RIP_BAR "0101HQ0B\n"
+                        RLI RIP_MOVE "0403" RIP_COL "02" RIP_TEXT "Msg Area " RIP_COL "05" RIP_TEXT "%s" RIP_COL "00" RIP_TEXT ": " RIP_COL "01" RIP_TEXT "%s\n"
+                        RLI RIP_COL "08" RIP_RECT "010EHR1J" RIP_COL "0F" RIP_RECT "000DHQ1I" RIP_FILLSTY "0107" RIP_BAR "010EHQ1I\n"
+                        RLI RIP_COL "08" RIP_LINE "041EHL1E" RIP_COL "0F" RIP_LINE "051FHM1F" RIP_END;
+reader_box_mid=         POS_FSR_MID COL_FSR_STATIC CLEOL "Msg#:       " COL_FSR_STATIC "%s" COL_FSR_STATIC;
+@RIP reader_box_mid=    RIP RIP_FSR_STATIC RIP_FSR_STATIC RIP_TEXTXY "040GMsg#:" RIP_FSR_STATIC RIP_TEXTXY "2M0G%s" RIP_END;
+reader_box_from=        POS_FSR_FROM COL_FSR_STATIC CLEOL "From:";
+@RIP reader_box_from=   RIP RIP_FSR_STATIC RIP_TEXTXY "040OFrom:" RIP_END;
+reader_box_to=          POS_FSR_TO COL_FSR_STATIC CLEOL "To:";
+@RIP reader_box_to=     RIP RIP_FSR_STATIC RIP_TEXTXY "040WTo:" RIP_END;
+reader_box_bottom=      POS_FSR_BOTTOM COL_FSR_BORDER CLEOL "\x19Ä%c";
+@RIP reader_box_bottom= ;
+rbox_msgn=              POS_FSR_MSGNUM COL_FSR_MSGNUM "%5d";
+@RIP rbox_msgn=         RIP RIP_FSR_MSGNUM RIP_TEXTXY "1C0G%-5d" RIP_END;
+rbox_high=              POS_FSR_HIGH COL_FSR_MSGNUM "%5d" CLEOL;
+@RIP rbox_high=         RIP RIP_FSR_MSGNUM RIP_TEXTXY "3K0G%-5d" RIP_END;
+rbox_replyto=           " - %ld";
+rbox_replies=           " + %ld";
+@MEX rbox_links=        POS_FSR_LINKS COL_FSR_LINKS "%s";
+@RIP rbox_links=        RIP RIP_FSR_LINKS RIP_TEXTXY "500G%s" RIP_END;
+rbox_attrs=             POS_FSR_ATTRIB COL_FSR_ATTRIB "%0.32s" CLEOL;
+@RIP rbox_attrs=        RIP RIP_FILLSTY "0107" RIP_BAR "8N0GHC0N" RIP_FSR_ATTRIB RIP_TEXTXY "8O0G%0.38s" RIP_END;
+rbox_sho_fname=         POS_FSR_FRTEXT COL_FSR_MSGINFO "%-32.32s";
+@RIP rbox_sho_fname=    RIP RIP_FILLSTY "0107" RIP_BAR "1B0O8C0V" RIP_FSR_MSGINFO RIP_TEXTXY "1C0O%-32.32s" RIP_END;
+rbox_sho_fdate=         POS_FSR_FRDATE COL_FSR_DATE "%s";
+@RIP rbox_sho_fdate=    RIP RIP_FILLSTY "0107" RIP_BAR "8N0OCP0V" RIP_FSR_DATE RIP_TEXTXY "8O0O%s" RIP_END;
+rbox_sho_faddr=         POS_FSR_FRADDR COL_FSR_ADDR "%s" CLEOL;
+@RIP rbox_sho_faddr=    RIP RIP_FILLSTY "0107" RIP_BAR "CV0OHC0V" RIP_FSR_ADDR RIP_TEXTXY "CW0O%s" RIP_END;
+rbox_sho_tname=         POS_FSR_TOTEXT COL_FSR_MSGINFO "%-32.32s";
+@RIP rbox_sho_tname=    RIP RIP_FILLSTY "0107" RIP_BAR "1B0W8C13" RIP_FSR_MSGINFO RIP_TEXTXY "1C0W%-32.32s" RIP_END;
+rbox_sho_tdate=         POS_FSR_TODATE COL_FSR_DATE "%s";
+@RIP rbox_sho_tdate=    RIP RIP_FILLSTY "0107" RIP_BAR "8N0WCP13" RIP_FSR_DATE RIP_TEXTXY "8O0W%s" RIP_END;
+rbox_sho_taddr=         POS_FSR_TOADDR COL_FSR_ADDR "%s" CLEOL;
+@RIP rbox_sho_taddr=    RIP RIP_FILLSTY "0107" RIP_BAR "CV0WHC13" RIP_FSR_ADDR RIP_TEXTXY "CW0W%s" RIP_END;
+rbox_sho_subj=          POS_FSR_SUBJTXT COL_FSR_MSGINFO "%-0.70s" CLEOL;
+@RIP rbox_sho_subj=     RIP RIP_FILLSTY "0107" RIP_BAR "1B14HC1B" RIP_FSR_MSGINFO RIP_TEXTXY "1C14%-0.70s" RIP_END;
+rbox_files_att=         POS_FSR_SUBJ COL_FSR_STATIC LBRACKET " Files attached to this message " RBRACKET RIP_END;
+@RIP rbox_files_att=    RIP RIP_FILLSTY "0107" RIP_BAR "1K14HA1B" RIP_FSR_STATIC RIP_TEXTXY "0414" LBRACKET " Files attached to this message " RBRACKET RIP_END;
+reader_box_subj=        POS_FSR_SUBJ COL_FSR_STATIC "Subj:" CLEOL;
+@RIP reader_box_subj=   RIP RIP_FILLSTY "0107" RIP_BAR "04141B1B" RIP_FSR_STATIC RIP_TEXTXY "0414Subj:" RIP_END;
+reader_box_file=        POS_FSR_SUBJ COL_FSR_STATIC "File:" CLEOL;
+@RIP reader_box_file=   RIP RIP_FILLSTY "0107" RIP_BAR "04141B1B" RIP_FSR_STATIC RIP_TEXTXY "0414File:" RIP_END;
+fsr_dest=               POS_FSR_BODY COL_FSR_LOCUS CLEOL "Destination: %s (%s)";
+@RIP fsr_dest=          RIP RIP_FSR_LOCUS RIP_HOME RIP_CLEOL RIP_END "Destination: %s (%s)" RIP_END;
+fsr_unlisted_node=      POS_FSR_BODY COL_FSR_LOCUS CLEOL "Unlisted node";
+@RIP fsr_unlisted_node= RIP RIP_FSR_LOCUS RIP_HOME RIP_CLEOL RIP_END "Unlisted node" RIP_END;
+reader_pos_attr=        POS_FSR_ATTRIB COL_FSR_ATTRIB;
+@RIP reader_pos_attr=   RIP RIP_TEXTWIN "1302270200" RIP_END HOME;
+reader_pos_from=        POS_FSR_FRTEXT;
+@RIP reader_pos_from=   RIP RIP_TEXTWIN "0603120300" RIP_END HOME BLUEONWHIT CLEOL;
+reader_pos_from_addr=   POS_FSR_FRADDR;
+@RIP reader_pos_from_addr=RIP RIP_TEXTWIN "0603120300" RIP_END HOME BLUEONWHIT CLEOL;
+reader_pos_to=          POS_FSR_TOTEXT;
+@RIP reader_pos_to=     RIP RIP_TEXTWIN "0604120400" RIP_END HOME BLUEONWHIT CLEOL;
+reader_pos_to_addr=     POS_FSR_TOADDR;
+@RIP reader_pos_to_addr=RIP RIP_TEXTWIN "0604120400" RIP_END HOME BLUEONWHIT CLEOL;
+reader_pos_subj=        POS_FSR_SUBJTXT;
+@RIP reader_pos_subj=   RIP RIP_TEXTWIN "06051Z0500" RIP_END HOME BLUEONWHIT CLEOL;
+reader_pos_text=        POS_FSR_BODY COL_MSG_BODY CLEOL;
+@RIP reader_pos_text=   RIP RIP_HOME RIP_TEXTWIN "0007271410" RIP_END COL_MSG_BODY CLEOL;
+err_entering_msg_area=  WHITE "\nError!  Cannot enter message area because: ";
+merr_corrupt=           "area is corrupted";
+merr_nomem=             "not enough memory";
+merr_nods=              "not enough disk space";
+merr_noent=             "area does not exist";
+merr_nolock=            "area not locked";
+merr_share=             "area in use by another process";
+merr_unknown=           "unknown error (#%d)";
+dont_upload_compressed= "Error!  This U)pload command only accepts ASCII files.  If you wish to upload\na QWK .REP file, please use the upload option on the QWK menu.\n";
+msg_with_attach=        "Send (attach) a file with this message";
+dload_attach=           "File(s) are attached to this message.  Download now";
+del_attach=             "Delete attached file(s) now";
+n_files_attached=       "There are %u files waiting for you.  Download now";
+attach_dload=           WHITE "Download this attach";
+no_files_attached=      LRED "There are no unreceived file attaches for you.\n" WHITE;
+attach_hdr0=            WHITE "\nList of files attached to " LRED "YOU:\n";
+attach_hdr0_5=          "                                              Compr.\n";
+attach_hdr1=            "Date     Time  From                           Size   Message Area\n";
+attach_hdr2=            "ÄÄÄÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n";
+attach_fmt=             LMAGENTA "%-8.8s %02.2d:%02.2d " YELLOW "%-30.30s " LRED "%6s " LGREEN "%-0.26s\n" WHITE;
+attach_fmt2=            LGREEN "\n Date: " LMAGENTA "%-8.8s %02.2d:%02.2d\n" LGREEN " From: " YELLOW   "%s\n" LGREEN " Area: " LCYAN    "%s\n\n";
+ok_to_overwrite=        "File '%s' exists.  Overwrite";
+@MEX msg_sect=          CLS YELONBLUE CLEOL "The MESSAGE Section" GRAY "\n";
+@RIP msg_sect=          RIP RIP_KILL RIP_RESET RIP_FONTSTY "00000100" RIP_COL "08" RIP_RECT "010HHR0S\n"
+                        RLI RIP_COL "09" RIP_RECT "000GHQ0R" RIP_FILLSTY "0101" RIP_BAR "010HHQ0R\n"
+                        RLI RIP_COL "0E" RIP_TEXTXY "040JThe MESSAGE Section" RIP_END;
+@MEX msg_menu_hdr=      LGREEN "Msg.area " LMAGENTA;
+@RIP msg_menu_hdr=      RIP RIP_MOVE "0404" RIP_COL "02" RIP_TEXT "Msg Area " RIP_COL "05" RIP_TEXT;
+@MEX msg_menu_sep=      GRAY " ... " CYAN;
+@RIP msg_menu_sep=      RIP_COL "00" RIP_TEXT ": " RIP_COL "01" RIP_TEXT;
+@MEX msg_nomsgs=        WHITE "There are no messages in this area.\n";
+@RIP msg_nomsgs=        RIP RIP_COL "0F" RIP_TEXTXY "0414There are no messages in this area." RIP_END;
+@MEX msg_thereare1=     LGREEN "There are ";
+@RIP msg_thereare1=     RIP RIP_COL "0A" RIP_TEXTXY "0414There are ";
+@MEX msg_thereare2=     " messages in this area.  ";
+@MEX msg_highest=       "The highest is #";
+@MEX msg_haventread=    "You haven't read any of these.\n";
+@RIP msg_haventread=    RIP RIP_COL "0B" RIP_TEXTXY "041EYou haven't read any of these." RIP_END;
+@MEX msg_nonew=         "NO NEW messages have been posted.\n";
+@RIP msg_nonew=         RIP RIP_COL "0B" RIP_TEXTXY "041ENO NEW messages have been posted." RIP_END;
+@MEX msg_lastread=      "The last message you read was #";
+@RIP msg_lastread=      RIP RIP_COL "0B" RIP_TEXTXY "041EThe last message you read was #";
+@MEX msg_enter_prompt1= GREEN "Press <enter> for the " LGREEN;
+@MEX msg_enter_prompt2= GREEN " message.\n\n";
+@MEX msg_dir_next=      "NEXT";
+@MEX msg_dir_prev=      "PREVIOUS";
+reader_box_of=          "  of";
+reader_box_highest=     "high";
+change_any=             "Edit message anyway";
+@MEX msg_menu_intro=    "\n";
+@RIP msg_menu_intro=    RIP RIP_END;
+@MEX msg_lbracket=      LBRACKET;
+@RIP msg_lbracket=      RIP RIP_COL "08" RIP_RECT "0101HR0C\n"
+                        RLI RIP_COL "0F" RIP_RECT "0000HQ0B" RIP_FILLSTY "0107" RIP_BAR "0101HQ0B\n"
+                        RLI RIP_COL "0E" RIP_TEXTXY "F403";
+@MEX msg_separator=     " / ";
+@RIP msg_separator=     "/";
+@MEX msg_rbracket=      RBRACKET;
+@RIP msg_rbracket=      RIP_END;
+reader_msg_init=        POS_FSR_BODY COL_MSG_BODY CLEOL;
+@RIP reader_msg_init=   RIP RIP_KILL RIP_FILLSTY "0100" RIP_BAR "008RHS9Q" RIP_TEXTWIN "0007271310" RIP_END
+                        COL_MSG_BODY CLEOL;
+@MEX msg_lastread_end=  ".\n";
+@RIP msg_lastread_end=  "." RIP_END;
+msg_text_col=           COL_MSG_BODY;
+msg_quote_col=          COL_MSG_QUOTE;
+msg_kludge_col=         COL_MSG_KLUDGE;
+msg_from_col=           COL_MSG_FROM;
+msg_from_txt_col=       COL_MSG_FROMTXT;
+msg_attr_col=           COL_MSG_ATTR;
+msg_to_col=             COL_MSG_TO;
+msg_to_txt_col=         COL_MSG_TOTXT;
+msg_date_col=           COL_MSG_DATE;
+msg_subj_col=           COL_MSG_SUBJ;
+msg_subj_txt_col=       COL_MSG_SUBJTXT;
+msg_addr_col=           COL_MSG_ADDR;
+msg_locus_col=          COL_MSG_LOCUS;
+fsr_border_col=         COL_FSR_BORDER;
+fsr_msginfo_col=        COL_FSR_MSGINFO;
+fsr_addr_col=           COL_FSR_ADDR;
+enter_msg_init=         "\n" CLS;
+@RIP enter_msg_init=    RIP RIP_FILLSTY "0100" RIP_BAR "001JHS9Q" RIP_END CLS;
+enter_header_init=      "\n" CLS;
+@RIP enter_msg_init=    RIP RIP_FILLSTY "0100" RIP_BAR "001JHS9Q" RIP_END CLS;
+where_to_reply=         WHITE "Reply to which area number " LBRACKET "<enter>=current, \"?\"=list" RBRACKET ": ";
+atag_questmore=         WHITE "Areas to tag " LBRACKET "\"?\"=list areas, \"*\"=Quit, " YELLOW "<enter>" WHITE " to show more" RBRACKET ": ";
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Main Menu Options                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:max_main
+
+disconnect=             "Disconnect";
+@RIP disconnect=        RIP RIP_RESET RIP_FONTSTY "00000100" RIP_COL "08" RIP_RECT "2U2A7U3E" RIP_FILLSTY "0107" RIP_BAR "2S287S3C\n"
+                        RLI RIP_COL "00" RIP_RECT "2T297T3D" RIP_COL "0F" RIP_RECT "2S287S3C" RIP_COL "01" RIP_TEXTXY "322GDisconnect now?\n"
+                        RLI RIP_BUTSTY "1K0G0207BE0300080F000700020407000000\n"
+                        RLI RIP_BUTDEF "2X2S00002H00<>Yes<>Y\n"
+                        RLI RIP_BUTDEF "4I2S00002600<>No<>N\n"
+                        RLI RIP_BUTDEF "632S00002000<>Help<>?\n"
+                        RLI RIP_END;
+leave_msg=              "Leave a message to %s";
+@RIP leave_msg=         RIP "|1K|Y00000100|c08|R2U2ABG3E|S0107|B2S28BE3C|c00|R2T29BF3D|c0F|R2S28BE3C|c01|@322GLeave message to %s?|1B1K0G0207BE0300080F000700020407000000\n"
+                        RLI RIP_BUTDEF "4B2S00002H00<>Yes<>Y\n"
+                        RLI RIP_BUTDEF "5W2S00002600<>No<>N\n"
+                        RLI RIP_BUTDEF "7H2S00002000<>Help<>?\n"
+                        RLI RIP_END;
+bibi=                   WHITE "Bye %s; thanks for calling.  Please hang up now.\n";
+@RIP bibi=              RIP "|*|1K|Y00000100|c08|R2U2ABG34|S0107|B2S28BE32|c00|R2T29BF33|c0F|R2S28BE32|c01\n"
+                        RLI "|m322E|TBye|c0E|T%s|c01|T|c01|@322PPlease hangup now.|g0117" RIP_END;
+user_yelling=           WHITE "\n%s is yelling...";
+il_nest_pas_ici=        "\nSorry, but there's no answer.\n\n";
+yell_is_off=            "\n" WHITE "Yell is turned off.\n";
+computer_type=          "Computer: ";
+class_pc=               "PC-class";
+class_xt=               "XT-class";
+class_pcjr=             "PCjr";
+class_ps2_xt=           "PC XT Model 286";
+class_ps2_mod=          "PS/2 Model %u";
+class_at=               "AT-class";
+class_pc_conv=          "PC Convertible";
+class_compaq_p=         "COMPAQ-Plus";
+class_compaq=           "COMPAQ";
+class_generic=          "Generic AT class 0x%02x\n";
+minor_revision=         ", revision %u";
+oper_sys=               "\n      OS: ";
+os2_ver=                "OS/2 Version %u.%02u\n";
+os2_dosbox=             "DOS BOX (OS/2 Version %u.%02u)\n";
+dos_ver=                "DOS %u.%02u\n";
+fossil_ver=             "  FOSSIL: %0.249Fs\n";
+heap_mem=               "  Memory: %s bytes remain in heap\n\n";
+ul_all=                 "Press <enter> for all, or type a partial name to match: ";
+ul_1=                   "\nPress <enter> to list all, or\n";
+ul_2=                   "type a partial name to match: ";
+ul_format=              YELLOW "%-30.30s " LCYAN " %-18.18s  " LGREEN "%-0.26s\n";
+ul_notfound=            WHITE "\"%s\" not found in userlist.\n\n";
+compiled_on=            LGREEN " Version: Compiled on %s at %s (";
+inval_cur_msg=          WHITE "\nInvalid current message area.\n";
+inval_cur_file=         WHITE "\nInvalid current file area.\n";
+you_dont_have_access=   LRED "\nYou do not have access to that function.\n";
+default_tag_save=       "tagged*.lst";
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Change Menu Options                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:max_chng
+
+@MEX not_impl=          LBLUE "Not implemented.\n";
+@MEX current_pwd=       "Current password: ";
+@MEX help_menu=         CLS YELLOW "N" GRAY ")ovice ..... " WHITE "Full menus\n" YELLOW "R" GRAY ")egular .... " WHITE "Brief menus\n" YELLOW "E" GRAY ")xpert ..... " WHITE "No menus\n\n" WHITE;
+@RIP help_menu=         RIP RIP_KILL RIP_END CLS YELLOW "N" GRAY ")ovice ..... " WHITE "Full menus\n" YELLOW "R" GRAY ")egular .... " WHITE "Brief menus\n" YELLOW "E" GRAY ")xpert ..... " WHITE "No menus\n\n" WHITE;
+@MEX help_prompt=       "Help Level: ";
+@MEX help_keys=         "NRE";
+@MEX num_nulls=         "Nulls (0-200): ";
+@RIP num_nulls=         RIP RIP_KILL RIP_END "Nulls (0-200): ";
+@MEX mon_width=         "Monitor width (20-132): ";
+@RIP mon_width=         RIP RIP_KILL RIP_END "Monitor width (20-132): ";
+@MEX bad_width=         "Invalid width.  Try again.\n\n";
+draw_line=              CLS "\n\n\n" GRAY "\x19Ä%cX\x19Ä\x09\n\n\n\n\n" WHITE;
+@RIP draw_line=         RIP RIP_RESET RIP_KILL RIP_END
+                        CLS "\n\n\n" GRAY "\x19Ä%cX\x19Ä\x09\n\n\n\n\n" WHITE;
+check_x=                "Is the \"X\" at the far left side of your display";
+@MEX incorrect_width=   "\nThe width that you entered is incorrect.  Try again.\n\n";
+@MEX top_num=           "Please type the number at the TOP of your display: ";
+@MEX video_menu=        CLS YELLOW "Video:\n\n" YELLOW "T" GRAY ")TY\n" YELLOW "A" GRAY ")NSI/VT-100\n" YELLOW "V" GRAY ") AVATAR\n\n" WHITE;
+@RIP video_mode=        RIP RIP_KILL RIP_END CLS YELLOW "Video:\n\n" YELLOW "T" GRAY ")TY\n" YELLOW "A" GRAY ")NSI/VT-100\n" YELLOW "V" GRAY ") AVATAR\n\n" WHITE;
+@MEX video_keys=        "TAV";
+@MEX no_colour=         "Sorry; this system doesn't do " COLOUR ".\n";
+col_too_slow=           "You must call at %u bps for " COLOUR ".\n";
+@MEX ph_too_long=       WHITE "\nPhone number too long; try again.\n";
+@MEX inv_phone=         WHITE "\nInvalid phone number.\n";
+@MEX select_lang=       WHITE "\nSelect a language:\n\n" YELLOW;
+@RIP select_lang=       RIP RIP_KILL RIP_END WHITE "\nSelect a language:\n\n" YELLOW;
+@MEX chose_default_proto=YELLOW "\nChoose a default file-transfer protocol:\n\n";
+@RIP chose_default_proto=RIP RIP_KILL RIP_END  YELLOW "\nChoose a default file-transfer protocol:\n\n";
+@MEX already_used=      WHITE "That name is already in use.\n";
+@MEX select_def_archiver=YELLOW "\nChoose an archiving method:\n\n";
+@RIP select_def_archiver=RIP RIP_KILL RIP_END YELLOW "\nChoose an archiving method:\n\n";
+@MEX ask_dob=           WHITE "\nEnter your date of birth " LBRACKET DATESTR RBRACKET ": ";
+@RIP ask_dob=           RIP RIP_KILL RIP_END WHITE "\nEnter your date of birth " LBRACKET DATESTR RBRACKET ": ";
+@MEX invalid_dob=       "Invalid birthdate.";
+@MEX invalid_dob_day=   " (day)";
+@MEX invalid_dob_mon=   " (month)";
+@MEX invalid_dob_year=  " (year)";
+@MEX ask_sex=           WHITE "\nPlease enter your gender:\n\n" YELLOW "  M" GRAY ")ale\n" YELLOW "  F" GRAY ")emale\n\n";
+@RIP ask_sex=           RIP RIP_KILL RIP_END WHITE "\nPlease enter your gender:\n\n" YELLOW "  M" GRAY ")ale\n" YELLOW "  F" GRAY ")emale\n\n" WHITE "Select: ";
+@MEX sex_keys=          "MFU";
+@MEX invalid_sex=       " is not a valid selection.";
+@MEX force_pwd_chg=     YELLOW "\nYour password has expired. You must select a new password.\n" WHITE;
+@MEX new_pwd_error=     LRED "\nError! You must select a different password.\n\n";
+
+; This line displayed when the user switches to this language.
+@MEX language_change=   "English language (proper) selected.\n";
+@MEX Chg_userlist=      "In UserList: ";
+@RIP Chg_userlist=      RIP_BUTDEF "CI3M00001100<>%In userlist<>%\n"
+                        RLI RIP_TEXTXY "GE3Q";
+@MEX Chg_nulls=         "Nulls:       ";
+@RIP Chg_nulls=         RIP_BUTDEF "643M00002600<>Nulls<>N\n"
+                        RLI RIP_TEXTXY "A03Q";
+@MEX Chg_width=         "ScrnWidth:   ";
+@RIP Chg_width=         RIP_BUTDEF "0A4600002F00<>screen Width<>W\n"
+                        RLI RIP_TEXTXY "464A";
+@MEX Chg_length=        "ScrnLength:  ";
+@RIP Chg_length=        RIP_BUTDEF "644600002400<>screen Length<>L\n"
+                        RLI RIP_TEXTXY "A04A";
+@MEX Chg_realname=      "Real Name: ";
+@MEX Chg_alias=         "Alias:               ";
+@RIP Chg_alias=         RIP_BUTDEF "0A0U00001T00<>Alias<>A\n"
+                        RLI RIP_TEXTXY "640Y";
+@MEX Chg_phone=         "Voice phone:         ";
+@RIP Chg_phone=         RIP_BUTDEF "0A1E00000Z00<>#Voice Telephone<>#\n"
+                        RLI RIP_TEXTXY "641I";
+@MEX Chg_city=          "City, State:         ";
+@RIP Chg_city=          RIP_BUTDEF "0A1Y00001V00<>City, State<>C\n"
+                        RLI RIP_TEXTXY "6422";
+@MEX Chg_dataphone=     "Data Phone:          ";
+@RIP Chg_dataphone=     RIP_BUTDEF "0A3200001W00<>Data Telephone<>D\n"
+                        RLI RIP_TEXTXY "6435";
+@MEX Chg_dob=           "Birth Date:          ";
+@RIP Chg_dob=           RIP_BUTDEF "0A2I00001U00<>Birth date<>B\n"
+                        RLI RIP_TEXTXY "642M";
+@MEX Chg_tabs=          "Tabs:        ";
+@RIP Chg_tabs=          RIP_BUTDEF "CI4600002C00<>Tabs<>T\n"
+                        RLI RIP_TEXTXY "GE4A";
+@MEX Chg_video=         "Video Mode:  ";
+@RIP Chg_video=         RIP_BUTDEF "0A4Q00002E00<>Video mode<>V\n"
+                        RLI RIP_TEXTXY "464U";
+@MEX Chg_help=          "Help Level:  ";
+@RIP Chg_help=          RIP_BUTDEF "0A3M00002000<>Help level<>H\n"
+                        RLI RIP_TEXTXY "463Q";
+@MEX Chg_more=          "More:        ";
+@RIP Chg_more=          RIP_BUTDEF "644Q00001600<>*More prompt<>*\n"
+                        RLI RIP_TEXTXY "A04U";
+@MEX Chg_cls=           "ScreenClear: ";
+@RIP Chg_cls=           RIP_BUTDEF "CI4Q00002B00<>Screen clear<>S\n"
+                        RLI RIP_TEXTXY "GE4U";
+@MEX Chg_fse=           "MaxEd:       ";
+@RIP Chg_fse=           RIP_BUTDEF "0A5A00001Y00<>Fullscrn Edit<>F\n"
+                        RLI RIP_TEXTXY "465E";
+@MEX Chg_ibm=           "IBM Chars:   ";
+@RIP Chg_ibm=           RIP_BUTDEF "645A00002100<>IBM-PC chars<>I\n"
+                        RLI RIP_TEXTXY "A05E";
+@MEX Chg_hotkeys=       "Hotkeys:     ";
+@RIP Chg_hotkeys=       RIP_BUTDEF "CI5A00000X00<>\\!Hotkeys<>\\!\n"
+                        RLI RIP_TEXTXY "GE5E";
+@MEX Chg_protocol=      "Protocol:    ";
+@RIP Chg_protocol=      RIP_BUTDEF "0A5U00001000<>\\$Protocol<>\$\n"
+                        RLI RIP_TEXTXY "465Y";
+@MEX Chg_language=      "Language:    ";
+@RIP Chg_language=      RIP_BUTDEF "645U00001S00<>@Language<>@\n"
+                        RLI RIP_TEXTXY "A05Y";
+@MEX Chg_fsr=           "FullRead:    ";
+@RIP Chg_fsr=           RIP_BUTDEF "CI5U00002M00<>\\^F/S Reader<>\\^\n"
+                        RLI RIP_TEXTXY "GE5Y";
+@MEX Chg_archiver=      "Archiver:    ";
+@RIP Chg_archiver=      RIP_BUTDEF "0A6E00001200<>&Archiver<>&\n"
+                        RLI RIP_TEXTXY "466I";
+@MEX Chg_gender=        "Gender:      ";
+@RIP Chg_gender=        RIP_BUTDEF "646E00001Z00<>Gender<>G\n"
+                        RLI RIP_TEXTXY "A06I";
+@MEX Chg_rip=           "RIP Graph:   ";
+@RIP Chg_rip=           RIP_BUTDEF "CI6E00002A00<>Rip grapics<>R\n"
+                        RLI RIP_TEXTXY "GE6I";
+@MEX chg_newline=       "\n";
+@RIP chg_newline=       "";
+@MEX chg_col_info=      "\x16\x01\x0e";
+@RIP chg_col_info=      "";
+@MEX chg_col_data1=     "\x16\x01\x07";
+@RIP chg_col_data1=     "";
+@MEX chg_col_data2=     "\x16\x01\x0a";
+@RIP chg_col_data2=     "";
+@MEX chg_separator=     "\n";
+@RIP chg_separator=     RIP RIP_BUTSTY "3M0E0209AA0201080F0807000I0407000000|c05\n" RLI;
+@MEX chg_end=           "";
+@RIP chg_end=           "\n" RLI RIP_TEXTWIN "000X271610" RIP_END CLS;
+chg_need_fsr=           LRED "The full-screen reader cannot be disabled while RIP graphics are active.\n";
+@MEX chg1=              CLS YELONBLUE CLEOL "The CHANGE SETUP Section" GRAY "\n\n";
+@RIP chg1=              RIP RIP_KILL RIP_COL "08" RIP_RECT "0000HQ0D\n"
+                        RLI RIP_COL "09" RIP_RECT "0000HP0C" RIP_FILLSTY "0101" RIP_BAR "0101HQ0B\n"
+                        RLI RIP_COL "0E" RIP_TEXTXY "0403The CHANGE SETUP Section\n"
+                        RLI RIP_COL "08" RIP_RECT "000EHQ77" RIP_COL "0F" RIP_RECT "000EHP76\n"
+                        RLI RIP_FILLSTY "0107" RIP_BAR "010FHQ76" RIP_COL "08" RIP_RECT "040IHL72\n"
+                        RLI RIP_COL "0F" RIP_RECT "050JHM73" RIP_COL "07" RIP_RECT "050JHL72\n"
+                        RLI RIP_TEXTWIN "000X271610" RIP_BUTSTY "5K0E0209AA0200080F0807000I0407000000\n"
+                        RLI RIP_COL "0E";
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Chat Commands                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:max_chat
+
+@MEX cs_avail     =     "Available for chat";
+@MEX cs_notavail  =     "Not available for chat";
+@MEX cs_enter_msg =     "Entering a message";
+@MEX cs_file_xfer =     "Transferring a file";
+@MEX cs_outside   =     "Running external program";
+ch_page_msg  =          "\a%s\n" CLEOL;
+ch_hey_dude_msg=        "%s\n" CLEOL;
+hu_is_on_1=             WHITE "\nUsername                             Node         Status\n";
+hu_is_on_2=             "\x19Ä\x23  \x19Ä\x04  \x19Ä\x1d\n";
+hu_is_on_3=             YELLOW "%-36.36s  %3d  " GRAY "%s%s\n";
+ch_xx_join   =          LRED "%s " LMAGENTA "joins the conversation.\n" CLEOL;
+ch_xx_leave  =          LRED "%s " LMAGENTA "leaves the conversation.\n" CLEOL;
+ch_msg       =          "%s\n";
+@MEX ch_node_to_page=   "Please enter the node number to page (?=list): ";
+ch_being_paged=         YELLOW "\a\aYou are being paged by " LGREEN "%s" YELLOW " (node %d).";
+ch_waiting   =          YELLOW "\nWaiting for node %d to respond to page...\n";
+@MEX ch_you       =     " (you)";
+@MEX ch_enter_cb  =     "Please enter CB channel number (1-255): ";
+@MEX ch_chat_cb   =     "Chatting on CB channel %d";
+@MEX ch_enter_node=     "Please enter node number to chat with (?=list): ";
+ch_chat_pvt  =          "Private chat with node %d";
+@MEX ch_enter_chat=     WHITE "\nEntering chat mode.  ";
+@MEX ch_help_str  =     "Type \"/q\" to quit, \"/w\" to list users on this channel,\n\"/s\" to list users on system, and \"/?\" for help.\n\n";
+ch_byline    =          LGREEN LBRACKET "%-15.15s" RBRACKET ": \x16\x01%c";
+@MEX ch_ulist_hdr =     YELLOW "\nList of users on this channel:\n\n" WHITE "Name\nÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n" YELLOW;
+@MEX ch_alone     =     "You are alone on this channel.\n";
+@MEX ch_chat_sect =     CLS YELONBLUE CLEOL "The CHAT Section\n";
+ch_us_avail  =          YELLOW "\nYou are currently " LGREEN "%sAVAILABLE" YELLOW " for chat.\n\n";
+@MEX ch_us_noavail=     "NOT ";
+ch_nodenavail=          "\nNode %d is not available for chat.\n";
+@MEX ch_you_dummy =     "\nYou cannot page yourself.\n";
+ch_off_abnormally=      LRED "%s's" LMAGENTA " session was terminated abnormally.  (Ran out of time?)\n" CLEOL;
+@MEX ch_youare=         YELLOW "\nYou are currently " LGREEN;
+@MEX ch_availforchat=   "AVAILABLE" YELLOW " for chat.\n\n";
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           User Editor                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:max_ued
+
+really_erase=           "Really erase pwd field";
+log_nomem_del=          "!No mem for delete buf";
+ued_nodel_current=      WHITE "\nYou can't delete the current user!\n";
+ued_calls=              "Calls: ";
+ued_nulls=              "Nulls: ";
+ued_width=              "Width: ";
+ued_length=             "Length: ";
+ued_realname=           "Alias: ";
+ued_phone=              "Phone number: ";
+ued_city=               "City: ";
+ued_dlall=              "Total downloads (in K): ";
+ued_debit=              "Debit (cents): ";
+ued_lastfile=           "Last file: ";
+ued_gethelp=            "N)ovice, R)egular, or E)xpert? ";
+ued_help_keys=          "NRE";
+ued_keytoggle=          "Which keys to toggle? ";
+ued_curkeys=            YELLOW GOTO "\x18\x01Current keys: " WHITE "%s" GOTO "\x17\x01";
+ued_dltoday=            "Downloads for today (in K): ";
+ued_lastmsg=            "Last msg: ";
+ued_uname=              "User name: ";
+ued_vidmode=            "T)ty, A)nsi, or O)pus/Avatar? ";
+ued_vid_keys=           "TAO";
+ued_credit=             "Credit (cents): ";
+ued_time=               "Time: ";
+ued_ulall=              "Total uploads (in K): ";
+ued_getpriv=            CLEOL "New priv level (# or priv key): ";
+ued_ss1$=               CLS YELLOW "U" GRAY "ser " LGREEN "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ " GRAY "Last call                   " LGREEN "ÄÄÄÄÄÄÄÄÄÄÄÄ¿\n";
+ued_ss2=                " ³ " YELLOW "N" GRAY "ame                         " YELLOW "A" GRAY "lias                                        " LGREEN "³\n";
+ued_ss3=                " ³ " YELLOW "C" GRAY "ity                         " YELLOW "V" GRAY "oicePhone                 " YELLOW "S" GRAY "ex               " LGREEN "³\n";
+ued_ss4=                " À " YELLOW "P" GRAY "assword                     " YELLOW "D" GRAY "ataPhone                  " YELLOW "B" GRAY "Day              " LGREEN "Ù\n";
+ued_ss5=                YELLOW "A" GRAY "ccess " LGREEN "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿    " YELLOW "S" GRAY "ettings " LGREEN "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿\n";
+ued_ss6=                " ³ " YELLOW "P" GRAY "riv level             " YELLOW "C" GRAY "redit            " LGREEN "³     ³ " YELLOW "W" GRAY "idth                    " LGREEN "³\n";
+ued_ss7=                " ³ " YELLOW "K" GRAY "eys                   " YELLOW "D" GRAY "ebit             " LGREEN "³     ³ " YELLOW "L" GRAY "ength                   " LGREEN "³\n";
+ued_ss8=                " ³ " YELLOW "G" GRAY "roup Num              " YELLOW "U" GRAY "sed Pts          " LGREEN "³     ³ " YELLOW "N" GRAY "ulls                    " LGREEN "³\n";
+ued_ss9=                " ³ " YELLOW "A" GRAY "lloc Pts              " YELLOW "S" GRAY "howUlist         " LGREEN "³     ³ " YELLOW "M" GRAY "sgArea                  " LGREEN "³\n";
+ued_ss10=               " À " YELLOW "N" GRAY "erd                                     " LGREEN "Ù     ³ " YELLOW "F" GRAY "ileArea                 " LGREEN "³\n";
+ued_ss11=               YELLOW "I" GRAY "nformation " LGREEN "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ ³ " YELLOW "V" GRAY "ideo Mode               " LGREEN "³\n";
+ued_ss12=               " ³ " YELLOW "D" GRAY "L (all)                 " YELLOW "C" GRAY "ur. Time           " LGREEN "³ ³ " YELLOW "H" GRAY "elp                     " LGREEN "³\n";
+ued_ss13=               " ³ " YELLOW "T" GRAY "oday DL                 " YELLOW "A" GRAY "dded Time          " LGREEN "³ ³ " YELLOW "!" GRAY "Language                " LGREEN "³\n";
+ued_ss14=               " ³ " YELLOW "U" GRAY "ploads                  " YELLOW "#" GRAY " calls             " LGREEN "³ ³ " YELLOW "P" GRAY "rotocol                 " LGREEN "³\n";
+ued_ss15=               " ³ " YELLOW "P" GRAY "ostMsgs                 " YELLOW "R" GRAY "eadMsgs            " LGREEN "³ À " YELLOW "C" GRAY "ompress                 " LGREEN "Ù\n";
+ued_ss16=               " À " YELLOW "1" GRAY "stCall                  " YELLOW "!" GRAY "PwdDate            " LGREEN "Ù\n";
+ued_ss17=               YELLOW "F" GRAY "lags " LGREEN "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ " YELLOW "E" GRAY "xpiry " LGREEN "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿\n";
+ued_ss18=               " ³ " YELLOW "H" GRAY "otkeys      " YELLOW "I" GRAY "BM Chars         " YELLOW "S" GRAY "crnClr       " LGREEN "³  ³ " YELLOW "E" GRAY "xpire by               " LGREEN "³\n";
+ued_ss19=               " ³ " YELLOW "M" GRAY "axEd        " YELLOW "P" GRAY "ause (More)      " YELLOW "A" GRAY "vailChat     " LGREEN "³  ³ " YELLOW "A" GRAY "ction                  " LGREEN "³\n";
+ued_ss20=               " ³ " YELLOW "T" GRAY "abs         " YELLOW "C" GRAY "alledBefore      " YELLOW "F" GRAY "SR           " LGREEN "³  À " YELLOW "D" GRAY "ate                    " LGREEN "Ù\n";
+ued_ss21=               " À " YELLOW "R" GRAY "IP                                          " LGREEN "Ù\n";
+ued_ss22=               ;
+
+ued_spermflag=          GOTO "\x01\x0e%s";
+ued_sstatcur=           LRED   " * Current * " WHITE;
+ued_sstatdel=           LRED   " * Deleted * " WHITE;
+ued_sstatprm=           LRED   " *Permanent* " WHITE;
+ued_sstatblank=         LGREEN "ÄÄÄÄÄÄÄÄÄÄÄÄÄ" WHITE;
+
+ued_slastcall=          GOTO "\x01\x30%s";
+ued_sname=              GOTO "\x02\x0e%-18.18s";
+ued_scity=              GOTO "\x03\x0e%-18.18s";
+ued_spwd=               GOTO "\x04\x0e%-18.18s";
+ued_salias=             GOTO "\x02\x2c%-25.25s";
+ued_svoicephone=        GOTO "\x03\x2c%-15.15s";
+ued_sdataphone=         GOTO "\x04\x2c%-15.15s";
+ued_ssex=               GOTO "\x03\x41%-6.6s";
+ued_sdob=               GOTO "\x04\x41%-8.8s";
+ued_spriv=              GOTO "\x06\x0f%-9.9s";
+ued_skeys=              GOTO "\x07\x0f%-11.11s";
+ued_sgroup=             GOTO "\x08\x0f%-5u";
+ued_sallocpts=          GOTO "\x09\x0f%-10lu";
+ued_snerd=              GOTO "\x0a\x0f%-3.3s";
+ued_scredit=            GOTO "\x06\x25\x25%-5u";
+ued_sdebit=             GOTO "\x07\x25\x25%-5u";
+ued_susedpts=           GOTO "\x08\x25\x25%-8lu";
+ued_sulistshow=         GOTO "\x09\x25\x25%-3.3s";
+ued_sxfertemplate=      "%luK / %lu";
+ued_sdlall=             GOTO "\x0c\x0d%-15.15s";
+ued_sdltoday=           GOTO "\x0d\x0d%-15.15s";
+ued_sup=                GOTO "\x0e\x0d%-15.15s";
+ued_sposted=            GOTO "\x0f\x0d%-6lu";
+ued_s1stcall=           GOTO "\x10\x0d%-8.8s";
+ued_stimetoday=         GOTO "\x0c\x28%-5u";
+ued_stimeadded=         GOTO "\x0d\x28%-5u";
+ued_stimes=             GOTO "\x0e\x28%-5u";
+ued_sreadmsgs=          GOTO "\x0f\x28%-7lu";
+ued_spwdchg=            GOTO "\x10\x28%-8.8s";
+ued_swidth=             GOTO "\x06\x40%-3u";
+ued_slength=            GOTO "\x07\x40%-3u";
+ued_snulls=             GOTO "\x08\x40%-3u";
+ued_slastmarea=         GOTO "\x09\x40%-14.14s";
+ued_slastfarea=         GOTO "\x0a\x40%-14.14s";
+ued_svideo=             GOTO "\x0b\x40%-6.6s";
+ued_shelp=              GOTO "\x0c\x40%-7.7s";
+ued_slang=              GOTO "\x0d\x40%-13.13s";
+ued_sproto=             GOTO "\x0e\x40%-13.13s";
+ued_scompress=          GOTO "\x0f\x40%-13.13s";
+ued_shotkeys=           GOTO "\x12\x0c%-3.3s";
+ued_smaxed=             GOTO "\x13\x0c%-3.3s";
+ued_stabs=              GOTO "\x14\x0c%-3.3s";
+ued_srip=               GOTO "\x15\x0c%-3.3s";
+ued_sibmchars=          GOTO "\x12\x1e%-3.3s";
+ued_spause=             GOTO "\x13\x1e%-3.3s";
+ued_scalledbefore=      GOTO "\x14\x1e%-3.3s";
+ued_sscrnclr=           GOTO "\x12\x2d%-3.3s";
+ued_schatavail=         GOTO "\x13\x2d%-3.3s";
+ued_sfsr=               GOTO "\x14\x2d%-3.3s";
+ued_sexpireby=          GOTO "\x12\x40%-7.7s";
+ued_sexpireact=         GOTO "\x13\x40%-14.14s";
+ued_sexpiredate=        GOTO "\x14\x40%-13.13s";
+
+ued_cantdel1=           WHITE "\n\nError!  Task %02x is still active.  All active tasks must be\n";
+ued_cantdel2=           "terminated before Max can do a user purge.  If task %02x was terminated\n";
+ued_cantdel3=           "prematurely, then you must delete the file called\n";
+ued_cantdel4=           "%sACTIVE%02x.BBS to tell Max that task %02x is no longer active.\n\n";
+ued_purging=            CLS WHITE "Purging users:\n\n";
+ued_deleted=            YELLOW "Deleted: " GRAY "%s\n";
+ued_cleansing_lastreads=YELLOW "\nCleansing lastread pointers:\n";
+ued_not_found=          "\r" WHITE CLEOL "Not found.  ";
+ued_find_who=           "Type the name of the user you wish to find: ";
+ued_get_expby=          "Expire by D)ate, M)inutes, or N)one? ";
+ued_get_exp=            "DMN";
+ued_get_action=         "Expiry action: A)xe (hang up & delete), D)emote, or N)one? ";
+ued_get_actionk=        "ADN";
+ued_get_date_prompt=    "Expiry date, or press <enter> for ";
+ued_minutes=            "Expire after how many minutes? ";
+ued_xp_date=            "DATE";
+ued_xp_mins=            "MINUTES";
+ued_xp_none=            "NONE";
+ued_xp_demote=          "Priv(%s)";
+ued_xp_hangup=          "HANG UP";
+ued_xp_minutes=         "%lu minutes";
+ued_need_graphics_cls=  LRED "You need ANSI graphics and ClearScreen enabled to use the user editor.\n" WHITE;
+ued_are_you_sure=       LRED "USERS CANNOT BE UNDELETED.  " WHITE "Are you sure you want to delete this user";
+ued_prompt=             WHITE "Select (?=help): ";
+ued_user_prompt=        LRED "User " WHITE "Select (?=help): ";
+ued_access_prompt=      LRED "Access " WHITE "Select (?=help): ";
+ued_info_prompt=        LRED "Information " WHITE "Select (?=help): ";
+ued_flags_prompt=       LRED "Flags " WHITE "Select (?=help): ";
+ued_settings_prompt=    LRED "Settings " WHITE "Select (?=help): ";
+ued_expiry_prompt=      LRED "Expiry " WHITE "Select (?=help): ";
+ued_sex_prompt=         "M)ale, F)emale, or N)ot Given? ";
+ued_sex_keys=           "MFN";
+ued_group_prompt=       "Group number: ";
+ued_pcredit_prompt=     "Point credit: ";
+ued_pdebit_prompt=      "Point debit: ";
+ued_ndlall=             "Total number of downloaded files: ";
+ued_ndltoday=           "Number of files downloaded today: ";
+ued_nulall=             "Total number of uploaded files: ";
+ued_msgsposted_prompt=  "Number of messages posted: ";
+ued_timeadd_prompt=     "Number of rewarded minutes for today: ";
+ued_msgsread_prompt=    "Number of messages read: ";
+ued_date1stcall_prompt= "Date of first call ";
+ued_datepwdchg_prompt=  "Date of last pwd change ";
+ued_dob_prompt=         "Date of birth " LBRACKET "yyyy-mm-dd; default %04u-%02u-%02d" RBRACKET ": ";
+ued_nameinuse=          WHITE "That name is already in use.  ";
+ued_invalidpriv=        WHITE "Invalid privilege level.  ";
+ued_need_more_lines=    LRED "Your screen must be at least 24 lines long to use the user editor.\n" WHITE;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Browse Command                                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:m_browse
+
+br_area_verbose=        LGREEN "BROWSE - Message search & retrieval\n\n" YELLOW "Which areas:\n\n" YELLOW "C" GRAY ")urrent area\n" YELLOW "T" GRAY ")agged areas (selected through T)ag command - default)\n" YELLOW "W" GRAY ")ildcard\n" YELLOW "G" GRAY ")roup\n" YELLOW "L" GRAY ")ocal & netmail areas only\n" YELLOW "A" GRAY ")ll areas\n" YELLOW "Q" GRAY ")uit\n\n";
+br_area=                "Area type: " LBRACKET "C)urrent, T)agged (default), W)ildcard, G)roup, L)ocal, A)ll, Q)uit" RBRACKET ": ";
+br_areak=               "CTWGALQ?";
+br_type_verbose=        YELLOW "Type of messages to show:\n\n" YELLOW "A" GRAY ")ll messages\n" YELLOW "N" GRAY ")ew messages (everything since last read - default)\n" YELLOW "Y" GRAY ")our mail (messages addressed to YOU)\n" YELLOW "S" GRAY ")earch (specify to/from/subj/body and keywords)\n" YELLOW "F" GRAY ")rom a specified msg# to the last message\n" YELLOW "Q" GRAY ")uit\n" YELLOW "?" GRAY ")help\n\n";
+br_type=                "Type: " LBRACKET "N)ew msgs, A)ll, Y)our mail, S)earch, F)rom msg#, Q)uit, ?)help" RBRACKET ": ";
+br_typek=               "ANYFS?Q";
+br_ty_from=             "\nStart displaying at which msg# (\"=\" for current): ";
+br_display_verbose=     YELLOW "Display:\n\n" YELLOW "R" GRAY ")ead (show entire message: default)\n" YELLOW "L" GRAY ")ist (one per line)\n" YELLOW "P" GRAY ")ack (QWK format)\n" YELLOW "Q" GRAY ")uit\n\n";
+br_display=             "Display: " LBRACKET "R)ead (show whole msg), L)ist (one per line), P)ack (QWK), Q)uit" RBRACKET ": ";
+br_dispk=               "RLPQ?";
+br_list_head1=          CLS WHITE "Msg#   From                 To                   Subject\n";
+@RIP br_list_head1=     RIP RIP_KILL RIP_FONTSTY "00000100" RIP_FILLSTY "0100" RIP_BAR "000GHR0V\n"
+                        RLI RIP_COL "08" RIP_RECT "010HHR0T" RIP_COL "0F" RIP_RECT "000GHQ0S" RIP_FILLSTY "0107" RIP_BAR "010HHQ0S\n"
+                        RLI RIP_COL "01" RIP_TEXTXY "020HMsg#   From                 To                   Subject" RIP_END;
+br_list_head2=                    "ÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n";
+@RIP br_list_head2=     RIP RIP_TEXTXY "020MÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n"
+                        RLI RIP_TEXTWIN "0004271600" RIP_END CLS;
+br_this=                LGREEN "Area " LMAGENTA "%s" CYAN ": %s\n";
+br_s_where_verbose=     YELLOW "Search where?  (More than one letter may be entered.)\n\n" YELLOW "T" GRAY ")o field\n" YELLOW "F" GRAY ")rom field\n" YELLOW "S" GRAY ")ubject field\n" YELLOW "B" GRAY ")ody of message\n" YELLOW "?" GRAY ")help\n" WHITE;
+br_s_where=             "Search where " LBRACKET "any or all of T)o, F)rom, S)ubject, B)ody, or ?)help" RBRACKET ": ";
+br_sk=                  "TFSBQ?";
+br_s_opt_lim=           "L" YELLOW "L" GRAY ")imit search (with AND)\n";
+br_s_opt_exp=           "E" YELLOW "E" GRAY ")xpand search (with OR)\n";
+br_s_opt_go=            "S" YELLOW "S" GRAY ")earch with these criteria\n";
+br_s_opt_quit=          "Q" YELLOW "Q" GRAY ")uit search\n" WHITE;
+br_max_will=            LCYAN "\nMaximus will search for messages containing:\n\n    ";
+br_or=                  LRED "\n              OR\n\n    ";
+br_and=                 LRED "AND ";
+br_in_the_xxx_fields=   YELLOW "\"" LGREEN "%s" YELLOW "\" in the ";
+br_field_to=            "to";
+br_field_from=          "from";
+br_field_subj=          "subject";
+br_field_body=          "message body";
+br_field_maybe_plural=  " field(s)";
+br_comma=               ", ";
+br_then_or=             "or ";
+br_text_to_search=      "Text to search for: ";
+br_list_format=         GRAY "%6ld%s%s%-20.20s %s%-20.20s " LCYAN "%-0.28s\n";
+br_msg_new=             LRED "*";
+br_msg_notnew=          " ";
+br_notfound=            WHITE "No messages found.\n";
+br_area_banner=         LGREEN "Area " LMAGENTA "%s: " GRAY "%s\n";
+mchk_nmsg=              "Next Msg " LBRACKET "Y)es, N)o, A)gain";
+@RIP mchk_nmsg=         RIP RIP_KILL RIP_FILLSTY "0100" RIP_BAR "008RHR9P" RIP_COL "08" RIP_RECT "028SHR96\n"
+                        RLI RIP_COL "0F" RIP_RECT "018RHQ95" RIP_FILLSTY "0107" RIP_BAR "028SHQ95\n"
+                        RLI RIP_COL "01" RIP_FONTSTY "00000100" RIP_BUTSTY "1J0A0207PE0201080F000700020407000000\n"
+                        RLI RIP_BUTDEF "068V00002600<>Next<>Y\n"
+                        RLI RIP_BUTDEF "1U8V00002900<>Quit<>N\n"
+                        RLI RIP_BUTDEF "3I8V00001T00<>Again<>A\n";
+mchk_reply=             ", R)eply";
+@RIP mchk_reply=        RLI RIP_BUTDEF "568V00002A00<>Reply<>R\n";
+mchk_kill=              ", K)ill";
+@RIP mchk_kill=         RLI RIP_BUTDEF "6U8V00002300<>Kill<>K\n";
+mchk_dload=             ", D)load file(s)";
+@RIP mchk_dload=        RLI RIP_BUTDEF "6U8V00001W00<>D'Load<>D\n";
+mchk_nextar=            ", *)NextArea";
+@RIP mchk_nextar=       RIP RIP_BUTSTY "1Y0A0207PE0201080F000700020407000000\n"
+                        RLI RIP_BUTDEF "FO8V00001X00<>NextArea<>*\n";
+mchk_kludge=            ", !)Kludge";
+@RIP mchk_kludge=       RLI RIP_BUTSTY "1J0A0207PE0201080F000700020407000000\n"
+                        RLI RIP_BUTDEF "8I8V00002300<>Kludge<>\!\n";
+mchk_unreceive=         ", U)nreceive";
+@RIP mchk_unreceive=    RLI RIP_BUTSTY "1J0A0207PE0201080F000700020407000000\n"
+                        RLI RIP_BUTDEF "A68V00002D00<>UnRecv<>\\^\n";
+mchk_end_prompt=        RBRACKET ": ";
+@RIP mchk_end_prompt=   RLI RIP_END;
+mchk_nmsgk=             "Yna";
+mchk_keys=              "rk*!ud";
+mchk_nunder=            "Try again.";
+@RIP mchk_nunder=       RIP RIP_FILLSTY "0104" RIP_RECT "018GHS8Q" RIP_COL "0F" RIP_TEXTXY "@088ITry again." RIP_END;
+err_compr_mail=         LRED "Error compressing messages.  Please report this to your SysOp.\n" WHITE;
+download_msgs=          "Download these in QWK format";
+qwk_toomany=            LRED "Too many areas selected for QWK packet.  Skipping.\n";
+wrong_rep=              LRED "Error!  Uploaded .REP file was for \"%s\", and not \"%s\"!\n";
+qwk_msg_stats=          LGREEN "Area#%-3d  " YELLOW "To: %-18.18s" LCYAN "  Re: %-18.18s  " LMAGENTA;
+qwk_invalid_area=       LRED "\nInvalid area.  " YELLOW "(To=\"%s\"; subj=\"%s\".)\n\nPress <enter> to skip message.\n" WHITE;
+qwk_max_area=           YELLOW "MaxArea: %s\n";
+err_receive_rep=        LRED "Error receiving %s.REP file!\n";
+err_decompr_rep=        LRED "Error decompressing %s.REP file!\n";
+qwk_local_rep=          "Enter path/name of .REP file: ";
+unknown_compr=          LRED "Unknown compression type.\n";
+tossing_rep_packet=     YELLOW "\nTossing .REP packet %s...\n\n";
+rep_to_send=            WHITE "\nPlease begin uploading %s now.\n";
+br_msg_pvt=             RED "-";
+err_toss_qwk=           LRED "Error tossing from %s!\n";
+wait_doing_compr=       YELLOW "Compressing mail.  Please wait...\n";
+qwk_update_lr=          YELLOW "Please wait.  Updating lastread pointers...";
+door_id_name=           "DOOR = %s\n";
+door_id_ver=            "VERSION = %s\n";
+door_id_sys=            "SYSTEM = %s\n";
+door_id_cname=          "CONTROLNAME = %s\n";
+cprog_name=             "MAXIMUS";
+door_id_ctype_add=      "CONTROLTYPE = ADD\n";
+door_id_ctype_drop=     "CONTROLTYPE = DROP\n";
+cdat_hello=             "HELLO\n";
+cdat_news=              "NEWS\n";
+cdat_goodbye=           "GOODBYE\n";
+qwk_too_many=           LRED "\nWarning!  A maximum of %ld messages can be packed during one download.\n\n" WHITE;
+qwk_nuke_tear=          "\r---";
+qwk_replace_tear=       "___";
+qwk_msg_skipped=        LRED "\nMessage skipped.\n";
+qwk_pack_start=         YELLOW "\nArea Name  Description                  Total Msgs  Msgs to you  Msgs Packed\n" WHITE "\x19Ä\x09  \x19Ä\x1b  \x19Ä\x0a  \x19Ä\x0b  \x19Ä\x0b\n";
+qwk_pack_fmt=           LGREEN "%9.9s  " LCYAN "%-27.27s  " LMAGENTA "%7lu\x19 \x05" LRED "%6lu\x19 \x07" LGREEN "%7lu\n";
+qwk_pack_end=           WHITE "\x19Ä\x09  \x19Ä\x1b  \x19Ä\x0a  \x19Ä\x0b  \x19Ä\x0b\n" LRED "\x19 \x0bTotal\x19 \x18" LMAGENTA "%7lu\x19 \x05" LRED "%6lu\x19 \x07" LGREEN "%7lu\n\n" WHITE;
+restr_prompt=           "Enter date of oldest message to pack, or press <enter> for ";
+qwk_busy_msg=           "Error!  QWK packer is currently in use on another node!  (QWK_BUSY.$$$)\n";
+; Template to use for calling archiver/unarchiver
+@NT  maxpipe_cmd=       "%s";
+@DOS maxpipe_cmd=       "%s";
+@OS2 maxpipe_cmd=       "maxpipe.exe %%P %s";
+br_which_areas=         "Search which areas (use \"*\" as wildcard): ";
+@RIP br_which_areas=    RIP RIP_KILL RIP_COL "01" RIP_TEXTXY "1C66Which areas (use "*" as wildcard):\n"
+                        RLI RIP_COL "08" RIP_RECT "196LEY6Y" RIP_COL "0F" RIP_RECT "186KEX6X\n"
+                        RLI RIP_COL "07" RIP_RECT "196LEX6X" RIP_TEXTWIN "060U1U0U00" RIP_END
+                        HOME BLUEONWHIT CLEOL;
+err_receive_attach=     LRED "Error receiving attached file(s)!\n\n";
+err_compr_attach=       LRED "Error compressing file(s)!\n";
+err_decompr_attach=     LRED "Error decompressing attached file(s)!\n";
+make_attach_local=      "Enter path/name of the file to send: ";
+attach_ask_compr=       "Store this file compressed";
+recv_attach_local=      WHITE "Enter destination directory for attached file(s): ";
+wait_compr_attach=      "\r" YELLOW "Compressing file(s).  Please wait...\n";
+no_attach_files=        LRED "No file(s) found to send!";
+attach_notavail=        LRED "Sorry - the attached file(s) are no longer available.";
+wait_decompr_attach=    "\r" YELLOW "Decompressing file(s).  Please wait...\n";
+really_abort_attach=    WHITE "Do you want to abort the file attach";
+browse_select_s=        WHITE "Select: " CYAN;
+browse_select_c=        ;
+@RIP browse_select_c=   RIP RIP_KILL RIP_TEXTWIN "0000271610" RIP_END CLS;
+browse_which_c=         ;
+@RIP browse_which_c=    RIP RIP_KILL RIP_TEXTWIN "0000271610" RIP_END CLS;
+browse_more_prompt=     "More";
+@RIP browse_more_prompt=RIP RIP_KILL RIP_FILLSTY "0100" RIP_BAR "008XHR9Q" RIP_COL "08" RIP_RECT "028Y6L9A\n"
+                        RLI RIP_COL "0F" RIP_RECT "018X6K99" RIP_FILLSTY "0107" RIP_BAR "028Y6K99\n"
+                        RLI RIP_COL "01" RIP_TEXTXY "0690More?\n"
+                        RLI RIP_BUTSTY "1K0A0207PE0201080F000700020407000000\n"
+                        RLI RIP_BUTDEF "1L9000002H00<>Yes<>Y\n"
+                        RLI RIP_BUTDEF "349000002600<>No<>N\n"
+                        RLI RIP_BUTDEF "4N9000001P00<>=Cont<>=\n"
+                        RLI RIP_END;
+browse_more_blank=      "\r" CLEOL;
+@RIP browse_more_blank= RIP RIP_FILLSTY "0100" RIP_BAR "008KHS90" RIP_END;
+browse_rbox_top=        CLS POS_FSR_TOP COL_FSR_BORDER CLEOL "Ä " COL_FSR_MSGINFO "%s: %s " COL_FSR_BORDER "\x19Ä%c";
+@RIP browse_rbox_top=   RIP RIP_KILL RIP_FILLSTY "0100" RIP_BAR "008GHR9P" RIP_TEXTWIN "0007271110" RIP_FONTSTY "00000100\n"
+                        RLI RIP_COL "08" RIP_RECT "0101HR0C" RIP_COL "0F" RIP_RECT "0000HQ0B\n"
+                        RLI RIP_FILLSTY "0107" RIP_BAR "0101HQ0B" RIP_MOVE "0403" RIP_COL "02" RIP_TEXT "Msg Area \n"
+                        RLI RIP_COL "05" RIP_TEXT "%s" RIP_COL "00" RIP_TEXT ": " RIP_COL "01" RIP_TEXT "%s\n"
+                        RLI RIP_COL "08" RIP_RECT "010EHR1J" RIP_COL "0F" RIP_RECT "000DHQ1I\n"
+                        RLI RIP_FILLSTY "0107" RIP_BAR "010EHQ1I" RIP_COL "08" RIP_LINE "041EHL1E\n"
+                        RLI RIP_COL "0F" RIP_LINE "051FHM1F" RIP_END;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                               WFC                                        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:max_wfc
+
+wfc_waiting=            "Waiting";
+wfc_hanging_up=         "Hanging up";
+wfc_initing=            "Initializing";
+wfc_connected=          "Connected";
+
+; It's OK to put these log messages here, since the user doesn't have a
+; separate language file loaded at the same time anyway...
+
+log_wfc_exit_keyb=      ":Exit by keyboard request";
+log_wfc_exit_erl=       ":Event - Exiting with errorlevel %d";
+log_wfc_waiting=        ":Waiting for caller (event in %ld mins)";
+log_wfc_connect=        "+Connected at %ld bps%s%s%s";
+log_wfc_keybjunk=       " Junk character from keyboard";
+
+
+; Titles for the various windows on-screen
+
+wfc_status_tit=         "¹ Status Ì";
+wfc_modem_tit=          "¹ Modem Responses Ì";
+wfc_activ_tit=          "¹ Current Activity Ì";
+wfc_keys_tit=           "¹ SysOp Keys Ì";
+
+wfc_keys1=              "<Alt-X>  System down";
+wfc_keys2=              "<Alt-J>  Shell to operating system";
+wfc_keys3=              "<Alt-K>  Local keyboard log-on";
+wfc_keys4=              "<Alt-I>  Reinitialize modem";
+
+wfc_stat_nextev=        "Next event:";
+wfc_stat_stat=          "Status:";
+wfc_stat_calltoday=     "Calls (today):";
+wfc_stat_calltotal=     "Calls (total):";
+wfc_stat_lastcaller=    "Last caller:";
+
+wfc_maxbanner=          "Maximus v%%s - %a %b %d @ %H:%M:%S";
+wfc_event_time=         "%4ld minutes";
+wfc_no_last_caller=     "* None *";
+
+cs_wfc=                 "Waiting for caller";
+log_wfc_status=         " Status: %s";
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Protocol Messages                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:protocols
+
+log_dupe_file_recd=     "!Dupe file skipped: %s";
+log_ignoring_file=      "!Ignoring \"%s\"";
+log_dl_exceeds_time=    "!Download exceeded time limit";
+log_dl_speed=           "+CPS: %lu (%lu bytes)  Efficiency: %lu%%";
+log_retry_num=          "!Retry %d: ";
+log_no_space=           "!Error writing to file (%d)";
+log_cant_send_dev=      "!Can't send device %s";
+log_no_space_to_rec=    "!Not enough space to receive file %s";
+log_crc_error_block=    "!CRC error (block %ld)";
+log_checksum_err_block= "!Checksum error (block %ld)";
+log_err_write_block=    "!Error writing block to disk";
+log_cant_ul_device=     "!Can't upload to device %s";
+bad_crc_hdr=            "Bad CRC (header)";
+bad_crc_at=             "Bad CRC at %ld";
+bad_escape_seq=         "Bad escape sequence %x";
+transfer_timeout=       "Timeout";
+bad_data_subpkt=        "Bad data subpacket";
+data_subpkt_long=       "Data subpacket too long";
+sender_cancelled=       "Sender cancelled";
+garbage_count_exceeded= "Garbage count exceeded";
+xmodem_unknown_filename="Unknown";
+win_block_check#=       "Block check     :";
+win_bytes_to_send#=     "Bytes to send   :";
+win_bytes_sent#=        "Bytes sent      :";
+win_bytes_to_receive#=  "Bytes to receive:";
+win_bytes_received#=    "Bytes received  :";
+win_transfer_rate#=     "Transfer rate :";
+win_time_left#=         "Time left     :";
+win_time_elapsed#=      "Time elapsed  :";
+win_status#=            "Status          :";
+win_download#=          " Download (%s) ";
+win_upload#=            " Upload (%s) ";
+win_name#=              "Name: %s";
+win_cps#=               "%9ld CPS";
+win_crc16#=             "CRC-16  ";
+win_checksum#=          "Checksum";
+win_nak_block#=         "NAK block %ld (tries#=%d)";
+win_sending_eot#=       "Sending EOT";
+win_got_eot#=           "Got EOT";
+win_nak#=               "NAK";
+win_sent#=              "Sent";
+win_eot#=               "EOT";
+win_at_offset#=         " at %ld";
+win_beginning_transfer#="Transfer in progress";
+win_got#=               "Got";
+win_crchdr#=            "CRC-%d, %-4u";
+win_crc32_size#=        "CRC-32, %4u";
+win_crc16_size#=        "CRC-16 (%u)";
+win_time#=              "%6lu:%02u min";
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                           Tracking Command                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:track
+
+insert_which=           "Insert which message (\"=\" for current)? ";
+which_owner=            "Assign this message to whom (?=list): ";
+modify_which=           "Modify which message (\"=\" for current)? ";
+remove_which=           "Remove tracking from which message (\"=\" for current)? ";
+trk_err_upd_db=         "Error updating tracking database!\n";
+trk_msg_audit_str=      "Owner set to \"%s\" by %s";
+trk_existing_cmt=       "Existing comment: %s\n";
+trk_no_cmt=             "(none)";
+trk_enter_cmt=          "Enter new comment: ";
+trk_status_def=         " (default)";
+trk_status_txt=         "Status: " LBRACKET "N)ew%s, O)pen%s, W)orking%s, C)losed%s" RBRACKET ": ";
+trk_status_keys=        "NOWC";
+trk_status_set=         "Status set to %s by %s";
+trk_pri_txt=            "Priority: " LBRACKET "nO)tify, L)ow, N)ormal, U)rgent, C)ritical" RBRACKET ": ";
+trk_pri_keys=           "OLNUC";
+trk_pri_set=            "Priority set to %s by %s";
+trk_mod_txt=            "Modify: " LBRACKET "O)wner, S)tatus, P)riority, C)omment, Q)uit" RBRACKET ": ";
+trk_mod_keys=           "OSPCQ";
+trk_no_actrack_for_msg= "Cannot find ACTRACK information for this message!\n";
+trk_not_owner=          "Error!  You are not the owner of the specified message!\n";
+trk_msg_stat_owner=     YELLOW "   Owner: " WHITE "%s\n";
+trk_msg_stat_status=    YELLOW "  Status: " WHITE "%s\n";
+trk_msg_stat_pri=       YELLOW "Priority: " WHITE "%s\n";
+trk_msg_stat_cmt=       YELLOW " Comment: " WHITE "%s\n";
+trk_rem_cmt=            "Removed from database by %s";
+trk_rem_err=            "Error!  Cannot remove message %ld from tracking database.\n";
+trk_rem_done=           "Removed message %ld from tracking database.\n";
+trk_new_owner=          "Name of new owner: ";
+trk_new_alias=          "Enter four-character alias: ";
+trk_set_alias=          "Set alias \"%s\" for %s.\n";
+trk_err_alias=          "Error!  Could not set alias \"%s\"!\n";
+trk_owner_header=       WHITE "\nAlias  Owner\nÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n" YELLOW;
+trk_owner_fmt=          "%-6.6s %s\n";
+trk_remalias_which=     "Remove which alias (?=list): ";
+trk_remalias_done=      "Alias \"%s\" removed.\n";
+trk_remalias_err=       "Could not remove alias \"%s\".\n";
+trk_owner_txt=          "Owner: " LBRACKET "A)ssign Alias, D)elete Alias, L)ist Aliases" RBRACKET ": ";
+trk_owner_keys=         "ADLQ";
+trk_owner_area=         "Assign owner for which area (?=list): ";
+trk_owner_assgn_done=   "Assigned \"%s\" as the default owner for %s.\n";
+trk_owner_assgn_err=    "Error assigning owner for %s!  (Maybe area already has an owner?)\n";
+trk_owner_lnk_rem=      "Remove owner link for which area (?=list): ";
+trk_owner_lnk_done=     "Area/owner link removed for area %s\n";
+trk_owner_lnk_err=      "Could not remove area/owner link for area %s!\n";
+trk_owner_lnk_head=     WHITE "\nOwner  Area\nÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n" YELLOW;
+trk_owner_lnk_fmt=      "%-6.6s %s\n";
+trk_area_txt=           "Area: " LBRACKET "A)ssign Owner, D)elete Owner, L)ist Owners" RBRACKET": ";
+trk_area_keys=          "ADLQ";
+trk_admin_txt=          "Admin: " LBRACKET "O)wner/alias Links, A)rea/owner Links, R)emove Message" RBRACKET": ";
+trk_admin_keys=         "OAR";
+trk_admin_noaccess=     LRED "You do not have access to this command.\n";
+trk_menu_txt=           "Track: " LBRACKET "I)nsert Message, M)odify Message, R)eport, A)dministration, Q)uit" RBRACKET ": ";
+trk_menu_keys=          "IMRAQ";
+trk_ins_ok=             "Message %s:%ld added to database.\n";
+trk_ins_err=            "Message %s:%ld **NOT** added to database.\n";
+trk_rep_txt=            "Report areas: " LBRACKET "C)urrent, T)agged, G)roup, W)ildcard, A)ll (default)" RBRACKET": ";
+trk_rep_keys=           "CTGWAQ";
+trk_rep_get_areaname=   "Area name (use \"*\" as wildcard): ";
+trk_rep_stat_txt=       "Enter status types: " LBRACKET "N)ew, O)pen, W)orking, C)losed, A)ll" RBRACKET " (default \"onw\"): ";
+trk_rep_stat_keys=      "NOWCA";
+trk_rep_pri_txt=        "Priority types: " LBRACKET "nO)tify, L)ow, N)ormal, U)rgent, C)rit, A)ll (default)" RBRACKET ": ";
+trk_rep_pri_keys=       "OLNUCA";
+trk_rep_s_owner=        "Search for messages owned by whom (*=all (default), ?=list): ";
+trk_rep_dl_related_qwk= "Download related messages in QWK packet";
+trk_rep_hdr#=            "ID               Date     Owner Priority     Status  Message\n---------------- -------- ----- ------------ ------- -------------------------\n";
+trk_rep_hdr_graph#=      CLS WHITE "ID               Date     Owner Priority     Status  Message\nÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄ ÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n" YELLOW;
+trk_rep_msgnum=         "%s#%lu";
+trk_rep_fmt=            "%-16.16s %02u.%02u.%02u%c%-5.5s %-12.12s %-7.7s %-0.26s\n";
+trk_rep_qwk_bulletin=   "%sblt-1.99";
+trk_rep_generating=     "Generating message tracking report...";
+trk_rep_gen_err=        "Error generating message tracking report!\n";
+trk_got_actrack=        "Got ACTRACK ID \"%s\"\n";
+trk_err_msg_notfound=   "Error!  Tracking message \"%s\" not found in database!\n";
+trk_err_uploading=      "Error in uploading tracking information!  The \"^!> ACTRACK:\" line must\nprecede all other tracking information.\n";
+trk_new_status=         "New status: %s\n";
+trk_bad_owner=          "Error!  Invalid tracking owner \"%s\"!\n";
+trk_new_owner_is=       "New owner: %s\n";
+trk_new_priority=       "New priority: %s\n";
+trk_bad_cmd=            "Invalid tracking command: %-*.*s\n";
+trk_bad_old_id=         "Error findind old tracking ID \"%s\" in database!\n";
+trk_err_updating_db=    "Error updating tracking database for \"%s\"!\n";
+trk_info_updated=       "Tracking information updated for \"%s\"!\n";
+trk_list_hdr=           WHITE "\nID   Owner\nÄÄÄÄ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ\n" YELLOW;
+trk_list_type=          "%-4.4s %s\n";
+trk_err_removing=       "Error removing message %s from tracking database!\n";
+trk_owner_not_accept=   "Error!  '%s' is not an acceptable message owner.\n";
+trk_ask_owner_quest=    "Add owner '%s' to database";
+trk_enter_4char=        "Enter four-character alias for owner %s: ";
+trk_added_owner_as=     "Added owner '%s' as '%s'\n";
+trk_msg_already_in_db=  "Error!  Message is already in tracking database!\n";
+trk_msg_not_in_db=      "Error!  Message is not in tracking database!\n";
+trk_added_to_db=        "Added to database";
+trk_msg_info=           "%sStatus: %s, Priority: %s, Owner: %s%s";
+
+; Include any user heaps here
+
+#include <user.lh>
+
+:end
+

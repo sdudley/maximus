@@ -1,0 +1,10 @@
+[cls onexit]Misc\Bulletin
+                       [lightgreen on blue]ÚÄÄÄÄÄÄÄÄÄÄ¿[white]
+                       [lightgreen on blue]³ [FG yellow]Welcome! [FG lightgreen]³[white]
+                       [lightgreen on blue]ÀÄÄÄÄÄÄÄÄÄÄÙ[white]
+
+[yellow]Thank you for calling [sys_name], [first].
+[lightcyan]You are the [syscall] caller, and this is your [usercall] call.
+[lightgreen]You have uploaded [ul]K.  You have downloaded [dl]K. (UL:DL=[ratio].)
+
+[white enter]

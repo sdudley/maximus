@@ -1,0 +1,51 @@
+[ripsend]@rip\max_main.lst
+
+!|1K|*|w0000000000|S0B09|B0000HR9B|S0B01|B2I0QFU1I|B141YH896|c08|R290HFG16
+!|R0V1PGU8T|c0F|R280GFH15|R0U1OGT8S|S0107|B290HFH15|B0V1PGT8S|c08|R1024GP8O|c0F|R1125GP8O|c07|R1125GO8N
+!|Y01000200|c0F|@2E0GWelcome to ... [sys_name]|c01|@2D0FWelcome to ... [sys_name]
+!|Y00000100|c0F|@111TMAIN MENU:|@BF1T[remain] minutes remaining|c04|@101SMAIN MENU:|c00|@BE1S[remain] minutes remaining
+!|1B2S0G0207QE02010F0F0807000A0407000000|Y02000400
+!|1U322N00002500email.icn<>Message areas<>m
+!|1U323W00001Y00diskette.icn<>File areas<>f
+!|1U325500001V00tnk.icn<>Change setup<>c
+!|1U326E00001U00news.icn<>Bulletins<>b
+[acs limited]!|1U327N00002700ewrite.icn<>Off-line reader<>o
+!|1U8C2N00001Z00horizon.icn<>Goodbye<>g
+!|1U8C3W00002B00noshuf.icn<>Statistics<>s
+!|1U8C5500002D00caticon.icn<>User list<>u
+[acs sysop]!|1U8C6E00001000dollar.icn<>$MEX Test<>$
+!|1U8C7N00002E00blademtr.icn<>Version of BBS<>v
+!|1UDM2N00002H00ge.icn<>Yell for SysOp<>y
+!|1UDM3W00002F00guesswht.icn<>Who is On<>w
+!|1UDM5500001B00trivia.icn<>/Chat Menu<>/
+!|1UDM6E00001R00helpicon.icn<>?Help\!<>?
+[acs sysop]!|1UDM7N00000Z00golf.icn<>#Sysop Menu<>#
+!|1I162800010email.icn
+!|1I163H00010diskette.icn
+!|1I164Q00010tnk.icn
+!|1I165Z00010news.icn
+[acs limited]!|1I167800010ewrite.icn
+!|1I6E2800010horizon.icn
+!|1I6E3H00010noshuf.icn
+!|1I6E4Q00010caticon.icn
+[acs sysop]!|1I6E5Z00010dollar.icn
+!|1I6E7800010blademtr.icn
+!|1IBM2800010ge.icn
+!|1IBM3H00010guesswht.icn
+!|1IBM4Q00010trivia.icn
+!|1IBM5Z00010helpicon.icn
+[acs sysop]!|1IBM7800010golf.icn
+!|Y00000000|#|#|#
+[lightred]
+
+  GREETINGS!
+[yellow]
+  If you can read this, you are not running a terminal with RIP graphics
+  capability, and you have enabled it in error.
+[cyan]
+  To DISABLE RIP GRAPHICS, press 'C' to access the CHANGE MENU and 'R'
+  to toggle RIP graphics off. Your normal ANSI/TTY menus will then be
+  restored so you can navigate the BBS with some sanity left intact.
+[lightgreen]
+  Hit [lightred]C[lightgreen] then [lightred]R[lightgreen] now.
+[quit]

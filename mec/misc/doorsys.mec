@@ -1,0 +1,36 @@
+[delete]Door.Sys
+[open]Door.Sys
+[write]COM%P:[comment                                   COM port]
+[write]%b[comment                                       Baud rate]
+[write]8[comment                                        Stop bits]
+[write]%k[comment                                       Node number]
+[write]N[comment DTE locked? -- Set to baud rate if running a locked port!!!]
+[write]Y[comment                                        Screen display]
+[write]Y[comment                                        Printer toggle]
+[write]Y[comment                                        Page bell]
+[write]Y[comment                                        Caller alarm]
+[write]%n[comment                                       User's name]
+[write]%c[comment                                       User's city]
+[write]%h[comment                                       Home phone]
+[write]%h[comment                                       Work/data phone]
+[write]%e[comment                                       User's password]
+[write]%o[comment                                       User's priv level]
+[write]14[comment                                       # of times on]
+[write]01/01/90[comment                                 Last date called]
+[write]%T[comment                                       Seconds remaining]
+[write]%t[comment                                       Minutes remaining]
+[colour write]GR[comment                                'GR' for graphics]
+[endcolour nocolour write]NG[comment                    'NG' for TTY]
+[endcolour][write]%E[comment                            Page Length]
+[expert write]Y[comment                                 Help mode]
+[regular write]N
+[novice write]N
+[write]1,2,3,4,5,6,7[comment                            Confs reg'd in]
+[write]1[comment                                        Conf last in]
+[write]01/01/99[comment                                 Expiration date]
+[write]%u[comment                                       User number]
+[write]X[comment                                        Default protocol]
+[write]0
+[write]0
+[write]0
+[write]9999

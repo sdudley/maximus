@@ -1,0 +1,130 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: max_menu.mh
+//
+// Desc: Enumerated constants for Maximus menu options.  These should
+//       be used with the menu_cmd() function.
+//
+// Copyright 1994, 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: max_menu.mh,v 1.1 2002/10/01 17:50:35 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+#define MNU_DISPLAY_MENU        101     // not supported
+#define MNU_DISPLAY_FILE        102
+#define MNU_RESERVED11          103
+#define MNU_RESERVED12          104
+#define MNU_RESERVED13          105
+#define MNU_PRESS_ENTER         106
+#define MNU_KEY_POKE            107
+#define MNU_CLEAR_STACKED       108
+#define MNU_RESERVED14          109
+#define MNU_MENUPATH            110
+#define MNU_CLS                 111
+#define MNU_MEX                 112     // not supported
+#define MNU_LINK_MENU           113     // not supported
+#define MNU_RETURN              114     // not supported
+
+#define MNU_XTERN_ERLVL         201
+#define MNU_XTERN_DOS           202
+#define MNU_XTERN_RUN           203
+#define MNU_RESERVED21          204
+#define MNU_RESERVED22          205
+
+#define MNU_GOODBYE             301
+#define MNU_RESERVED31          302
+#define MNU_YELL                303
+#define MNU_USERLIST            304
+#define MNU_VERSION             305
+#define MNU_USER_EDITOR         306
+#define MNU_LEAVE_COMMENT       307
+#define MNU_RESERVED32          308
+
+#define MNU_SAME_DIRECTION      401
+#define MNU_READ_NEXT           402
+#define MNU_READ_PREVIOUS       403
+#define MNU_MSG_ENTER           404
+#define MNU_MSG_REPLY           405
+#define MNU_READ_NONSTOP        406
+#define MNU_READ_ORIGINAL       407
+#define MNU_READ_REPLY          408
+#define MNU_RESERVED41          409
+#define MNU_RESERVED42          410
+#define MNU_RESERVED43          411
+#define MNU_MSG_KILL            412
+#define MNU_MSG_HURL            413
+#define MNU_MSG_FORWARD         414
+#define MNU_MSG_UPLOAD          415
+#define MNU_MSG_XPORT           416
+#define MNU_READ_INDIVIDUAL     417
+#define MNU_MSG_CHECKMAIL       418
+#define MNU_MSG_CHANGE          419
+#define MNU_MSG_TAG             420
+#define MNU_MSG_BROWSE          421
+#define MNU_MSG_CURRENT         422
+#define MNU_MSG_EDIT_USER       423
+#define MNU_MSG_UPLOAD_QWK      424
+#define MNU_MSG_TOGGLE_KLUDGES  425
+#define MNU_MSG_UNRECEIVE       426
+#define MNU_MSG_RESTRICT        427
+#define MNU_MSG_AREA            428
+#define MNU_MSG_TRACK           429
+#define MNU_MSG_DLOAD_ATTACH    430
+
+#define MNU_FILE_LOCATE         501
+#define MNU_FILE_TITLES         502
+#define MNU_FILE_VIEW           503
+#define MNU_FILE_UPLOAD         504
+#define MNU_FILE_DOWNLOAD       505
+#define MNU_FILE_RAW            506
+#define MNU_FILE_KILL           507
+#define MNU_FILE_CONTENTS       508
+#define MNU_FILE_HURL           509
+#define MNU_FILE_OVERRIDE       510
+#define MNU_FILE_NEWFILES       511
+#define MNU_FILE_TAG            512
+#define MNU_FILE_AREA           513
+
+#define MNU_CHG_CITY            601
+#define MNU_CHG_PASSWORD        602
+#define MNU_CHG_HELP            603
+#define MNU_CHG_NULLS           604
+#define MNU_CHG_WIDTH           605
+#define MNU_CHG_LENGTH          606
+#define MNU_CHG_TABS            607
+#define MNU_CHG_MORE            608
+#define MNU_CHG_VIDEO           609
+#define MNU_CHG_EDITOR          610
+#define MNU_CHG_CLEARSCREEN     611
+#define MNU_CHG_IBMCHARS        612
+#define MNU_CHG_PHONE           613
+#define MNU_CHG_REALNAME        614
+#define MNU_CHG_HOTKEYS         615
+#define MNU_CHG_LANGUAGE        616
+#define MNU_CHG_USERLIST        617
+#define MNU_CHG_PROTOCOL        618
+#define MNU_CHG_FSR             619
+#define MNU_CHG_ARCHIVER        620
+#define MNU_CHG_RIP             621
+
+#define MNU_EDIT_SAVE           701     // not supported
+#define MNU_EDIT_ABORT          702     // not supported
+#define MNU_EDIT_LIST           703     // not supported
+#define MNU_EDIT_EDIT           704     // not supported
+#define MNU_EDIT_INSERT         705     // not supported
+#define MNU_EDIT_DELETE         706     // not supported
+#define MNU_EDIT_CONTINUE       707     // not supported
+#define MNU_EDIT_TO             708     // not supported
+#define MNU_EDIT_FROM           709     // not supported
+#define MNU_EDIT_SUBJ           710     // not supported
+#define MNU_EDIT_HANDLING       711     // not supported
+#define MNU_EDIT_READ_DISKFILE  712     // not supported
+#define MNU_EDIT_QUOTE          713     // not supported
+
+#define MNU_CHAT_WHO_IS_ON      801
+#define MNU_CHAT_PAGE           802
+#define MNU_CHAT_CB             803
+#define MNU_CHAT_TOGGLE         804
+#define MNU_CHAT_PVT            805
+

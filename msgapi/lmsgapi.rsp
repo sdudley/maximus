@@ -1,0 +1,5 @@
+mcp\msgapi.obl mcp\api_sdm.obl mcp\api_sq.obl mcp\1stchar.obl +
+mcp\cvtdate.obl mcp\date2bin.obl mcp\dosdate.obl mcp\fexist.obl +
+mcp\ffind.obl mcp\flush.obl mcp\months.obl mcp\mc_misc.obl mcp\parsenn.obl +
+mcp\qksort.obl mcp\stristr.obl mcp\strocpy.obl mcp\trail.obl mcp\_ctype.obl +
+mcp\nopen.obl

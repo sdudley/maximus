@@ -1,0 +1,172 @@
+;
+; Include file: legible defines for RIP commands
+;
+
+#define RIP           \r!
+#define RLI           !
+
+#define RIP_TEXTWIN   |w
+        ; x0:2,y0:2,x1:2,y1:2,wrap:1,size:1
+
+#define RIP_VPORT     |v
+        ; x0:2,y0:2,x1:2,y1:2
+
+#define RIP_RESET     |*
+#define RIP_ERASEWIN  |e
+#define RIP_ERASEVIEW |E
+#define RIP_GOTOXY    |g
+        ; x:2,y:2
+
+#define RIP_HOME      |H
+#define RIP_CLEOL     |>
+#define RIP_COL       |c
+        ; c:2
+
+#define RIP_SETPAL    |Q
+        ; c0:2,c1:2..c15:2
+
+#define RIP_ONEPAL    |a
+        ; c:2,v:2
+
+#define RIP_WRMODE    |W
+        ; m:2
+
+#define RIP_MOVE      |m
+        ; x:2,y:2
+
+#define RIP_TEXT      |T
+        ; string
+#define RIP_TEXTXY    |@
+        ; x:2,y:2,string
+#define RIP_FONTSTY   |Y
+        ; font:2,dir:2,size:2,res:2
+  #define FONT_DEFAULT  00
+  #define FONT_TRIPLEX  01
+  #define FONT_SMALL    02
+  #define FONT_SERIF    03
+  #define FONT_GOTHIC   04
+  #define FDIR_HORIZ    00
+  #define FDIR_VERT     01
+
+#define RIP_PIXEL     |X
+        ; x:2,y:2
+
+#define RIP_LINE      |L
+        ; x0:2,y0:2,x1:2,y1:2
+
+#define RIP_RECT      |R
+        ; x0:2,y0:2,x1:2,y1:2
+
+#define RIP_BAR       |B
+        ; x0:2,y0:2,x1:2,y1:2
+
+#define RIP_CIRC      |C
+        ; x:2,y:2,rad:2
+
+#define RIP_OVAL      |O
+        ; x:2,y:2,xrad:2,yrad:2
+
+#define RIP_FOVAL     |o
+        ; x:2,y:2,xrad:2,yrad:2
+
+#define RIP_ARC       |A
+        ; x:2,y:2,sang:2,eang:2,rad:2
+
+#define RIP_OVALARC   |V
+        ; x:2,y:2,sang:2,eang:2,xrad:2,yrad:2
+
+#define RIP_PIE       |I
+        ; x:2,y:2,sang:2,eang:2,rad:2
+
+#define RIP_OVALPIE   |i
+        ; x:2,y:2,sang:2,eang:2,xrad:2,yrad:2
+
+#define RIP_BEZIER    |Z
+        ; x1:2,y1:2,x2:2,y2:2,x3:2,y3:2,x4:2,y4:2,cnt:2
+
+#define RIP_POLY      |P
+        ; n:2,x1:2,y1:2,x2:2...xn:2,yn:2
+
+#define RIP_FPOLY     |p
+        ; n:2,x1:2,y1:2,x2:2...xn:2,yn:2
+
+#define RIP_FILL      |F
+        ; x:2,y:2,c:2
+
+#define RIP_LINESTY   |=
+        ; style:2,user_pal:4,thick:2
+
+  #define LS_SOLID      00
+  #define LS_DOTTED     01
+  #define LS_CENTRE     02
+  #define LS_DASHED     03
+  #define LS_CUSTOM     04
+  #define LINE_THIN     01
+  #define LINE_THICK    03
+
+#define RIP_FILLSTY   |S
+        ; patt:2,c:2
+        ; 00    Fill with background color (color #0)
+        ; 01    Solid Fill (fill color)
+        ; 02    Line Fill ................. ----------- (thick lines)
+        ; 03    Light Slash Fill .......... /  /  /  /  (thin lines)
+        ; 04    Normal Slash Fill ......... // // // // (thick lines)
+        ; 05    Normal Backslash Fill ..... \\ \\ \\ \\ (thick lines)
+        ; 06    Light Backslash Fill ...... \  \  \  \  (thin lines)
+        ; 07    Light Hatch Fill .......... ########### (thin lines)
+        ; 08    Heavy Cross Hatch Fill .... XXXXXXXXXXX (thin lines)
+        ; 09    Interleaving Line Fill .... +-+-+-+-+-+ (thin lines)
+        ; 0A    Widely spaced dot fill .... . : . : . : (pixels only)
+        ; 0B    Closely spaced dot fill ... ::::::::::: (pixels only) */
+
+#define RIP_FILLPAT   |s
+        ; c1:,c2:2..c8:2,col:2
+
+#define RIP_END       |#|#\n
+
+#define RIP_MOUSE     |1M
+        ; num:2,x0:2,y0:2,x1:2,y1:2,clk:1,clr:1,res:5,text
+
+#define RIP_KILL      |1K
+#define RIP_BEGTEXT   |1T
+        ; x1:2,y1:2,x2:2,y2:2,res:2
+
+#define RIP_REGTEXT   |1t
+        ; just:1,string
+
+#define RIP_ENDTEXT   |1E
+#define RIP_GETIMG    |1C
+        ; x0:2,y0:2,x1:2,y1:2,res:1
+
+#define RIP_PUTIMG    |1P
+        ; x:2,y:2,mode:2,res:1
+
+  #define PUT_COPY      00
+  #define PUT_XOR       01
+  #define PUT_OR        02
+  #define PUT_AND       03
+  #define PUT_NOT       04
+
+#define RIP_WRICON    |1W
+        ; res:1,filename
+
+#define RIP_LDICON    |1I
+        ; x:2,y:2,mode:2,clip:1,res:2,filename
+
+#define RIP_BUTSTY    |1B
+        ; w:2,h:2,o:2,f:2,s:2,df:2,db:2,br:2,dk:2,surf:2,grp:2,flags2:2,ul:2,cc:2,res:6
+
+#define RIP_BUTDEF    |1U
+
+#define RIP_DEFINE    |1D
+        ; flags:3,res:2,text
+
+#define RIP_QUERY     |1\x1b
+        ; mode:1,res:3,text
+
+#define RIP_COPYREG   |1G
+        ; x0:2,y0:2,x1:2,y1:2,res:2,dest:2
+
+#define RIP_READSCN   |1R
+        ; res:8,filename
+

@@ -1,0 +1,208 @@
+[rip]!|*
+[endrip][moreoff]
+[yellow]CHANGE HELP: [lightcyan]Type the letter of the command that you need help with.
+
+[yellow]C[lightcyan])ity              [yellow]P[lightcyan])assword
+[yellow]W[lightcyan])idth             [yellow]L[lightcyan])ength
+[yellow]V[lightcyan])ideo Mode        [yellow]F[lightcyan])ullscreen_Edit
+[yellow]H[lightcyan])elp Level        [yellow]N[lightcyan])ulls
+[yellow]T[lightcyan])abs              [yellow]*[lightcyan])More Prompt
+[yellow]S[lightcyan])creen Clear      [yellow]I[lightcyan])BM Characters
+[yellow]#[lightcyan])Phone Number     [yellow]![lightcyan])Hotkeys
+[yellow]@[lightcyan])Language         [yellow]%[lightcyan])ShowInUserList
+[yellow]$[lightcyan])Protocol Default [yellow]&[lightcyan])Archiver Default
+[yellow]^[lightcyan])FullScrnRead     [yellow]A[lightcyan])lias
+[yellow]R[lightcyan])IP Graphics
+[yellow]0[lightcyan]) [lightred]QUIT HELP
+
+[white]Select: [gray menu]acphnwltmvfsir#0!@%$^&|
+
+[choice]a[goto Alias]
+[choice]c[goto CCity]
+[choice]p[goto Password]
+[choice]h[goto Help]
+[choice]n[goto Nulls]
+[choice]w[goto Width]
+[choice]l[goto LLength]
+[choice]t[goto Tabs]
+[choice]*[goto Mmore]
+[choice]v[goto Video]
+[choice]f[goto FSED]
+[choice]s[goto SClr]
+[choice]i[goto IBM]
+[choice]#[goto PhoneNum]
+[choice]![goto HHotkeys]
+[choice]@[goto LLanguage]
+[choice]%[goto ShowInUserList]
+[choice]$[goto Protocol]
+[choice]&[goto Archiver]
+[choice]^[goto FullScrnRead]
+[choice]R[goto ripgraph]
+[choice]0[quit]
+[choice]|[quit]
+[top]
+
+[/CCity yellow]        CITY
+
+        [white]This command changes the contents of the "city" field
+in your user record. [goto Next]
+
+[/Password yellow]        PASSWORD
+
+        [white]This command changes your password.  Before entering a
+new password, you must correctly enter your current password.  It's a
+good idea to change your password every few months to deter attempts
+to gain access to your account. [goto Next]
+
+[/Help yellow]        HELP LEVEL
+
+        [white]This command changes your "help level".  Maximus supports
+the following four help levels:
+
+        [yellow]NOVICE   - [white]Full menus.
+        [yellow]REGULAR  - [white]Abbreviated menus.
+        [yellow]EXPERT   - [white]No menus.
+        [yellow]HOTFLASH - [white]Full-screen, hotkey interface. [goto Next]
+
+[/Nulls yellow]        NULLS
+
+        [white]This command changes the delay after each transmitted
+line.  Unless you're using an ancient terminal, you probably won't need
+to use this setting. [goto Next]
+
+[/Width yellow]        WIDTH
+
+        [white]This command changes your screen width setting.  If the
+width you give here is incorrect, messages and menus won't be
+displayed properly. [goto Next]
+
+[/LLength yellow]        LENGTH
+
+        [white]This command changes your screen length setting.  If
+this length is incorrect, then the `More [[Y,n]?' prompts won't be displayed
+in the right places. [goto Next]
+
+
+[/Tabs yellow]        TABS
+
+        [white]This command toggles the translation of tab characters.
+Normally, Maximus sends tabs unaltered.  A tab can replace up to eight
+spaces, so using tabs may make your display marginally faster.  If
+your terminal doesn't support tabs, you can tell Maximus to translate
+tabs into spaces by turning the tabs option OFF. [goto next]
+
+[/Mmore yellow]        MORE
+
+        [white]This command can be used to turn off screen paging.
+Normally, Maximus will display a "More [[Y,n,=]" prompt at the end
+of every screen page.  However, if you're doing a lot of text
+capturing, you can turn off these prompts by selecting this
+option.  Also, you can temporarily turn off more prompts for one
+file by selecting the `=' option at any existing more prompt. [goto Next]
+
+[/Video yellow]        VIDEO MODE
+
+        [white]This command can be used to change your current video
+mode.  Currently, Maximus supports the TTY, ANSI and AVATAR video
+modes.  Both ANSI and AVATAR support colour and cursor positioning,
+but TTY mode is text-only. [goto Next]
+
+[/ripgraph yellow]        RIP GRAPHICS
+
+        [white]This command enables or disables RIP Graphics support.
+RIP graphics allow you to see graphics and use the mouse to manipulate
+menu options.
+
+This feature is only available if the SysOp has enabled RIP graphics
+support.  In addition, your terminal program must support RIP
+graphics to use this option.[goto Next]
+
+[/FSED yellow]        FULLSCREEN EDITOR
+
+        [white]This command toggles the use of the full-screen editor.
+The full-screen editor is more like a word processor than a BBS
+editor; you can use the cursor keys to move around, insert and delete
+text in the middle of paragraphs, and so on.  However, you need ANSI
+or AVATAR graphics to use the full-screen editor, in addition to a
+screen of at least 23 lines and 79 columns. [goto Next]
+
+[/SClr yellow]        SCREEN CLEAR
+
+        [white]This command toggles screen clearing codes.  If your
+terminal can't handle the TTY clearscreen character (ASCII 12) or the
+ANSI "2J" command, this option should be turned off. [goto Next]
+
+[/IBM yellow]        IBM CHARACTERS
+
+        [white]This command toggles the translation of IBM high-bit
+characters.  IBMs and compatibles have an `extended' 8-bit character
+set, including box-drawing characters and block graphics, accented
+characters, and so on.  Most non-IBM systems don't support these
+codes, so turning off this option causes Max to translate the high-bit
+characters into an equivalent ASCII character. [goto Next]
+
+[/PhoneNum yellow]        PHONE NUMBER
+
+        [white]This command lets you modify the phone number in your
+user record.  This command may be unavailable on certain systems. [goto Next]
+
+[/HHotkeys yellow]        HOTKEYS
+
+        [white]The Hotkeys command allows you to toggle the use of
+hotkeys within Maximus.  When hotkeys are turned off, you must press
+<enter> after each command letter.  However, if hotkeys are turned on,
+Maximus will act on keystrokes as soon as they are received. [goto Next]
+
+[/LLanguage yellow]        LANGUAGE
+
+        [white]The Language command allows you to select an alternate
+language file.  A list of available languages is displayed when you
+select this command; simply choose a number to change to that language.
+You can change language files at any point in the session. [goto Next]
+
+[/ShowInUserList yellow]        SHOW IN USERLIST
+
+        [white]This command allows you to select whether or not your
+name will be shown in the system userlist.  If you don't want your
+name to be displayed to others (for whatever reason), this option can
+be turned off. [goto Next]
+
+[/Protocol yellow]        PROTOCOL DEFAULT
+
+        [white]This command allows you to select a default file
+transfer protocol.  Normally, when performing an upload or a download,
+Maximus will prompt you to select a protocol for each transfer.  However,
+if you'll always be using the same protocol, you can select it
+here on the change menu.  After a default protocol is selected, Max will
+automatically assume that you want to use that protocol when performing
+an upload or a download. [goto Next]
+
+[/Archiver yellow]        ARCHIVER DEFAULT
+
+        [white]This command allows you to select a default archiving
+program.  When performing a QWK mail pack, Maximus will normally ask
+you to select a compression method.  However, if you'll always be
+using the same compression format when downloading mail, you can
+select a default archiver using this option. [goto Next]
+
+[/FullScrnRead yellow]        FULL-SCREEN READER
+
+        [white]This command toggles the use of the Maximus
+"full-screen reader".  This reader is identical to the header
+used in the message entry command.  More information will be
+displayed than in the default header, such as both the creation
+and arrival dates, but the new header takes longer to display
+on remote screens.  You must be using ANSI/AVATAR and have screen
+clearing turned on for this option to work. [goto Next]
+
+[/Alias yellow]        ALIAS
+
+        [white]This command allows you to change your alias.
+(Some systems may not have alias support enabled, so this
+option may not be available to you.) [goto Next]
+
+[/Next]
+
+[enter top]
+
+

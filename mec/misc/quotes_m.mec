@@ -1,0 +1,26 @@
+[yellow]
+This prompt selects another area by allowing you to enter the name of the
+area or group to go to from the list displayed.
+[white]
+ Typing a [lightred]QUESTION MARK[white] and pressing [magenta]<[lightmagenta]enter[magenta]>[white] will give a list of available
+   areas within the current group.
+
+ Typing [lightred]TWO FULL STOPS[white] and pressing [magenta]<[lightmagenta]enter[magenta]>[white] will move up one level in the
+   group hierarchy.
+
+ Typing a [lightred]FORWARD SLASH[white] (usually next to the right shift key) and pressing
+   [magenta]<[lightmagenta]enter[magenta]>[white] will display the list of top level areas.
+
+ Pressing [magenta]<[lightmagenta]enter[magenta]>[white] without entering anything will drop you back to the menu
+   with the current file or message area unchanged.
+
+ Typing a [lightred]RIGHT ANGLE BRACKET[white] (usually above the period key) and pressing
+   [magenta]<[lightmagenta]enter[magenta]>[white] will change to the next area.
+
+ Typing a [lightred]LEFT ANGLE BRACKET[white] (usually above the comma key) and pressing
+   [magenta]<[lightmagenta]enter[magenta]>[white] will change to the previous area.
+[lightcyan]
+Using single or double quotes around the command is unnecessary.
+[white]
+[quit]
+

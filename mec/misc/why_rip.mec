@@ -1,0 +1,31 @@
+[cls moreoff]
+[repeat]![1]|*|w0203241310
+[repeat]![1]|c07|R0101HQ94|R0202HP93|R0303HO92
+[repeat]![1]|c0F!|L0000HR00|L00000095
+[repeat]![1]|L0491HN91|LHN04HN91|c08
+[repeat]![1]|L00HR95HR|LHR00HR95|L0404HN04|L04040491
+[repeat]![1]|c0f|g0000|#|#|#
+Maximus supports the Remote Imaging Protocol, otherwise known as
+RIP. If your terminal program supports RIP, then you will be able to
+view the BBS in graphics mode and use the mouse to make menu
+selections.
+
+However, your terminal program must have support for RIP, or else
+you will only see a lot of strange codes, such as
+"!|*|w0707241310|#|#|#" and so on. If your terminal program has a
+terminal emulation mode which supports RIP graphics, you should
+switch to it now.
+
+If this screen has a frame, you do have RIP graphics capability, but
+if you can only see an unintelligible series of numbers and symbols
+preceeded by "!|" at the top of your screen, then your terminal
+program does NOT support RIP graphics, and you should answer "N" at
+the prompt.
+
+   To turn *on* RIP graphics, enter ........... Y
+   To turn *off* RIP graphics, enter .......... N
+
+[white enter]
+[cls]
+!|*|#|#|#[bs][bs][bs][bs][bs][bs][bs][bs][bs]         [bs]
+[white]

@@ -1,0 +1,16 @@
+
+Error!  An MS-DOS filename is from one to eight characters long, 
+consisting of letters, numbers, and also any of the following 
+characters: !@#$%^()_-  (Note that a space is NOT a valid 
+character. Also, there is no difference between uppercase and 
+lowercase characters.)
+
+A filename can also have an optional period, followed by a three-character
+extension.  The following are all examples of valid filenames:
+
+abcdefgh
+filename.ext
+FiLeNaMe.ext
+FILENAME.EXT
+$$$NEW.ABC
+

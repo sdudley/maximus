@@ -1,0 +1,502 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// File: mexchat.mex
+//
+// Desc: Full-screen chat program for Maximus
+//
+// Copyright 1995 by Lanius Corporation.  All rights reserved.
+//
+// $Id: mexchat.mex,v 1.1 2002/10/01 17:50:38 sdudley Exp $
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+#define INCL_global
+#define INCL_max_init
+#define INCL_mexchat
+
+#include <max.mh>
+#include <prm.mh>
+#include <language.mh>
+
+
+#define Remote  0
+#define Local   1
+
+
+int: lastchar;          // Who typed the last chr (1=sysop,0=remote)
+int: rows,              // Rows on chat screen
+     cols;              // Cols on chat screen
+
+struct chatwin
+{
+    int:    row, col,   // Current cursor position on window
+            idx;        // Buffer index
+    int:    at,         // Window starts on this row
+            rows;       // Number of rows in this window
+    int:    tcolr,      // Title colour
+            colr;       // Text colour
+    string: title,      // Window title
+            buf;        // Chat buffer
+};
+
+
+    // username()
+    // Returns user's name and optionally alias
+
+string username()
+{
+    string: u;
+
+    if (strlen(usr.alias)=0 or usr.name=usr.alias)
+        u := usr.name;
+    else
+    {
+        if (id.alias_system)
+            u:=usr.alias+" ("+usr.name+")";
+        else
+            u:=usr.name+" ("+usr.alias+")";
+    }
+    return u;
+}
+
+    // firstname()
+    // Returns user's first name
+
+string firstname()
+{
+    int: p;
+    string: n;
+
+    n:=username();
+    p:=strfind(n," ");
+    if (p>0)
+        n:=substr(n,1,p-1);
+    return n;
+}
+
+    // gotoxy()
+    // Goto position x,y on screen
+
+string gotoxy(int: col, int: row)
+{
+    string: seq;
+    if (usr.video<>VIDEO_TTY)
+    {
+        seq[1] := 22;
+        seq[2] := 8;
+        seq[3] := row+1;
+        seq[4] := col+1;
+    }
+    return seq;
+}
+
+    // attr()
+    // Sets a specific attribute
+
+string attr(int: col)
+{
+    string: seq;
+    if (usr.video<>VIDEO_TTY)
+    {
+        seq[1] := 22;
+        seq[2] := 1;
+        seq[3] := 16;
+        seq[3] := col;
+    }
+    return seq;
+}
+
+    // nextline()
+    // returns the next line in a string
+
+string nextline(ref string: s, ref int: idx)
+{
+    int: l;
+    int: i;
+    string: a;
+
+    l:=strlen(s)+1;
+    if (idx < l)
+    {
+        i:=stridx(s, idx, '\n');
+        if (i=0)
+        {
+            a:=substr(s,idx,l-idx);
+            idx:=l;
+        }
+        else
+        {
+            a:=substr(s,idx,i-idx);
+            idx:=i+1;
+        }
+    }
+    return a;
+}
+
+    // cw_init
+    // Inits a chat window
+
+void cw_init(ref struct chatwin: w, string: title, int: at, int: rows, int: tcolr, int: colr)
+{
+    w.row:=0;
+    w.col:=0;
+    w.idx:=0;
+    w.at:=at;
+    w.rows:=rows;
+    w.tcolr:=tcolr;
+    w.colr:=colr;
+    w.title:=title;
+    w.buf:="";
+}
+
+    // cw_gotoxy
+    // Positions the cursor at x,y relative to the chat window
+
+void cw_gotoxy(ref struct chatwin: w, int: x, int: y)
+{
+    print(gotoxy(x,w.at+y));
+}
+
+    // cw_cpos
+    // Positions the cursor at current window x,y
+
+void cw_cpos(ref struct chatwin: w)
+{
+    cw_gotoxy(w, w.col,w.row);
+}
+
+    // cw_redraw()
+    // Redraws a chat window
+
+void cw_redraw(ref struct chatwin: w)
+{
+    int: r, p;
+
+    if (usr.video<>VIDEO_TTY)
+    {
+
+        // Print title bar
+
+        print(gotoxy(0,w.at-1),
+              attr(w.tcolr),
+              AVATAR_CLEOL " ",
+              w.title,
+              attr(w.colr));
+
+        // Paint each line individually
+
+        p := 1;
+
+        for (r:=0; r < w.rows; r:=r+1)
+        {
+            print(gotoxy(0,w.at+r), AVATAR_CLEOL, nextline(w.buf,p));
+        }
+        cw_cpos(w);
+    }
+}
+
+void cw_newline(ref struct chatwin: w)
+{
+    int: p;
+
+    w.col:=0;
+    w.row:=w.row+1;
+    if (w.row < w.rows)
+    {
+        print('\n');
+    }
+    else
+    {
+        w.row:=w.row-1;
+        p:=stridx(w.buf,1,'\n');
+        w.buf:=substr(w.buf,p+1,w.idx-p);
+        w.idx:=w.idx-p;
+        if (usr.video=VIDEO_TTY)
+            print('\n');
+        else
+            cw_redraw(w);
+    }
+}
+
+    // Adds a single character to a chat window
+
+void cw_addchr(ref struct chatwin: w, int: ch)
+{
+    int: at;
+    int: to;
+    int: i;
+    string: a;
+
+    if (ch > 256)               // Ignore function/altkeys
+        return;
+
+    if (ch='\r' or ch='\n')
+    {
+        ch:='\n';
+        cw_newline(w);
+    }
+    else
+    {
+        if (ch=23 or ch=12)     // ^L/^W redraw window
+        {
+            cw_redraw(w);
+            return;
+        }
+        if (ch=3)               // ^C clearscreen
+        {
+            w.buf:="";
+            w.col:=0;
+            w.row:=0;
+            w.idx:=0;
+            cw_redraw(w);
+            return;
+        }
+
+        if (ch='\b')
+        {
+            if (w.col>0)
+            {
+                w.idx:=w.idx-1;
+                w.col:=w.col-1;
+                w.buf:=substr(w.buf,1,w.idx);
+                print("\b \b");
+            }
+            return;
+        }
+
+        if (ch='\t')
+            ch:=' ';
+        else if (ch<' ')
+            return;
+
+        if (w.col=(cols-1))
+        {
+            if (ch=' ')
+            {
+                ch:='\n';
+                w.idx:=w.idx+1;
+                w.buf[w.idx]:=ch;
+                cw_newline(w);
+                return;
+            }
+            else
+            {
+
+                at:=strridx(w.buf,0,' ');
+                if (at < (w.idx-w.col))
+                    to:=0;
+                else
+                {
+                    to:=w.idx-at;
+                    for (i:=to; i > 0; i:=i-1)
+                        print('\b');
+                    for (i:=to; i > 0; i:=i-1)
+                        print(' ');
+                    a:=substr(w.buf,at+1,to);
+                    w.idx:=at-1;
+                    w.buf:=substr(w.buf,1,w.idx);
+                }
+                cw_newline(w);
+                w.idx:=w.idx+1;
+                w.buf[w.idx]:='\n';
+                if (to > 0)
+                {
+                    print(a);
+                    w.buf:=w.buf+a;
+                    w.idx:=w.idx+to;
+                    w.col:=to;
+                }
+            }
+        }
+        print((char)ch);
+        w.col:=w.col+1;
+    }
+    w.idx:=w.idx+1;
+    w.buf[w.idx]:=ch;
+}
+
+    // Adds a string to a chat window
+
+void cw_addstr(ref struct chatwin: w, string: s)
+{
+    int: i;
+    int: l;
+
+    l:=strlen(s);
+    for (i:=1; i<=l; i:=i+1)
+        cw_addchr(w,s[i]);
+}
+
+    // redrawall()
+    // Redraws the complete screen
+
+void redrawall(ref array[0..1] of struct chatwin: cw)
+{
+    print(AVATAR_CLS);
+    cw_redraw(cw[Remote]);
+    cw_redraw(cw[Local]);
+    if (usr.video<>VIDEO_TTY)
+    {
+        print(gotoxy(0,rows-1),attr(113), AVATAR_CLEOL " MEXChat v1.0");
+        cw_cpos(cw[lastchar]);
+        print(attr(cw[lastchar].colr));
+    }
+}
+
+    // MexChat
+    // Main procedure
+
+int main()
+{
+    int: ch, whoby;
+    int: tmp;
+    int: wastimecheck;
+    long: wastime;
+    char: nonstop;
+    char: wasvideo;
+    string: chatfile;
+    array[0..1] of struct chatwin: cw;
+
+    // init user language heap
+
+    init_lang_mexchat();
+
+    // Handle aberrant use
+
+    id.instant_video:=1;
+
+    if (id.local<>0)
+    {
+        print(str_chat_needremote);
+        print(str_err999_1,str_err999_2);
+        while (getch()<>13)
+            ;
+        return 0;
+    }
+
+    // Force video for full screen even if user has ANSI disabled
+
+    wasvideo:=usr.video;
+    if (wasvideo=VIDEO_TTY and ansi_detect())
+        usr.video := VIDEO_ANSI;
+
+    // Display opening (may include RIP init etc.)
+
+    chatfile:=prm_string(PRM_CHATBEGIN);
+    if (chatfile[1] = ' ')  // None defined
+        print(str_chat_start);
+    else
+    {
+        nonstop:=False;
+        display_file(chatfile,nonstop);
+    }
+
+    // Set up 'ideal' video size for remote & local screens
+
+    rows := screen_length()-1;
+    cols := screen_width();
+    if ( rows > term_length() )
+        rows := term_length();
+    if ( cols > term_width() )
+        cols := term_width();
+
+    // Now, setup each chat window
+
+    tmp:=(rows - 3) / 2;
+    cw_init(cw[Local], prm_string(PRM_SYSOP), 1, tmp, 31, 14);
+    cw_init(cw[Remote], username(), tmp+2, (rows-tmp)-3, 30, 11);
+
+    // Assume that the sysop typed last, then redraw everything
+
+    lastchar:=Local;
+    redrawall(cw);
+
+    // Now, display our friendly greeting
+
+    cw_addstr(cw[Local], str_chat_greets + firstname() + str_chat_whoami);
+
+    // Force keyboard mode on (already done if invoked via Alt-C)
+
+    keyboard(True);
+
+    // Disable time checking, save time left and tell the system
+    // we've started chat mode
+
+    wastime := timeleft();
+    wastimecheck := time_check(False);
+    chatstart();
+
+    // And keep plugging until keyboard is turned off via local ESC
+
+    ch := 0;
+
+    while ( iskeyboard() )
+    {
+        // If the last character input was a <cr>, check to see if we
+        // got a nul after it.  This fixes the problem when a telnet
+        // sends <cr><nul>.
+
+        if (ch=13)
+        {
+            ch := getch();
+
+            if (localkey()=0 and ch=0)
+                ch := getch();
+        }
+        else
+        {
+            ch:=getch();
+        }
+
+        // Handle 'extended' keys
+
+        if (ch=0)
+            ch:=getch()*256;
+
+        // Who typed the last character?
+
+        whoby:=localkey();
+        if (whoby<>lastchar)
+        {
+
+            // If it was a different party, then switch windows & colour
+
+            cw_cpos(cw[whoby]);
+            print(attr(cw[whoby].colr));
+            lastchar:=whoby;
+        }
+
+        // Now, put that character on the screen
+
+        cw_addchr(cw[lastchar],ch);
+
+    }
+
+    // Give user back time elapsed & re-enable time checking
+
+    timeadjust(wastime-timeleft());
+    time_check(wastimecheck);
+
+    // Tidy up by clearing the screen after chat completes
+
+    print(AVATAR_CLS);
+
+    // .. and display the end chat file
+
+    chatfile:=prm_string(PRM_CHATEND);
+    if (chatfile[1] = ' ')  // None defined
+        print(str_chat_end);
+    else
+    {
+        nonstop:=False;
+        display_file(chatfile,nonstop);
+    }
+
+    // Restore user's video setting if we forced it to ansi
+
+    usr.video:=wasvideo;
+
+    return 0;
+}
+
