@@ -118,6 +118,9 @@ void _stdc timer(unsigned int duration)
   tim=timerset(duration);
 
   while (! timeup(tim))
+#ifdef UNIX
+    sleep(0)
+#endif
     ;
 }
 
