@@ -1,4 +1,4 @@
-$Id: TODO,v 1.1 2003/06/23 18:11:38 wesgarland Exp $
+$Id: TODO,v 1.2 2003/06/29 15:41:52 wesgarland Exp $
 
 This is a brief list of important tasks which need to completed, and who is looking at them. At some
 point, this file will be moved into the Attic and the bug tracker will get used. Or Bugzilla. Anybody
@@ -6,6 +6,7 @@ feel like setting it up? For now, new tasks appear at the top, and disappear in 
 
 Programmer	Task Description					Status
 --------------- ------------------------------------------------------- --------------
+Wes Garland	Add ncurses-detection to configure			Not Started
 Unassigned	Make Max local editor input accept LF as CR/LF		Not Started
 Wes Garland	Change default scripts + configs to user "maximus"	In progress
 Wes Garland	Modify Maximus to support runbbs.bat-style "exit codes" Testing
