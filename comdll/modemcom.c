@@ -99,20 +99,24 @@ USHORT COMMAPI ModemComIsOnline(HCOMM hc)
     if(!hc)
        return FALSE;
 
-    if(hc->fDCD)
+    if(hc->fDCD == 1)
     {
 	if(ioctl(hc->listenfd, TIOCMGET, &tmp) < 0)
-    	    return FALSE;
-
+	{
+	    hc->fDCD = 2;
+    	    return(FALSE);
+	}
         if((tmp & TIOCM_CD) == FALSE)
         {	
-	    hc->fDCD = FALSE;
+	    hc->fDCD = 2;
     	    logit("!Carrier lost");
-	    return FALSE;
+	    return (FALSE);
 	}
     }
-    
-    return TRUE;
+    else if(hc->fDCD == 2)
+	return(FALSE);
+
+    return(TRUE);
 }
 
 BOOL COMMAPI ModemComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
@@ -161,7 +165,7 @@ BOOL COMMAPI ModemComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdw
     }
     else
     {
-	hc->fDCD = 0;
+	hc->fDCD = 2;
 	return(FALSE);
     }
 
@@ -174,8 +178,7 @@ int COMMAPI ModemComGetc(HCOMM hc)
     char b = 0;
 
     if(!ModemComIsOnline(hc))
-	return FALSE;
-
+	return -1;
         
     return (ComRead(hc, &b, 1, &dwBytesRead) == 1) ? b : -1;
 }
@@ -183,7 +186,7 @@ int COMMAPI ModemComGetc(HCOMM hc)
 BOOL COMMAPI ModemComPutc(HCOMM hc, int c)
 {
     if(!ModemComIsOnline(hc))
-	return FALSE;
+	return -1;
 
     return (ComWrite(hc, &c, 1));
 }
@@ -203,7 +206,7 @@ BOOL COMMAPI ModemComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
 
 int COMMAPI ModemComPeek(HCOMM hc)
 {
-  return 0;
+  return FALSE;
 }
 
 COMMHANDLE COMMAPI ModemComGetHandle(HCOMM hc)  
@@ -216,7 +219,7 @@ COMMHANDLE COMMAPI ModemComGetHandle(HCOMM hc)
 
 DWORD COMMAPI ModemComOutCount(HCOMM hc)
 {
-  return 0;
+    return(FALSE);
 }
 
 void ModemLowerDTR (HCOMM hc)
@@ -276,16 +279,16 @@ bDataBits,
 
 BOOL COMMAPI ModemComTxWait(HCOMM hc, DWORD dwTimeOut)
 {  
-	return TRUE;
+    return ModemComIsOnline(hc);
 }
 BOOL COMMAPI ModemComRxWait(HCOMM hc, DWORD dwTimeOut)
 {  
-	return TRUE;
+    return ModemComIsOnline(hc);
 }
 
 BOOL COMMAPI ModemComPurge(HCOMM hc, DWORD fBuffer)
 {  
-	return TRUE;
+    return ModemComIsOnline(hc);
 }
 
 BOOL COMMAPI ModemComBurstMode(HCOMM hc, BOOL fEnable)
@@ -300,14 +303,16 @@ DWORD COMMAPI ModemComInCount(HCOMM hc)
 {
   int tmp = 0;
   
-  ioctl(hc->listenfd, FIONREAD, &tmp);
+  if(!ModemComIsOnline(hc))
+    return(FALSE);
   
+  ioctl(hc->listenfd, FIONREAD, &tmp);
   return tmp;
 }
 
 DWORD COMMAPI ModemComOutSpace(HCOMM hc)
 {
-  return 1;
+  return TRUE;
 }
 BOOL COMMAPI ModemComPause(HCOMM hc)
 {
@@ -321,4 +326,5 @@ BOOL COMMAPI ModemComResume(HCOMM hc)
 int ModemComIsOnlineNow(HCOMM hc)
 {
     hc->fDCD = 1;
+    return(TRUE);
 }
