@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwkup.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
+static char rcs_id[]="$Id: mb_qwkup.c,v 1.3 2003/09/12 23:18:24 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# QWK uploads, for processing .REP packets
@@ -85,7 +85,7 @@ void QWK_Upload(void)
     logit(mem_none);
   else
   {
-    strcpy(msg_name, PRM(olr_name));
+    strcat(msg_name, PRM(olr_name));
     strcat(msg_name, dot_msg);
 
 

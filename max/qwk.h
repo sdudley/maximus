@@ -70,7 +70,7 @@ struct _qmndx
 {
   unsigned long mks_rec;
   byte conf;
-};
+} __attribute__((packed));
 
 
 

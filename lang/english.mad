@@ -1,4 +1,4 @@
-; $Id: english.mad,v 1.3 2003/06/11 19:44:12 wesgarland Exp $
+; $Id: english.mad,v 1.4 2003/09/12 23:18:21 paltas Exp $
 ;
 ; ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 ; ³                             ENGLISH.MAD                             ³
@@ -1610,7 +1610,7 @@ qwk_busy_msg=           "Error!  QWK packer is currently in use on another node!
 @NT  maxpipe_cmd=       "%s";
 @DOS maxpipe_cmd=       "%s";
 @OS2 maxpipe_cmd=       "maxpipe.exe %%P %s";
-@UNIX maxpipe_cmd=	"maxpipe %%P %s";
+@UNIX maxpipe_cmd=	"%s";
 br_which_areas=         "Search which areas (use \"*\" as wildcard): ";
 @RIP br_which_areas=    RIP RIP_KILL RIP_COL "01" RIP_TEXTXY "1C66Which areas (use "*" as wildcard):\n"
                         RLI RIP_COL "08" RIP_RECT "196LEY6Y" RIP_COL "0F" RIP_RECT "186KEX6X\n"

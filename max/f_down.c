@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: f_down.c,v 1.1 2002/10/01 17:51:03 sdudley Exp $";
+static char rcs_id[]="$Id: f_down.c,v 1.2 2003/09/12 23:18:24 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=File area routines: D)ownload command and associated functions
@@ -317,7 +317,9 @@ int File_Get_Download_Names(int do_tag,sword protocol)
           if (!CanAddFileEntry())
             break;
 
+#ifndef UNIX
           strupr(ff->szName);
+#endif
 
           if (CanDownload(&fah, ff->szName, &flag, fpath))
           {
@@ -1340,8 +1342,12 @@ word File_Send_Files(sword protocol, char *mname, char *newuppath, int flag)
     
     if (current_col+strlen(s) >= TermWidth())
       Puts("\n\x19 \x06");
-    
+
+#ifndef UNIX    
     Printf("%s ", cstrupr(s));
+#else
+    Printf("%s ", s);
+#endif
   }
 
   Putc('\n');
