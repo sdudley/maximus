@@ -1,10 +1,16 @@
+WHICH=telnet
+
 include ../vars.mk
 
-libcomm.so: fdcomm.o
+ifeq ($(WHICH),telnet)
+libcomm.so: telnetcomm.o
+else
+libcomm.so: ipcomm.o
+endif
 	gcc -shared $^ -o $@
 
 install: libcomm.so
 	cp -f $^ /var/max/lib
 
-clean:
-	-rm fdcomm.o libcomm.so
+telnetcomm.o: ipcomm.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -DTELNET -c $^ -o $@
