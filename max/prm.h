@@ -511,7 +511,7 @@ struct m_pointers
   /* MAKE SURE TO EDIT M\PRM.MH IF YOU CHANGE THIS FILE! */
 
 #define PRM_HEAP_END caller_log
-};
+} __attribute__((packed));
 
 #define __PRM_H_DEFINED
 #endif

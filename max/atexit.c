@@ -17,7 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: atexit.c,v 1.3 2004/01/22 08:04:26 wmcbrine Exp $ */
+#ifndef __GNUC__
+#pragma off(unreferenced)
+static char rcs_id[]="$Id: atexit.c,v 1.4 2004/01/27 21:00:26 paltas Exp $";
+#pragma on(unreferenced)
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -17,7 +17,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: maxed.c,v 1.2 2004/01/22 08:04:27 wmcbrine Exp $ */
+#pragma off(unreferenced)
+static char rcs_id[]="$Id: maxed.c,v 1.3 2004/01/27 21:00:45 paltas Exp $";
+#pragma on(unreferenced)
 
 /*# name=Full-screen editor
 */
@@ -594,14 +596,33 @@ static word near Process_Cursor_Key(void)
         case 'D':     /* Cursor Left */
           Cursor_Left();
           break;
-
+#ifdef UNIX
+	case '1':
+	  Mdm_getcwcc();
+#else
         case 'H':     /* Home */
+#endif	
           Cursor_BeginLine();
           break;
-          
+#ifdef UNIX
+	case '4':
+	  Mdm_getcwcc();
+#else	            
         case 'K':     /* End */
+#endif	
           Cursor_EndLine();
           break;
+
+#ifdef UNIX
+	case '5':
+	  Mdm_getcwcc();
+	  Page_Up();
+	  break;
+	case '6':
+	  Mdm_getcwcc();
+	  Page_Down();
+	  break;
+#endif    
 
         default:
           MagnEt_Bad_Keystroke();

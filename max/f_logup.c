@@ -17,7 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: f_logup.c,v 1.2 2004/01/22 08:04:27 wmcbrine Exp $ */
+#ifndef __GNUC__
+#pragma off(unreferenced)
+static char rcs_id[]="$Id: f_logup.c,v 1.3 2004/01/27 21:00:28 paltas Exp $";
+#pragma on(unreferenced)
+#endif
 
 /*# name=File area routines (log uploads to files.bbs)
 */

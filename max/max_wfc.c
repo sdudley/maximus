@@ -17,7 +17,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: max_wfc.c,v 1.9 2004/01/22 08:04:27 wmcbrine Exp $ */
+#pragma off(unreferenced)
+static char rcs_id[]="$Id: max_wfc.c,v 1.10 2004/01/27 21:00:45 paltas Exp $";
+#pragma on(unreferenced)
 
 /*# name=Waiting-for-caller routines
 */
@@ -285,8 +287,8 @@ static char * near Get_Modem_Response(void)
 
     /* Suppress any 'OK' messages */
 
-/*    if (eqstri(resp,"ok"))
-      *resp='\0';*/
+    if (eqstri(resp,"ok"))
+      *resp='\0';
 
     /* Reset the modem initialization timer so that we don't
      * try to reinit in the middle of a ring!

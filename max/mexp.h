@@ -54,7 +54,7 @@ struct _mex_instance_stack    // Instance info for this invocation of MEX
 #endif
   sdword cbPriorMsg;
   sdword cbPriorFile;
-};
+} __attribute__((packed));
 
 
 /* Definitions for the open() flags */

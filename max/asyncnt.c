@@ -17,7 +17,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: asyncnt.c,v 1.6 2004/01/22 08:04:26 wmcbrine Exp $ */
+#ifndef __GNUC__
+#pragma off(unreferenced)
+#endif
+
+static char __attribute__((unused)) rcs_id[]="$Id: asyncnt.c,v 1.7 2004/01/27 21:00:26 paltas Exp $";
+#ifndef __GNUC__
+#pragma on(unreferenced)
+#endif
 
 #if defined(NT) || defined(UNIX)
 
@@ -143,7 +150,7 @@ int Cominit(int port)
 //	  logit("!Not yet implemented; %s, %s:%i", __FUNCTION__, 
 //__FILE__, __LINE__);
 //	  _exit(1);
-	  
+	  sprintf(tmp, "com%1u", port+1);
 	  rc = !ComOpen(tmp, &hcModem, 8200, 8200);
 #endif
         }

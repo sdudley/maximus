@@ -179,7 +179,7 @@ struct _area
   word killbynum;       /* MAXREN: max # of msgs to keep in area (use 0    */
                         /*         for no deletion by #msgs.)              */
 
-} __attribute__((packed, aligned(2)));
+};
 
 
 

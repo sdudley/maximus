@@ -147,7 +147,7 @@ typedef struct _msgarea
                          * to prior area.                                   */
   zstr attachpath;      /* Reserved for future use                        58*/
   dword rsvd4;                                                          /*60*/
-} MAREA;                                                                /*64*/
+} __attribute__((packed)) MAREA;                                                                /*64*/
 
 
 typedef struct _filearea
@@ -173,7 +173,7 @@ typedef struct _filearea
   word attribs;         /* Attributes for this file area                  32*/
   sword date_style;     /* Date style override for this area              34*/
   byte rsvd1[28];       /* Reserved by Maximus for future use             36*/
-} FAREA;                                                                /*64*/
+} __attribute__((packed)) FAREA;                                                                /*64*/
 
 
 typedef struct _barinfo
@@ -222,7 +222,7 @@ typedef struct _mfidx
   char name[16];        /* First 15 chars of area name                      */
   dword name_hash;      /* SquishHash of full area name                     */
   dword ofs;            /* Offset within data file                          */
-} MFIDX;
+} __attribute__((packed)) MFIDX;
 
 #endif /* __NEWAREA_H_DEFINED */
 

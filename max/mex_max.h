@@ -38,7 +38,7 @@ struct mex_instancedata
     word  alias_system;
     word  ask_name;
     word  use_umsgid;
-};
+} __attribute__((packed));
 
 struct mex_cstat
 {
@@ -46,27 +46,27 @@ struct mex_cstat
     word  avail;
     IADDR username;
     IADDR status;
-};
+} __attribute__((packed));
 
 struct mex_date
 {
   byte  day;                    /* Day of month.   1 = first of month */
   byte  month;                  /* Month of year.  1 = January */
   byte  year;                   /* Year - 1980.    0 = 1980 */
-};
+} __attribute__((packed));
 
 struct mex_time
 {
   byte  hh;                     /* Hour */
   byte  mm;                     /* Minute */
   byte  ss;                     /* Second */
-};
+} __attribute__((packed));
 
 struct mex_stamp
 {
   struct mex_date date;
   struct mex_time time;
-};
+} __attribute__((packed));
 
 struct mex_usr
 {
@@ -185,7 +185,7 @@ struct mex_usr
 
   word    call;                 /* Number of previous calls today */
 
-};
+} __attribute__((packed));
 
 
 struct mex_marea
@@ -199,7 +199,7 @@ struct mex_marea
   word  division;
   word  type;
   word  attribs;
-};
+} __attribute__((packed));
 
 struct mex_farea
 {
@@ -211,7 +211,7 @@ struct mex_farea
   IADDR barricade;
   word  division;
   word  attribs;
-};
+} __attribute__((packed));
 
 struct mex_msg
 {
@@ -219,14 +219,14 @@ struct mex_msg
   dword high;
   dword num;
   word direction;
-};
+} __attribute__((packed));
 
 struct mex_sys
 {
   word current_row;
   word current_col;
   word more_lines;
-};
+} __attribute__((packed));
 
 struct mex_ffind
 {
@@ -235,7 +235,7 @@ struct mex_ffind
   long    filesize;
   struct mex_stamp filedate;
   word    fileattr;
-};
+} __attribute__((packed));
 
 struct mex_callinfo
 {
@@ -258,7 +258,7 @@ struct mex_callinfo
   word    posted;
   word    paged;
   word    added;
-};
+} __attribute__((packed));
 
 
 #endif /* __MEX_MAX_H_DEFINED */
