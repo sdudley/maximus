@@ -55,12 +55,12 @@ int telnetInterpret(unsigned char* buf, int bytesRead)
   
   unsigned char obuf[bytesRead];
   /* counter */
-  int i, j, found;
+  int i, j, found, start=0;
   
-  memset(obuf, 0, bytesRead);
+  memset(obuf, '\0', bytesRead);
   oi = 0;
 
-  for(i=0; i < bytesRead; i++)
+  for(i=start; i < bytesRead; i++)
   {
 
     if(buf[i] == cmd_IAC)
@@ -174,6 +174,7 @@ int telnetInterpret(unsigned char* buf, int bytesRead)
   
   memcpy(buf, obuf, oi);
   
+  
   return oi;
 }
 
@@ -181,6 +182,7 @@ int writeWIAC(int fd, unsigned char* buf, int count)
 {
     int i=0;
     static char iac = 255;
+    char* tp;
     
     for(i=0; i < count; i++)
     {
@@ -189,8 +191,8 @@ int writeWIAC(int fd, unsigned char* buf, int count)
 	if(buf[i] == cmd_IAC)
 	    write(fd, &iac, 1);
     }
-    
-    return 0;
+
+    return 0;    
 }
 						    
     
@@ -292,9 +294,9 @@ int main(void)
 	exit(1);
     }    
 
-    while(1) 
+    for(;;)
     {
-	tv.tv_usec = 0;
+	tv.tv_usec = 5;
 	tv.tv_sec = 0;
 
 	FD_ZERO(&wfds);
@@ -317,7 +319,7 @@ int main(void)
 	FD_ZERO(&rfds);
 	FD_SET(0, &rfds);
 
-	tv.tv_usec = 500;
+	tv.tv_usec = 5;
 	tv.tv_sec = 0;
 	    
 	if((retval = select(0 + 1, &rfds, 0, 0, &tv)) > 0)
