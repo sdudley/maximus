@@ -8,30 +8,13 @@
 #include "comprots.h"
 #include "comstruct.h"
 
-struct CommApi_
-{
-    BOOL COMMAPI (*fComOpen)(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf);
-    BOOL COMMAPI (*fComClose)(HCOMM hc);
-    USHORT COMMAPI (*fComIsOnline)(HCOMM hc);
-    BOOL COMMAPI (*fComRead)(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytesRead);
-    BOOL COMMAPI (*fComWrite)(HCOMM hc, PVOID pvBuf, DWORD dwCount);
-    int COMMAPI (*fComGetc)(HCOMM hc);
-    BOOL COMMAPI (*fComPutc)(HCOMM hc, int c);
-    int COMMAPI (*fComPeek)(HCOMM hc);
-    COMMHANDLE COMMAPI (*fComGetHandle)(HCOMM hc);
-    BOOL COMMAPI (*fComSetBaudRate)(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE bDataBits, BYTE bStopBits);
-    BOOL COMMAPI (*fComBurstMode)(HCOMM hc, BOOL fEnable);
-    DWORD COMMAPI (*fComInCount)(HCOMM hc);
-    DWORD COMMAPI (*fComOutSpace)(HCOMM hc);
-    DWORD COMMAPI (*fComOutCount)(HCOMM hc);    
-};
-
 extern int tcpip;
 
-struct CommApi_ CommApi;
+extern struct CommApi_ CommApi;
 
-BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
+void SetCommApi()
 {
+    memset(&CommApi, 0, sizeof(struct CommApi_));
     if(tcpip)
     {
 	CommApi.fComOpen = &IpComOpen;
@@ -56,38 +39,70 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 	CommApi.fComIsOnline = &ModemComIsOnline;
 	CommApi.fComRead = &ModemComRead;
 	CommApi.fComWrite = &ModemComWrite;
+	CommApi.fComGetc = &ModemComGetc;
+	CommApi.fComPutc = &ModemComPutc;	
+	CommApi.fComPeek = &ModemComPeek;
+	CommApi.fComGetHandle = &ModemComGetHandle;
+	CommApi.fComSetBaudRate = &ModemComSetBaudRate;
+	CommApi.fComBurstMode = &ModemComBurstMode;
+        CommApi.fComInCount = &ModemComInCount;
+	CommApi.fComOutSpace = &ModemComOutSpace;
+	CommApi.fComOutCount = &ModemComOutCount;
     }
-    
+
+}
+
+BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
+{
+    SetCommApi();    
     return ((*CommApi.fComOpen)(pszDevice, phc, dwRxBuf, dwTxBuf));
 }
 
 BOOL COMMAPI ComClose(HCOMM hc)
 {
+    if(!CommApi.fComClose)
+	SetCommApi();
+	
     return ((*CommApi.fComClose)(hc));
 } 
 
 USHORT COMMAPI ComIsOnline(HCOMM hc)
 {
+    if(!CommApi.fComIsOnline)
+	SetCommApi();
+
     return ((*CommApi.fComIsOnline)(hc));
 }
 
 BOOL COMMAPI ComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
 {
+    if(!CommApi.fComWrite)
+	SetCommApi();
+
     return ((*CommApi.fComWrite)(hc, pvBuf, dwCount));
 }
 
 BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytesRead)
 {
+    if(!CommApi.fComRead)
+	SetCommApi();
+
     return ((*CommApi.fComRead)(hc, pvBuf, dwBytesToRead, pdwBytesRead));
 }
 
 int COMMAPI ComGetc(HCOMM hc)
 {
+    if(!CommApi.fComGetc)
+	SetCommApi();
+
     return ((*CommApi.fComGetc)(hc));
 }
 
 BOOL COMMAPI ComPutc(HCOMM hc, int c)
 {
+    if(!CommApi.fComPutc)
+	SetCommApi();
+
     return ((*CommApi.fComPutc)(hc, c));
 }
 
@@ -110,16 +125,25 @@ BOOL COMMAPI ComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
 
 int COMMAPI ComPeek(HCOMM hc)
 {
+    if(!CommApi.fComPeek)
+	SetCommApi();
+
     return ((*CommApi.fComPeek)(hc));
 }
 
 COMMHANDLE COMMAPI ComGetHandle(HCOMM hc)  
 {
+    if(!CommApi.fComGetHandle)
+	SetCommApi();
+
     return ((*CommApi.fComGetHandle)(hc));
 }
 
 DWORD COMMAPI ComOutCount(HCOMM hc)
 {
+    if(!CommApi.fComOutCount)
+	SetCommApi();
+
     return ((*CommApi.fComOutCount)(hc));
 }
 
@@ -128,6 +152,9 @@ BOOL COMMAPI ComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE
 bDataBits,
  BYTE bStopBits)
 {
+    if(!CommApi.fComSetBaudRate)
+	SetCommApi();
+
     return ((*CommApi.fComSetBaudRate)(hc, dwBps, bParity, bDataBits, bStopBits));
 }
 
@@ -148,16 +175,25 @@ BOOL COMMAPI ComPurge(HCOMM hc, DWORD fBuffer)
 
 BOOL COMMAPI ComBurstMode(HCOMM hc, BOOL fEnable)
 {
+    if(!CommApi.fComBurstMode)
+	SetCommApi();
+
     return ((*CommApi.fComBurstMode)(hc, fEnable));
 }
 
 DWORD COMMAPI ComInCount(HCOMM hc)
 {
+    if(!CommApi.fComInCount)
+	SetCommApi();
+
     return ((*CommApi.fComInCount)(hc));
 }
 
 DWORD COMMAPI ComOutSpace(HCOMM hc)
 {
+    if(!CommApi.fComOutSpace)
+	SetCommApi();
+
     return ((*CommApi.fComOutSpace)(hc));
 }
 
@@ -170,4 +206,16 @@ BOOL COMMAPI ComResume(HCOMM hc)
   return FALSE;
 }
 
+
+void RAISE_DTR(HCOMM hc)
+{
+    if(!tcpip)
+	ModemRaiseDTR(hc);
+}
+
+void LOWER_DTR(HCOMM hc)
+{
+    if(!tcpip)
+	ModemLowerDTR(hc);
+}
 

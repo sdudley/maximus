@@ -67,6 +67,26 @@ typedef struct
  */
 struct _hcomm;
 typedef struct _hcomm *HCOMM; 
+
+struct CommApi_
+{
+    BOOL COMMAPI (*fComOpen)(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf);
+    BOOL COMMAPI (*fComClose)(HCOMM hc);
+    USHORT COMMAPI (*fComIsOnline)(HCOMM hc);
+    BOOL COMMAPI (*fComRead)(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytesRead);
+    BOOL COMMAPI (*fComWrite)(HCOMM hc, PVOID pvBuf, DWORD dwCount);
+    int COMMAPI (*fComGetc)(HCOMM hc);
+    BOOL COMMAPI (*fComPutc)(HCOMM hc, int c);
+    int COMMAPI (*fComPeek)(HCOMM hc);
+    COMMHANDLE COMMAPI (*fComGetHandle)(HCOMM hc);
+    BOOL COMMAPI (*fComSetBaudRate)(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE bDataBits, BYTE bStopBits);
+    BOOL COMMAPI (*fComBurstMode)(HCOMM hc, BOOL fEnable);
+    DWORD COMMAPI (*fComInCount)(HCOMM hc);
+    DWORD COMMAPI (*fComOutSpace)(HCOMM hc);
+    DWORD COMMAPI (*fComOutCount)(HCOMM hc);
+};
+
+struct CommApi_ CommApi;
 #endif
 
 #define COMM_PURGE_RX 1

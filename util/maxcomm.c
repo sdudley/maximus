@@ -100,14 +100,14 @@ int main(void)
 	if(select(0 + 1, &rfds, 0, 0, &tv) > 0)
 	{
 	    read(0, &c, 1);
-	    if(c != 10)
-	    {
+/*	    if(c != 10)
+	    {*/
     	        write(s, &c, 1);
-	    }
+/*	    }
 	    else
 	    {
 	        write(s, "\r\n", 2);
-	    }
+	    }*/
 	}
     }
 

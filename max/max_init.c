@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_init.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
+static char rcs_id[]="$Id: max_init.c,v 1.3 2004/01/15 01:09:09 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# tname=Initialization code
@@ -114,8 +114,9 @@ void Init_Variables(void)
 
   fFlow=FALSE;
 
-
-
+  #ifdef UNIX
+  memset(&CommApi, 0, sizeof(struct CommApi_));
+  #endif
 
   menu_lines=1;
 

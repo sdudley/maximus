@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_args.c,v 1.6 2004/01/13 01:33:02 paltas Exp $";
+static char rcs_id[]="$Id: max_args.c,v 1.7 2004/01/15 01:09:09 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Command-line argument processing code
@@ -324,6 +324,7 @@ static void near Parse_Single_Arg(char *arg)
         current_baud=0;
         local=TRUE;
         waitforcaller=FALSE;
+	tcpip=1;
         break;
 
       case 'l':             /* Log file */

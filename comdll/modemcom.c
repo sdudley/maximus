@@ -229,7 +229,7 @@ DWORD COMMAPI ModemComOutCount(HCOMM hc)
 }
 
 void
-LOWER_DTR (HCOMM hc)
+ModemLowerDTR (HCOMM hc)
 {
   struct termios tty;
 
@@ -240,7 +240,7 @@ LOWER_DTR (HCOMM hc)
 }
 
 void
-RAISE_DTR (HCOMM hc)
+ModemRaiseDTR (HCOMM hc)
 {
   struct termios tty;
 

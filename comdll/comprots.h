@@ -51,8 +51,8 @@ BOOL COMMAPI ModemComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut);
 int COMMAPI ModemComPeek(HCOMM hc);
 COMMHANDLE COMMAPI ModemComGetHandle(HCOMM hc);
 DWORD COMMAPI ModemComOutCount(HCOMM hc);
-void LOWER_DTR (HCOMM hc);
-void RAISE_DTR (HCOMM hc);
+void ModemRaiseDTR (HCOMM hc);
+void ModemRaiseDTR (HCOMM hc);
 BOOL COMMAPI ModemComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, 
 BYTE bDataBits, BYTE bStopBits);
 BOOL COMMAPI ModemComTxWait(HCOMM hc, DWORD dwTimeOut);
