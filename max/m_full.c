@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_full.c,v 1.1 2002/10/01 17:52:41 sdudley Exp $";
+static char rcs_id[]="$Id: m_full.c,v 1.2 2003/06/04 23:31:28 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -169,7 +169,7 @@ void DisplayShowDate(char *sho_date, union stamp_combo *sc)
 
 void DisplayShowAddress(char *sho_addr, NETADDR *n, MAH *pmah)
 {
-  Printf(sho_addr, (pmah->ma.attribs & MA_NET) ? Address(n) : blank_str);
+  Printf(sho_addr, (pmah->ma.attribs & MA_NET) ? (char *)Address(n) : (char *)blank_str);
 }
 
 void DisplayMessageSubj(XMSG *msg, PMAH pmah)
