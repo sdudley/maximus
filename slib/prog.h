@@ -294,7 +294,7 @@ typedef long timer_t;
 #define POINT_ALL 56685u
 
 
-#define THIS_YEAR "2003"
+#define THIS_YEAR "2004"
 
 #define Hello(prog,desc,version,year) (void)printf("\n" prog "  " desc ", Version %s.\nCopyright " year " by Lanius Corporation.  All rights reserved.\n\n",version)
 #define shopen(path,access)   sopen(path,access,SH_DENYNONE,S_IREAD | S_IWRITE)
