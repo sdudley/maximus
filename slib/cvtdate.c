@@ -37,9 +37,11 @@ static void near InitCvt(void)
 
 /* Convert a DOS-style bitmapped date into a 'struct tm'-type date. */
 
-struct tm * _fast DosDate_to_TmDate(union stamp_combo *dosdate,
+struct tm * _fast DosDate_to_TmDate(union stamp_combo *dosdateUA,
                                      struct tm *tmdate)
 {
+  union stamp_combo	*dosdate = alignStatic(dosdateUA);
+
   if (is_dst==-1)
     InitCvt();
 
@@ -59,8 +61,10 @@ struct tm * _fast DosDate_to_TmDate(union stamp_combo *dosdate,
 /* Convert a 'struct tm'-type date into an Opus/DOS bitmapped date */
 
 union stamp_combo * _fast TmDate_to_DosDate(struct tm *tmdate,
-                                             union stamp_combo *dosdate)
+                                             union stamp_combo *dosdateUA)
 {
+  union stamp_combo	*dosdate = alignStatic(dosdateUA);
+
   dosdate->msg_st.date.da=tmdate->tm_mday;
   dosdate->msg_st.date.mo=tmdate->tm_mon+1;
   dosdate->msg_st.date.yr=(tmdate->tm_year < 80) ? 0 : tmdate->tm_year-80;
@@ -69,13 +73,16 @@ union stamp_combo * _fast TmDate_to_DosDate(struct tm *tmdate,
   dosdate->msg_st.time.mm=tmdate->tm_min;
   dosdate->msg_st.time.ss=tmdate->tm_sec >> 1;
 
-  return dosdate;
+  unalign(dosdateUA, dosdate);
+  return dosdateUA;
 }
 
 
 
-char * _fast sc_time(union stamp_combo *sc,char *string)
+char * _fast sc_time(union stamp_combo *scUA,char *string)
 {
+  union stamp_combo     *sc = alignStatic(scUA);
+
   if (sc->msg_st.date.yr==0)
     *string='\0';
   else
