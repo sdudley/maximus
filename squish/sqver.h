@@ -22,8 +22,8 @@
 #define stringize2(x) #x
 #define stringize(x) stringize2(x)
 
-/*#define SQVERSION "1.10." stringize(BUILD_NUM) " BETA"*/
-#define SQVERSION "1.11"
+#define SQVERSION "1.12." stringize(BUILD_NUM) " BETA"
+/* #define SQVERSION "1.11" */
 
 #define SQUISH_REV_MAJ 1
 #define SQUISH_REV_MIN 11
