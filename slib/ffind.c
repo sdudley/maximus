@@ -25,6 +25,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compiler.h"
+#ifdef UNIX
+# include <sys/stat.h>
+# include <unistd.h>
+# include <ctype.h>
+#endif
 
 #ifndef __IBMC__
 #include <dos.h>
@@ -398,6 +403,177 @@
   }
 
 
+#elif UNIX
+/* Implementations in here by Wes. Just guessing exactly what needs
+ * to be exported from above, and how it works :?. Will probably need
+ * to fix this later once I've read through more than just the function
+ * prototypes and comments....
+ *
+ * Looks like this is sort of like BSD's FTS code, grabbing file
+ * names through glob expansion and stat attributes while its at it.
+ */
+
+static int populateFF(FFIND *ff, const char *filename)
+{
+  struct stat sb;
+  struct tm   timebuf;
+  const char *basename;
+
+  basename = strrchr(filename, '/');
+  if (basename)
+    basename++;
+  else
+    basename = filename;
+
+  if (stat(filename, &sb))
+    return 1; /* Failure - pretend we never saw it */
+
+  if (ff->uiAttrSearch & ATTR_READONLY)
+  {
+    if (sb.st_mode & 0222) /* Somebody can write it -- it's not "read only" [yuck] */
+      return 1; /* Do we need more granularity? I doubt it, since it works under DOS */
+  }
+
+  /* Populate all the bits of the FF structure as best we can. */
+
+  TmDate_to_DosDate(localtime_r(&sb.st_ctime, &timebuf), &ff->scCdate); /* C = creation? last change? */
+  TmDate_to_DosDate(localtime_r(&sb.st_atime, &timebuf), &ff->scAdate); /* A = last access? */
+  TmDate_to_DosDate(localtime_r(&sb.st_mtime, &timebuf), &ff->scWdate); /* W = last write? */
+  ff->ulSize = sb.st_size;
+  strncpy(ff->szName, basename, sizeof(ff->szName));
+  ff->szName[sizeof(ff->szName) - 1] = (char)0;
+
+  return 0;
+}
+
+int FindNext(FFIND *ff)
+{
+  /* Find the next file in a FindOpen list, and populate
+   * the structure. From usage in ffind.c, it looks like
+   * we return 0 if we return a file's info. 
+   */
+
+  if (!ff || !ff->globInfo.gl_pathc)
+    return 1; /* Nothing to find - called after FindInfo()? */
+
+  /* Look for a file in the array which matches the attributes */
+  while (ff->globNext < ff->globInfo.gl_pathc)
+  {
+    if (populateFF(ff, ff->globInfo.gl_pathv[ff->globNext++]) == 0)
+      return 0; /* Got one */
+  }
+
+  return 1; /* All Done */
+}
+
+FFIND *FindOpen(char *filespec, unsigned short attribute)
+{
+  /* I think this function is basically "init" - e.g. handle
+   * constructor. So we set stuff up for FindInfo... big
+   * questions include what the heck to do with attribute.
+   * I think I'll use unix perms for ATTR_READONLY, ignore
+   * ATTR_HIDDEN and ATTR_SYSTEM -- maybe we could use
+   * "owned by root" for ATTR_SYSTEM someday? 
+   * Usage in fexist.c suggests ATTR_SUBDIR means "only
+   * find directories", so we'll set that up with the
+   * glob flags. We'll always traverse directories.
+   */
+
+  int   globFlags = GLOB_NOSORT | GLOB_NOESCAPE | GLOB_PERIOD; /* Get as close to DOS wildcarding as possible */
+  FFIND *ff;
+  char	unix_filespec[1024];
+  char  *d /*dos*/, *u /*unix*/;
+
+  if (attribute & ATTR_SUBDIR)
+    globFlags |= GLOB_ONLYDIR;
+
+  ff = calloc(sizeof(*ff), 1);
+  if (!ff)
+    return NULL;
+
+  /* Need to add case-insensitivity, etc, to make glob work the same way DOS does */
+  d = filespec;
+  u = unix_filespec;
+
+  do
+  {
+    switch(*d)
+    {
+      case '\\':
+        *u++ = '/';
+        break;
+      case 'a'...'z':
+      case 'A'...'Z':
+        *u++ = '[';
+        *u++ = tolower((int)*d);
+        *u++ = toupper((int)*d);
+        *u++ = ']';
+        break;
+      default:
+        *u++ = *d;      
+    }
+  }
+  while (*d++ && ((sizeof(unix_filespec) - (u - unix_filespec)) > 10));
+  *u = (char)0;
+
+  if (u > unix_filespec)
+  {
+    if (u[-1] == '.')
+      u[-1] = (char)0; /* trailing dot actually means "no extension" in DOS */
+  }  
+
+  if (glob(unix_filespec, globFlags, NULL, &(ff->globInfo)))
+  {
+    free(ff);
+    return NULL;
+  }
+
+  /* Usage suggest we also return one file's info
+   * with this puppy, so quickly run FindNext to
+   * fudge this before returning..
+   */
+
+  if (FindNext(ff) == 0)
+    return ff;      
+
+  free(ff);
+  return NULL;
+}
+
+FFIND *FindInfo(char *filespec)
+{
+  /* This appears to be a non-globbing version of find open,
+   * which (obviously) only finds one file.
+   */
+
+  FFIND *ff;
+
+  ff = calloc(sizeof(*ff), 1);
+  if (!ff)
+    return NULL;
+
+  if (populateFF(ff, filespec))
+  {
+    free(ff);
+    return NULL;
+  }
+
+  return ff;
+}
+
+void FindClose(FFIND *ff)
+{
+  /* Clean up after FindOpen or FindInfo */
+
+  if (!ff)
+    return;
+
+  if (ff->globInfo.gl_pathv)
+    globfree(&ff->globInfo);
+  
+  free(ff);
+}
+
 #else
   #error Unknown OS
 #endif
@@ -414,18 +590,24 @@ int walk(char *path);
 
 void main(int argc, char **argv)
 {
-    walk("\\");     /* start at root*/
+    walk(PATH_DELIMS);     /* start at root*/
 }
 
 /* this simple function assumes the path ALWAYS has an ending backslash */
 walk(char *path)
 {
+  /* quicks hacks by wes. moving hard-coded strings
+   * to match bits out of prog.h. Probably doesn't
+   * work, but should break under NT or OS/2.. I guess
+   * we'll know once its time to test.
+   */
+
     FFIND *ff;
     int done = FALSE;
     char full[66];
 
     strcpy(full, path);
-    strcat(full, "*");
+    strcat(full, WILDCARD_ALL);
 
 
     if( ff = FindOpen(full, ATTR_SUBDIR) ){
@@ -441,7 +623,7 @@ walk(char *path)
                   FFIND *f;
 
                   strcpy(temp, full);
-                  strcat(temp, "\\*");
+                  strcat(temp, PATH_DELIMS WILDCARD_ALL);
 
 
                   if ((f=FindOpen(temp, 0)) != NULL)
@@ -457,7 +639,7 @@ walk(char *path)
 
                 }
 
-                strcat(full, "\\");
+                strcat(full, PATH_DELIMS);
                 if( !walk(full) )
                     return(FALSE);
             }
