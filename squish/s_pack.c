@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.8 2003/10/05 13:52:50 paltas Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.9 2003/11/18 22:50:51 paltas Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -1067,7 +1067,7 @@ static void near Process_AttReqUpd(XMSG *msg, char *filename, word manual)
 
 
         /* Check all of the tosspaths to see if it's there */
-
+#ifdef OLDSTYLE
         for (tp=config.tpath, lasttp=tp; tp; lasttp=tp, tp=tp->next)
         {
           (void)sprintf(tname, "%s" PATH_DELIMS "%s", tp->path, filename);
@@ -1080,7 +1080,6 @@ static void near Process_AttReqUpd(XMSG *msg, char *filename, word manual)
           }
         }
 
-
         /* If not found, default to the main toss path */
 
         if (!tp)
@@ -1088,6 +1087,7 @@ static void near Process_AttReqUpd(XMSG *msg, char *filename, word manual)
           (void)sprintf(tname, "%s" PATH_DELIMS "%s", lasttp->path, filename);
           filename=fixPath(tname);
         }
+#endif
       }
     }
 
