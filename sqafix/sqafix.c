@@ -629,10 +629,18 @@ ASM     int     31h                     // call dpmi service
 
    if (!cfg.achCfgSqaf[0]) {
      xstrcpy(cfg.achCfgSqaf, SQAFIX_CFG""DEF_CFG_EXT);
+#ifndef UNIX
      if (access(xstrupr(cfg.achCfgSqaf), 0)) {
+#else
+     if (access(cfg.achCfgSqaf, 0)) {
+#endif
        fnsplit(apszArg[0], achDrive, achDir, NULL, NULL);
        fnmerge(cfg.achCfgSqaf, achDrive, achDir, SQAFIX_NAME, DEF_CFG_EXT);
+#ifndef UNIX
        if (access(xstrupr(cfg.achCfgSqaf), 0)) {
+#else
+       if (access(cfg.achCfgSqaf, 0)) {
+#endif
          WriteLog("! Can't locate SqaFix config file\n");
          exit(EXIT_FAILURE);
        }
@@ -1538,7 +1546,10 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
      // save the area tag specification
 
      if (copt == 1) {
-       pszArea = apszArg[iArg]; xstrupr(pszArea);
+       pszArea = apszArg[iArg]; 
+#ifndef UNIX
+       xstrupr(pszArea);
+#endif
        if (GetAreaFromTag(pszArea)) {
          WriteLog("! Area %s already exists\n", pszArea);
          exit(EXIT_FAILURE);

@@ -119,11 +119,7 @@
  char * x_strupr(char * pszFile, long iLine, char * psz)
  {
    ASSERT_NOTNULL(psz, "x_strupr: psz");
-#ifndef UNIX
    return strupr(psz);
-#else
-   return psz;
-#endif
  }
 
  char * x_strchr(char * pszFile, long iLine, char * psz, int ch)

@@ -379,7 +379,11 @@
  {
    PAREA parea;
 
+#ifndef UNIX
    if ((parea = GetAreaFromTag(xstrupr(pszArea))) != NULL) {
+#else
+   if ((parea = GetAreaFromTag(pszArea)) != NULL) {
+#endif
      *pfAllowed = DoCheckAreaAccess(parea, pnode);
    } else {
      *pfAllowed = FALSE;
@@ -3495,7 +3499,9 @@ fprintf(STDAUX, "ExecQueueAreaMask: '%s'\r\n", pszAreaMask);
      WriteMsg("\nMissing tag of the area to create\n");
      return FALSE;
    } else
+#ifndef UNIX
      xstrupr(pszArea);
+#endif
 
    // Make sure we don't have the area with the same tag
 
@@ -3559,7 +3565,9 @@ fprintf(STDAUX, "ExecQueueAreaMask: '%s'\r\n", pszAreaMask);
      WriteMsg("\nMissing tag of the area to destroy\n");
      return FALSE;
    } else
+#ifndef UNIX
      xstrupr(pszArea);
+#endif
 
    // Check if we have an area with the specified tag
 

@@ -1210,8 +1210,9 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
        setdisk(iSaveDisk);
        return FALSE;
      }
-   }
+   }   
 #endif
+
    // Preserve the current directory on the requested disk and check if ok
 
 #ifndef UNIX
@@ -1280,9 +1281,8 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 
    // Restore the current directory on the requested drive and
    // the current drive
-
-   chdir(achSaveDir); 
 #ifndef UNIX
+   chdir(achSaveDir); 
    setdisk(iSaveDisk);
 #endif
 
@@ -1609,7 +1609,9 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
    fnsplit(pszSrc, achDrive, achDir, achFile, achExt);
    if (achExt[0] == '\0' || fAlways) xstrcpy(achExt, pszExt);
    fnmerge(pszDst, achDrive, achDir, achFile, achExt);
+#ifndef UNIX
    xstrupr(pszDst);
+#endif
  }
 
 /*
@@ -1840,7 +1842,10 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
      WriteLog("! Insufficient memory (areadesclist)\n");
      exit(EXIT_FAILURE);
    } else {
-     xmemcpy(pareadesc->achTag, pszArea, cch); xstrupr(pareadesc->achTag);
+     xmemcpy(pareadesc->achTag, pszArea, cch); 
+#ifndef UNIX     
+     xstrupr(pareadesc->achTag);
+#endif
      pareadesc->hash = CalcHash(pareadesc->achTag);
      pareadesc->pszDescr = pszDescr;
    }
@@ -2264,7 +2269,9 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 
      // Convert areatg to uppercase
 
+#ifndef UNIX
      xstrupr(pch);
+#endif
 
      // Add the area mask list element and check if ok. Note that in order
      // to speed up large lists processing we're caching the last added

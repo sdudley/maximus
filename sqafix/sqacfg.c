@@ -467,7 +467,9 @@
    // Copy the netmail path specification and make it uppercase
 
    xstrncpy(cfg.achNetMail, psz, lengof(cfg.achNetMail));
+#ifndef UNIX
    xstrupr(cfg.achNetMail);
+#endif
 
    // Check if we got something and make it fully qualified file name
 
@@ -967,7 +969,9 @@
    // Copy the path specification and make it uppercase
 
    xstrncpy(pnewarea->achPath, psz, lengof(pnewarea->achPath));
+#ifndef UNIX
    xstrupr(pnewarea->achPath);
+#endif
 
    // Check if we got something and make it fully qualified file name
    // NOTE: Starting with 0.98a1 we don't insist an having the correct
@@ -1071,7 +1075,9 @@
            DoLineError("Insufficient memory (notify file list)\n");
            exit(EXIT_FAILURE);
          } else {
+#ifndef UNIX
            xstrupr(pnewarea->apszFile[iFile++]);
+#endif
            psz = pch;
          }
        } else {
@@ -1101,7 +1107,9 @@
            DoLineError("Insufficient memory (notify area list)\n");
            exit(EXIT_FAILURE);
          } else {
+#ifndef UNIX
            xstrupr(pnewarea->apszNote[iArea++]);
+#endif
            psz = pch;
          }
        } else {
@@ -1196,7 +1204,11 @@
          exit(EXIT_FAILURE);
        }
      } else
+#ifndef UNIX
        if (!AddLsz(&pnewarea->plszRefuse, xstrupr(pch), -1, LST_END)) {
+#else
+       if (!AddLsz(&pnewarea->plszRefuse, pch, -1, LST_END)) {
+#endif
          DoLineError("Insufficient memory (newarea refuse areamask)\n");
          exit(EXIT_FAILURE);
        }
@@ -2079,7 +2091,11 @@
          exit(EXIT_FAILURE);
        }
      } else
+#ifndef UNIX
        if (!AddLsz(&puplink->plszMask, xstrupr(pch), -1, LST_END)) {
+#else
+       if (!AddLsz(&puplink->plszMask, pch, -1, LST_END)) {
+#endif
          DoLineError("Insufficient memory (uplink areamask)\n");
          exit(EXIT_FAILURE);
        }
@@ -2117,7 +2133,11 @@
          exit(EXIT_FAILURE);
        }
      } else
+#ifndef UNIX
        if (!AddLsz(&cfg.plszFReqRefuseAreaFirst, xstrupr(pch), -1, LST_END)) {
+#else
+       if (!AddLsz(&cfg.plszFReqRefuseAreaFirst, pch, -1, LST_END)) {       
+#endif
          DoLineError("Insufficient memory (freq refuse areamask)\n");
          exit(EXIT_FAILURE);
        }
@@ -2203,7 +2223,9 @@
            DoLineError("Insufficient memory (notify area list)\n");
            exit(EXIT_FAILURE);
          } else {
+#ifndef UNIX
            xstrupr(cfg.apszFReqFile[iFile++]);
+#endif
            psz = pch;
          }
        } else {
@@ -2233,7 +2255,9 @@
            DoLineError("Insufficient memory (notify area list)\n");
            exit(EXIT_FAILURE);
          } else {
+#ifndef UNIX
            xstrupr(cfg.apszFReqNote[iArea++]);
+#endif
            psz = pch;
          }
        } else {
@@ -2282,7 +2306,11 @@
          exit(EXIT_FAILURE);
        }
      } else
+#ifndef UNIX
        if (!AddLsz(&cfg.plszFReqKeepAreaFirst, xstrupr(pch), -1, LST_END)) {
+#else
+       if (!AddLsz(&cfg.plszFReqKeepAreaFirst, pch, -1, LST_END)) {       
+#endif       
          DoLineError("Insufficient memory (freq keeparea areamask)\n");
          exit(EXIT_FAILURE);
        }
@@ -2320,7 +2348,11 @@
          exit(EXIT_FAILURE);
        }
      } else
+#ifndef UNIX
        if (!AddLsz(&cfg.plszIdleKeepAreaFirst, xstrupr(pch), -1, LST_END)) {
+#else       
+       if (!AddLsz(&cfg.plszIdleKeepAreaFirst, pch, -1, LST_END)) {
+#endif
          DoLineError("Insufficient memory (keep idle areamask)\n");
          exit(EXIT_FAILURE);
        }
@@ -2407,7 +2439,9 @@
            DoLineError("Insufficient memory (notify area list)\n");
            exit(EXIT_FAILURE);
          } else {
+#ifndef UNIX
            xstrupr(cfg.apszIdleFile[iFile++]);
+#endif	   
            psz = pch;
          }
        } else {
@@ -2437,7 +2471,9 @@
            DoLineError("Insufficient memory (notify area list)\n");
            exit(EXIT_FAILURE);
          } else {
+#ifndef UNIX
            xstrupr(cfg.apszIdleNote[iArea++]);
+#endif	   
            psz = pch;
          }
        } else {
@@ -2786,7 +2822,9 @@
    for (pchEnd = pch; *pchEnd && !isspace(*pchEnd); pchEnd++);
    *pchEnd++ = '\0';
    xstrncpy(cfg.achBadMail, pch, lengof(cfg.achBadMail));
+#ifndef UNIX
    xstrupr(cfg.achBadMail);
+#endif   
    pch = pchEnd;
 
    // Scan in all the area options if any and set
@@ -2911,8 +2949,11 @@
      if ((parea->pszPath = AllocString(pch, (SHORT) (pchEnd - pch))) == NULL) {
        DoLineError("Insufficient memory (filename)\n");
        exit(EXIT_FAILURE);
-     } else
+     } 
+#ifndef UNIX
+       else
        xstrupr(parea->pszPath);
+#endif       
    }
 
    // Scan in all the area flags skipping the leading spaces
