@@ -223,12 +223,13 @@
      // Read the subsequent line from the file and check if ok
 
      if (fgets(achLine, lengof(achLine), pfile) == NULL)
+     {
        if (!feof(pfile)) {
          WriteLog("$ Can't read file: %s\n", pszFile);
          exit(EXIT_FAILURE);
        } else
          break;
-
+    }
      // Check if we got the complete line and remove the trailing newline
 
      if (*(pch = xstrchr(achLine, 0) - 1) == '\n')

@@ -904,7 +904,7 @@ fprintf(STDAUX, "SendLongMsgEnd: hmsgLong=[%09Fp]\n\r", hmsgLong);
 
  PSZ APPENTRY GetMsgKludge(PSZ pszKludge, PCH pch, USHORT cch, BOOL fLast)
  {
-   SHORT cchText, cchKludge = xstrlen(pszKludge);
+   SHORT cchText=0, cchKludge = xstrlen(pszKludge);
    PCH pchText;
    PSZ pszText;
 
@@ -1043,23 +1043,23 @@ Drop:WriteLog("- Msg# %lu is too long\n", umsg);
      ULONG attr;
      PSZ   psz;
    } aAttr[] = {
-     MSGPRIVATE,        "Pvt",
-     MSGCRASH,          "Crash",
-     MSGREAD,           "Recv",
-     MSGSENT,           "Sent",
-     MSGFILE,           "File",
-     MSGFWD,            "Transit",
-     MSGORPHAN,         "Orphan",
-     MSGKILL,           "Kill",
-     MSGLOCAL,          "Local",
-     MSGHOLD,           "Hold",
-     MSGXX2,            "Rsvd2",
-     MSGFRQ,            "Frq",
-     MSGRRQ,            "Rrq",
-     MSGCPT,            "Cpt",
-     MSGARQ,            "Arq",
-     MSGURQ,            "Urq",
-     MSGSCANNED,        "Scan"
+     {MSGPRIVATE,        "Pvt"},
+     {MSGCRASH,          "Crash"},
+     {MSGREAD,           "Recv"},
+     {MSGSENT,           "Sent"},
+     {MSGFILE,           "File"},
+     {MSGFWD,            "Transit"},
+     {MSGORPHAN,         "Orphan"},
+     {MSGKILL,           "Kill"},
+     {MSGLOCAL,          "Local"},
+     {MSGHOLD,           "Hold"},
+     {MSGXX2,            "Rsvd2"},
+     {MSGFRQ,            "Frq"},
+     {MSGRRQ,            "Rrq"},
+     {MSGCPT,            "Cpt"},
+     {MSGARQ,            "Arq"},
+     {MSGURQ,            "Urq"},
+     {MSGSCANNED,        "Scan"}
    };
 
    // Check if we have no message header and get it locally

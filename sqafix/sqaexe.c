@@ -147,11 +147,15 @@
    va_start(argptr, pszFormat);
 
    cch = GetTextLeng(argptr, pszFormat);
-   if (pchLine + cch < achLine + sizeof(achLine))
+   if ( (PSZ) pchLine + cch < (PSZ) achLine + sizeof(achLine))
+   {
      pchLine+= vsprintf(pchLine, pszFormat, argptr);
+   }
    else
+   {
      cch = 0;
-
+   }
+   
    va_end(argptr);
 
    return cch;
@@ -226,7 +230,6 @@
    if (!parea->pszDescr || !parea->pszDescr[0])
      DoAddLine("\n");
    else
-
      // Check if the are description fits on the single line or
      // line wrapping is disabled
 
@@ -815,7 +818,10 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
  static BOOL SUBENTRY DoCreateDirTree(PSZ pszPath)
  {
-   SHORT iSaveDisk = 0, fDone = FALSE;
+#ifndef UNIX 
+   SHORT iSaveDisk = 0;
+#endif   
+   SHORT fDone = FALSE;
    CHAR achSaveDir[MAXPATH];
    PCH pch, pchEnd;
 
@@ -857,6 +863,7 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
 //   if (*pch == '\\')
    if (*pch == PATH_DELIM)
+   {
 //     if (chdir("\\")) {
      if (chdir(PATH_DELIMS)) {
 #ifdef UNIX
@@ -869,8 +876,11 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 #endif
        return FALSE;
      } else
+     {
        pch++;
+     }
 
+   }
    // Loop through the specified path directory tree creating dirs
 
    for (; *pch && !fDone; pch++) {
@@ -910,7 +920,9 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 /*
  * This subroutine returns target file system max file size
  */
+#ifndef __GNUC__ 
  #pragma argsused
+#endif 
  static USHORT SUBENTRY DoGetMaxFileSize(PSZ pszPath)
  {
 #if defined __OS2__
@@ -1170,10 +1182,16 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
    for (ich = 0; *pszArea; pszArea++) {
      if (!xstrchr(SPEC_CHARS_TREE, *pszArea))
+     {
        if (ich < lengof(achArea) - 1)
+       {
          achArea[ich++] = toupper(*pszArea);
+       }
        else
+       {
          break;
+       }
+     }
    }
    achArea[ich] = '\0';
 
@@ -1249,10 +1267,16 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
    for (ich = 0; *pszArea; pszArea++) {
      if (!xstrchr(SPEC_CHARS_TREE, *pszArea))
+     {
        if (ich < lengof(achArea) - 1)
+       {
          achArea[ich++] = toupper(*pszArea);
+       }
        else
+       {
          break;
+       }
+     }
    }
    achArea[ich] = '\0';
 
@@ -1650,7 +1674,7 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
 
    // Allocate squish area flags and check if ok
 
-   psz = pnewarea->pszFlags ? pnewarea->pszFlags : "";
+   psz = (PSZ) pnewarea->pszFlags ? (PSZ) pnewarea->pszFlags : (PSZ) "";
    if ((psz = AllocString(psz, -1)) == NULL) {
      WriteLog("! Insufficient memory (sqsh area flags)\n");
      exit(EXIT_FAILURE);
@@ -2256,7 +2280,7 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
             cch = sprintf(ach, "Forwarded request%s to be expired at %s%s%s",
                           cArea > 1 ? "s" : "", FormatNetAddr(&netAddr),
                           timeNote ? " on " : "",
-                          timeNote ? FormatSecs(timeNote) : "");
+                          timeNote ? FormatSecs(timeNote) : (PSZ) "");
             break;
        case NT_FREQ_EXPNOTE:
             cch = sprintf(ach, "Forwarded request%s %s been expired at %s",
@@ -2308,7 +2332,7 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
             cch = sprintf(ach, "Forwarded request%s to be expired at %s%s%s",
                           cArea > 1 ? "s" : "", FormatNetAddr(&netAddr),
                           timeNote ? " on " : "",
-                          timeNote ? FormatSecs(timeNote) : "");
+                          timeNote ? FormatSecs(timeNote) : (PSZ) "");
             break;
        case NT_FREQ_EXPNOTE:
             cch = sprintf(ach, "Forwarded request%s %s been expired at %s",
@@ -2356,7 +2380,7 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
             cch = sprintf(ach, "\nForwarded request%s to be expired at %s%s%s\n",
                           cArea > 1 ? "s" : "", FormatNetAddr(&netAddr),
                           timeNote ? " on " : "",
-                          timeNote ? FormatSecs(timeNote) : "");
+                          timeNote ? FormatSecs(timeNote) : (PSZ) "");
             break;
        case NT_FREQ_EXPNOTE:
             cch = sprintf(ach, "\nForwarded request%s %s been expired at %s on %s\n",
@@ -2461,7 +2485,7 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
             cch = sprintf(ach, "Idle passthru area%s to be deleted at %s%s%s",
                           cArea > 1 ? "s" : "", FormatNetAddr(&netAddr),
                           timeNote ? " on " : "",
-                          timeNote ? FormatSecs(timeNote) : "");
+                          timeNote ? FormatSecs(timeNote) : (PSZ) "");
             break;
        case NT_IDLE_EXPNOTE:
             cch = sprintf(ach, "Idle passthru area%s %s been deleted at %s",
@@ -2509,7 +2533,7 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
             cch = sprintf(ach, "Idle passthru area%s to be deleted at %s%s%s",
                           cArea > 1 ? "s" : "", FormatNetAddr(&netAddr),
                           timeNote ? " on " : "",
-                          timeNote ? FormatSecs(timeNote) : "");
+                          timeNote ? FormatSecs(timeNote) : (PSZ) "");
             break;
        case NT_IDLE_EXPNOTE:
             cch = sprintf(ach, "Idle passthru area%s %s been deleted at %s",
@@ -2552,7 +2576,7 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
             cch = sprintf(ach, "\nIdle passthru area%s to be deleted at %s%s%s\n",
                           cArea > 1 ? "s" : "", FormatNetAddr(&netAddr),
                           timeNote ? " on " : "",
-                          timeNote ? FormatSecs(timeNote) : "");
+                          timeNote ? FormatSecs(timeNote) : (PSZ) "");
             break;
        case NT_IDLE_EXPNOTE:
             cch = sprintf(ach, "\nIdle passthru area%s %s been deleted at %s on %s\n",
@@ -2687,10 +2711,6 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
    PAREA parea;
    PLINK plink;
    SHORT code;
-
-#ifdef UNIX
-    char* tmp = NULL;
-#endif
 
    // Get the area descriptor pointer and the link for this node
 
@@ -3516,11 +3536,12 @@ fprintf(STDAUX, "ExecQueueAreaMask: '%s'\r\n", pszAreaMask);
      return FALSE;
    } else
      if (cfg.fl & FL_REPORTMSG)
+     {
        if (pszDescr != NULL && pszDescr[0])
          WriteMsg("\nCreated area %s \"%s\"\n", pszArea, pszDescr);
        else
          WriteMsg("\nCreated area %s\n", pszArea);
-
+     }
    // Show we've created new area
 
    cfg.fExitCode|= EXIT_PROCAREA;
@@ -3577,10 +3598,12 @@ fprintf(STDAUX, "ExecQueueAreaMask: '%s'\r\n", pszAreaMask);
      return FALSE;
    } else {
      if (cfg.fl & FL_REPORTMSG)
+     {
        if (!parea->pszDescr || !parea->pszDescr[0])
          WriteMsg("\nDestroyed area %s\n", pszArea);
        else
          WriteMsg("\nDestroyed area %s \"%s\"\n", pszArea, parea->pszDescr);
+     }
      pdelarea->pnode = pnode;
    }
 
@@ -4498,8 +4521,8 @@ Kill: return (BOOL)-1;
 
    // Allocate squish area flags and check if ok
 
-   psz = pnewarea->pszFlags ? pnewarea->pszFlags : "";
-   if ((psz = AllocString(psz, -1)) == NULL) {
+   psz = pnewarea->pszFlags ? pnewarea->pszFlags : (PSZ) "";
+   if ((psz = AllocString((PSZ) psz, -1)) == NULL) {
      WriteLog("! Insufficient memory (sqsh area flags)\n");
      exit(EXIT_FAILURE);
    }

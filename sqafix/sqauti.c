@@ -34,15 +34,15 @@
  #include <process.h>
  #include "ffind.h"
 #else
- // huh?
- static int errno;
+ #include <errno.h>
 #endif
  #include <fcntl.h>
- #include "sqafix.h"
+ #include "sqafix.h" 
 
  #include "pathdef.h"
 
  #include "ffind.h"
+
 /*
  * This routine calculates hash value for the given string
  */
@@ -288,11 +288,13 @@
    // Allocate memory to hold the new string and set it in
 
    if ((cch = xstrlen(psz)) > 0)
+   {
      if ((apsz[ipsz] = MemAlloc(cch + 1, MA_CLEAR)) != NULL)
        xstrcpy(apsz[ipsz], psz);
      else
        return FALSE;
-
+   } 
+   
    return TRUE;
  }
 
@@ -383,11 +385,12 @@
    // create an element assuming it would be linked by the caller
 
    if (pplsz != NULL)
+   {
      if (LstLinkElement((PPLE) pplsz, (PLE) plsz, ipos) == LST_ERROR) {
        LstDestroyElement((PLE) plsz);
        return NULL;
      }
-
+   }
    // Set in the string and its length
 
    xmemcpy(plsz->ach, pch, cch);
@@ -418,11 +421,13 @@
    // Search the list
 
    while (plsz != NULL)
+   {
      if (plsz->hash == hash && !xstricmp(plsz->ach, psz))
        return plsz;
      else
        plsz = plsz->plszNext;
-
+   }
+   
    return NULL;
  }
 
@@ -480,7 +485,7 @@
 
  PSZ APPENTRY GetNodeSysop(PNODE pnode)
  {
-   return (pnode != NULL && pnode->pszSysop != NULL) ? pnode->pszSysop : "SysOp";
+   return (pnode != NULL && pnode->pszSysop != NULL) ? pnode->pszSysop : (PSZ) "SysOp";
  }
 
 /*
@@ -585,11 +590,13 @@
    ASSERT(pch != NULL);
 
    while (*pch && !isspace(*pch))
+   {
      if (*pch == ch)
        return TRUE;
      else
        pch++;
-
+   }
+   
    return FALSE;
  }
 
@@ -615,28 +622,43 @@
    // Scan in the zone if any
 
    if (DoIsAddrChar(*pch) && DoHasAddrChar(pch, ':')) {
-     while (isdigit(*pchEnd)) pchEnd++;
-     if (*pchEnd != ':' || pch == pchEnd) return NULL;
+     while (isdigit(*pchEnd)) 
+        pchEnd++;
+	
+     if (*pchEnd != ':' || pch == pchEnd) 
+        return NULL;
+	
      pnetAddr->zone = atoi(pch);
      pch = ++pchEnd;
-     if (!isdigit(*pch) || !DoHasAddrChar(pch, '/')) return NULL;
+     
+     if (!isdigit(*pch) || !DoHasAddrChar(pch, '/')) 
+        return NULL;
    }
 
    // Scan in the net if any
 
    if (DoIsAddrChar(*pch) && DoHasAddrChar(pch, '/')) {
-     while (isdigit(*pchEnd)) pchEnd++;
-     if (*pchEnd != '/' || pch == pchEnd) return NULL;
+     while (isdigit(*pchEnd)) 
+        pchEnd++;
+	
+     if (*pchEnd != '/' || pch == pchEnd) 
+        return NULL;
+	
      pnetAddr->net = atoi(pch);
      pch = ++pchEnd;
-     if (!isdigit(*pch)) return NULL;
+     
+     if (!isdigit(*pch)) 
+        return NULL;
    }
 
    // Scan in the node if any
 
    if (DoIsAddrChar(*pch) && *pch != '.') {
-     while (isdigit(*pchEnd)) pchEnd++;
-     if (*pchEnd != '.' && *pchEnd != '@' && !isspace(*pchEnd) && *pchEnd) return NULL;
+     while (isdigit(*pchEnd)) 
+        pchEnd++;
+     if (*pchEnd != '.' && *pchEnd != '@' && !isspace(*pchEnd) && *pchEnd) 
+        return NULL;
+	
      pnetAddr->node = atoi(pch);
      pch = pchEnd;
    }
@@ -644,13 +666,19 @@
    // Scan in the point if any
 
    if (*pch != '.') {
-     if (*pch == '@') while (*pch && !isspace(*pch)) pch++;
-     if (!isspace(*pch) && *pch) return NULL;
+     if (*pch == '@') 
+        while (*pch && !isspace(*pch)) 
+	    pch++;
+     if (!isspace(*pch) && *pch) 
+        return NULL;
      pnetAddr->point = 0;
    } else {
      for (pchEnd = ++pch; isdigit(*pchEnd); pchEnd++);
-     if (*pchEnd == '@') while (*pchEnd && !isspace(*pchEnd)) pchEnd++;
-     if (!isspace(*pchEnd) && *pchEnd) return NULL;
+     if (*pchEnd == '@') 
+        while (*pchEnd && !isspace(*pchEnd)) 
+	    pchEnd++;
+     if (!isspace(*pchEnd) && *pchEnd) 
+        return NULL;
      pnetAddr->point = atoi(pch);
      pch = pchEnd;
    }
@@ -681,7 +709,7 @@
    // Skip through the leading spaces
 
    for (pch = psz; isspace(*pch); pch++);
-   pchEnd = pch;
+       pchEnd = pch;
 
    // Check for the World mask
 
@@ -1151,8 +1179,11 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
  BOOL APPENTRY DelAreaMsgBase(PAREA parea)
  {
    BOOL fSqshBase = IsSquishArea(parea->pszSqshFlags);
-   CHAR achSaveDir[MAXPATH], achPath[MAXPATH], achMask[MAXFILE+MAXEXT];
+   CHAR achPath[MAXPATH], achMask[MAXFILE+MAXEXT];
+#ifndef UNIX
+   CHAR achSaveDir[MAXPATH];
    SHORT iSaveDisk;
+#endif   
    PCH pchLastSlash;
 
 #if defined __OS2__
@@ -1405,7 +1436,7 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
    // Check if there are any flags specified for this echo area
 
    if ((pch = parea->pszSqshFlags) != NULL)
-
+   {
      // Skip over the leading spaces and check for the flag prefix
 
      while (*pch && SkipSpaces(&pch) == '-')
@@ -1427,7 +1458,7 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 
          for (pch++; *pch && !isspace(*pch) && *pch != '-'; pch++);
        }
-
+   }
    // No alternate origination address found so return the primary one
 
    xmemcpy(pnetAddr, &cfg.anetAddr[0], sizeof(NETADDR));
@@ -1582,6 +1613,7 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
    // Create the list element and link it up
 
    if (pdone == NULL)
+   {
      if ((pdone = (PDONE) LstCreateElement(sizeof(DONE))) == NULL) {
        WriteLog("! Insufficient memory (done list)\n");
        exit(EXIT_FAILURE);
@@ -1589,7 +1621,7 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
        LstLinkElement((PPLE) &cfg.pdoneFirst, (PLE) pdone, LST_END);
        pdone->parea = parea;
      }
-
+   }
    pdone->fWhat = fWhat;
  }
 
@@ -1617,7 +1649,7 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 /*
  * This routines build a complete path name for the specified file
  */
-
+#ifndef UNIX
  static BOOL SUBENTRY DoGetCurDir(PSZ pszCurDir)
  {
    CHAR achCurPath[MAXDRIVE + MAXDIR];
@@ -1631,15 +1663,17 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 
    return 0;
  }
-
+#endif
  BOOL APPENTRY BuildFullPath(PSZ pszDest, PSZ pszSrc)
  {
    CHAR achDrive[MAXDRIVE];
    CHAR achDir[MAXDIR];
    CHAR achFile[MAXFILE];
    CHAR achExt[MAXEXT];
+#ifndef UNIX   
    CHAR achCurDir[MAXDIR];
    USHORT iCurDrive;
+#endif
 
    ASSERT(pszDest != NULL);
    ASSERT(pszSrc != NULL);
@@ -1952,12 +1986,16 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
      // Read the subsequent line from the file and check if ok
 
      if (fgets(achLine, lengof(achLine), pfile) == NULL)
+     {
        if (!feof(pfile)) {
          WriteLog("$ Can't read file: %s\n", pszFile);
          exit(EXIT_FAILURE);
-       } else
+       } 
+       else
+       {
          break;
-
+       }
+     }
      // Check if we got the complete line and remove the trailing \n
 
      if (*(pch = xstrchr(achLine, 0) - 1) == '\n')
@@ -1970,7 +2008,8 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 
      // Remove all the trailing spaces if any
 
-     for (--pch; pch >= achLine && isspace(*pch); --pch) *pch = '\0';
+     for (--pch; pch >= (PSZ) achLine && isspace(*pch); --pch)
+         *pch = '\0';
 
      // Skip over leading spaces
 
@@ -2092,11 +2131,16 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
      // Read the subsequent line from the file and check if ok
 
      if (fgets(achLine, lengof(achLine), pfile) == NULL)
+     {
        if (!feof(pfile)) {
          WriteLog("$ Can't read file: %s\n", pszFile);
          exit(EXIT_FAILURE);
-       } else
+       } 
+       else
+       {
          break;
+       }
+     }  
 
      // Check if we got the complete line and remove the trailing newline
 
@@ -2233,12 +2277,16 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
      // Read the subsequent line from the file and check if ok
 
      if (fgets(achLine, lengof(achLine), pfile) == NULL)
+     {
        if (!feof(pfile)) {
          WriteLog("$ Can't read file: %s\n", pszFile);
          exit(EXIT_FAILURE);
-       } else
+       }
+       else
+       {
          break;
-
+       }
+     }
      // Check if we got the complete line and remove the trailing \n
 
      if (*(pch = xstrchr(achLine, 0) - 1) == '\n')
@@ -2251,7 +2299,7 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 
      // Remove all the trailing spaces if any
 
-     for (--pch; pch >= achLine && isspace(*pch); --pch) *pch = '\0';
+     for (--pch; pch >= (PSZ) achLine && isspace(*pch); --pch) *pch = '\0';
 
      // Skip over leading spaces
 
@@ -2778,8 +2826,12 @@ Fail:    WriteLog("! Insufficient memory for line %lu in file '%s'\n", iLine, ps
 
    for (pque = cfg.pqueFirst; pque != NULL; pque = pque->pqueNext)
      if (pque->hash == hash && !xstricmp(pque->achTag, pszArea))
-       if (type == 0) return pque;
-       else if (pque->type == type) return pque;
+     {
+       if (type == 0) 
+	    return pque;
+       else if (pque->type == type) 
+    	    return pque;
+     }
 
    return NULL;
  }
@@ -3213,9 +3265,9 @@ Fail:    WriteLog("! Insufficient memory for line %lu in file '%s'\n", iLine, ps
  static struct {
    USHORT type; PSZ psz;
  } aQE[] = {
-   QE_FREQ, "FReq",
-   QE_IDLE, "Idle",
-   QE_KILL, "Kill",
+   {QE_FREQ, "FReq"},
+   {QE_IDLE, "Idle"},
+   {QE_KILL, "Kill"}
  };
 
  BOOL APPENTRY ScanQueFileLine(PSZ pszLine, ULONG iLine)
@@ -3225,7 +3277,7 @@ Fail:    WriteLog("! Insufficient memory for line %lu in file '%s'\n", iLine, ps
    USHORT ifld, iqe;
    PCH  pch, pchEnd;
    DTTM dttm;
-   PQUE pque;
+   PQUE pque=0;
 
    ASSERT(pszLine != NULL);
 
@@ -3348,12 +3400,16 @@ Fail:    WriteLog("! Insufficient memory for line %lu in file '%s'\n", iLine, ps
      // Read the subsequent line from the file and check if ok
 
      if (fgets(achLine, lengof(achLine), pfileQue) == NULL)
+     {
        if (!feof(pfileQue)) {
          WriteLog("$ Can't read file: %s\n", pszFile);
          exit(EXIT_FAILURE);
-       } else
+       } 
+       else
+       {
          break;
-
+       }
+     }
      // Check if we got the complete line and remove the trailing \n
 
      if (*(pch = xstrchr(achLine, 0) - 1) == '\n')
@@ -3366,11 +3422,11 @@ Fail:    WriteLog("! Insufficient memory for line %lu in file '%s'\n", iLine, ps
 
      // Remove all the trailing spaces if any
 
-     for (--pch; pch >= achLine && isspace(*pch); --pch) *pch = '\0';
+     for (--pch; pch >= (PSZ) achLine && isspace(*pch); --pch) *pch = '\0';
 
      // Skip over leading spaces
 
-     for (pch = achLine; isspace(*pch); pch++);
+     for (pch = (PSZ) achLine; isspace(*pch); pch++);
 
      // Check if this is an empty line or a comment line
 
@@ -3445,6 +3501,8 @@ Fail:    WriteLog("! Insufficient memory for line %lu in file '%s'\n", iLine, ps
    // Scan through all the queue entries
 
    for (pque = cfg.pqueFirst; pque != NULL; pque = pque->pqueNext) {
+
+     memset(achLine, 0, 1024);
 
      // Format the queue entry area tag
 
@@ -3555,10 +3613,12 @@ fprintf(STDAUX, "%s\r", achLine);
 
        if (fUseNext) {
          if (!fLastAddr)
+	 {
            if (xmemcmp(&puplink->pnode->netAddr, &pnode->netAddr, sizeof(NETADDR)))
              return puplink;
            else
              continue;
+	 }
        } else {
          if (fLastAddr) fUseNext = TRUE;
        }
@@ -3821,9 +3881,6 @@ fprintf(STDAUX, "%s\r", achLine);
    PNODE pnode = pafrq->puplink->pnode;
    CHAR achCmd[MAXPATH];
    SHORT code;
-#ifdef UNIX
-   PSZ tmp = NULL;
-#endif
 
    // Log what are we going to execute
 
@@ -4324,12 +4381,13 @@ SetIt: psntm->aumsg[psntm->imsg++] = umsg;
      // Read the subsequent line from the file and check if ok
 
      if (fgets(achLine, lengof(achLine), pfile) == NULL)
+     {
        if (!feof(pfile)) {
          WriteLog("$ Can't read file: %s\n", pszFile);
          exit(EXIT_FAILURE);
        } else
          break;
-
+     }
      // Check if we got the complete line and remove the trailing \n
 
      if (*(pch = xstrchr(achLine, 0) - 1) == '\n')
@@ -4342,11 +4400,11 @@ SetIt: psntm->aumsg[psntm->imsg++] = umsg;
 
      // Remove all the trailing spaces if any
 
-     for (--pch; pch >= achLine && isspace(*pch); --pch) *pch = '\0';
+     for (--pch; pch >= (PSZ) achLine && isspace(*pch); --pch) *pch = '\0';
 
      // Skip over leading spaces
 
-     for (pch = achLine; isspace(*pch); pch++);
+     for (pch = (PSZ) achLine; isspace(*pch); pch++);
 
      // Check if this is an empty line or a comment line
 
@@ -4515,7 +4573,7 @@ SetIt: psntm->aumsg[psntm->imsg++] = umsg;
      achPath[lengof(achPath) - 1] = '\0';
 //     if ((psz = xstrchr(achPath, 0)) > achPath && *(psz - 1) != '\\')
 //       xstrcat(achPath, "\\");
-     if ((psz = xstrchr(achPath, 0)) > achPath && *(psz - 1) != PATH_DELIM)
+     if ((psz = xstrchr(achPath, 0)) > (PSZ) achPath && *(psz - 1) != PATH_DELIM)
        xstrcat(achPath, PATH_DELIMS);
    } else
      achPath[0] = '\0';
@@ -4614,7 +4672,7 @@ SetIt: psntm->aumsg[psntm->imsg++] = umsg;
    CHAR achText[256];
    BOOL fSysErr = FALSE;
    BOOL fFixEnd = FALSE;
-   PCH pch;
+   PCH pch=0;
 
    PSZ tmp = (PSZ) malloc(strlen(pszFormat)+1);
    strcpy(tmp, pszFormat);
@@ -4654,19 +4712,28 @@ SetIt: psntm->aumsg[psntm->imsg++] = umsg;
      }
    }
 
+    // Bo: What the heck is going on?
+
    // Display the message on the console screen and issue
    // the alarm sound for error messages
 
    if (pszFormat[0] == '!') printf("\a");
    vfprintf(stderr, pszFormat, argptr);
+#ifndef UNIX
    if (fSysErr) fprintf(stderr, " (%s)\n", sys_errlist[errno]);
+#else
+   if (fSysErr) fprintf(stderr, " (%s)\n", strerror(errno));
+#endif   
    CommitFile(stderr);
-
    // Check if the log file is open and append a record to it
 
    if (pfile != NULL) {
      vfprintf(pfile, pszFormat, argptr);
+#ifndef UNIX     
      if (fSysErr) fprintf(pfile, " (%s)\n", sys_errlist[errno]);
+#else
+     if (fSysErr) fprintf(pfile, " (%s)\n", strerror(errno));
+#endif     
      CommitFile(pfile);
    }
 

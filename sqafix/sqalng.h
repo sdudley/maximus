@@ -91,9 +91,10 @@ int         _CType fnsplit( const char _FAR *__path,
                             char _FAR *__name,
                             char _FAR *__ext );
 
-
+#ifndef UNIX
 #define setdisk(d)  (_chdrive((d) + 1))
 #define getdisk()   (_getdrive() - 1)
+#endif
 
 #endif
 

@@ -122,66 +122,66 @@
  // SqaFix config keyword parser table
 
  TAB atabSqaf[] = {
-    SQXXECHOAREA,               0, DoSqafEchoArea, // checked first to speedup
-    SQXXINCLUDE,                0, DoSqxxInclude,
-   "Address",                   0, DoSqafAddress,
-   "Alias",                     0, DoSqafAlias,
-   "IgnoreMsgsFrom",            0, DoSqafIgnoreMsgsFrom,
-   "IgnoreKeyword",             0, DoSqafIgnoreKeyword,
-   "NetMail",                   0, DoSqafMailPath,
-   "SquishCfg",                 0, DoSqafSqshCfg,
-   "QueueFile",                 0, DoSqafQueueFile,
-   "SwapPath",                  0, DoSqafSwapPath,
-   "SwapEMS",                   0, DoSqafSwapEMS,
-   "SwapXMS",                   0, DoSqafSwapXMS,
-   "RescanCommand",             0, DoSqafRescan,
-   "RescanPassthru",            0, DoSqafRescanPThru,
-   "AllowPackerRequest",        0, DoSqafAllowPackerReq,
-   "LogFile",                   0, DoSqafLogFile,
-   "DetailedLog",               0, DoSqafDetailedLog,
-   "HelpFileExt",               0, DoSqafHelpExt,
-   "SortAreaTag",               0, DoSqafSortAreaTag,
-   "SortAreaGroup",             0, DoSqafSortAreaGroup,
-   "KeepFailedRequests",        0, DoSqafKeepFailed,
-   "MaxMsgLineLength",          0, DoSqafMaxMsgLineLeng,
-   "MaxMsgPartLength",          0, DoSqafMaxMsgPartLeng,
-   "UseMSGID",                  0, DoSqafUseMSGID,
-   "UseREPLY",                  0, DoSqafUseREPLY,
-   "ForceINTL",                 0, DoSqafForceINTL,
-   "AddTearLine",               0, DoSqafAddTearLine,
-   "AddOrigin",                 0, DoSqafAddOrigin,
-   "UseFullAddr",               0, DoSqafUseFullAddr,
-   "PreserveDestroyedAreas",    0, DoSqafPresDestrAreas,
-   "PreserveDeletedAreas",      0, DoSqafPresDestrAreas,        // Old keyword
-   "NewAreaPath",               0, DoSqafNewAreaPath,
-   "NewAreaNodes",               0, DoSqafNewAreaNodes,
-   "NewAreaNotify",             0, DoSqafNewAreaNotify,
-   "NewAreaFlags",              0, DoSqafNewAreaFlags,
-   "NewAreaGroup",              0, DoSqafNewAreaGroup,
-   "NewAreaRefuse",             0, DoSqafNewAreaRefuse,
-    SQXXNEWAREAPLACE,           0, DoSqafNewAreaPlace,
-   "AreaDescrFileNA",           0, DoSqafAreaDescrFileNA,
-   "AreaDescrFileDZ",           0, DoSqafAreaDescrFileDZ,
-   "AreaDescrSaveFile",         0, DoSqafAreaDescrSaveFile,
-   "AreaListSaveFile",          0, DoSqafAreaListSaveFile,
-   "DefaultAreaDescr",          0, DoSqafDefAreaDescr,
-   "DefaultAreaFlags",          0, DoSqafDefAreaFlags,
-   "DefaultNodeGroups",         0, DoSqafDefNodeGroups,
-   "DefaultNodeFlags",          0, DoSqafDefNodeFlags,
-   "PasswordList",              0, DoSqafPasswordList,
-   "Node",                      0, DoSqafNode,
-   "UpLink",                    0, DoSqafUpLink,
-   "ForwardRequestRefuse",      0, DoSqafFReqRefuse,
-   "ForwardRequestTimeout",     0, DoSqafFReqTimeout,
-   "ForwardRequestNotify",      0, DoSqafFReqNotify,
-   "ForwardRequestRetryAll",    0, DoSqafFReqRetryAll,
-   "ForwardRequestKeepAreas",   0, DoSqafFReqKeepAreas,
-   "KeepIdlePassthru",          0, DoSqafIdleKeepAreas,         // Old keyword
-   "IdlePassthruKeepAreas",     0, DoSqafIdleKeepAreas,
-   "IdlePassthruTimeout",       0, DoSqafIdleTimeout,
-   "IdlePassthruNotify",        0, DoSqafIdleNotify,
-   "IdlePassthruIgnoreNodes",   0, DoSqafIdleIgnoreNodes,
-   "IdlePassthruIgnorePassive", 0, DoSqafIdleIgnorePassive,
+   {SQXXECHOAREA,               0, DoSqafEchoArea}, // checked first to speedup
+   {SQXXINCLUDE,                0, DoSqxxInclude},
+   {"Address",                   0, DoSqafAddress},
+   {"Alias",                     0, DoSqafAlias},
+   {"IgnoreMsgsFrom",            0, DoSqafIgnoreMsgsFrom},
+   {"IgnoreKeyword",             0, DoSqafIgnoreKeyword},
+   {"NetMail",                   0, DoSqafMailPath},
+   {"SquishCfg",                 0, DoSqafSqshCfg},
+   {"QueueFile",                 0, DoSqafQueueFile},
+   {"SwapPath",                  0, DoSqafSwapPath},
+   {"SwapEMS",                   0, DoSqafSwapEMS},
+   {"SwapXMS",                   0, DoSqafSwapXMS},
+   {"RescanCommand",             0, DoSqafRescan},
+   {"RescanPassthru",            0, DoSqafRescanPThru},
+   {"AllowPackerRequest",        0, DoSqafAllowPackerReq},
+   {"LogFile",                   0, DoSqafLogFile},
+   {"DetailedLog",               0, DoSqafDetailedLog},
+   {"HelpFileExt",               0, DoSqafHelpExt},
+   {"SortAreaTag",               0, DoSqafSortAreaTag},
+   {"SortAreaGroup",             0, DoSqafSortAreaGroup},
+   {"KeepFailedRequests",        0, DoSqafKeepFailed},
+   {"MaxMsgLineLength",          0, DoSqafMaxMsgLineLeng},
+   {"MaxMsgPartLength",          0, DoSqafMaxMsgPartLeng},
+   {"UseMSGID",                  0, DoSqafUseMSGID},
+   {"UseREPLY",                  0, DoSqafUseREPLY},
+   {"ForceINTL",                 0, DoSqafForceINTL},
+   {"AddTearLine",               0, DoSqafAddTearLine},
+   {"AddOrigin",                 0, DoSqafAddOrigin},
+   {"UseFullAddr",               0, DoSqafUseFullAddr},
+   {"PreserveDestroyedAreas",    0, DoSqafPresDestrAreas},
+   {"PreserveDeletedAreas",      0, DoSqafPresDestrAreas},        // Old keyword
+   {"NewAreaPath",               0, DoSqafNewAreaPath},
+   {"NewAreaNodes",               0, DoSqafNewAreaNodes},
+   {"NewAreaNotify",             0, DoSqafNewAreaNotify},
+   {"NewAreaFlags",              0, DoSqafNewAreaFlags},
+   {"NewAreaGroup",              0, DoSqafNewAreaGroup},
+   {"NewAreaRefuse",             0, DoSqafNewAreaRefuse}, 
+   {SQXXNEWAREAPLACE,           0, DoSqafNewAreaPlace},
+   {"AreaDescrFileNA",           0, DoSqafAreaDescrFileNA},
+   {"AreaDescrFileDZ",           0, DoSqafAreaDescrFileDZ},
+   {"AreaDescrSaveFile",         0, DoSqafAreaDescrSaveFile},
+   {"AreaListSaveFile",          0, DoSqafAreaListSaveFile},
+   {"DefaultAreaDescr",          0, DoSqafDefAreaDescr},
+   {"DefaultAreaFlags",          0, DoSqafDefAreaFlags},
+   {"DefaultNodeGroups",         0, DoSqafDefNodeGroups},
+   {"DefaultNodeFlags",          0, DoSqafDefNodeFlags},
+   {"PasswordList",              0, DoSqafPasswordList},
+   {"Node",                      0, DoSqafNode},
+   {"UpLink",                    0, DoSqafUpLink},
+   {"ForwardRequestRefuse",      0, DoSqafFReqRefuse},
+   {"ForwardRequestTimeout",     0, DoSqafFReqTimeout},
+   {"ForwardRequestNotify",      0, DoSqafFReqNotify},
+   {"ForwardRequestRetryAll",    0, DoSqafFReqRetryAll},
+   {"ForwardRequestKeepAreas",   0, DoSqafFReqKeepAreas},
+   {"KeepIdlePassthru",          0, DoSqafIdleKeepAreas},         // Old keyword
+   {"IdlePassthruKeepAreas",     0, DoSqafIdleKeepAreas},
+   {"IdlePassthruTimeout",       0, DoSqafIdleTimeout},
+   {"IdlePassthruNotify",        0, DoSqafIdleNotify},
+   {"IdlePassthruIgnoreNodes",   0, DoSqafIdleIgnoreNodes},
+   {"IdlePassthruIgnorePassive", 0, DoSqafIdleIgnorePassive}
  };
 
  // Squish config keyword parser function prototypes
@@ -207,19 +207,19 @@
  // Squish config keyword parser table
 
  TAB atabSqsh[] = {
-    SQXXECHOAREA,               0, DoSqshEchoArea, // checked first to speedup
-    SQXXINCLUDE,                0, DoSqxxInclude,
-   "Address",                   0, DoSqshAddress,
-   "PointNet",                  0, DoSqshPointNet,
-   "Origin",                    0, DoSqshOrigin,
-   "Compress",                  0, DoSqshCompress,
-    SQSHPACK,                   0, DoSqshPack,
-    SQSHDEFPACKER,              0, DoSqshDefaultPacker,
-   "AreasBbs",                  0, DoSqshAreasBbs,
-   "NetArea",                   0, DoSqshNetArea,
-   "BadArea",                   0, DoSqshBadArea,
-   "DupeArea",                  0, DoSqshDupeArea,
-    SQXXNEWAREAPLACE,           0, DoSqshNewAreaPlace,
+    {SQXXECHOAREA,               0, DoSqshEchoArea}, // checked first to speedup
+    {SQXXINCLUDE,                0, DoSqxxInclude},
+   {"Address",                   0, DoSqshAddress},
+   {"PointNet",                  0, DoSqshPointNet},
+   {"Origin",                    0, DoSqshOrigin},
+   {"Compress",                  0, DoSqshCompress},
+    {SQSHPACK,                   0, DoSqshPack},
+    {SQSHDEFPACKER,              0, DoSqshDefaultPacker},
+   {"AreasBbs",                  0, DoSqshAreasBbs},
+   {"NetArea",                   0, DoSqshNetArea},
+   {"BadArea",                   0, DoSqshBadArea},
+   {"DupeArea",                  0, DoSqshDupeArea},  
+   {SQXXNEWAREAPLACE,           0, DoSqshNewAreaPlace}
  };
 
  // Must have keyword definitions
@@ -1288,7 +1288,7 @@
 
  static VOID SUBENTRY DoSqafAreaListSaveFile(PSZ psz)
  {
-   USHORT cch;
+   USHORT cch=0;
    PCH pch;
 
    // Check if we have seen this keyword before
@@ -2546,13 +2546,17 @@
    // and process it now since there can be lots of comments like this
 
    if (pszKey[0] == ';')
+   {
      if (cch == lengof(SQXXNEWAREAPLACE) &&
         !xstricmp(pszKey, SQXXNEWAREAPLACE)) {
        ptabSqafNewAreaPlace->pfn(psz);
        return TRUE;
-     } else
+     } 
+     else
+     {
        return FALSE;
-
+     }
+   }
    // Search for the keyword and if found, process the line
 
    if ((ptab = DoSearchKey(atabSqaf, numbof(atabSqaf), pszKey)) != NULL) {
@@ -3023,13 +3027,17 @@
    // and process it now since there can be lots of comments like this
 
    if (pszKey[0] == ';')
+   {
      if (cch == lengof(SQXXNEWAREAPLACE) &&
         !xstricmp(pszKey, SQXXNEWAREAPLACE)) {
        ptabSqshNewAreaPlace->pfn(psz);
        return TRUE;
-     } else
+     } 
+     else
+     {
        return FALSE;
-
+     }
+   }
    // Search for the keyword and if found, process the line
 
    if ((ptab = DoSearchKey(atabSqsh, numbof(atabSqsh), pszKey)) != NULL) {
@@ -3159,7 +3167,7 @@
    time_t tm;
    CHAR achText[128], achDateTime[80];
    PDELAREA pdelarea;
-   USHORT cchText;
+   USHORT cchText=0;
    PAREA parea;
    CHAR ch;
    PCH pch;
@@ -3280,7 +3288,7 @@
 
          cchLine = sprintf(achLine, "EchoArea %s%*s %s\t%s\t",
                            parea->achTag, cch, "", parea->pszPath,
-                           parea->pszSqshFlags ? parea->pszSqshFlags : "");
+                           parea->pszSqshFlags ? parea->pszSqshFlags : (PSZ) "");
 
        } else {
 
@@ -3590,12 +3598,16 @@
      // Read the subsequent line from the config file and check if ok
 
      if (fgets(pchBuf, cchMaxLine, pfile) == NULL)
+     {
        if (!feof(pfile)) {
          WriteLog("$ Can't read file: %s\n", pszCfgFile);
          exit(EXIT_FAILURE);
-       } else
+       } 
+       else
+       {
          break;
-
+       }
+     }
      // Check if we got the complete line and remove the trailing \n
 
      if (*(pch = xstrchr(pchBuf, 0) - 1) == '\n')
@@ -3862,11 +3874,15 @@ FailTmp:     WriteLog("$ Can't write file: %s\n", achTmpFile);
 
      if (fEchoArea) {
        if (fWriteNewAreasFirst && !fNewAreasWritten)
+       {
          if (DoWriteNewAreas(pfileTmp, fActive)) {
            fNewAreasWritten = TRUE;
-         } else
+         }
+	 else
+	 {
            goto FailTmp;
-
+	 }
+       }
        fWriteLineBack = DoUpdateEchoArea(pchEnd + 1, fActive, pchBuf + cchBuf);
      } else
 

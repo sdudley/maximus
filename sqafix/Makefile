@@ -31,6 +31,7 @@ MAINTARGETS := sqafix
 EXTRATARGETS:= 
 MAINTARGETS += $(EXTRATARGETS)
 EXTRA_LOADLIBES += -lmax -lmsgapi
+CPPFLAGS += -DNDEBUG
 
 .PHONY: all install install_libs install_binaries
 

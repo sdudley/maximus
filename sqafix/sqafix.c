@@ -137,48 +137,48 @@
    PSZ    psz;   
    USHORT cmd;
  } aCmdReqTab [] = {
-   "Scan",       CMD_SCAN,
-   "S",          CMD_SCAN,
-   "Add",        CMD_LINK,
-   "A",          CMD_LINK,
-   "Link",       CMD_LINK,
-   "Delete",     CMD_UNLINK,
-   "Del",        CMD_UNLINK,
-   "D",          CMD_UNLINK,
-   "Unlink",     CMD_UNLINK,
-   "Passive",    CMD_PASSIVE,
-   "Active",     CMD_ACTIVE,
-   "List",       CMD_LIST,
-   "L",          CMD_LIST,
-   "Query",      CMD_LINKED,
-   "Q",          CMD_LINKED,
-   "Linked",     CMD_LINKED,
-   "LN",         CMD_LINKED,
-   "Unlinked",   CMD_UNLINKED,
-   "UL",         CMD_UNLINKED,
-   "Notify",     CMD_NOTIFY,
-   "N",          CMD_NOTIFY,
-   "Report",     CMD_REPORT,
-   "R",          CMD_REPORT,
-   "Help",       CMD_HELP,
-   "H",          CMD_HELP,
-   "Rules",      CMD_RULES,
-   "Ru",         CMD_RULES,
-   "AutoCreate", CMD_AUTOCREATE,
-   "AC",         CMD_AUTOCREATE,
-   "Create",     CMD_CREATE,
-   "Destroy",    CMD_DESTROY,
-   "Avail",      CMD_AVAIL,
-   "Maintenance",CMD_MAINT,
-   "Maint",      CMD_MAINT,
-   "ReLink",     CMD_RELINK,
-   "ReFReq",     CMD_REFREQ,
-   "ReKill",     CMD_REKILL,
-   "Sync",       CMD_SYNC,
+   {"Scan",       CMD_SCAN},
+   {"S",          CMD_SCAN},
+   {"Add",        CMD_LINK},
+   {"A",          CMD_LINK},
+   {"Link",       CMD_LINK},
+   {"Delete",     CMD_UNLINK},
+   {"Del",        CMD_UNLINK},
+   {"D",          CMD_UNLINK},
+   {"Unlink",     CMD_UNLINK},
+   {"Passive",    CMD_PASSIVE},
+   {"Active",     CMD_ACTIVE},
+   {"List",       CMD_LIST},
+   {"L",          CMD_LIST},
+   {"Query",      CMD_LINKED},
+   {"Q",          CMD_LINKED},
+   {"Linked",     CMD_LINKED},
+   {"LN",         CMD_LINKED},
+   {"Unlinked",   CMD_UNLINKED},
+   {"UL",         CMD_UNLINKED},
+   {"Notify",     CMD_NOTIFY},
+   {"N",          CMD_NOTIFY},
+   {"Report",     CMD_REPORT},
+   {"R",          CMD_REPORT},
+   {"Help",       CMD_HELP},
+   {"H",          CMD_HELP},
+   {"Rules",      CMD_RULES},
+   {"Ru",         CMD_RULES},
+   {"AutoCreate", CMD_AUTOCREATE},
+   {"AC",         CMD_AUTOCREATE},
+   {"Create",     CMD_CREATE},
+   {"Destroy",    CMD_DESTROY},
+   {"Avail",      CMD_AVAIL},
+   {"Maintenance",CMD_MAINT},
+   {"Maint",      CMD_MAINT},
+   {"ReLink",     CMD_RELINK},
+   {"ReFReq",     CMD_REFREQ},
+   {"ReKill",     CMD_REKILL},
+   {"Sync",       CMD_SYNC},
 #ifdef DUMP_CODE
-   "DumpNode",   CMD_DUMPNODE,
-   "DumpUplink", CMD_DUMPUPLINK,
-   "DumpArea",   CMD_DUMPAREA,
+   {"DumpNode",   CMD_DUMPNODE},
+   {"DumpUplink", CMD_DUMPUPLINK},
+   {"DumpArea",   CMD_DUMPAREA},
 #endif
  };
 
@@ -187,24 +187,24 @@
  static struct {
    PSZ psz;     PFNEXEC pfnExec;        BOOL fGroup;
  } aRemReqTab [] = {
-   "%ALL",      ExecLnkNodeGroup,       TRUE,
-   "+%ALL",     ExecLnkNodeGroup,       TRUE,
-   "-%ALL",     ExecUnlNodeGroup,       TRUE,
-   "%PASSIVE",  ExecPasNodeGroup,       TRUE,
-   "%ACTIVE",   ExecActNodeGroup,       TRUE,
-   "%PAUSE",    ExecPasNodeGroup,       TRUE,
-   "%RESUME",   ExecActNodeGroup,       TRUE,
-   "%RESCAN",   ExecRescanArea,         FALSE,
-   "%RULES",    ExecSendAreaRules,      FALSE,
-   "%CREATE",   ExecCreateArea,         FALSE,
-   "%DESTROY",  ExecDestroyArea,        FALSE,
-   "%COMPRESS", ExecCompress,           FALSE,
-   "%LIST",     CreateAreasReport,      FALSE,
-   "%QUERY",    CreateLinkedReport,     FALSE,
-   "%LINKED",   CreateLinkedReport,     FALSE,
-   "%UNLINKED", CreateUnlinkedReport,   FALSE,
-   "%AVAIL",    CreateAvailReport,      FALSE,
-   "%HELP",     CreateUsageHelp,        FALSE,
+   {"%ALL",      ExecLnkNodeGroup,       TRUE},
+   {"+%ALL",     ExecLnkNodeGroup,       TRUE},
+   {"-%ALL",     ExecUnlNodeGroup,       TRUE},
+   {"%PASSIVE",  ExecPasNodeGroup,       TRUE},
+   {"%ACTIVE",   ExecActNodeGroup,       TRUE},
+   {"%PAUSE",    ExecPasNodeGroup,       TRUE},
+   {"%RESUME",   ExecActNodeGroup,       TRUE},
+   {"%RESCAN",   ExecRescanArea,         FALSE},
+   {"%RULES",    ExecSendAreaRules,      FALSE},
+   {"%CREATE",   ExecCreateArea,         FALSE},
+   {"%DESTROY",  ExecDestroyArea,        FALSE},
+   {"%COMPRESS", ExecCompress,           FALSE},
+   {"%LIST",     CreateAreasReport,      FALSE},
+   {"%QUERY",    CreateLinkedReport,     FALSE},
+   {"%LINKED",   CreateLinkedReport,     FALSE},
+   {"%UNLINKED", CreateUnlinkedReport,   FALSE},
+   {"%AVAIL",    CreateAvailReport,      FALSE},
+   {"%HELP",     CreateUsageHelp,        FALSE}
  };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -215,6 +215,7 @@
  * This routines are needed because out dpmi library does not support conio :(
  */
 
+#ifndef UNIX
  static int SUBENTRY DoCheckKey(void)
  {
 #ifdef BIOS_CONSOLE
@@ -237,6 +238,7 @@
    return getch();
 #endif
  }
+#endif
 
 /*
  * This subroutine is a critical error handler -- just fail the operation
@@ -865,7 +867,7 @@ ASM     int     31h                     // call dpmi service
          }
        } else
        if (tolower(apszArg[iArg][1]) == '*') {
-         pszGroup = cfg.fl & FL_OVERRIDEGROUP ? cfg.achAreaGroups : pnode->pszGroup;
+         pszGroup = (cfg.fl & FL_OVERRIDEGROUP) ? (PSZ) cfg.achAreaGroups : (PSZ) pnode->pszGroup;
          switch (cfg.cmdCode) {
            case CMD_LINK:    ExecLnkNodeGroup(pnode, pszGroup); break;
            case CMD_UNLINK:  ExecUnlNodeGroup(pnode, pszGroup); break;
@@ -1020,7 +1022,7 @@ ASM     int     31h                     // call dpmi service
          achScope[ich] = *pch;
    }
 
-   return ich > 0 ? achScope : fGroup ? pnode->pszGroup : NULL;
+   return (ich > 0) ? (PSZ) achScope : fGroup ? (PSZ) pnode->pszGroup : NULL;
  }
 
 /*
@@ -1524,7 +1526,7 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
  {
    NETADDR netAddr = cfg.anetAddr[0];
    SHORT iArg, copt;
-   PSZ pszArea;
+   PSZ pszArea = NULL;
 
    // Scan through the command line
 
@@ -1690,9 +1692,9 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
    static struct {
      PSZ psz; ULONG ul;
    } aflg[] = {
-     "-$m",     0,
-     "-$s",     0,
-     "-$d",     0,
+     {"-$m",     0},
+     {"-$s",     0},
+     {"-$d",     0}
    };
 
    // Check if this is a squish area
@@ -1724,9 +1726,6 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
    PSZ pszPThru = IsPassThruArea(parea->pszSqshFlags) ? "PassThru" : "NotPassThru";
    CHAR achCmd[MAXPATH], achArea[MAX_AREA_LENG + 4];
    SHORT iArg, code;
-#ifdef UNIX
-    char* tmp = NULL;
-#endif
 
    // Scan through all executors specified in the command line
 
@@ -1834,22 +1833,22 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
    static struct {
      USHORT fs;      PSZ psz;
    } afs[] = {
-     NF_KILLSENT,    "K",
-     NF_SENDHOLD,    "H",
-     NF_SENDCRASH,   "C",
-     NF_KEEPREQS,    "P",
-     NF_AUTOCREATE,  "A",
-     NF_FORWARDREQ,  "O",
-     NF_FREQNOPTHRU, "N",
-     NF_VISIBLE,     "V",
-     NF_SENDRULES,   "I",
-     NF_RESCANOK,    "R",
-     NF_COMPRESSOK,  "S",
-     NF_SENDCREATE,  "F",
-     NF_AREACREATE,  "!C",
-     NF_AREADESTROY, "!D",
-     NF_DONTNOTIFY,  "Y",
-     NF_DONTREPORT,  "Z",
+     {NF_KILLSENT,    "K"},
+     {NF_SENDHOLD,    "H"},
+     {NF_SENDCRASH,   "C"},
+     {NF_KEEPREQS,    "P"},
+     {NF_AUTOCREATE,  "A"},
+     {NF_FORWARDREQ,  "O"},
+     {NF_FREQNOPTHRU, "N"},
+     {NF_VISIBLE,     "V"},
+     {NF_SENDRULES,   "I"},
+     {NF_RESCANOK,    "R"},
+     {NF_COMPRESSOK,  "S"},
+     {NF_SENDCREATE,  "F"},
+     {NF_AREACREATE,  "!C"},
+     {NF_AREADESTROY, "!D"},
+     {NF_DONTNOTIFY,  "Y"},
+     {NF_DONTREPORT,  "Z"}
    };
 
    USHORT ifs;
@@ -1935,11 +1934,11 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
    static struct {
      USHORT fs;      PSZ psz;
    } afs[] = {
-     UF_AREAFIXPROT,     "A",
-     UF_NOPLUSPREFIX,    "+",
-     UF_NOMULTIAREATAGS, "*",
-     UF_LOWERCASETAG,    "C",
-     UF_FREQNOPTHRU,     "N",
+     {UF_AREAFIXPROT,     "A"},
+     {UF_NOPLUSPREFIX,    "+"},
+     {UF_NOMULTIAREATAGS, "*"},
+     {UF_LOWERCASETAG,    "C"},
+     {UF_FREQNOPTHRU,     "N"}
    };
 
    USHORT ifs;
@@ -2025,9 +2024,9 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
    static struct {
      USHORT fs;      PSZ psz;
    } afs[] = {
-     AF_RESCANOK,    "R",
-     AF_VISIBLE,     "V",
-     AF_SENDRULES,   "I",
+     {AF_RESCANOK,    "R"},
+     {AF_VISIBLE,     "V"},
+     {AF_SENDRULES,   "I"}
    };
 
    USHORT ifs;
@@ -2133,7 +2132,7 @@ fprintf(STDAUX, "\n\rSqaFix: DEBUGGING SESSION\r\n");
    // Partially process the command line, scan in the config
    // files and initialize all things
 
-   DoInitSqaFix(argc, argv);
+   DoInitSqaFix(argc, (PSZ*) argv);
 
    // Load and process the queue
 
@@ -2174,16 +2173,16 @@ fprintf(STDAUX, "%u uplink(s)\r\n", LstQueryElementCount((PLE) cfg.puplinkFirst)
    switch (cfg.cmdCode) {
      case CMD_SCAN:             DoRunRemoteMode();                      break;
      case CMD_NOTIFY:           DoNotifyKnownNodes();                   break;
-     case CMD_REPORT:           DoNotifyNodeAllLinks(argc, argv);       break;
-     case CMD_AUTOCREATE:       DoAutoCreateNewAreas(argc, argv);       break;
-     case CMD_MAINT:            DoRunMaintenance(argc, argv);           break;
-     case CMD_SYNC:             DoSyncCfgFiles(argc, argv);             break;
+     case CMD_REPORT:           DoNotifyNodeAllLinks(argc, (PSZ*) argv);       break;
+     case CMD_AUTOCREATE:       DoAutoCreateNewAreas(argc, (PSZ*) argv);       break;
+     case CMD_MAINT:            DoRunMaintenance(argc, (PSZ*) argv);           break;
+     case CMD_SYNC:             DoSyncCfgFiles(argc, (PSZ*) argv);             break;
 #ifdef DUMP_CODE
-     case CMD_DUMPNODE:         DoDumpNode(argc, argv);                 break;
-     case CMD_DUMPUPLINK:       DoDumpUplink(argc, argv);               break;
-     case CMD_DUMPAREA:         DoDumpArea(argc, argv);                 break;
+     case CMD_DUMPNODE:         DoDumpNode(argc,(PSZ*) argv);                 break;
+     case CMD_DUMPUPLINK:       DoDumpUplink(argc,(PSZ*) argv);               break;
+     case CMD_DUMPAREA:         DoDumpArea(argc,(PSZ*) argv);                 break;
 #endif
-     default:                   DoRunManualMode(argc, argv);            break;
+     default:                   DoRunManualMode(argc, (PSZ*) argv);            break;
    }
 
    // Send out all the areafix requests if any
