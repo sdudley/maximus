@@ -27,9 +27,12 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.6 2003/06/29 20:49:00 wesgarland Exp $
+ *  @version	$Id: ipcomm.c,v 1.7 2003/11/08 15:19:17 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.7  2003/11/08 15:19:17  paltas
+ * Fixed segfault problem in commdll
+ *
  * Revision 1.6  2003/06/29 20:49:00  wesgarland
  * Changes made to allow pluggable communications module. Code in not currently
  * pluggable, but "guts" will be identical to pluggable version of telnet
@@ -70,7 +73,7 @@
 # error UNIX only!
 #endif
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.6 2003/06/29 20:49:00 wesgarland Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.7 2003/11/08 15:19:17 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -257,7 +260,8 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
   struct servent 	*se;  
   short			portnum = 0;
   int			junk;
-  COMMHANDLE		h = CommHandle_fromFileHandle(h, -1);
+  COMMHANDLE		h = NULL;
+  h = CommHandle_fromFileHandle(h, -1);
 
   if (strncasecmp(pszDevice, "Com", 3) == 0)
     pszDevice += 3;
