@@ -123,6 +123,7 @@ extrn char slogan[] IS(CLS "%sMAXIMUS Version %s%s\n");
                     
 extrn char copyright[] IS("Copyright 1989, " THIS_YEAR " by Lanius Corporation.  All rights reserved.\n\n");
 
+#if 0
 extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
                                   "Development by Scott Dudley, Peter Fitzsimmons and David Nugent.\n"
 				  "UNIX port by Wes Garland.\n\n"
@@ -134,7 +135,22 @@ extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
                                 "    777 Downing St.\n"
                                 "    Kingston, Ont.\n"
                                 "    CANADA  K7M 5N3\n\n");
+#else
+extrn char dev_info[] IS(LMAGENTA "Design by Scott Dudley.\n"
+                                  "Development by Scott Dudley, Peter Fitzsimmons and David Nugent.\n"
+				  "UNIX port by Wes Garland.\n\n"
 
+			LRED "Maxmius is no longer supported by Lanius Corporation, however the source\n"
+			LRED "code for Maximus has been made freely available under the terms of the\n"
+			LRED "GNU Public License (GPL).\n"
+			LRED "\n"
+			YELLOW "You can download the source code for Maximus on the World Wide Web at\n"
+			YELLOW "at http://maximus.sourceforge.net/, or by FidoNet FREQ at ?:???/???\n"
+			LRED "\n"
+			LRED "For technical support, please post a message on the FidoNet MUFFIN echo.\n"
+			LRED "Alternatively, you may contact Wes Garland via FidoNet routed netmail at\n"
+			LRED "1:249/128, or via internet e-mail as wes@ninja250.kingston.net\n\n");
+#endif
                        
 extrn char fopen_read[] IS("r");     /* Flags for using fopen() calls */
 extrn char fopen_readb[] IS("rb");   /* ... */
