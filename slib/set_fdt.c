@@ -119,6 +119,33 @@
     return !SetFileTime((HANDLE)handle, NULL, NULL, &ft);
   }
 
+#elif defined(UNIX)
+#include <sys/types.h>
+#include <utime.h>
+
+int set_fdt(int fd, union stamp_combo *psc)
+{
+#if 0
+  struct utimbuf touchBuf;
+  struct timeval tmdate, *tmdate_p;
+
+  if ((fd < 0) || (!psc))
+    return 1;
+
+  memset(&touchBuf, 0, sizeof(touchBuf));
+  memset(&tmdate, 0, sizeof(tmdate));
+
+  tmdate_p = DosDate_to_TmDate(psc, &tmdate);
+  if (!tmdate_p)
+    return 1;
+
+  touchBuf.actime = touchBuf.modtime = tmdate_p->tv_sec;
+
+  
+  return 0;
+#endif
+  return 1; /* No equivalent UNIX call -- can't get filename reliably from fd */
+}
 #else
   #error Unknown OS
 #endif
