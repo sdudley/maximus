@@ -19,7 +19,7 @@
 
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_attach.c,v 1.1 2002/10/01 17:52:37 sdudley Exp $";
+static char rcs_id[]="$Id: m_attach.c,v 1.2 2003/06/04 23:25:09 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: File attach related functions
@@ -181,7 +181,11 @@ static int near Make_Attach_Directory(void)
   if (*PRM(attach_path)=='\0')
   {
     char temp[PATHLEN];
+#ifndef UNIX
     sprintf(temp, "%sNOUPLOAD.BBS", FAS(fah, downpath));
+#else
+    sprintf(temp, "%snoupload.bbs", FAS(fah, downpath));
+#endif
 
     if (fexist(temp))
       Display_File(DISPLAY_NONE,NULL,temp);
