@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: events.c,v 1.1 2002/10/01 17:50:55 sdudley Exp $";
+static char rcs_id[]="$Id: events.c,v 1.2 2003/06/04 23:14:57 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -37,7 +37,12 @@ static char rcs_id[]="$Id: events.c,v 1.1 2002/10/01 17:50:55 sdudley Exp $";
 static struct _event *elist;
 static unsigned num_event;
 
+#ifndef UNIX
 static char event_name[]="%sevents%02x%s";
+#else
+static char event_name[]="%setc/events%02x%s";
+#endif
+
 static union stamp_combo done_date;
 
 
