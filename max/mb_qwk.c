@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.6 2004/01/11 23:37:21 wmcbrine Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.7 2004/01/12 15:52:58 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command
@@ -787,21 +787,20 @@ static int near BuildIndex(BROWSE *b, unsigned long this_rec, word this_conf)
 {
   struct _qmndx qmndx;
   int rc=TRUE;
-  byte exp=0;
+  byte exp=152;
   
   /* Create the MSBinary-format .QWK index */
 
   this_rec++;
   while (!(this_rec & 0x800000L)) {
-    exp++;
+    exp--;
     this_rec <<= 1;
   }
-  this_rec &= 0x7fffffL;
 
   qmndx.mks_rec[0] = this_rec & 0xff;
   qmndx.mks_rec[1] = (this_rec >> 8) & 0xff;
-  qmndx.mks_rec[2] = (this_rec >> 16) & 0xff;
-  qmndx.mks_rec[3] = 152 - exp;
+  qmndx.mks_rec[2] = (this_rec >> 16) & 0x7f;
+  qmndx.mks_rec[3] = exp;
 
   qmndx.conf=(byte)(this_conf & 0xffu);
 
@@ -1490,12 +1489,12 @@ static void near GenerateStupidFiles(void)
   
   if ((fp=fopen(fname, "wb")) != NULL)
   {
-    fprintf(fp, door_id_name, us_short);
-    fprintf(fp, door_id_ver, version);
-    fprintf(fp, door_id_sys, xfer_id);
-    fprintf(fp, door_id_cname, cprog_name);
-    fprintf(fp, door_id_ctype_add);
-    fprintf(fp, door_id_ctype_drop);
+    fprintf(fp, "DOOR = %s\r\n", us_short);
+    fprintf(fp, "VERSION = %s\r\n", version);
+    fprintf(fp, "SYSTEM = %s\r\n", xfer_id);
+    fprintf(fp, "CONTROLNAME = %s\r\n", cprog_name);
+    fprintf(fp, "CONTROLTYPE = ADD\r\n");
+    fprintf(fp, "CONTROLTYPE = DROP\r\n");
     fclose(fp);
   }
 
