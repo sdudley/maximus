@@ -2136,7 +2136,7 @@
 #ifndef UNIX
        if (!AddLsz(&cfg.plszFReqRefuseAreaFirst, xstrupr(pch), -1, LST_END)) {
 #else
-       if (!AddLsz(&cfg.plszFReqRefuseAreaFirst, pch, -1, LST_END)) {       
+       if (!AddLsz(&cfg.plszFReqRefuseAreaFirst, pch, -1, LST_END)) {       
 #endif
          DoLineError("Insufficient memory (freq refuse areamask)\n");
          exit(EXIT_FAILURE);
@@ -2309,7 +2309,7 @@
 #ifndef UNIX
        if (!AddLsz(&cfg.plszFReqKeepAreaFirst, xstrupr(pch), -1, LST_END)) {
 #else
-       if (!AddLsz(&cfg.plszFReqKeepAreaFirst, pch, -1, LST_END)) {       
+       if (!AddLsz(&cfg.plszFReqKeepAreaFirst, pch, -1, LST_END)) {       
 #endif       
          DoLineError("Insufficient memory (freq keeparea areamask)\n");
          exit(EXIT_FAILURE);

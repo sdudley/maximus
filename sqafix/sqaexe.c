@@ -3558,7 +3558,7 @@ fprintf(STDAUX, "ExecQueueAreaMask: '%s'\r\n", pszAreaMask);
    } else
 #ifndef UNIX
      xstrupr(pszArea);
-#endif
+#endif
 
    // Check if we have an area with the specified tag
 

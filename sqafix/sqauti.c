@@ -1210,8 +1210,8 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
        setdisk(iSaveDisk);
        return FALSE;
      }
-   }   
-#endif
+   }   
+#endif
 
    // Preserve the current directory on the requested disk and check if ok
 
@@ -1236,7 +1236,7 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 
    // Delete all files matching mask
 
-#if defined __OS2__ 
+#if defined __OS2__ 
    if (!DosFindFirst(achMask, &hdir, FILE_NORMAL, &ffblk, sizeof(ffblk), &cSearch, 0)) {
      do {
        DosDelete(ffblk.achName, 0);
