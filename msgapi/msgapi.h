@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: msgapi.h,v 1.1 2002/10/01 17:54:26 sdudley Exp $ */
+/* $Id: msgapi.h,v 1.1.1.1 2002/10/01 17:54:26 sdudley Exp $ */
 
 #ifndef __SQAPI_H_DEFINED
 #define __SQAPI_H_DEFINED

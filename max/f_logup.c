@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: f_logup.c,v 1.1 2002/10/01 17:51:07 sdudley Exp $";
+static char rcs_id[]="$Id: f_logup.c,v 1.1.1.1 2002/10/01 17:51:07 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=File area routines (log uploads to files.bbs)

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_restr.c,v 1.1 2002/10/01 17:52:49 sdudley Exp $";
+static char rcs_id[]="$Id: m_restr.c,v 1.1.1.1 2002/10/01 17:52:49 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Set restrictions for QWK downloading

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.1 2002/10/01 17:52:14 sdudley Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.1.1.1 2002/10/01 17:52:14 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command

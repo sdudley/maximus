@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: ansi2bbs.c,v 1.1 2002/10/01 17:57:15 sdudley Exp $";
+static char rcs_id[]="$Id: ansi2bbs.c,v 1.1.1.1 2002/10/01 17:57:15 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=ANSI2BBS and ANSI2MEC, ANSI to .BBS/MEC conversion utilities

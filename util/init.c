@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: init.c,v 1.1 2002/10/01 17:57:23 sdudley Exp $";
+static char rcs_id[]="$Id: init.c,v 1.1.1.1 2002/10/01 17:57:23 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Initialization code for MECCA and ACCEM

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sem_scop.c,v 1.1 2002/10/01 17:54:04 sdudley Exp $";
+static char rcs_id[]="$Id: sem_scop.c,v 1.1.1.1 2002/10/01 17:54:04 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Scope opening/closing routines for compiler

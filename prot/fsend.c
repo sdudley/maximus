@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fsend.c,v 1.1 2002/10/01 17:54:38 sdudley Exp $";
+static char rcs_id[]="$Id: fsend.c,v 1.1.1.1 2002/10/01 17:54:38 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*#define XM_NO_CRC*/

@@ -1,4 +1,4 @@
-# $Id: makefile.mk,v 1.1 2002/10/01 17:54:24 sdudley Exp $
+# $Id: makefile.mk,v 1.1.1.1 2002/10/01 17:54:24 sdudley Exp $
 
 .IMPORT .IGNORE: DIST
 .EXPORT: DIST

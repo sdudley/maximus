@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: api_sq.h,v 1.1 2002/10/01 17:54:23 sdudley Exp $ */
+/* $Id: api_sq.h,v 1.1.1.1 2002/10/01 17:54:23 sdudley Exp $ */
 
 #ifndef __API_SQ_H_DEFINED
 #define __API_SQ_H_DEFINED

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_novl.c,v 1.1 2002/10/01 17:52:12 sdudley Exp $";
+static char rcs_id[]="$Id: mb_novl.c,v 1.1.1.1 2002/10/01 17:52:12 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: "root" overlay code for B)rowse command

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_ocmd.c,v 1.1 2002/10/01 17:51:55 sdudley Exp $";
+static char rcs_id[]="$Id: max_ocmd.c,v 1.1.1.1 2002/10/01 17:51:55 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Interpreter for the "%" outside command characters

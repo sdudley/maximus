@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_log.c,v 1.1 2002/10/01 17:51:47 sdudley Exp $";
+static char rcs_id[]="$Id: max_log.c,v 1.1.1.1 2002/10/01 17:51:47 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Log-on routines and new-user junk

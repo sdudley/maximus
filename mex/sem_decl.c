@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sem_decl.c,v 1.1 2002/10/01 17:53:59 sdudley Exp $";
+static char rcs_id[]="$Id: sem_decl.c,v 1.1.1.1 2002/10/01 17:53:59 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Variable declaration semantic routines

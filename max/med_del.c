@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: med_del.c,v 1.1 2002/10/01 17:52:19 sdudley Exp $";
+static char rcs_id[]="$Id: med_del.c,v 1.1.1.1 2002/10/01 17:52:19 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=MaxEd Editor: Routines for character deletion and wanton destruction

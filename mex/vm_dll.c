@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_dll.c,v 1.1 2002/10/01 17:54:12 sdudley Exp $";
+static char rcs_id[]="$Id: vm_dll.c,v 1.1.1.1 2002/10/01 17:54:12 sdudley Exp $";
 #pragma on(unreferenced)
 
 #include <stdlib.h>

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: os2.c,v 1.1 2002/10/01 17:52:59 sdudley Exp $";
+static char rcs_id[]="$Id: os2.c,v 1.1.1.1 2002/10/01 17:52:59 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=OS/2-specific functions for Maximus

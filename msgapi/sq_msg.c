@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sq_msg.c,v 1.1 2002/10/01 17:54:32 sdudley Exp $";
+static char rcs_id[]="$Id: sq_msg.c,v 1.1.1.1 2002/10/01 17:54:32 sdudley Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS

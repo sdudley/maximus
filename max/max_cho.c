@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_cho.c,v 1.1 2002/10/01 17:51:32 sdudley Exp $";
+static char rcs_id[]="$Id: max_cho.c,v 1.1.1.1 2002/10/01 17:51:32 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Chat Mode routines (overlayed).  Includes the chat itself, routines

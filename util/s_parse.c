@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_parse.c,v 1.1 2002/10/01 17:57:52 sdudley Exp $";
+static char rcs_id[]="$Id: s_parse.c,v 1.1.1.1 2002/10/01 17:57:52 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: .CTL file parsing routines

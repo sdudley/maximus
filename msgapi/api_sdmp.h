@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: api_sdmp.h,v 1.1 2002/10/01 17:54:22 sdudley Exp $ */
+/* $Id: api_sdmp.h,v 1.1.1.1 2002/10/01 17:54:22 sdudley Exp $ */
 
 static sword MAPIENTRY SdmCloseArea(HAREA mh);
 static HMSG  MAPIENTRY SdmOpenMsg(HAREA mh,word mode,dword msgnum);

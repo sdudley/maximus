@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: me_misc.c,v 1.1 2002/10/01 17:52:31 sdudley Exp $";
+static char rcs_id[]="$Id: me_misc.c,v 1.1.1.1 2002/10/01 17:52:31 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message section: message entry routines (miscellaneous)

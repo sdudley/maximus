@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: bbuf.h,v 1.1 2002/10/01 17:49:20 sdudley Exp $ */
+/* $Id: bbuf.h,v 1.1.1.1 2002/10/01 17:49:20 sdudley Exp $ */
 
 #include "btype.h"
 

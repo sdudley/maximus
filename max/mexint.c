@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mexint.c,v 1.1 2002/10/01 17:52:25 sdudley Exp $";
+static char rcs_id[]="$Id: mexint.c,v 1.1.1.1 2002/10/01 17:52:25 sdudley Exp $";
 #pragma on(unreferenced)
 
 /* This file contains intrinsic MEX functions.

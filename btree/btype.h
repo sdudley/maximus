@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: btype.h,v 1.1 2002/10/01 17:49:23 sdudley Exp $ */
+/* $Id: btype.h,v 1.1.1.1 2002/10/01 17:49:23 sdudley Exp $ */
 
 /* Common type definitions for B-trees.  These are used for both
  * C and C++ source files.

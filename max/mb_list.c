@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_list.c,v 1.1 2002/10/01 17:52:10 sdudley Exp $";
+static char rcs_id[]="$Id: mb_list.c,v 1.1.1.1 2002/10/01 17:52:10 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=One-per-line (L)ist) code for the BROWSE command

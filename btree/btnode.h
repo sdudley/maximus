@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: btnode.h,v 1.1 2002/10/01 17:49:21 sdudley Exp $ */
+/* $Id: btnode.h,v 1.1.1.1 2002/10/01 17:49:21 sdudley Exp $ */
 
 #ifndef __BTNODE_H_DEFINED
 #define __BTNODE_H_DEFINED

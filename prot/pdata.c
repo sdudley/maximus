@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: pdata.c,v 1.1 2002/10/01 17:54:39 sdudley Exp $";
+static char rcs_id[]="$Id: pdata.c,v 1.1.1.1 2002/10/01 17:54:39 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Binkley -=> Maximus interface routines, for protocol code.

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_hole.c,v 1.1 2002/10/01 17:56:24 sdudley Exp $";
+static char rcs_id[]="$Id: s_hole.c,v 1.1.1.1 2002/10/01 17:56:24 sdudley Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: display.c,v 1.1 2002/10/01 17:50:48 sdudley Exp $";
+static char rcs_id[]="$Id: display.c,v 1.1.1.1 2002/10/01 17:50:48 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=.BBS-file display routines

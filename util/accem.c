@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: accem.c,v 1.1 2002/10/01 17:57:14 sdudley Exp $";
+static char rcs_id[]="$Id: accem.c,v 1.1.1.1 2002/10/01 17:57:14 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=ACCEM -- decompiles .BBS files into .MEC files

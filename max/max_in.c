@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_in.c,v 1.1 2002/10/01 17:51:40 sdudley Exp $";
+static char rcs_id[]="$Id: max_in.c,v 1.1.1.1 2002/10/01 17:51:40 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Character/word/line general modem and keyboard input functions

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_menu.c,v 1.1 2002/10/01 17:57:50 sdudley Exp $";
+static char rcs_id[]="$Id: s_menu.c,v 1.1.1.1 2002/10/01 17:57:50 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: 'Section Menu' processing logic

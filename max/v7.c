@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: v7.c,v 1.1 2002/10/01 17:53:21 sdudley Exp $";
+static char rcs_id[]="$Id: v7.c,v 1.1.1.1 2002/10/01 17:53:21 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Version 7 nodelist module

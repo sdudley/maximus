@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_opstr.c,v 1.1 2002/10/01 17:54:16 sdudley Exp $";
+static char rcs_id[]="$Id: vm_opstr.c,v 1.1.1.1 2002/10/01 17:54:16 sdudley Exp $";
 #pragma on(unreferenced)
 
 #define COMPILING_MEX_VM

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_run.c,v 1.1 2002/10/01 17:54:19 sdudley Exp $";
+static char rcs_id[]="$Id: vm_run.c,v 1.1.1.1 2002/10/01 17:54:19 sdudley Exp $";
 #pragma on(unreferenced)
 
 #define VM_INIT

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: date.c,v 1.1 2002/10/01 17:50:46 sdudley Exp $";
+static char rcs_id[]="$Id: date.c,v 1.1.1.1 2002/10/01 17:50:46 sdudley Exp $";
 #pragma on(unreferenced)
 
 char comp_date[]=__DATE__;

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: dbasec.cc,v 1.1 2002/10/01 17:49:28 sdudley Exp $";
+static char rcs_id[]="$Id: dbasec.cc,v 1.1.1.1 2002/10/01 17:49:28 sdudley Exp $";
 #pragma on(unreferenced)
 
 #include "dbase.h"

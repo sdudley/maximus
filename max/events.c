@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: events.c,v 1.1 2002/10/01 17:50:55 sdudley Exp $";
+static char rcs_id[]="$Id: events.c,v 1.1.1.1 2002/10/01 17:50:55 sdudley Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>

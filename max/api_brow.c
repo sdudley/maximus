@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: api_brow.c,v 1.1 2002/10/01 17:50:43 sdudley Exp $";
+static char rcs_id[]="$Id: api_brow.c,v 1.1.1.1 2002/10/01 17:50:43 sdudley Exp $";
 #pragma on(unreferenced)
 
 #define NO_MSGH_DEF

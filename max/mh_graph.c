@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mh_graph.c,v 1.1 2002/10/01 17:52:32 sdudley Exp $";
+static char rcs_id[]="$Id: mh_graph.c,v 1.1.1.1 2002/10/01 17:52:32 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: Grab msghdr (graphics mode version)

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_header.c,v 1.1 2002/10/01 17:52:42 sdudley Exp $";
+static char rcs_id[]="$Id: m_header.c,v 1.1.1.1 2002/10/01 17:52:42 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: Grab message header from user

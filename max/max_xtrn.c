@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_xtrn.c,v 1.1 2002/10/01 17:52:10 sdudley Exp $";
+static char rcs_id[]="$Id: max_xtrn.c,v 1.1.1.1 2002/10/01 17:52:10 sdudley Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_chat

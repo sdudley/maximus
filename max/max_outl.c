@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_outl.c,v 1.1 2002/10/01 17:51:58 sdudley Exp $";
+static char rcs_id[]="$Id: max_outl.c,v 1.1.1.1 2002/10/01 17:51:58 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Local output and AVATAR translation routines

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: f_kill.c,v 1.1 2002/10/01 17:51:05 sdudley Exp $";
+static char rcs_id[]="$Id: f_kill.c,v 1.1.1.1 2002/10/01 17:51:05 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=File area routines: K)ill function

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: msgtrack.c,v 1.1 2002/10/01 17:56:06 sdudley Exp $";
+static char rcs_id[]="$Id: msgtrack.c,v 1.1.1.1 2002/10/01 17:56:06 sdudley Exp $";
 #pragma on(unreferenced)
 
 /* Copyright 1992 by Lanius Corporation.

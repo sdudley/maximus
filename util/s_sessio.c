@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_sessio.c,v 1.1 2002/10/01 17:57:53 sdudley Exp $";
+static char rcs_id[]="$Id: s_sessio.c,v 1.1.1.1 2002/10/01 17:57:53 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=SILT: 'Section Session' processing logic

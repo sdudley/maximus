@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: ued_cmds.c,v 1.1 2002/10/01 17:53:20 sdudley Exp $";
+static char rcs_id[]="$Id: ued_cmds.c,v 1.1.1.1 2002/10/01 17:53:20 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=Internal user editor (miscellaneous commands)

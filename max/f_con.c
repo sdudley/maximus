@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: f_con.c,v 1.1 2002/10/01 17:51:00 sdudley Exp $";
+static char rcs_id[]="$Id: f_con.c,v 1.1.1.1 2002/10/01 17:51:00 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=File area routines: C)ontents functions

@@ -19,7 +19,7 @@
 
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: cvtusr.c,v 1.1 2002/10/01 17:57:17 sdudley Exp $";
+static char rcs_id[]="$Id: cvtusr.c,v 1.1.1.1 2002/10/01 17:57:17 sdudley Exp $";
 #pragma on(unreferenced)
 
 /*# name=USER.BBS conversion utility

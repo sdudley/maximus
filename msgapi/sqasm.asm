@@ -1,4 +1,4 @@
-; $Id: sqasm.asm,v 1.1 2002/10/01 17:54:28 sdudley Exp $
+; $Id: sqasm.asm,v 1.1.1.1 2002/10/01 17:54:28 sdudley Exp $
 
 IFNDEF OS_2
 
