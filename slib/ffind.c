@@ -21,15 +21,25 @@
     credit=Thanks go to Peter Fitzsimmons for these routines.
 */
 
+#ifdef UNIX
+# ifdef SOLARIS
+#  define __EXTENSIONS__
+# endif
+# include <sys/types.h>
+# include <time.h>
+# include <sys/stat.h>
+# include <unistd.h>
+# include <ctype.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "compiler.h"
 #ifdef UNIX
 # include <sys/stat.h>
 # include <unistd.h>
 # include <ctype.h>
 #endif
+#include "compiler.h"
 
 #ifndef __IBMC__
 #include <dos.h>
@@ -411,9 +421,15 @@
  *
  * Looks like this is sort of like BSD's FTS code, grabbing file
  * names through glob expansion and stat attributes while its at it.
+ *
+ * WARNING WARNING WARNING
+ *
+ * #define trickery in the header lets us use GNU libc glob when available,
+ * or regular glob on non-GNU libc systems. DO NOT CHANGE THIS CODE 
+ * unless you understand EXACTLY how it works.
  */
 
-static int populateFF(FFIND *ff, const char *filename)
+static int populateFF(FFIND *ff, const char *filename, struct stat *sb_p)
 {
   struct stat sb;
   struct tm   timebuf;
@@ -425,8 +441,13 @@ static int populateFF(FFIND *ff, const char *filename)
   else
     basename = filename;
 
-  if (stat(filename, &sb))
-    return 1; /* Failure - pretend we never saw it */
+  if (sb_p)
+    sb = *sb_p;
+  else
+  {
+    if (stat(filename, &sb))
+      return 1; /* Failure - pretend we never saw it */
+  }
 
   if (ff->uiAttrSearch & ATTR_READONLY)
   {
@@ -446,20 +467,45 @@ static int populateFF(FFIND *ff, const char *filename)
   return 0;
 }
 
+/** Find the next file in a FindOpen list, and populate
+ *  the structure. From usage in ffind.c, it looks like
+ *  we return 0 if we return a file's info. 
+ */
 int FindNext(FFIND *ff)
 {
-  /* Find the next file in a FindOpen list, and populate
-   * the structure. From usage in ffind.c, it looks like
-   * we return 0 if we return a file's info. 
-   */
+#if defined(FAKE_GLOB_ONLYDIR)
+  struct stat sb;
+#endif
+  struct stat *sb_p = NULL;
 
   if (!ff || !ff->globInfo.gl_pathc)
     return 1; /* Nothing to find - called after FindInfo()? */
 
   /* Look for a file in the array which matches the attributes */
-  while (ff->globNext < ff->globInfo.gl_pathc)
+  for (; ff->globNext < ff->globInfo.gl_pathc; ff->globNext++)
   {
-    if (populateFF(ff, ff->globInfo.gl_pathv[ff->globNext++]) == 0)
+#if defined(FAKE_GLOB_ONLYDIR)
+    /* Fake GLOB_ONLYDIR by ignoring non-directories */
+    if (ff->globFlags & GLOB_ONLYDIR)
+    {
+      if (stat(ff->globInfo.gl_pathv[ff->globNext], &sb) != 0)
+	continue;
+
+      if (!S_ISDIR(sb.st_mode))
+	continue;
+
+      sb_p = &sb;
+    }
+#endif
+#if defined(FAKE_GLOB_PERIOD)
+    /* Fake GLOB_PERIOD by refusing to find filenames with
+     * dots in them if the wildcard itself did not have one.
+     */
+    if ((ff->globFlags & GLOB_PERIOD) && !strchr(ff->globExpr, '.'))
+      if (strchr(ff->globInfo.gl_pathv[ff->globNext], '.'))
+	continue;
+#endif
+    if (populateFF(ff, ff->globInfo.gl_pathv[ff->globNext++], sb_p) == 0)
       return 0; /* Got one */
   }
 
@@ -479,21 +525,27 @@ FFIND *FindOpen(char *filespec, unsigned short attribute)
    * glob flags. We'll always traverse directories.
    */
 
-  int   globFlags = GLOB_NOSORT | GLOB_NOESCAPE | GLOB_PERIOD; /* Get as close to DOS wildcarding as possible */
   FFIND *ff;
   char	unix_filespec[1024];
   char  *d /*dos*/, *u /*unix*/;
-
-  if (attribute & ATTR_SUBDIR)
-    globFlags |= GLOB_ONLYDIR;
 
   ff = calloc(sizeof(*ff), 1);
   if (!ff)
     return NULL;
 
+  ff->globFlags = GLOB_NOSORT | GLOB_NOESCAPE | GLOB_PERIOD; /* Get as close to DOS wildcarding as possible */
+  if (attribute & ATTR_SUBDIR)
+    ff->globFlags |= GLOB_ONLYDIR;
+
   /* Need to add case-insensitivity, etc, to make glob work the same way DOS does */
   d = filespec;
   u = unix_filespec;
+
+  if ((d[0] == '.') && !strchr(d, '/') && (strlen(d) < 5))
+    *u++ = '*';
+
+  if (d[0] == '\0')
+    *u++ = '*';
 
   do
   {
@@ -522,7 +574,12 @@ FFIND *FindOpen(char *filespec, unsigned short attribute)
       u[-1] = (char)0; /* trailing dot actually means "no extension" in DOS */
   }  
 
-  if (glob(unix_filespec, globFlags, NULL, &(ff->globInfo)))
+#if defined(FAKE_GLOB_PERIOD)
+  strncpy(ff->globExpr, unix_filespec, sizeof(ff->globExpr));
+  ff->globExpr[sizeof(ff->globExpr) - 1] = (char)0;
+#endif
+
+  if (glob(unix_filespec, ff->globFlags & GLOB_FLAGS_MASK, NULL, &(ff->globInfo)))
   {
     free(ff);
     return NULL;
@@ -552,7 +609,7 @@ FFIND *FindInfo(char *filespec)
   if (!ff)
     return NULL;
 
-  if (populateFF(ff, filespec))
+  if (populateFF(ff, filespec, NULL))
   {
     free(ff);
     return NULL;

@@ -58,6 +58,27 @@ typedef struct _ffind FFIND;
   #include "pwin.h"
 #endif
 
+#if defined(UNIX)
+# ifndef GLOB_PERIOD
+#  define GLOB_PERIOD 0
+# endif
+# ifndef GLOB_ONLYDIR
+#  define GLOB_ONLYDIR 0
+# endif
+
+static const unsigned int GLOB_FLAGS_MASK = (GLOB_ERR | GLOB_MARK | GLOB_NOSORT | GLOB_NOCHECK | GLOB_DOOFFS | GLOB_APPEND | GLOB_NOESCAPE | GLOB_PERIOD | GLOB_ONLYDIR);
+# if GLOB_ONLYDIR == 0
+#  undef GLOB_ONLYDIR
+#  define GLOB_ONLYDIR ((GLOB_FLAGS_MASK << 1) & ~GLOB_FLAGS_MASK)
+#  define FAKE_GLOB_ONLYDIR
+# endif
+
+# if GLOB_PERIOD == 0
+#  undef GLOB_PERIOD
+#  define GLOB_PERIOD (((GLOB_FLAGS_MASK << 1) & ~GLOB_FLAGS_MASK) << 1)
+#  define FAKE_GLOB_PERIOD
+# endif
+#endif /* UNIX */
 
 struct _ffind
 {
@@ -92,6 +113,10 @@ struct _ffind
   glob_t	globInfo;
   size_t	globNext;
   unsigned	uiAttrSearch;
+  int		globFlags; 
+# if defined(FAKE_GLOB_PERIOD)
+  char		globExpr[PATHLEN * 4];
+# endif
 #endif
 };
 
