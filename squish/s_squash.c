@@ -20,9 +20,12 @@
 /**
  * @file	s_squash.c
  * @author	Scott J. Dudley
- * @version	$Id: s_squash.c,v 1.5 2003/09/03 13:51:33 paltas Exp $
+ * @version	$Id: s_squash.c,v 1.6 2003/11/18 23:04:18 paltas Exp $
  *
  * $Log: s_squash.c,v $
+ * Revision 1.6  2003/11/18 23:04:18  paltas
+ * This _might_ remove the .Flo issue..
+ *
  * Revision 1.5  2003/09/03 13:51:33  paltas
  * /Linux instead of /UNIX on Linux machines
  *
@@ -46,7 +49,7 @@
 #if !defined(__GNUC__)
 #pragma off(unreferenced)
 #endif
-static char __attribute__((unused)) rcs_id[]="$Id: s_squash.c,v 1.5 2003/09/03 13:51:33 paltas Exp $";
+static char __attribute__((unused)) rcs_id[]="$Id: s_squash.c,v 1.6 2003/11/18 23:04:18 paltas Exp $";
 #if !defined(__GNUC__)
 #pragma on(unreferenced)
 #endif
@@ -568,7 +571,7 @@ void FloName( byte *out, NETADDR * n, byte flavour, word addmode)
       /* If we don't find anything useful, assume that we're using the      *
        * given flavour.                                                     */
 
-      *flavptr=flav;
+      *flavptr=tolower(flav);
 
 
       /* Copy the flo style of the found filename into the filename that    *
