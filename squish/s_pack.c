@@ -17,9 +17,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.11 2004/01/12 01:19:19 wmcbrine Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.12 2004/01/13 01:17:46 paltas Exp $";
 #pragma on(unreferenced)
+#endif
 
 #define NOVARS
 /*#define NO_MSGH_DEF*/
@@ -218,14 +220,14 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
   if ((mh=MsgOpenMsg(sq, MOPEN_RW, *mn))==NULL)
   {
     if (msgapierr != MERR_NOENT)
-      S_LogMsg("!Can't open netmail msg #%lu (err#%d)", *mn, msgapierr);
+      S_LogMsg("!Can't open netmail msg #%lu (err#%d)", (unsigned long) *mn, msgapierr);
 
     return TRUE;
   }
 
   if (MsgGetTextLen(mh) >= maxmsglen)
   {
-    S_LogMsg("!Message %lu too large to pack (%#lx)", *mn, (long)maxmsglen);
+    S_LogMsg("!Message %lu too large to pack (%#lx)", (unsigned long) *mn, (long)maxmsglen);
     (void)MsgCloseMsg(mh);
     return TRUE;
   }
@@ -235,7 +237,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
   if ((ctrl=malloc(ctlen+5))==NULL ||
       (msgbuf=(char *)malloc(maxmsglen + ctlen + 180u))==NULL)
   {
-    S_LogMsg("!Not enough memory to pack msg %lu", *mn);
+    S_LogMsg("!Not enough memory to pack msg %lu", (unsigned long) *mn);
 
     if (ctrl)
       free(ctrl);
@@ -326,7 +328,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
         if ((msg.attr & MSGLOCAL)==0 && !OkToForward(&msg))
         {
           if ((config.flag2 & FLAG2_QUIET)==0)
-            (void)printf("Not forwarded: #%lu\n", *mn);
+            (void)printf("Not forwarded: #%lu\n", (unsigned long) *mn);
 
           n_notsent++;
         }
@@ -835,7 +837,7 @@ static int near GateRouteMessage(XMSG *msg,dword mn,NETADDR *olddest)
       {
         if ((config.flag2 & FLAG2_QUIET)==0)
         {
-          (void)printf("GateRoute #%lu: %s -> ", mn, Address(&msg->dest));
+          (void)printf("GateRoute #%lu: %s -> ", (unsigned long) mn, Address(&msg->dest));
           (void)printf("%s\n", Address(SblistToNetaddr(&gr->host,&tempnet)));
         }
 
@@ -881,11 +883,11 @@ static int near Send_Message(HMSG mh, XMSG *msg, dword bytes, dword mn, struct _
 
   if ((config.flag2 & FLAG2_QUIET)==0)
   {
-    (void)printf("Sending (#%lu): %s (%s)", mn, Address(&msg->dest), 
+    (void)printf("Sending (#%lu): %s (%s)", (unsigned long) mn, Address(&msg->dest), 
 		 (msg->attr & MSGCRASH ? "CRASH" : 
 		 (msg->attr & MSGHOLD ? "HOLD" : "NORMAL" )));
 
-    S_LogMsg(" Netmail Message (#%lu) to %s (%s)", mn, Address(&msg->dest), 
+    S_LogMsg(" Netmail Message (#%lu) to %s (%s)", (unsigned long) mn, Address(&msg->dest), 
 		 (msg->attr & MSGCRASH ? "CRASH" : 
 		 (msg->attr & MSGHOLD ? "HOLD" : "NORMAL" )));
   }
@@ -1010,7 +1012,9 @@ void HandleAttReqPoll(word action, byte **toscan)
 static void near Process_AttReqUpd(XMSG *msg, char *filename, word manual)
 {
   FFIND *ff;
+#ifdef OLDSTYLE
   char tname[PATHLEN];
+#endif
   char pwd[PATHLEN];
   
   #define TFL_NONE  0
