@@ -17,9 +17,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: asyncnt.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
+#endif
+static char __attribute__((unused)) rcs_id[]="$Id: asyncnt.c,v 1.3 2003/06/29 20:49:00 wesgarland Exp $";
+#ifndef __GNUC__
 #pragma on(unreferenced)
+#endif
 
 #if defined(NT) || defined(UNIX)
 
@@ -37,7 +41,7 @@ extern void cdecl logit (char *fmt,...);
 
 extern char waitforcaller;  /* Wait and grab caller ourselves  */
 
-HCOMM hcModem=0;            /* comm.dll handle */
+HCOMM hcModem=NULL;            /* comm.dll handle */
 
 int GetConnectionType(void)
 {
@@ -109,7 +113,7 @@ void com_XON_enable(void)
 
 void com_break(int on)
 {
-  OSCOMMHANDLE h=ComGetHandle(hcModem);
+  COMMHANDLE h=ComGetHandle(hcModem);
 
   if (on)
     SetCommBreak(h);
@@ -122,7 +126,7 @@ int Cominit(int port)
     USHORT rc;
     HFILE hf;
 
-    if(hcModem == 0)
+    if(hcModem == NULL)
     {
         if (port_is_device)
         {
@@ -136,10 +140,15 @@ int Cominit(int port)
         }
         else
         {
+#ifndef UNIX
           sprintf(tmp, "handle %d", port+1);
 
           hf = (HFILE)port+1;  /* maximus subtracts 1 from the value on the command line. Add it back here. */
-          rc = !ComOpenHandle((OSCOMMHANDLE)hf, &hcModem, 8200, 8200);
+          rc = !ComOpenHandle((COMMHANDLE)hf, &hcModem, 8200, 8200);
+#else
+	  logit("!Not yet implemented; %s, %s:%i", __FUNCTION__, __FILE__, __LINE__);
+	  _exit(1);
+#endif
         }
 
         if(rc)

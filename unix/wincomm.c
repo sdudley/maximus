@@ -1,11 +1,31 @@
-/** @file 		wincomm.c
- *  @author 		Wes Garland
- *  @date		May 13 2003
- *  @description	Fudge routines/hooks for the comm library and asyncnt.c.
- *                      Designed to replace WinNT functions of the same name.
- *  @note		These routines only understand one comm port per
- *  			process. If we want more, we'll have to get fancier. But
- *  			somehow, I don't think Max will care..
+/**
+ * @file 	wincomm.c	WinNT-style Comm functions for UNIX
+ * @version	$Id: wincomm.c,v 1.3 2003/06/29 20:48:59 wesgarland Exp $
+ * @author 	Wes Garland
+ * @date	May 13 2003
+ * @description	Fudge routines/hooks for the comm library and asyncnt.c.
+ * 		Designed to replace WinNT functions of the same names.
+ *  
+ * $Log: wincomm.c,v $
+ * Revision 1.3  2003/06/29 20:48:59  wesgarland
+ * Changes made to allow pluggable communications module. Code in not currently
+ * pluggable, but "guts" will be identical to pluggable version of telnet
+ * and raw IP plugins.
+ *
+ * Changed representation of COMMHANDLE (and deprecated OSCOMMHANDLE) in wincomm
+ * code (pseudo Win32 communications API), to allow the potential for multiple
+ * comm handles, better support UNIX comm plug-ins, etc.
+ *
+ * Added functions to "Windows" communications API which are normally handled by
+ * the assignment operator -- those are possible under Win32 because the
+ * underlying representation by which all comm data is accessed (e.g. word
+ * length, parity, buffer sizes) is an integer (not unlike a UNIX file
+ * descriptor), but under UNIX a COMMHANDLE is an incomplete struct pointer.
+ * Using these routines instead of "inside" knowledge should allow new code
+ * written for UNIX to be backported to Windows (and maybe other OSes) easily.
+ *
+ * This check-in is "barely tested" and expected to have bugs.
+ *
  */
 
 #include <stdio.h>
@@ -14,46 +34,54 @@
 #include "prog.h"
 #include "wincomm.h"
 
-#ifdef _REENTRANT
-# error not yet: needs more work (statics)
-#endif
-
-/* Static data which represents the first file descriptor 
- * we set anything for.  This way, Get/Set will return
- * reasonable values.
+/** UNIX approximation for information referenced in Windows by
+ *  an hfComm/COMMHANDLE. In Windows, this is basically like a
+ *  file descriptor (HFILE) with the extra settings being magically
+ *  returned by some internal table in the kernel. We abstract this
+ *  away from a plain file descriptor for two reasons:
+ *
+ *  1. To contain the required information without keeping track
+ *     of some magic internal table
+ *
+ *  2. To insure that we use the correct functions to coerce one
+ *     type from another, rather than casting. This forces us
+ *     (at compile time, hopefully) to use the correct routines
+ *     for opening/closing a comm handle.
+ *
+ *  The extra information in Windows is somewhat like like ioctl
+ *  or the POSIX termios details the tty device driver holds;
+ *  by they are not quite the same. So getting them from the
+ *  structures, and setting them to the structures + termios
+ *  gives us a good, portable implementation -- across unices
+ *  -and- other platforms.
  */
-static struct _DCB		static_DCB;
-static int 			static_hFile = -1;
-static struct _COMMTIMEOUTS	static_CT;
-
-BOOL SetCommState(int hFile, LPDCB lpDCB)
+struct _COMMHANDLE
 {
-  lpDCB->DCBlength = sizeof(*lpDCB);
-  lpDCB->fNull = FALSE;
-  lpDCB->fAbortOnError = FALSE;
+  int 			fd;		/**< UNIX file descriptor */
+  struct _DCB		DCB;		/**< Windows DCB struct (data control block?) */
+  struct _COMMTIMEOUTS	CT;		/**< Windows communications timeout structure */
+  size_t		txBufSize;	/**< Transmit Buffer Size */
+  size_t		rxBufSize;	/**< Receive Buffer Size */
+};
 
-  if ((static_hFile == hFile) || (static_hFile == -1))
-  {
-    static_hFile = hFile;
-    static_DCB = *lpDCB;
-    return TRUE;
-  }
+BOOL SetCommState(hfComm hFile, LPDCB lpDCB)
+{
+  lpDCB->DCBlength 	= sizeof(*lpDCB);
+  lpDCB->fNull 		= FALSE;
+  lpDCB->fAbortOnError 	= FALSE;
 
-  return FALSE;
+  hFile->DCB = *lpDCB;
+
+  return TRUE;
 }
 
-BOOL GetCommState(int hFile, LPDCB lpDCB)
+BOOL GetCommState(hfComm hFile, LPDCB lpDCB)
 {
-  if (static_hFile == hFile)
-  {
-    *lpDCB = static_DCB;
-    return TRUE;
-  }
-
-  return FALSE;
+  *lpDCB = hFile->DCB;
+  return TRUE;
 }
 
-BOOL SetCommMask(int hFile, DWORD dwEvtMask)
+BOOL SetCommMask(hfComm hFile, DWORD dwEvtMask)
 {
   return TRUE;
 }
@@ -62,51 +90,112 @@ BOOL SetCommMask(int hFile, DWORD dwEvtMask)
  *  actually used by the UNIX mode comm drivers... but I
  *  don't think anything else does.
  *
- *  Recall that timeout values in here are 16 ticks = 1ms.
+ *  Recall that some timeout values in here are 16 ticks = 1ms.
+ *  Will document more later (check msdn.com in the interm)
  */
-BOOL SetCommTimeouts(OSCOMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts)
+BOOL SetCommTimeouts(COMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts)
 {
-  if ((static_hFile == hFile) || (static_hFile == -1))
-  { 
-    static_hFile = hFile;
-    static_CT = *lpCommTimeouts;
-    return TRUE;
-  }
-
-  return FALSE;
+  hFile->CT = *lpCommTimeouts;    
+  return TRUE;
 }
 
 /** Get the communications timeout values set by SetCommTimeouts() */
-BOOL GetCommTimeouts(OSCOMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts)
+BOOL GetCommTimeouts(COMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts)
 {
-  if (static_hFile == hFile)
-  {
-    *lpCommTimeouts = static_CT;
-    return TRUE;
-  }
-
-  return FALSE;
+  *lpCommTimeouts = hFile->CT;
+  return TRUE;
 }
 
-BOOL SetupComm(OSCOMMHANDLE hFile, DWORD dwInQueue, DWORD dwOutQueue)
+/** COMMHANDLE initializer */
+BOOL SetupComm(COMMHANDLE hFile, DWORD dwInQueue, DWORD dwOutQueue)
 {
-  if (static_hFile == -1)
-  {
-    static_hFile = hFile;
-    return TRUE;
-  }
+  memset(hFile, 0, sizeof(*hFile));
 
-  return FALSE;
+  if (hFile->txBufsize)
+    hFile->txBufSize 	= dwOutQueue;
+  else
+    if (!hfFile->txBufSize)
+      hFile->txBufSize	= 1024;
+
+  if (hFile->rxBufSize)
+    hFile->rxBufSize 	= dwInQueue;
+  else
+    if (!hFile->rxBufSize)
+      hFile->rxBufSize = 1024;
+
+  hFile->fd 		= -1;
+  hFile->DCB.isTerminal	= TRUE;
+  return TRUE;
 }
 
-BOOL SetCommBreak(OSCOMMHANDLE hFile)
+BOOL SetCommBreak(COMMHANDLE hFile)
 {
   return TRUE;
 }
 
-BOOL ClearCommBreak(OSCOMMHANDLE hFile)
+BOOL ClearCommBreak(COMMHANDLE hFile)
 {
   return TRUE;
+}
+
+/** Translates an HFILE into a COMMHANDLE.
+ *
+ *  Under NT, they seem to be equivalent types, much like
+ *  UNIX file descriptors. However, we maintain more
+ *  information with COMMHANDLEs than just the file descriptor
+ *  under UNIX, because we want to be able to retrieve things
+ *  like the DCB which are controlled via the COMMHANDLE, and
+ *  presumably handled by file descriptor in the NT kernel.
+ *
+ *  An alternate implementation might be to statically store
+ *  the "related" information into an array indexed by file 
+ *  descriptor. That seems really inelegant to me, although
+ *  it *would* allow passing around a raw file descriptor
+ *  if that was needed. Either way, using the libcomm routines
+ *  to translate between the two data types (even if that
+ *  translation routine boils down to the assignment operator)
+ *  allows either implementation without breaking the API -- as
+ *  long as the comm libraries and compat libraries are updated
+ *  simulataneously.
+ *
+ *  @see 	max_asyncnt.c  
+ *
+ *  @param	hf	file handle (file descriptor) to convert
+ *  @param	ch	Pointer to an allocated communications handle,
+ *                      which is populated and initialized by
+ *                      this function.
+ *  @returns	ch, which now contains the file descriptor, etc.
+ */
+COMMHANDLE CommHandle_fromFileHandle(COMMHANDLE ch, HFILE hf)
+{
+  if (ch == NULL)
+    ch = calloc(sizeof(*ch), 1);
+
+  SetupComm(ch, 0, 0);
+  ch->fd = (int)hf;
+  return ch;
+}
+
+/** Update the file descriptor within a COMMHANDLE.
+ *  @see _CommHandle_fromFileHandle()
+ */
+void CommHandle_setFileHandle(COMMHANDLE ch, HFILE hf)
+{
+  ch->fd = (int)hf;
+}
+
+/** Translates a COMMHANDLE into an HFILE.
+ *  @see 	CommHandle_fromFileHandle()
+ *
+ *  @param	ch	"Windows" communications handle. NOT a Maximus communications handle!
+ *  @returns	A UNIX File Descriptor
+ *
+ *  @note	Under NT, this could probably implemented as a
+ *              a macro: #define CommHandle_fromFileHandle(fh) (fh)
+ */
+HFILE FileHandle_fromCommHandle(COMMHANDLE ch)
+{
+  return ch->fd;
 }
 
 

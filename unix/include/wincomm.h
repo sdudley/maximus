@@ -1,9 +1,10 @@
 #ifndef _WINCOMM_H
 #include <termios.h>
 
-typedef int OSCOMMHANDLE;
-typedef int hfComm;
-typedef int HFILE;
+typedef int HFILE;				/**< File Descriptor */
+typedef struct _COMMHANDLE *hfComm;		/**< File Descriptor + io driver details */
+typedef struct _COMMHANDLE *COMMHANDLE;		/**< File Descriptor + io driver details */
+#define COMMHANDLE_IS_PTR_TYPE 1;
 
 typedef struct _DCB 
 { 
@@ -35,6 +36,7 @@ typedef struct _DCB
   char EofChar;  
   char EvtChar;  
   WORD wReserved1;
+  BOOL isTerminal;	/* True if the device is a terminal */
 } DCB, *LPDCB;
 
 /* Can't use UNIX Bxxx definitions because on some platforms
@@ -104,13 +106,31 @@ typedef struct _COMMTIMEOUTS
   DWORD WriteTotalTimeoutConstant;
 } COMMTIMEOUTS, *LPCOMMTIMEOUTS;
 
+/* Prototypes for the Windows comm API */
 BOOL SetCommState(hfComm hFile,LPDCB lpDCB);
 BOOL GetCommState(hfComm hFile, LPDCB lpDCB);
 BOOL SetCommMask(hfComm hFile, DWORD dwEvtMask);
-BOOL SetCommTimeouts(OSCOMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts);
-BOOL GetCommTimeouts(OSCOMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts);
-BOOL SetupComm(OSCOMMHANDLE hFile, DWORD dwInQueue, DWORD dwOutQueue);
-BOOL SetCommBreak(OSCOMMHANDLE hFile);
-BOOL ClearCommBreak(OSCOMMHANDLE hFile);
+BOOL SetCommTimeouts(COMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts);
+BOOL GetCommTimeouts(COMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts);
+BOOL SetupComm(COMMHANDLE hFile, DWORD dwInQueue, DWORD dwOutQueue);
+BOOL SetCommBreak(COMMHANDLE hFile);
+BOOL ClearCommBreak(COMMHANDLE hFile);
+
+/* Prototypes for extensions to the Windows API */
+COMMHANDLE	CommHandle_fromFileHandle(COMMHANDLE ch, HFILE hf);
+HFILE		FileHandle_fromCommHandle(COMMHANDLE ch);
+void		CommHandle_setFileHandle(COMMHANDLE ch, HFILE hf);
+
+/* These work probably work under Windows to extend the API:
+ *
+ * #define CommHandle_fromFileHandle(a, b)	(a=b)
+ * #define FileHandle_fromCommHandle(a)		(a)
+ * #define CommHandle_setFileHandle(a, b)	(a=b)
+ */
 
 #endif /* _WINCOMM_H */
+
+
+
+
+

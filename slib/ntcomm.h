@@ -73,7 +73,7 @@ typedef struct _hcomm *HCOMM;
 #define COMM_PURGE_TX 2
 #define COMM_PURGE_ALL  (COMM_PURGE_RX | COMM_PURGE_TX)
 
-BOOL COMMAPI ComOpenHandle(OSCOMMHANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf);
+BOOL COMMAPI ComOpenHandle(COMMHANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf);
 BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf);
 BOOL COMMAPI ComClose(HCOMM hc);
 USHORT COMMAPI ComIsOnline(HCOMM hc);
@@ -88,7 +88,7 @@ DWORD COMMAPI ComInCount(HCOMM hc);
 DWORD COMMAPI ComOutCount(HCOMM hc);
 DWORD COMMAPI ComOutSpace(HCOMM hc);
 BOOL COMMAPI ComPurge(HCOMM hc, DWORD fBuffer);
-OSCOMMHANDLE COMMAPI ComGetHandle(HCOMM hc);
+COMMHANDLE COMMAPI ComGetHandle(HCOMM hc);
 BOOL COMMAPI ComGetDCB(HCOMM hc, LPDCB pdcb);
 USHORT COMMAPI ComSetDCB(HCOMM hc, LPDCB pdcb);
 BOOL COMMAPI ComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE bDataBits, BYTE bStopBits);
