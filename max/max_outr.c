@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_outr.c,v 1.2 2003/06/04 23:46:22 wesgarland Exp $";
+static char rcs_id[]="$Id: max_outr.c,v 1.3 2003/06/06 01:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Modem output and AVATAR translation routines
@@ -54,13 +54,25 @@ static int rip_wrap=1;
 
         ComPutc(hcModem, c);
     }
-    static void near CMDM_PPUTs(char *s)
-    {
-        if(local)
-            return;
-        while (*s)
-            ComPutc(hcModem, *s++);
-    }
+
+static void near CMDM_PPUTs(char *s)
+{
+  if (local)
+    return;
+  else
+  {
+#if (COMMAPI_VER > 1)
+    extern HCOMM hcModem;
+    BOOL lastState = ComBurstMode(hcModem, TRUE);
+
+    ComWrite(hcModem, s, strlen(s));
+    ComBurstMode(hcModem, lastState);
+#else
+  while (*s)
+    ComPutc(hcModem, *s++);
+#endif
+  }
+}
     #define CMDM_PPUTc(c) CMDM_PPUTcw(c)
 
 

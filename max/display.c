@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: display.c,v 1.1 2002/10/01 17:50:48 sdudley Exp $";
+static char rcs_id[]="$Id: display.c,v 1.2 2003/06/06 01:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=.BBS-file display routines
@@ -372,6 +372,10 @@ static sword near DispCloseFiles(DSTK *d, sword ret)
 
 static sword near DisplayNormal(DSTK *d)
 {
+#if (COMMAPI_VER > 1)
+  extern HCOMM hcModem;
+  BOOL lastState = ComBurstMode(hcModem, TRUE);
+#endif
   word has_hot, doing_hotmenu;
   word ret, ch;
   byte was_no_local=no_local_output;
@@ -415,6 +419,9 @@ static sword near DisplayNormal(DSTK *d)
     }
   }
 
+#if (COMMAPI_VER > 1)
+  ComBurstMode(hcModem, lastState);
+#endif
   no_local_output=was_no_local;
   return d->ret;
 }
@@ -452,6 +459,10 @@ static sword near DisplayHandleHotkey(DSTK *d)
 
 static sword near DisplayFilesBbs(DSTK *d)
 {
+#if (COMMAPI_VER > 1)
+  extern HCOMM hcModem;
+  BOOL lastState = ComBurstMode(hcModem, TRUE);
+#endif
   byte last_col;
   word ret, ch;
   byte was_no_local=no_local_output;
@@ -510,6 +521,9 @@ static sword near DisplayFilesBbs(DSTK *d)
   }
 
   no_local_output=was_no_local;
+#if (COMMAPI_VER > 1)
+  ComBurstMode(hcModem, lastState);
+#endif
   return d->ret;
 }
 
@@ -660,6 +674,10 @@ word near DCPriv(DSTK *d)
 
 word near DCAvatar(DSTK *d)
 {
+#if (COMMAPI_VER > 1)
+  extern HCOMM hcModem;
+  BOOL lastState = ComBurstMode(hcModem, TRUE);
+#endif
   word ch;
   
   /* AVATAR beginning sequence */
@@ -702,6 +720,9 @@ word near DCAvatar(DSTK *d)
       break;
   }
   
+#if (COMMAPI_VER > 1)
+  ComBurstMode(hcModem, lastState);
+#endif
   return FALSE;
 }
 
@@ -858,8 +879,17 @@ word _DispGetChar(DSTK *d, word inc)
 
 static void near PF(DSTK *d, word n)
 {
+#if (COMMAPI_VER > 1)
+  extern HCOMM hcModem;
+  BOOL lastState = ComBurstMode(hcModem, TRUE);
+#endif
+
   while (n--)
     Putc(DispSlowGetChar(d));
+
+#if (COMMAPI_VER > 1)
+  ComBurstMode(hcModem, lastState);
+#endif
 }
       
 

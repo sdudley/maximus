@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_out.c,v 1.1 2002/10/01 17:51:57 sdudley Exp $";
+static char rcs_id[]="$Id: max_out.c,v 1.2 2003/06/06 01:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Modem/local output routines
@@ -31,6 +31,12 @@ static char rcs_id[]="$Id: max_out.c,v 1.1 2002/10/01 17:51:57 sdudley Exp $";
 #include <stdarg.h>
 #include "prog.h"
 #include "mm.h"
+
+#if defined(NT) || defined(UNIX)
+# include "ntcomm.h"
+#else
+# define COMMAPI_VER 0
+#endif
 
 int last_cc=-1;
 char strng[20];
@@ -133,8 +139,17 @@ void Puts(char *s)
 
 void Mdm_puts(char *s)
 {
+#if (COMMAPI_VER > 1)
+  extern HCOMM hcModem;
+  BOOL lastState = ComBurstMode(hcModem, TRUE);
+#endif
+
   while (*s)
     Mdm_putc(*s++);
+
+#if (COMMAPI_VER > 1)
+  ComBurstMode(hcModem, lastState);
+#endif
 }
 
 

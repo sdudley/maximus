@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: fos_os2.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
+static char rcs_id[]="$Id: fos_os2.c,v 1.3 2003/06/06 01:18:58 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=FOSSIL interface routines (OS/2)
@@ -201,8 +201,8 @@ static char rcs_id[]="$Id: fos_os2.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $"
       if (steady_baud)
         bod=steady_baud;
 
-#ifdef UNIX
-if (!hcModem->saddr_p)
+#if (COMMAPI_VER > 1)
+if (ComIsAModem(hcModem))
 {
 #endif
       for (pb=bodcvt; pb->baudrate; pb++)
@@ -218,7 +218,7 @@ if (!hcModem->saddr_p)
 
       if (!pb->bodmask)
         b=19200L;
-#ifdef UNIX
+#if (COMMAPI_VER > 1)
 } else b=38400L;
 #endif
 
