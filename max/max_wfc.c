@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_wfc.c,v 1.5 2003/11/16 02:07:58 paltas Exp $";
+static char rcs_id[]="$Id: max_wfc.c,v 1.6 2003/11/23 14:51:28 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Waiting-for-caller routines
@@ -56,7 +56,7 @@ static void near WFCMaxBaud(void)
 void Wait_For_Caller(void)
 {
   char *rsp;
-
+  
   startbaud=baud;
   strcpy(usrname, us_short);
   ChatSetStatus(FALSE, cs_wfc);
@@ -80,8 +80,9 @@ void Wait_For_Caller(void)
   {
     while(!ComIsOnline(hcModem))
     {
-      rsp=Get_Modem_Response();
-      Process_Modem_Response(rsp);
+      WFC_IdleInternal();
+      if(local || kexit|| do_next_event)
+        break;
       usleep(250000);
     }
     ComTxWait(hcModem, 1000);
@@ -328,7 +329,6 @@ static int near Process_Modem_Response(char *rsp)
   int gotarq=FALSE;
   char *s;
   
-
   if (eqstri(rsp, PRM(m_ring)))
   {
     if (*PRM(m_answer))
