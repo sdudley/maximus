@@ -20,9 +20,13 @@
 /**
  * @file	brktrap.c
  * @author	Scott J. Dudley
- * @version	$Id: brktrap.c,v 1.2 2003/06/18 02:03:15 wesgarland Exp $
+ * @version	$Id: brktrap.c,v 1.3 2004/01/28 06:38:11 paltas Exp $
  *
  * $Log: brktrap.c,v $
+ * Revision 1.3  2004/01/28 06:38:11  paltas
+ * Fixed compiler warnings, still Comdll missing, but I need to do some
+ * rewrite stuff there, so it will be fixed later.
+ *
  * Revision 1.2  2003/06/18 02:03:15  wesgarland
  * Implemented DOS int 24h trap as a SIGINT/SIGTERM trap under UNIX
  *
@@ -39,7 +43,9 @@
 #include "typedefs.h"
 
 int brk_trapped=0;
+#ifndef UNIX
 static byte brk_is_trapped=0;
+#endif
 
 #if defined(__MSDOS__)
 

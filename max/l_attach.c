@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: l_attach.c,v 1.3 2004/01/27 21:00:30 paltas Exp $";
+static char rcs_id[]="$Id: l_attach.c,v 1.4 2004/01/28 06:38:10 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -104,7 +104,7 @@ void LFARecInit(LFA_REC * plfa,
   strnncpy(plfa->szFrom, szFrom, sizeof(plfa->szFrom));
   strnncpy(plfa->szFile, szFile, sizeof(plfa->szFile));
   plfa->uid = uid;
-  TmDate_to_DosDate(tim,&plfa->scDateAttached.ldate);
+  TmDate_to_DosDate(tim, (union _stampu*) &plfa->scDateAttached.ldate);
 }
 
 
