@@ -13,6 +13,8 @@
 
 void NoMem();
 
+#if !SLOPPY_ALIGNMENT_OKAY
+
 #if defined(NEED_MEMALIGN)
 /* Before enabling this, see if you have posix_memalign() */
 void *memalign(size_t alignment, size_t size)
@@ -85,3 +87,6 @@ void _unalign(void *unaligned, void *aligned, size_t size)
 
   return;
 }
+
+#endif /* !SLOPPY_ALIGNMENT_OKAY */
+
