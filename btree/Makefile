@@ -47,4 +47,4 @@ audit:		audit.o cppmain.o
 ctbase:		ctbase.o
 
 clean:
-	-rm *.so *.o trackexp
+	-rm *.so *.o trackexp trackimp bttest
