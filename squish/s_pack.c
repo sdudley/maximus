@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.10 2003/12/14 17:40:19 paltas Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.11 2004/01/12 01:19:19 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -1065,12 +1065,13 @@ static void near Process_AttReqUpd(XMSG *msg, char *filename, word manual)
       if (filename[1] != ':' && !strchr(filename,'/')) /* wes - not changing; \\ is in packet (?) */
 #endif
       {
+#ifdef OLDSTYLE
         struct _tosspath *tp, *lasttp;
 
 
         /* Check all of the tosspaths to see if it's there */
-#ifdef OLDSTYLE
-        for (tp=config.tpath, lasttp=tp; tp; lasttp=tp, tp=tp->next)
+
+	for (tp=config.tpath, lasttp=tp; tp; lasttp=tp, tp=tp->next)
         {
           (void)sprintf(tname, "%s" PATH_DELIMS "%s", tp->path, filename);
 	  fixPathMove(tname);
