@@ -1,12 +1,15 @@
 /**
  * @file 	wincomm.c	WinNT-style Comm functions for UNIX
- * @version	$Id: wincomm.c,v 1.4 2003/06/30 05:25:33 wesgarland Exp $
+ * @version	$Id: wincomm.c,v 1.5 2003/07/05 01:03:43 wesgarland Exp $
  * @author 	Wes Garland
  * @date	May 13 2003
  * @description	Fudge routines/hooks for the comm library and asyncnt.c.
  * 		Designed to replace WinNT functions of the same names.
  *  
  * $Log: wincomm.c,v $
+ * Revision 1.5  2003/07/05 01:03:43  wesgarland
+ * Robustification: Do not core if we are passed NULL handles
+ *
  * Revision 1.4  2003/06/30 05:25:33  wesgarland
  * Minor silly errors corrected
  *
@@ -69,6 +72,9 @@ struct _COMMHANDLE
 
 BOOL SetCommState(hfComm hFile, LPDCB lpDCB)
 {
+  if (!hFile)
+    return FALSE;
+
   lpDCB->DCBlength 	= sizeof(*lpDCB);
   lpDCB->fNull 		= FALSE;
   lpDCB->fAbortOnError 	= FALSE;
@@ -80,12 +86,18 @@ BOOL SetCommState(hfComm hFile, LPDCB lpDCB)
 
 BOOL GetCommState(hfComm hFile, LPDCB lpDCB)
 {
+  if (!hFile)
+    return FALSE;
+
   *lpDCB = hFile->DCB;
   return TRUE;
 }
 
 BOOL SetCommMask(hfComm hFile, DWORD dwEvtMask)
 {
+  if (!hFile)
+    return FALSE;
+
   return TRUE;
 }
 
@@ -98,6 +110,9 @@ BOOL SetCommMask(hfComm hFile, DWORD dwEvtMask)
  */
 BOOL SetCommTimeouts(COMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts)
 {
+  if (!hFile)
+    return FALSE;
+
   hFile->CT = *lpCommTimeouts;    
   return TRUE;
 }
@@ -105,6 +120,9 @@ BOOL SetCommTimeouts(COMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts)
 /** Get the communications timeout values set by SetCommTimeouts() */
 BOOL GetCommTimeouts(COMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts)
 {
+  if (!hFile)
+    return FALSE;
+
   *lpCommTimeouts = hFile->CT;
   return TRUE;
 }
@@ -112,6 +130,9 @@ BOOL GetCommTimeouts(COMMHANDLE hFile, LPCOMMTIMEOUTS lpCommTimeouts)
 /** COMMHANDLE initializer */
 BOOL SetupComm(COMMHANDLE hFile, DWORD dwInQueue, DWORD dwOutQueue)
 {
+  if (!hFile)
+    return FALSE;
+
   memset(hFile, 0, sizeof(*hFile));
 
   if (hFile->txBufSize)
@@ -133,11 +154,17 @@ BOOL SetupComm(COMMHANDLE hFile, DWORD dwInQueue, DWORD dwOutQueue)
 
 BOOL SetCommBreak(COMMHANDLE hFile)
 {
+  if (!hFile)
+    return FALSE;
+
   return TRUE;
 }
 
 BOOL ClearCommBreak(COMMHANDLE hFile)
 {
+  if (!hFile)
+    return FALSE;
+
   return TRUE;
 }
 
@@ -184,7 +211,8 @@ COMMHANDLE CommHandle_fromFileHandle(COMMHANDLE ch, HFILE hf)
  */
 void CommHandle_setFileHandle(COMMHANDLE ch, HFILE hf)
 {
-  ch->fd = (int)hf;
+  if (ch)
+    ch->fd = (int)hf;
 }
 
 /** Translates a COMMHANDLE into an HFILE.
@@ -198,7 +226,10 @@ void CommHandle_setFileHandle(COMMHANDLE ch, HFILE hf)
  */
 HFILE FileHandle_fromCommHandle(COMMHANDLE ch)
 {
-  return ch->fd;
+  if (ch) 
+    return ch->fd;
+  else
+    return -1;
 }
 
 
