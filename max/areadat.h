@@ -57,10 +57,14 @@
 
 #endif
 
+#ifndef _AREADAT_H
+#define _AREADAT_H
+
 #define  SYSMAIL   0x0001 /* is a mail area                                */
 #define  NOPUBLIC  0x0004 /* OPUS: Disallow public messages                */
 #define  NOPRIVATE 0x0008 /* OPUS: Disallow private messages               */
 #define  ANON_OK   0x0010 /* OPUS: Enable anonymous messages               */
+#warning termios collision for ECHO
 #define  ECHO      0x0020 /* OPUS: Set=Echomail Clear=Not Echomail         */
 #define  HIGHBIT   0x0040 /* MAX:  Allow high-bit chars in this area       */
 #define  NREALNAME 0x0200 /* MAX:  Don't use ^aREALNAME for this area      */
@@ -87,7 +91,7 @@ struct _override
 
 struct _area
 {
-  long id;              /* Unique identifier for AREA.DAT structure.       *
+  int32 id;             /* Unique identifier for AREA.DAT structure.       *
                          * Should be AREA_id, above.                       */
 
   word struct_len;      /* Length of _area structure -- this needs only    *
@@ -175,7 +179,8 @@ struct _area
   word killbynum;       /* MAXREN: max # of msgs to keep in area (use 0    */
                         /*         for no deletion by #msgs.)              */
 
-};
+} __attribute__((packed, aligned(2)));
+
 
 
 
@@ -186,7 +191,8 @@ struct _aidx
 {
   dword offset;
   byte name[10];
-};
+} __attribute__((packed, aligned(2)));
+
 
 
 /* This is the old, Max 1.02 format for area.idx.  This is obsolete, but    *
@@ -197,8 +203,9 @@ struct _102aidx
   word  area;       /* Same format as area.areano */
   dword offset;
   dword rsvd;
-};
+} __attribute__((packed, aligned(2)));
 
+#endif /* _AREADAT_H */
 
 
 
