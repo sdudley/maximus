@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: squish.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: squish.c,v 1.3 2003/06/13 03:34:13 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*#define TEST_VER*/
@@ -88,6 +88,11 @@ int _stdc main(int argc, char *argv[])
 
 #ifdef DJ
   dj=fopen("dj.log", "a");
+#endif
+
+#ifdef UNIX
+  if (!getenv("SQUISH"))
+    putenv("SQUISH=" INSTALL_PREFIX "/etc/squish.cfg");
 #endif
 
   if (!fexist(ar.cfgname) && (p=getenv("SQUISH")) != NULL)
