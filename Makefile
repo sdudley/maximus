@@ -42,24 +42,24 @@ mkdirs:
 all:	mkdirs clean squish_install max_install
 
 clean install_binaries install_libs:
-	$(foreach DIR, $(DIRS), cd $(DIR) && make -k $@; cd ..; )
+	$(foreach DIR, $(DIRS), cd $(DIR) && $(MAKE) -k $@; cd ..; )
 
 squish_install: mkdirs
-	$(foreach DIR, btree slib squish unix, cd $(DIR) && make install_libs; cd ..; )
-	cd squish && make install
+	$(foreach DIR, btree slib squish unix, cd $(DIR) && $(MAKE) install_libs; cd ..; )
+	cd squish && $(MAKE) install
 
 max_install: mkdirs
-	$(foreach DIR, $(LIB_DIRS), cd $(DIR) && make install_libs; cd ..; )
-	cd util && make
-	$(foreach DIR, $(PROG_DIRS), cd $(DIR) && make install; cd ..; )
+	$(foreach DIR, $(LIB_DIRS), cd $(DIR) && $(MAKE) install_libs; cd ..; )
+	cd util && $(MAKE)
+	$(foreach DIR, $(PROG_DIRS), cd $(DIR) && $(MAKE) install; cd ..; )
 
 squish:
-	$(foreach DIR, btree slib unix squish, cd $(DIR) && make; cd ..; )
+	$(foreach DIR, btree slib unix squish, cd $(DIR) && $(MAKE); cd ..; )
 
 max:
-	$(foreach DIR, $(LIB_DIRS), cd $(DIR) && make; cd ..; )
-	cd util && make
-	$(foreach DIR, $(PROG_DIRS), cd $(DIR) && make; cd ..; )
+	$(foreach DIR, $(LIB_DIRS), cd $(DIR) && $(MAKE); cd ..; )
+	cd util && $(MAKE)
+	$(foreach DIR, $(PROG_DIRS), cd $(DIR) && $(MAKE); cd ..; )
 
 config_install:
 	$(warning config_install has never been tested!)

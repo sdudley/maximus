@@ -6,7 +6,7 @@
 # @author	Wes Garland; wes@ninja250.kingston.net
 # @date		May 23 2003
 #
-# $Id: configure,v 1.1 2003/06/05 03:30:16 wesgarland Exp $
+# $Id: configure,v 1.2 2003/06/06 00:45:06 wesgarland Exp $
 #
 
 OUTPUT='vars_local.mk'
@@ -106,10 +106,16 @@ fi
 
 find CC gcc
 find MAKE make
+find GMAKE gmake
 find AR ar
 find RANLIB ranlib 
-find YACC yacc 2>/dev/null
-find BISON bison 2>/dev/null
+find YACC yacc
+find BISON bison
+find SED sed
+find RM rm
+find MV mv
+find INSTALL install /usr/ucb
+find UNAME uname
 
 if [ "${BISON}" ]; then
   [ "${YACC}" ] && echo "Choosing bison in favour of yacc"
@@ -118,11 +124,11 @@ else
   [ ! "${YACC}" ] && echo "Warning: found neither yacc nor bison!"
 fi
 
-find SED sed
-find RM rm
-find MV mv
-find INSTALL install /usr/ucb
-find UNAME uname
+if [ "${GMAKE}" ]; then
+  [ "${MAKE}" ] && echo "Choosing gmake in favour of make (GNU Make is required)"
+  MAKE="${GMAKE}"
+  echo "MAKE=${GMAKE}" >> ${OUTPUT}
+fi
 
 [ ! "${SED}" ] && SED=sed
 [ ! "${UNAME}" ] && UNAME=uname

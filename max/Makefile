@@ -86,7 +86,7 @@ bldupd.o: bldupd.h
 .PRECIOUS: ../util/maid $(LANGHDR)
 
 ../util/maid:
-	cd ../util && make maid
+	cd ../util && $(MAKE) maid
 
 $(LANGHDR): $(LANGSRC) ../util/maid
 	touch $<
