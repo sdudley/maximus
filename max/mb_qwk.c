@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.8 2004/01/12 16:04:27 wmcbrine Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.9 2004/01/12 18:46:30 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command
@@ -352,10 +352,8 @@ static int near Create_Control_DAT(void)
                sc.msg_st.time.ss << 1);
 
   /* Now add the user's name */
-  
-  strcpy(temp, usrname);
-  fprintf(cdat, "%s\r\n", cstrupr(temp));
 
+  fprintf(cdat, "%s\r\n", usrname);
 
   fprintf(cdat, "\r\n");  /* Name of custom menu to display; none in this case*/
   fprintf(cdat, "0\r\n"); /* ?? Unknown. */
@@ -1036,7 +1034,7 @@ int QWK_Display(BROWSE *b)
   /* Don't download messages which are older than the specified date */
 
   if (((union stamp_combo *)&b->msg.date_arrived)->ldate != 0 &&
-      !GEdate(&b->msg.date_arrived, &scRestrict))
+      !GEdate((union stamp_combo *)&b->msg.date_arrived, &scRestrict))
   {
     return 0;
   }
@@ -1325,7 +1323,9 @@ static int near QWK_Compress_Mail(BROWSE *b)
   }
   else
   {
+#ifndef UNIX
     char tmp[PATHLEN * 2];
+#endif
 
     Form_Archiver_Cmd(qwkname, files, cmd, pai->add);
 
