@@ -40,3 +40,190 @@ Some notes on hacking Maximus:
   are unsure of what platforms a change needs to be made on, it should
   be discussed with other Maximus developers before commiting to the CVS
   repository.
+
+- Some notes with respect to comments:
+
+  If you're hacking maximus and gaining an understanding of parts of it,
+  you should do us all a favour and document your knowledge in Doxygen
+  format. This allows the HTML source browser to be more useful, as
+  well as the API man pages, RTF documentation, etc, etc.
+
+  Here are some samples for what Doxygen comments must look like:
+
+  /** @file 	thisfile.c	Description of the file, followed by a dot.
+   *  @author   Your Name (assuming you wrote the initial revision)
+   *  @date	Date the file appeared in the CVS
+   *
+   *  Some more information about the file goes in here. This is the
+   *  "long" description in the web docs.  
+   */
+
+   /* This comment is invisible to doxygen. It should be used for 
+    * internal notes. It's invisible because it started with one
+    * asterix, not two.
+    */
+
+   /* This comment is invisibile
+   ** as well. I particularly like
+   ** this, style as it really stands
+   ** out from the Doxygen stuff.
+   */
+
+   /** 
+    *  This function implements something neat. The previous
+    *  sentence was the "short description", and the dot is
+    *  significant. The other sentences in this paragraph are
+    *  are the "long description".
+    *
+    *  Doxygen descriptions
+    *   - can have
+    *   - bulleted
+    *   - text,
+    *
+    *   -# Or
+    *   -# Numbered
+    *   -# Lists
+    *
+    *  <pre>
+    *  As well as
+    *     carefully
+    *       pre-formatted
+    *          text
+    *  </pre>
+    *
+    *  @param	argument1	used for this
+    *  @param   argument2	user for that
+    *  @returns			0 on success
+    *
+    *  @note	Advisory notes can go in here. They continue
+    *		until the next Doxygen token.
+    *
+    *  @warning Warnings go here, they have the same syntax
+    *           as notes, but are rendered in menacing text.
+    *
+    *  @see 	thisfunc() thatfunc()
+    *  @note 	When referencing other functions in Doxygen
+    *		comments, make sure you add () after the
+    *  		function name, so Doxygen knows to make
+    *		a hyper link
+    */
+    int somethingNeat(int argument1, char *argument2)
+    {
+      return 0;
+    }
+
+    Here's how you document a structure:
+
+    /** Contains greeting information in many languages */
+    struct hello
+    {
+      char *spanish;	/**< Greeting in spanish */
+      char *german;	/**< Greeting in german */
+      char *french;	/**< Bonjour */
+      char *english;	/**< 'allo */
+      char *aussie;	/**< G'day, mate! */
+      char *canuck;	/**< howzitgoin, eh? */
+    }; 
+
+    Or global variables:
+
+    int a; /**< description for int a */
+    /** description for int b */
+    int b;
+
+    You see, the < symbol attaches the comment to the previous block of
+    code, where as the default is to attach it to the next block.
+
+    You can even do #defines:
+
+    #define	DOSNAME_MAX	8+3	/**< Maximum size of a DOS file name */
+
+    If you have any further questions, consult the Doxygen documentation. There's lots more
+    you can do; including groups, groups of groups, and other wonderful things.
+
+ - If you're hacking on the Maximus sources, please stick with whatever indendation style is
+   in the current file. If you are starting a new file, please use my indentation style. It
+   is essentially K&R with newlines preceeding the open curly braces, and ANSI-style
+   function declarations. comdll/ipcomm.c is probably a fairly good example. Also, I like to
+   push one space between the # and the precompiler directive for each cpp scope, and the
+   # is always in column one..  i.e.
+
+   #if defined(UNIX)
+   # if defined(LINUX)
+   #  define LINUX_RULES
+   # endif /* LINUX */
+   #endif /* UNIX */
+
+   int main(int argc, char *argv[])
+   {
+     printf("Hello World\n");
+     return 0;
+   }
+
+   If you are an emacs user, you may want to consider use wes-c-style:
+
+----------------- .emacs ------------------
+(defun init-emacs ()
+  (message "Initializing Emacs Settings...")
+  (setq default-major-mode 'c-mode)
+
+  (defvar display-time-24hr-format t)
+  (display-time)
+
+  (setq auto-save-directory (expand-file-name "~/autosave/"))
+  (define-key global-map [(alt left)] 'browse-previous-file)
+  (define-key global-map [(alt right)] 'browse-next-file)
+
+  (defconst wes-c-style
+    '((c-tab-always-indent           . nil)
+      (c-auto-newline                . nil)
+      (tab-width                     . 8)
+      (c-comment-only-line-offset    . 0)
+      (c-hanging-braces-alist        . ((substatement-open after)
+					(brace-list-open)))
+      (c-hanging-colons-alist        . ((member-init-intro before)
+					(inher-intro)
+					(case-label after)
+					(label after)
+					(access-label after)))
+      (c-cleanup-list                . (scope-operator
+					empty-defun-braces
+					defun-close-semi))
+      (c-echo-syntactic-information-p . nil)
+      (c-offsets-alist               . ((arglist-close               . c-lineup-arglist)
+					(substatement-open           . 0)
+					(substatement                . 2)
+					(else-clause                 . 0)
+					(block-close	             . 0)
+					(defun-block-intro           . 2)
+					(statement                   . 0)
+					(statement-block-intro       . 2)
+					(case-label                  . 2)
+					(brace-list-open	     . 0)
+					(brace-list-intro	     . 2)
+					(inclass		     . 0)
+					(statement-case-intro        . 2)))
+      (c-echo-syntactic-information-p . nil)
+      (c-hungry-delete . t)
+      )
+    "WES")
+  (message "Done.")  
+  )
+
+(defun wes-c-mode-common-hook ()
+  (c-add-style "WES" wes-c-style t)
+  (c-toggle-auto-hungry-state 1)
+  (setq c-auto-newline nil)
+  ;; (pending-delete t)
+  )
+(add-hook 'c-mode-common-hook 'wes-c-mode-common-hook)
+
+(defun re-init-emacs (arg)
+  (interactive "P")
+  (init-emacs)
+)
+
+(init-emacs)
+   
+----------------- end .emacs ------------------
+
