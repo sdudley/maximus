@@ -37,6 +37,7 @@
 #define DEFAULT_COMM_MASK   (EV_ERR | EV_RLSD)
 
 #ifndef UNIX
+#define COMMAPI_VER 1
 typedef struct
 {
   HANDLE h;                 /* Handle of the physical com port file */
@@ -60,31 +61,12 @@ typedef struct
   COMMTIMEOUTS ct;          /* Timeout values */
 } *HCOMM;
 #else
-# include <pthread.h>
-typedef struct
-{
-  int h;                   	/* Handle of the physical com port file */
-  struct sockaddr_in *saddr_p; /* Address were bound to, listening on */
-  int listenfd;
-  COMQUEUE cqTx;            	/* Transmit queue */
-  COMQUEUE cqRx;            	/* Receive queue */
-
-  pthread_t 		hRx, hTx, hMn;		/* Handles for read and write threads */
-  pthread_mutex_t 	*hevTx, *hevRx;		/* Semaphores for the tx/rx threads */
-  pthread_cond_t	*hevTxDone;         	/* Pending transmit has completed */
-  pthread_cond_t	*hevRxWait, *hevTxWait;  	/* Waiting for input/output buf to clear */
-  pthread_cond_t 	*hevRxPause, *hevTxPause;  	/* Stop transmitter for compause/resume */
-  pthread_cond_t	*hevRxDone;         	/* Pending receive has completed */
-  pthread_cond_t	*hevMonDone;        	/* Pending monitor has completed */
-
-  BOOL fDCD;                /* Current status of DCD */
-  volatile BOOL fDie;       /* True if we are trying to kill threads */
-  DWORD dwCtrlC;            /* How many ^C's have we received from user? */
-  volatile DWORD cThreads;  /* Number of active threads */
-
-  COMMTIMEOUTS ct;          /* Timeout values */
-  const char	*device;
-} *HCOMM;
+#define COMMAPI_VER 2
+/** Forward declaration, populated only within current comm module 
+ *  @ingroup 	max_comm
+ */
+struct _hcomm;
+typedef struct _hcomm *HCOMM; 
 #endif
 
 #define COMM_PURGE_RX 1
@@ -114,5 +96,25 @@ BOOL COMMAPI ComPause(HCOMM hc);
 BOOL COMMAPI ComResume(HCOMM hc);
 BOOL COMMAPI ComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut);
 
+#if (COMMAPI_VER > 1)
+BOOL COMMAPI ComIsAModem(HCOMM hc);
+BOOL COMMAPI ComBurstMode(HCOMM hc, BOOL fEnable);
+#endif
 #endif /* __NTCOMM_H_DEFINED */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
