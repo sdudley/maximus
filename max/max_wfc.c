@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_wfc.c,v 1.11 2004/01/28 06:38:10 paltas Exp $";
+static char rcs_id[]="$Id: max_wfc.c,v 1.12 2004/04/09 21:56:32 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -289,8 +289,8 @@ static char * near Get_Modem_Response(void)
 
     /* Suppress any 'OK' messages */
 
-    if (eqstri(resp,"ok"))
-      *resp='\0';
+/*    if (eqstri(resp,"ok"))
+      *resp='\0';*/
 
     /* Reset the modem initialization timer so that we don't
      * try to reinit in the middle of a ring!
