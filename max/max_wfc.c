@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_wfc.c,v 1.1 2002/10/01 17:52:07 sdudley Exp $";
+static char rcs_id[]="$Id: max_wfc.c,v 1.2 2003/06/04 23:41:21 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Waiting-for-caller routines
@@ -66,8 +66,13 @@ void Wait_For_Caller(void)
   Update_Status(wfc_waiting);
 
   while ((rsp=Get_Modem_Response()) != NULL)
+  {
     if (Process_Modem_Response(rsp))
       break;
+/* hack hack */
+    if (hcModem && !local && hcModem->fDCD)
+      goto letsgo;
+  }
 
   if (kexit || do_next_event)
   {
@@ -86,6 +91,7 @@ void Wait_For_Caller(void)
     mdm_cmd(PRM(m_busy));
   }
 
+letsgo:
   WFC_Uninit();
 
 #ifdef TTYVIDEO
@@ -447,7 +453,7 @@ static int near WFC_IdleInternal(void)
   {
     switch (loc_getch())
     {
-      case 0:
+      case K_ONEMORE:
         switch (loc_getch())
         {
           case K_ALTX:
