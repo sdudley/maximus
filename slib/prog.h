@@ -207,7 +207,19 @@ extern "C" {
 
 
 #if !defined(UNIX) || !defined(HAVE_TIMER_T)
+# if !defined(__timer_t_defined) && !defined(__FreeBSD__)
+/**
+ * FreeBSD defines timer_t in types.h since at least 1993, according to types(5).
+ * Linux sometimes doesn't have it (RedHat 5.2), and sometimes does (RedHat 8.0).
+ * RedHat 8.0 has __timer_t_defined time.h to indicate this; let's hope other
+ * distributions do, too.
+ *
+ * This typedef will probably give us grief in the long run, since it's up for
+ * debate in the Single UNIX Specification. Maybe we should examine the max
+ * code and deprecate its use entirely.. -- Wes
+ */
 typedef long timer_t;
+# endif
 #endif
 
 #define REGISTER
