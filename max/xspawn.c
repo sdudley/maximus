@@ -7,95 +7,137 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <string.h>
-#include <pty.h>
-#include <utmp.h>
+#include <prog.h>
+#include "ntcomm.h"
 #include "process.h"
 #include "io.h"
-#include "prog.h"
-#include "ntcomm.h"
 
 #define unixfd(hc)      FileHandle_fromCommHandle(ComGetHandle(hc))
 
-/* Record locking code */
+static void noop(int sig)
+{
+  ;
+}
 
 extern HCOMM hcModem;
 
 int xxspawnvp(int mode, const char *Cfile, char *const argv[])
 {
-    pid_t pid;
-    pid_t tpid;
-    int status;
-    int fd = 0;
-    int BytesRead;
-    int local = FALSE;
-    FILE* fp = NULL;
-    char buffer[80];
-    char tmp[1024];
-    int i;
+  pid_t		pid;
+  struct stat	sb;
+  char		*file;
+  FILE* 	fp = NULL;
+  int local = FALSE;
+  int fd = -1;
+  int i;
+  char tmp[1024];
+  char buffer[80];
 
-    struct termios term;
-    struct winsize winsize;
+  signal(SIGCHLD, noop);
 
-    if(!hcModem)
-	local=TRUE;
+  file = fixPathDup(Cfile);
 
+  if (!Cfile || stat(file, &sb))	/* Provide errno e.g. EPERM, ENOENT to caller */
+    return -1;
+
+  if (mode != P_OVERLAY)
+    pid = fork();
+  else
+    pid = 0; /* fake being a child */
+
+  if (pid) /* Parent */
+  {
+    if ((mode == P_NOWAIT) || (mode == P_NOWAITO))
+    {
+      fixPathDupFree(Cfile, file);
+      return 0;
+    }
+
+    if (mode == P_WAIT)
+    {
+      int status;
+      pid_t dead_kid;
+
+      sleep(0);
+      fixPathDupFree(Cfile, file);
+
+      do
+      {     
+        errno = 0;
+        dead_kid = waitpid(pid, &status, 0);
+	if (dead_kid == pid)
+          break;
+      } while(errno != EINTR);
+
+      if (dead_kid != pid)
+        return -1;
+
+      if (WIFEXITED(status))
+        return 0; /* normal child exit */
+
+      if (WIFSIGNALED(status))
+        fprintf(stderr, __FUNCTION__ ": Child (%s) exited due to signal %i!\n", Cfile, WSTOPSIG(status));
+
+      return -1;
+    }
+  }
+
+  if (mode == P_NOWAITO)
+  {
+    /* Parent will not reap -- use double fork trick to avoid zombies */
+
+    pid = getpid();
+    signal(SIGCHLD, SIG_IGN);
+    (void)setpgid(pid, pid); 
+    if (fork())
+      _exit(0);
+  }
+
+  if(!hcModem)
+    local = TRUE;
+
+  if(!local)
+  {
+    fd = unixfd(hcModem);
+    dup2(fd, 0);
+  }
+  
+  memset(tmp, 0, 1024);
+    
+  for(i=0; argv[i]; i++)
+  {
+      strcat(tmp, argv[i]);
+      strcat(tmp, " ");
+  }
+				  
+  fp = popen(tmp, "r");
+ 
+  if(!fp)
+    exit(1);
+  
+  while(fgets(buffer, 80, fp))
+  {
     if(!local)
-	fd=unixfd(hcModem);
+    {
+        ComWrite(hcModem, buffer, strlen(buffer));
+        ComWrite(hcModem, "\n", 1);
+    }
     else
-	fd=1;
-
-    memset(tmp, 0, 1024);
-
-    for(i=0; argv[i]; i++)
     {
-	strcat(tmp, argv[i]);
-	strcat(tmp, " ");
+        VioWrtTTY(buffer, strlen(buffer), NULL);
+        VioWrtTTY("\n", 1, NULL);
     }
+  }
 
-#if 0
-    memset(&term,0,sizeof(term));
-    cfsetspeed(&term,B19200);
-    term.c_iflag = TTYDEF_IFLAG;
-    term.c_oflag = TTYDEF_OFLAG;
-    term.c_lflag = TTYDEF_LFLAG;
-    term.c_cflag = TTYDEF_CFLAG;
-    tcsetattr(fd, TCSAFLUSH, &term);
+  pclose(fp);																					
 
-    winsize.ws_row=25;
-                // #warning Currently cols are forced to 80 apparently 
-    winsize.ws_col=80;
-
-    ioctl(fd, TIOCSWINSZ, (char*) &winsize);
-#endif
-    
-    if((pid=fork()) == 0) /* CHILD */
-    {
-        fcntl(fd, F_SETFL, O_NONBLOCK);
-	if(!local)
-	    dup2(fd, 0);	
-
-	fp = popen(tmp, "r");
-	
-	while(fgets(buffer, 80, fp))
-	{
-	    if(!local)
-	    {
-		ComWrite(hcModem, buffer, strlen(buffer));
-		ComWrite(hcModem, "\n", 1);
-	    }
-	    else
-	    {
-		VioWrtTTY(buffer, strlen(buffer), NULL);
-		VioWrtTTY("\n", 1, NULL);
-	    }
-	}
-	
-	pclose(fp);
-	
-	_exit(1);
-    }
-
-    wait(&status);
-    
-    return 0;
+  _exit(1);
 }
+
+
+
+
+
+
+
+
