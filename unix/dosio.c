@@ -106,13 +106,6 @@ int sopen(const char *filename, int openMode, int shacc, ...)
     no_inherit = 1;    
   }
 
-  filename_dup = fixPathDup(filename);
-  fd = open(filename_dup, openMode, perms);
-  fixPathDupFree(filename, filename_dup);
-
-  if (fd < 0)
-    return fd;
-
 /* QNX docs say:
 	SH_COMPAT Set compatibility mode. 
 	SH_DENYRW Prevent read or write access to the file. 
@@ -121,10 +114,31 @@ int sopen(const char *filename, int openMode, int shacc, ...)
 	SH_DENYNO Permit both read and write access to the file. 
 */
 
-  if (shacc & SH_DENYWR)
+  if (shacc & SH_DENYWR)	/* Prevent Write access to the file */
     lockMode |= LOCK_SH;	/* Deny writes means allow many readers, right? */
   else if (shacc & SH_DENYRD)
     lockMode |= LOCK_EX;	/* Deny read.. well, let's deny read and write. */
+
+#if defined(FLOCK_IS_FCNTL)	/* can't get locks in wrong mode on some platforms */
+  if ((openMode & O_RDWR) != O_RDWR)
+  {
+    if (
+	((lockMode & LOCK_SH) && !(openMode & O_RDONLY)) ||
+	((lockMode & LOCK_EX) && !(openMode & O_WRONLY))
+	)
+    {
+      openMode &= ~(O_RDONLY | O_WRONLY);	
+      openMode |= O_RDWR;
+    }
+  }
+#endif /* FLOCK_IS_FCNTL */
+
+  filename_dup = fixPathDup(filename);
+  fd = open(filename_dup, openMode, perms);
+  fixPathDupFree(filename, filename_dup);
+
+  if (fd < 0)
+    return fd;
 
   if (shacc != SH_DENYNO)
   {
