@@ -1,4 +1,4 @@
-KKK/*
+/*
  * Maximus Version 3.02
  * Copyright 1989, 2002 by Lanius Corporation.  All rights reserved.
  *
@@ -39,8 +39,8 @@ KKK/*
                        Forward type declarations
  *****************************************************************************/
 
-struct _quad;
-typedef struct _quad INST;
+struct _vm_quad;
+typedef struct _vm_quad INST;
 
 
 /*****************************************************************************
@@ -48,7 +48,8 @@ typedef struct _quad INST;
  *****************************************************************************/
 
 #ifdef UNIX
-# define makeVMADDR(x) ((VMADDR)NULL + x)
+/* # define makeVMADDR(x) ((VMADDR)NULL + x) */
+# define makeVMADDR(x) x
 #else
 # define makeVMADDR(x) x
 #endif
@@ -174,7 +175,7 @@ vm_extern struct _usrfunc
 
 {
   struct _vmh;
-  struct _quad[vmh.n_inst];
+  struct _vm_quad[vmh.n_inst];
   struct _imp[vmh.n_imp]  { struct _ipat[imp.n_patch] }
   struct _funcdef[vmh.n_fdef];
   struct _funccall[vmh.n_fcall] { VMADDR[dfc.n_quads] };
@@ -200,7 +201,7 @@ union _lit_or_addr
  * what it uses as virtual instructions.
  */
 
-struct _quad
+struct _vm_quad
 {
   QUADOP opcode; /* Type of opcode - see mex.h */
   FORM opform;    /* Type of instruction: byte, word, dword */
