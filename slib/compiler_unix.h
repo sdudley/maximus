@@ -26,8 +26,8 @@
 /* Non-DOS systems...  Just do a "#define __FARCODE__",                     *
  * "#define __FARDATA__" and "#define __LARGE__" in place of this file.     */
 
-#ifndef __COMPILER_H_DEFINED
-#define __COMPILER_H_DEFINED
+#ifndef __COMPILER_UNIX_H_DEFINED
+#define __COMPILER_UNIX_H_DEFINED
 
 /* Hacks to build under unix by Wes -- need to patch up later
  * if we want to support other platforms
@@ -79,18 +79,13 @@
 #endif
 
 /* _init and _fini *should work* but can cause problems. Best fix: GCC 3.1+ 
+ *
+ * later comments -- looks like Scott doesn't use DLL initialization
+ * much anyhow -- wes
 #if defined(__GNUC__) && !((__GNUC__ > 2) && (__GNU_MINOR__ > 0))
 # warning You need to upgrade your compiler to gcc 3.1 or better!
 #endif
 */
 
 #define mkdir(a) mkdir(a, 0777)
-
-#endif /* ! __COMPILER_H_DEFINED */
-
-
-
-
-
-
-
+#endif /* ! __COMPILER_UNIX_H_DEFINED */
