@@ -550,15 +550,294 @@ static CHAR_INFO aci[MAX_COL];
 
     ScrollConsoleScreenBuffer(hStdout, &srScroll, NULL, cDest, &ci);
   }
+}
+
+#elif defined(UNIX)
+
+/* curses replacements for scott's direct video (dv*.*) by wes */
+
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
+#include "typedefs.h"
+#include "compiler.h"
+#include "dv.h"
+#include "modem.h"
+#include <curses.h>
+#include <signal.h>
+#include <syslog.h>
+#include "viocurses.h"
+ 
+static BYTE Vcurattr = 7;
+static USHORT Vnumcols;
+static USHORT Vnumrows;
+static USHORT curRow, curCol;
+
+#define lastRow  (Vnumrows-1)
+#define lastCol  (Vnumcols-1)
+
+void setsize()
+{
+  if (!stdscr)
+  {
+    Vnumcols = atoi(getenv("COLS") ? : "80");
+    Vnumrows = atoi(getenv("ROWS") ? : "25");
+  }
+  else
+  {
+    getmaxyx(stdscr, Vnumrows, Vnumcols); 
+    getyx(stdscr, curRow, curCol);
+  }
+
+  setscrreg(0, lastRow);
+
+#ifdef DEBUG_SCROLL
+  syslog(LOG_ERR, "Local screen is %ix%i, cursor is at %ix%i", Vnumcols, Vnumrows, curCol, curRow);
+#endif
+}
+
+void resize(int sig)
+{
+  /* SIGWINCH -- not sure how well this will work.. */
+  setsize();
+#ifdef NCURSES_VERSION
+  wresize(stdscr, Vnumrows, Vnumcols);
+#endif
+  refresh();
+}
+
+word VidOpen(int has_snow,int desqview,int dec_rows)
+{
+  if (!stdscr)
+  {
+#warning this has to go
+    openlog("slib", LOG_PID | LOG_NDELAY, LOG_LOCAL0);
+
+    fflush(stdout);
+
+    if (!getenv("TERM"))
+      putenv("TERM=vt100");
+
+    initscr();             /* init curses */
+    raw();
+
+    keypad(stdscr, TRUE);  /* enable keyboard mapping */
+    nonl();                /* No LF->CRLF mapping on output */
+    cbreak();              /* char-by-char instead of line-mode input */
+    noecho();              /* do not echo input */
+
+    noqiflush();
+    timeout(0);
+    scrollok(stdscr, TRUE);
+    immedok(stdscr, TRUE);
+    atexit((void *)VidClose);
+  }
+  setsize();
+  signal(SIGWINCH, resize);
+  return 1;
+}
+
+int VidClose(void)
+{
+  if (stdscr)
+    endwin();            /* destroy curses instance */
+
+  stdscr = NULL;
+  return 0;
+}
+
+int VidGotoXY(int Col,int Row, int sync)
+{
+  curRow = min((USHORT)Row - 1, lastRow);
+  curCol = min((USHORT)Col - 1, lastCol);
+  if(sync)
+    VioSetCurPos(curRow, curCol, 0);
+      return(0);
+}
+
+int VidNumRows(void)
+{
+  return Vnumrows;
+}
+
+int VidNumCols(void)
+{
+  return Vnumcols;
+}
+ 
+char VidGetAttr(void)
+{
+  return Vcurattr;
+}
+
+void VidBios(int use_bios)
+{
+  return;
+}
+
+void VidCls(char Attribute)
+{
+  curRow = curCol = 0;
+  clear();
+  refresh();
+}
+
+void _fast VidGetXY(int *Col,int *Row)
+{
+  *Col=curCol+1;
+  *Row=curRow+1;
+}
+ 
+int VidWhereX(void)
+{
+  return curCol+1;
+}
+ 
+int VidWhereY(void)
+{
+  return curRow+1;
+}
+
+void VidHideCursor(void)
+{
+  curs_set(0);
+}
+
+void _fast VidSetAttr(char Attribute)
+{
+  Vcurattr = Attribute;
+}
+
+int VidGetch(int Row,int Col)
+{
+  return (mvinch(Col, Row) & A_CHARTEXT);
+}
+
+void VidPutch(int Row, int Col, char Char, char Attr)
+{
+  chtype ch = (unsigned char)Char | (Attr & FOREGROUND_INTENSITY ? A_NORMAL : A_DIM);
+  VidSetAttr(Attr);
+
+#ifdef MANUAL_SCROLL
+  if ((Row == lastRow) && (Col == lastCol))
+  {
+    scrl(1);
+    Row--;
+#ifdef DEBUG_SCROLL
+    syslog(LOG_ERR, __FUNCTION__ ": Scrolling one line for wrap-around char '%c'", ch & 0xff);
+#endif
+  }
+#endif
+
+  mvaddch(Row, Col, ch);
+  refresh();
+}
+
+typedef unsigned char CHAR_INFO, *PCHAR_INFO;
+
+void pascal _WinBlitz(word start_col,           /* offset from left side of screen.*/
+                      word num_col,             /* number of cols.     */
+                      char far *from_ofs,       /* data to be written  */
+                      sword win_start_col,       /* add to from_ofs     */
+                      word this_row)            /* physical screen row.*/
+{
+   /* mvaddstr(this_row, start_col, from_ofs + win_start_col * 2); */
+
+  /* We're putting out tonnes of garbage, mostly control-Gs - attr 7? I think
+   * this is no ordinary char *buffer, it's a buffer full of 16-bit words, with
+   * the high byte being an attribute and the low byte being the character
+   * we're interested in.   
+   *
+   * The Windows NT version of this function suggests we're actually creating
+   * a one-line rectangle. We don't need to be that fancy, let's just create
+   * a curses chtype buffer, we can fill in the attributes later.
+   */
+
+  chtype        chbuf[num_col];
+  int           i;
+  int  		ch, attr;
+  unsigned char *start;
+#ifdef MANUAL_SCROLL
+  int		newlineCount = 0;
+#endif
+
+  start = (unsigned char *)(from_ofs + (win_start_col * 2));
+
+  for (i = 0; i < num_col; i++)
+  {
+    ch = start[i * 2];
+    attr = start[(i * 2) + 1];
+
+#ifdef MANUAL_SCROLL
+    if (ch == '\n')
+      newlineCount++;
+#endif
+    chbuf[i] = ch | (attr & FOREGROUND_INTENSITY ? A_NORMAL : A_DIM);
+  }
+
+#ifdef DEBUG_WINBLITZ
+  {
+    char buf[num_col + 1];
+
+    for (i = 0; i < num_col; i++)
+      buf[i] = ((start[i * 2] == '\n') ? ' ' : start[i * 2]);
+
+    buf[i] = (char)0;
+
+    syslog(LOG_ERR, __FUNCTION__ ": '%s'", buf);
+  }
+#endif
+
+#ifdef MANUAL_SCROLL
+  /* Wrap around */
+  if ((start_col + num_col) > lastCol)
+    newlineCount += (start_col + num_col) / lastCol;
+#endif
+
+#ifdef DEBUG_SCROLL
+  if (newlineCount)
+    syslog(LOG_ERR, "Scrolling %i lines in " __FUNCTION__, newlineCount);
+#endif
+
+#ifdef MANUAL_SCROLL
+  if ((this_row + newlineCount) > lastRow)
+  {
+    /* maybe we need to manually scroll the screen? it's 
+     * certainly not scrolling by itself.
+     */
+
+    scrl(newlineCount);
+    if (newlineCount < this_row)
+      this_row -= newlineCount;
+    else
+      this_row = 0;
+  }
+#endif
+
+  move(this_row, start_col);
+  addchnstr(chbuf, num_col);
+
+  refresh();
+
+  return;
+}
 
 
 #endif
 
-
 void pascal VidSyncDVWithForce(int fForce)
 {
+#ifndef UNIX
     // not implemented
     NW(fForce);
+#else
+  refresh();
+#endif
 }
 
+void pascal VidSyncDV(void)
+{
+  refresh();
+}
 
