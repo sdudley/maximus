@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_gets.c,v 1.3 2003/06/06 01:18:58 wesgarland Exp $";
+static char rcs_id[]="$Id: max_gets.c,v 1.4 2003/11/10 23:07:18 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# name=Maximus get-string function
@@ -441,16 +441,24 @@ int mdm_gets(char *string, int type, int c, int max, char *prompt)
         if ((type & INPUT_MSGENTER) && usr.video)
           return MSGENTER_UP;
         break;
-
-      case K_VTDEL:         /* VT-100 DEL! */
-        if (usr.bits2 & BITS2_IBMCHARS)
-        {
-          DoEditKey(type, string, K_DEL, c);
-          break;
-        }
+#ifndef UNIX
+        case K_VTDEL:         /* VT-100 DEL! */
+#else
+	case '\e[3~':
+#endif
+          if (usr.bits2 & BITS2_IBMCHARS)
+          {
+            DoEditKey(type, string, K_DEL, c);
+            break;
+          }
         /* else fall-thru */
-        
+
+
+#ifndef UNIX
       case K_BS:            /* BackSpace! */
+#else
+      case 0x7f:    
+#endif
         if (!(type & INPUT_NOECHO))
           Mdmgets_Bs(type,c);
         break;
