@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqpack.c,v 1.1 2002/10/01 17:56:11 sdudley Exp $";
+static char rcs_id[]="$Id: sqpack.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS
@@ -242,7 +242,7 @@ int pack_base(struct _sqbase *isqb, int infd, int outfd, struct _sqbase *osqb, S
     
     while (b_left > 0)
     {
-      b_get=(ptrdiff_t)(SQBUF_SIZE-(ptrdiff_t)(sqbp-sqbuf));
+      b_get=(ptrdiff_t)(SQBUF_SIZE-(ptrdiff_t)((char *)sqbp-(char *)sqbuf));
       b_get=(ptrdiff_t)min((long)b_get, b_left);
 
       if ((got=read(infd, sqbp, (unsigned)b_get)) <= 0)
@@ -262,7 +262,7 @@ int pack_base(struct _sqbase *isqb, int infd, int outfd, struct _sqbase *osqb, S
 
       /* Now calculate how many bytes to write */
       
-      b_get=sqbp-sqbuf;
+      b_get=(char *)sqbp-(char *)sqbuf;
         
       if (write(outfd, sqbuf, (unsigned)b_get) != (signed)b_get)
       {

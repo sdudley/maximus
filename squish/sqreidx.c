@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqreidx.c,v 1.1 2002/10/01 17:56:11 sdudley Exp $";
+static char rcs_id[]="$Id: sqreidx.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NO_MSGH_DEF
@@ -39,7 +39,13 @@ static char rcs_id[]="$Id: sqreidx.c,v 1.1 2002/10/01 17:56:11 sdudley Exp $";
 
 #define VERSION SQVERSION
 
-char *idxname="$$TEMP$$.SQI";
+#ifndef UNIX
+# define SQI_EXT ".SQI"
+#else
+# define SQI_EXT ".sqi"
+#endif
+
+char *idxname="$$TEMP$$" SQI_EXT;
 
 int _stdc main(int argc, char *argv[])
 {
@@ -78,7 +84,7 @@ int _stdc main(int argc, char *argv[])
    * This ensures that the "MsgOpenArea" call will succeed.                 */
 
 
-  sprintf(temp,"%s.SQI",argv[1]);
+  sprintf(temp,"%s" SQI_EXT,argv[1]);
 
   if ((idxfile=open(temp,O_CREAT | O_TRUNC | O_WRONLY | O_BINARY,
                     S_IREAD | S_IWRITE))==-1)
@@ -112,7 +118,7 @@ int _stdc main(int argc, char *argv[])
   for (msgn=1L; ; msgn++)
   {
     if ((msgn % 5)==0)
-      printf("Msg: %ld\r",msgn);
+      printf("Msg: %" INT32_FORMAT "\r",msgn);
 
     if ((in_msg=MsgOpenMsg(in_area,MOPEN_READ,msgn))==NULL)
     {
@@ -139,7 +145,7 @@ int _stdc main(int argc, char *argv[])
   close(idxfile);
   MsgCloseArea(in_area);
 
-  sprintf(temp,"%s.SQI",argv[1]);
+  sprintf(temp,"%s" SQI_EXT,argv[1]);
 
   lcopy(idxname,temp);
   unlink(idxname);

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_hole.c,v 1.1 2002/10/01 17:56:24 sdudley Exp $";
+static char rcs_id[]="$Id: s_hole.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -168,7 +168,9 @@ void HoleScanHole(void)
 
   do
   {
+#ifndef UNIX
     (void)strupr(ff->szName);
+#endif
 
     (void)strcpy(fname, hpath);
     (void)strcat(fname, ff->szName);

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_link.c,v 1.1 2002/10/01 17:56:25 sdudley Exp $";
+static char rcs_id[]="$Id: s_link.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -42,7 +42,6 @@ static char rcs_id[]="$Id: s_link.c,v 1.1 2002/10/01 17:56:25 sdudley Exp $";
 #include "s_link.h"
 
 static char *etn=NULL;
-
 
 void Link_Messages(char *etname)
 {
@@ -99,7 +98,7 @@ static void near LinkGetMsgid(char *s, dword *hash, dword *stamp)
   char *p;
 
   if ((p=strrchr(s, ' ')) != NULL)
-    if (sscanf(p+1, "%8lx", stamp)==1)
+    if (sscanf(p+1, "%8" INT32_FORMAT "x", stamp)==1)
       *hash=SquishHash(s+7);
 }
 
@@ -186,7 +185,7 @@ static long near LinkReadArea(HAREA sq, struct _cfgarea *ar, struct _link **link
     link[nl++]->delta=FALSE;
 
     if ((nl % 25)==0 && (config.flag2 & FLAG2_QUIET)==0)
-      (void)printf("\b\b\b\b\b%05u",nl);
+      (void)printf("\b\b\b\b\b%" SIZET_FORMAT,nl);
 
     (void)MsgCloseMsg(mh);
   }
@@ -271,7 +270,7 @@ static void near LinkMsgid(HAREA sq, long nl, struct _link **link)
 
     /* If the parent no longer exists, skip. */
 
-    if ((up=msgidsearch(link, nl, link[lnk]))==-1)
+    if ((up=(int)msgidsearch(link, nl, link[lnk]))==-1)
       continue;
 
     /* Update our messages' "up" link */
@@ -323,7 +322,7 @@ static void near LinkUpdateMsgs(HAREA sq, struct _link **link, long nl)
   for (lnk=0; lnk < (size_t)nl; lnk++)
   {
     if ((lnk % 25)==0 && (config.flag2 & FLAG2_QUIET)==0)
-      (void)printf("\b\b\b\b\b%05u", lnk);
+      (void)printf("\b\b\b\b\b%" SIZET_FORMAT, lnk);
 
     if (! link[lnk]->delta ||
         (mh=MsgOpenMsg(sq, MOPEN_RW, link[lnk]->mnum))==NULL)
@@ -362,7 +361,7 @@ static void near LinkUpdateMsgs(HAREA sq, struct _link **link, long nl)
   }
 
   if ((config.flag2 & FLAG2_QUIET)==0)
-    (void)printf("\b\b\b\b\b%05u", nl);
+    (void)printf("\b\b\b\b\b%" POINTER_FORMAT, (void *)nl);
 }
 
 

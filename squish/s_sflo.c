@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_sflo.c,v 1.1 2002/10/01 17:56:37 sdudley Exp $";
+static char rcs_id[]="$Id: s_sflo.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -49,7 +49,11 @@ short OutToSflo(void)
   char *szDomain="fidonet.org";
   char *szType;
   
+#ifndef UNIX
   if ((fpSflo=shfopen("SUPERFLO.DAT", "w+b",
+#else
+  if ((fpSflo=shfopen("superflo.dat", "w+b",
+#endif
                       O_CREAT | O_TRUNC | O_WRONLY | O_BINARY))==NULL)
   {
     (void)printf("Error creating SuperFLO!\n");

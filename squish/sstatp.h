@@ -62,10 +62,12 @@ struct _arealist
   struct _arealist *next;
 };
 
-static struct _sscfg
+struct _sscfg
 {
   struct _nodelist *node;
   struct _arealist *area;
   word do_all;
 };
+
+
 

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqconv.c,v 1.1 2002/10/01 17:56:07 sdudley Exp $";
+static char rcs_id[]="$Id: sqconv.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -97,7 +97,7 @@ int _stdc main(int argc,char *argv[])
   {
     if ((msgn % 5)==0)
     {
-      printf("Msg: %ld\r",msgn);
+      printf("Msg: %" INT32_FORMAT "\r",msgn);
       fflush(stdout);
     }
 
@@ -106,7 +106,7 @@ int _stdc main(int argc,char *argv[])
 
     if ((out_msg=MsgOpenMsg(out_area, MOPEN_CREATE, 0L))==NULL)
     {
-      printf("Error writing to output area; msg#%ld (%d).\n", msgn, msgapierr);
+      printf("Error writing to output area; msg#%" INT32_FORMAT " (%d).\n", msgn, msgapierr);
       MsgCloseMsg(in_msg);
       continue;
     }

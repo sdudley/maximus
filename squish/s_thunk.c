@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_thunk.c,v 1.1 2002/10/01 17:56:42 sdudley Exp $";
+static char rcs_id[]="$Id: s_thunk.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdlib.h>
@@ -27,6 +27,16 @@ static char rcs_id[]="$Id: s_thunk.c,v 1.1 2002/10/01 17:56:42 sdudley Exp $";
 #include "msgapi.h"
 
 /* Thunks for the MsgAPI allocation routines */
+
+/*
+#if defined(UNIX)
+# define OS2FAR  
+# define MAPIENTRY
+# define farmalloc(a) malloc(a)
+# define farfree(a) free(a)
+# define farrealloc(a) realloc(a)
+#endif
+*/
 
 void OS2FAR * EXPENTRY sq_palloc(size_t size)
 {
@@ -57,4 +67,12 @@ void far * EXPENTRY sq_farrepalloc(void far *ptr, size_t size)
 {
   return ((void far *)farrealloc(ptr, size));
 }
+
+
+
+
+
+
+
+
 

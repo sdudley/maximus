@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_misc.c,v 1.1 2002/10/01 17:56:29 sdudley Exp $";
+static char rcs_id[]="$Id: s_misc.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -294,7 +294,7 @@ void _fast NoMem(void)
 
 void ErrOpening(char *name,char *filename)
 {
-  (void)printf("Fatal error opening %s file `%s'!\n", name, fancy_str(filename));
+  (void)printf("Fatal error opening %s file `%s'!\n", name, fancy_fn(filename));
   exit(ERL_ERROR);
 }
 
@@ -483,7 +483,7 @@ char *FixOutboundName(word zone)
     }
   }
 
-  (void)Add_Trailing(outname, '\\');
+  (void)Add_Trailing(outname, PATH_DELIM);
   
   if (!direxist(outname))
     (void)make_dir(outname);
@@ -1003,7 +1003,7 @@ static char * near MakeFullPath(char *cmd)
     if (s)
     {
       (void)strcpy(this, s);
-      Add_Trailing(this, '\\');
+      Add_Trailing(this, PATH_DELIM);
     }
     else
     {
@@ -1088,7 +1088,7 @@ int CallExtern(char *origcmd, word archiver)
 
     /* Open the nul device using compatibility mode, NOT deny-none! */
 
-    if ((nul_file=sopen("nul", O_CREAT | O_TRUNC | O_WRONLY | O_BINARY,
+    if ((nul_file=sopen(NULL_DEVICE, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY,
                        SH_COMPAT, S_IREAD | S_IWRITE)) != -1)
     {
       (void)dup2(nul_file, fileno(stdout));
@@ -1306,7 +1306,7 @@ word InvalidDate(byte *da)
 void HandleArcRet(int arcret, char *cmd)
 {
   if (arcret==-1)
-    S_LogMsg("!Archiver error: %s (%d)",
+    S_LogMsg("!Archiver error: %s (errno=%d, %s)",
              (
 #ifdef __TURBOC__
               errno==ENOFILE || errno==ENOPATH ||
@@ -1317,7 +1317,7 @@ void HandleArcRet(int arcret, char *cmd)
               errno==EACCES ?  "Permission denied"  :
               errno==9999   ?  "Error writing to swap file" :
                                "Can't run archiver",
-            errno);
+            errno, strerror(errno));
   else
     S_LogMsg("!Archiver returned errorlevel %d", arcret);
 
@@ -1370,7 +1370,7 @@ void MashMsgid(char *begin, dword *msgid_hash, dword *msgid_serial)
 
   /* Make sure that the hex ID is read in correctly */
 
-  if (sscanf(end, "%08lx", msgid_serial) != 1)
+  if (sscanf(end, "%08" INT32_FORMAT "x", msgid_serial) != 1)
   {
     *msgid_serial=*msgid_hash=0L;
     return;

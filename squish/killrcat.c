@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: killrcat.c,v 1.1 2002/10/01 17:56:04 sdudley Exp $";
+static char rcs_id[]="$Id: killrcat.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <string.h>
@@ -27,6 +27,7 @@ static char rcs_id[]="$Id: killrcat.c,v 1.1 2002/10/01 17:56:04 sdudley Exp $";
 #define INCL_DOS
 
 #include <os2.h>
+#include "prog.h"
 #include "msgapi.h"
 #include "sqfeat.h"
 

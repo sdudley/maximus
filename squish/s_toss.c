@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_toss.c,v 1.1 2002/10/01 17:56:47 sdudley Exp $";
+static char rcs_id[]="$Id: s_toss.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -38,6 +38,9 @@ static char rcs_id[]="$Id: s_toss.c,v 1.1 2002/10/01 17:56:47 sdudley Exp $";
 #include "s_toss.h"
 #include "s_dupe.h"
 #include "arcmatch.h"
+#ifdef UNIX
+# include <errno.h>
+#endif
 
 #ifndef __TURBOC__
 #include <stddef.h>
@@ -203,7 +206,7 @@ static void near TossArchives(struct _tosspath *tp)
 
   for (p=arcm_exts; *p; p++)
   {
-    (void)sprintf(fname, "%s\\*%s?", tp->path, *p);
+    (void)sprintf(fname, "%s" PATH_DELIMS "*%s?", tp->path, *p);
 
     if ((ff=FindOpen(fname, 0)) != NULL)
     {
@@ -238,7 +241,7 @@ static void near TossArchives(struct _tosspath *tp)
 
   for (pl=plar; n_pl-- && !erl_max; pl++)
   {
-    sprintf(fname, "%s\\%s", tp->path, pl->name);
+    sprintf(fname, "%s" PATH_DELIMS "%s", tp->path, pl->name);
 
     if (Decompress_Archive(fname, "*.pkt") != 0)
     {
@@ -500,7 +503,7 @@ static void near Toss_Packet_Sequence(char *path, word tflag)
   word n_pl;
   int ret;
 
-  (void)sprintf(temp, "%s\\*.pkt", path);
+  (void)sprintf(temp, "%s" PATH_DELIMS "*.pkt", path);
 
   ff=FindOpen(temp,0);
 
@@ -520,7 +523,7 @@ static void near Toss_Packet_Sequence(char *path, word tflag)
     
     /* Add packet name to list, including path */
 
-    (void)sprintf(pktname, "%s\\%s", path, ff->szName);
+    (void)sprintf(pktname, "%s" PATH_DELIMS "%s", path, ff->szName);
     pl->name=sstrdup(pktname);
 
     /* Add packet time */
@@ -598,7 +601,11 @@ static void near BadPacket(char *pktname)
 {
   char szFinal[PATHLEN];
 
+#ifndef UNIX
   RenamePkt(pktname, ".BAD", szFinal);
+#else
+  RenamePkt(pktname, ".bad", szFinal);
+#endif
 
   S_LogMsg("!Bad packet:  renamed to %s", szFinal);
 }
@@ -611,7 +618,11 @@ static void near LongPacket(char *pktname)
 {
   char szFinal[PATHLEN];
 
+#ifndef UNIX
   RenamePkt(pktname, ".LNG", szFinal);
+#else
+  RenamePkt(pktname, ".lng", szFinal);
+#endif
 
   S_LogMsg("!Packet contains long msg:  renamed to %s", szFinal);
 }
@@ -801,7 +812,7 @@ static void near Toss_Pkt(char *pktname, word tflag)
   {
     (void)lseek(in.pktfile, 0L, SEEK_SET);
 
-    Tossing_It(fancy_str(in.pktname));
+    Tossing_It(fancy_fn(in.pktname));
 
     if (fastread(in.pktfile, (char *)&in.pkt, (unsigned)sizeof(struct _pkthdr)) !=
            (int)sizeof(struct _pkthdr) || in.pkt.ver != PKTVER)
@@ -811,7 +822,7 @@ static void near Toss_Pkt(char *pktname, word tflag)
     }
 
    
-    s=strrchr(in.pktname,'\\');
+    s=strrchr(in.pktname, PATH_DELIM);
 
     if (s)
       s++;
@@ -1299,7 +1310,7 @@ static int near AttachedFileExists(char *pszFile)
     /* Make sure that path ends with a "/" */
 
     if (path[i=strlen(path)-1] != '\\' && path[i] != '/')
-      strcat(path, "\\");
+      strcat(path, PATH_DELIMS);
 
     /* Also strip off any directory information from the attached file */
 

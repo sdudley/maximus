@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_abbs.c,v 1.1 2002/10/01 17:56:19 sdudley Exp $";
+static char rcs_id[]="$Id: s_abbs.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -97,7 +97,9 @@ void Parse_Areas(char *areas_name)
       }
     }
 
-    (void)strupr(line);
+#ifndef UNIX
+    (void)strupr(line); /* do the whole line when path case doesn't matter; otherwise we do it piecemeal as needed - wes */
+#endif
     (void)strcpy(orig,line);
 
 
@@ -131,6 +133,10 @@ void Parse_Areas(char *areas_name)
 
     if (!tag || *tag=='\0')
       continue;
+
+#ifdef UNIX
+    strupr(tag);
+#endif
 
     /* Find the start of the net/node entries */
     s=strtok(NULL,abbs_delim);
@@ -236,14 +242,20 @@ struct _cfgarea * Declare_Area(char *path, char *tag, char *nodes, word type, wo
   {
     /* Copy in the area's path */
 
-    ar->path=sstrdup(fancy_str(path));
+    ar->path=sstrdup(fancy_fn(path));
 
+#ifndef UNIX
     /* If the area is a "D:\" format, don't strip the trailing slash */
 
     if (ar->path[1]==':' && (ar->path[2]=='\\' || ar->path[2]=='/') &&
         ar->path[3]=='\0')
       ;
     else (void)Strip_Trailing(ar->path, '\\');
+#else
+    (void)Strip_Trailing(ar->path, '\\');
+    (void)Strip_Trailing(ar->path, '/');
+    fixPathMove(ar->path);
+#endif
 
     ar->name=sstrdup(tag);
   }

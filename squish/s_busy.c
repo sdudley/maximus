@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_busy.c,v 1.1 2002/10/01 17:56:19 sdudley Exp $";
+static char rcs_id[]="$Id: s_busy.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdlib.h>
@@ -89,7 +89,7 @@ static char * near bsy_extension(char *name)
 
   /* Change the extension to .bsy */
   
-  if (point==NULL || strchr(bsyname, '\\') > point)
+  if (point==NULL || strchr(bsyname, PATH_DELIM) > point)
     (void)strcat(bsyname, dot_bsy);
   else
   {

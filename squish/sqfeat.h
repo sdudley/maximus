@@ -19,8 +19,17 @@
 
 #ifndef __SQFEAT_H_DEFINED
 #define __SQFEAT_H_DEFINED
+#include "hntypes.h"
 
-#ifdef OS_2 /* DLL feature library */
+/* note to self (wes) -- how the heck did killrcat run under non-OS/2?? */
+
+#if defined(OS_2) || defined(UNIX) /* DLL feature library */
+
+#if defined(UNIX)
+typedef void * HMODULE;
+/* typedef unsigned short USHORT;
+   typedef unsigned long ULONG; */
+#endif
 
 #ifndef PATHLEN
   #define PATHLEN 120
@@ -48,7 +57,6 @@
 
 
 /* Structure for the "init" call */
-
 struct _feat_init
 {
   USHORT struct_len;                                /* Length of struct */
@@ -57,7 +65,7 @@ struct _feat_init
                                                      * SEE BELOW!           */
   ULONG ulFlag;                                     /* Flags filled in by   *
                                                      * DLL.                 */
-};
+} _feat_init;
 
 /* NOTE!  The format of the string passed to the LogMsg function must be
  * as follows:
@@ -180,7 +188,6 @@ struct _feat_term
 {
   USHORT struct_len;
 };
-
 
 /* Linked list of features */
 

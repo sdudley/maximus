@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_config.c,v 1.1 2002/10/01 17:56:21 sdudley Exp $";
+static char rcs_id[]="$Id: s_config.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -187,7 +187,12 @@ static void near V_Outbound(char *line, char *ag[])
   /* Make sure that it doesn't end with a backslash */
 
   if (strlen(pob->dir) > 3)
+  {  
     (void)Strip_Trailing(pob->dir, '\\');
+#ifdef UNIX
+    (void)Strip_Trailing(pob->dir, '/');
+#endif
+  }
 
   /* Add to linked list */
 
@@ -444,6 +449,9 @@ static void near V_Netfile(char *line,char *ag[])
     else
     {
       (void)Strip_Trailing(ag[x],'\\');
+#ifdef UNIX
+      (void)Strip_Trailing(ag[x],'/');
+#endif
   
       tp->path=sstrdup(ag[x]);
       break;

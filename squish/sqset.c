@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqset.c,v 1.1 2002/10/01 17:56:11 sdudley Exp $";
+static char rcs_id[]="$Id: sqset.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -68,7 +68,11 @@ int _stdc main(int argc,char *argv[])
     if (p && strnicmp(p+1, "sqd", 3)==0)
       *p='\0';
 
+#ifndef UNIX
   sprintf(fname, "%s.Sqd", argv[1]);
+#else
+  sprintf(fname, "%s.sqd", argv[1]);
+#endif
 
   if ((sfd=open(fname,O_RDWR | O_BINARY))==-1)
     ErrOpen(fname);

@@ -29,10 +29,12 @@
 
 #if defined(NT)
   #define SQNAME    "Squish/NT"
-#elif defined(__FLAT__)
+#elif defined(__FLAT__) && !defined(UNIX)
   #define SQNAME    "Squish/386"
 #elif defined(OS_2)
   #define SQNAME    "Squish/2"
+#elif defined(UNIX)
+  #define SQNAME    "Squish/UNIX"
 #else
   #define SQNAME    "Squish"
 #endif

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sqinfo.c,v 1.1 2002/10/01 17:56:09 sdudley Exp $";
+static char rcs_id[]="$Id: sqinfo.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -444,7 +444,7 @@ int _stdc main(int argc,char *argv[])
   {
     printf("Command-line format:\n\n");
 
-    printf("SQINFO <area name> [<options>...]\n\n", argv[0]);
+    printf("%s <area name> [<options>...]\n\n", argv[0]);
 
     printf("SQINFO will display a diagnostic dump of the headers for the specified\n"
            "message area, and it will report any problems which are found.  SQINFO\n"

@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+struct _link;
+
 static void Link_Area(struct _cfgarea *ar, HAREA opensq);
 static void near LinkIt(HAREA sq, struct _cfgarea *ar);
 static int _stdc msgcomp(const void *i1, const void *i2);
