@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwkup.c,v 1.5 2003/11/21 03:31:02 paltas Exp $";
+static char rcs_id[]="$Id: mb_qwkup.c,v 1.6 2003/11/23 13:14:05 paltas Exp $";
 #pragma on(unreferenced)
 
 /*# QWK uploads, for processing .REP packets
@@ -325,9 +325,10 @@ static int near Decompress_REP(char *rep_name)
     }
   }
 
-#ifdef UNIX
+  #ifdef UNIX
   adaptcase(msg_name);  
-#endif
+  #endif
+
 
   if (ret != 0 || !fexist(msg_name))
   {
