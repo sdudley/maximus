@@ -207,10 +207,13 @@
     // Check for the directory character. Note that leading zero
 
     switch (*--pch) {
+#ifndef UNIX
       case ':' : if (*(pch - 2) != '\0')
                    return FALSE;
-      case '/' :
-      case '\\':
+#endif
+//      case '/' :
+//      case '\\':
+      case PATH_DELIM:
       case '\0': break;
     }
 
@@ -298,7 +301,8 @@
 
     // Check if drive and absolute directory specification
 
-    if (achDrive[0] && achDir[0] == '\\')
+//    if (achDrive[0] && achDir[0] == '\\')
+    if (achDrive[0] && achDir[0] == PATH_DELIM)
       return TRUE;
 
     // Build full path and check if ok
@@ -392,8 +396,10 @@
 
     if (pszDir && *pszDir) {
       pszPath = DoCopyStr(pszPath, pszDir);
-      if (*(pszPath - 1) != '\\' && *(pszPath - 1) != '/')
-        *pszPath++ = '\\';
+//      if (*(pszPath - 1) != '\\' && *(pszPath - 1) != '/')
+      if (*(pszPath - 1) != PATH_DELIM )
+//        *pszPath++ = '\\';
+        *pszPath++ = PATH_DELIM;
     }
 
     // Copy the file name and extension if any
@@ -476,14 +482,16 @@
                     if (iDir) {
                       if (*++pch) fs |= FN_DIRECTORY;
                       DoCopyStrMax(pszDir, pch, FN_MAXDIR - 1);
-                      if (iDir > 2 && pch[0] == '\\' && pch[1] == '\\') fs|= FN_UNC;
+//                      if (iDir > 2 && pch[0] == '\\' && pch[1] == '\\') fs|= FN_UNC;
+                      if (iDir > 2 && pch[0] == PATH_DELIM && pch[1] == PATH_DELIM) fs|= FN_UNC;
                       *pch-- = 0;
                       break;
                     } else
                       ; // fall through
 
-        case '/'  : // If we don't have a dir yet and there is something
-        case '\\' : // past here set the file in and cut it off. Then check
+//        case '/'  : // If we don't have a dir yet and there is something
+//        case '\\' : // past here set the file in and cut it off. Then check
+        case PATH_DELIM : 
                     // for the line beginning or drive delimiter
 
                     if (!iDir) {
@@ -557,7 +565,8 @@
     struct SREGS sregs;
     union REGS regs;
 
-    *pszPath++ = '\\';
+//    *pszPath++ = '\\';
+    *pszPath++ = PATH_DELIM;
 
     regs.h.ah = 0x47;
     regs.h.dl = LOBYTE(iDrive);
@@ -572,7 +581,8 @@
 #ifdef __OS2__
     USHORT cbPath = FN_MAXPATH - 1;
 
-    *pszPath++ = '\\';
+//    *pszPath++ = '\\';
+    *pszPath++ = PATH_DELIM;
 
     return DosQCurDir(iDrive, pszPath, &cbPath) ? FALSE : TRUE;
 #endif
@@ -583,7 +593,8 @@
     // Get current working directory and check if ok
     
     if (!_getdcwd(iDrive, achPath, FN_MAXPATH)) {
-      xstrcpy(pszPath, "\\");
+//      xstrcpy(pszPath, "\\");
+      xstrcpy(pszPath, PATH_DELIMS);
       return FALSE;
     }
 
@@ -1007,7 +1018,7 @@ Out:DosSetCurDir(achPath); DosSetCurDrive(iDrive);
     return fOk;
 #endif
 
-#ifdef __OS2__
+#if define(__OS2__) || define(UNIX)
     USHORT cch = xstrlen(pszSrc);
     CHAR achPath[FN_MAXPATH];
     BOOL fOk;
@@ -1016,8 +1027,12 @@ Out:DosSetCurDir(achPath); DosSetCurDrive(iDrive);
     // directory names unless at the root, so check if it is not there
     // and call service
 
+# ifdef OS2
     if (cch == 0 || pszSrc[cch - 1] != '\\' ||
        (cch > 2 && pszSrc[cch - 2] == ':')) {
+# else // UNIX
+    if (cch == 0 || pszSrc[cch - 1] != PATH_DELIM ) {
+#endif
       fOk = !DosQPathInfo(pszSrc, FIL_QUERYFULLNAME, pszDest, FN_MAXPATH, 0);
     } else {
 
@@ -1026,14 +1041,16 @@ Out:DosSetCurDir(achPath); DosSetCurDrive(iDrive);
 
       pszSrc[cch - 1] = '\0';
       fOk = !DosQPathInfo(pszSrc, FIL_QUERYFULLNAME, achPath, FN_MAXPATH, 0);
-      pszSrc[cch - 1] = '\\';
+//      pszSrc[cch - 1] = '\\';
+      pszSrc[cch - 1] = PATH_DELIM;
 
       // Check if ok and if so, copy the result into the destination buffer
       // and append the trailing backslash
 
       if (fOk) {
         xstrcpy(pszDest, achPath);
-        xstrcat(pszDest, "\\");
+//        xstrcat(pszDest, "\\");
+        xstrcat(pszDest, PATH_DELIMS);
       }
     }
 

@@ -50,6 +50,8 @@
 #endif
 #include "sqalng.h"
 
+#include "pathdef.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // M o d u l e   d e c l a r a t i o n s                                   //
 /////////////////////////////////////////////////////////////////////////////
@@ -60,12 +62,10 @@
 #define AREA_THRESHOLD (1*(cfg.cchMaxMsgLine/2)) // Areatag display threshold
 
  // File system special characters
- // GCC compile on Linux having trouble with special characters defined 
- // as follows...
 
-#define SPEC_CHARS_HPFS ""
-#define SPEC_CHARS_NTFS ""
-#define SPEC_CHARS_TREE ""
+#define SPEC_CHARS_HPFS "\\?*/:<>|&"
+#define SPEC_CHARS_NTFS "\\?*/:<>|&"
+#define SPEC_CHARS_TREE "\\?*/:<>|&"
 
 #ifdef UNIX
 // Huh?
@@ -851,8 +851,10 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
    // Check if have absolute path specification and change to the root
    // directory skipping over its backslash
 
-   if (*pch == '\\')
-     if (chdir("\\")) {
+//   if (*pch == '\\')
+   if (*pch == PATH_DELIM)
+//     if (chdir("\\")) {
+     if (chdir(PATH_DELIMS)) {
 #ifdef UNIX
        WriteLog("$ Can't change to root dir\n");
        chdir(achSaveDir);
@@ -872,7 +874,8 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
      // Get the next backslash and if there is no we're done,
      // otherwise temporarily replace it with null
 
-     if ((pchEnd = xstrchr(pch, '\\')) == NULL) {
+//     if ((pchEnd = xstrchr(pch, '\\')) == NULL) {
+     if ((pchEnd = xstrchr(pch, PATH_DELIM)) == NULL) {
        fDone = TRUE;
        break;
      } else
@@ -885,7 +888,8 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
      // Restore the zeroed backslash and advance to the next directory
 
-     *pchEnd = '\\'; pch = pchEnd;
+//     *pchEnd = '\\'; pch = pchEnd;
+     *pchEnd = PATH_DELIM; pch = pchEnd;
    }
 
    // Restore the current directory on the requested drive and
@@ -914,12 +918,15 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
    // long file name and checking if it's valid
 
    if (pszPath[0] == '\0') {
-     xstrcpy(achPath, "\\");
+//     xstrcpy(achPath, "\\");
+     xstrcpy(achPath, PATH_DELIMS);
    } else
+	   // Note:  Since unix doesn use :\\, the following doesn't need change for PATH_DELIMS processing....
    if (pszPath[1] == ':') {
      achPath[0] = pszPath[0]; xstrcpy(&achPath[1], ":\\");
    } else {
-     xstrcpy(achPath, "\\");
+//     xstrcpy(achPath, "\\");
+     xstrcpy(achPath, PATH_DELIMS);
    }
 
    // Append the sample long file name
@@ -934,9 +941,9 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
    // size, otherwise return plain FAT max file name size
 
    return (code == 0) ? MAXFILE : 8 + 1;
-#elif defined __W32__
+#elif defined(__W32__) || defined(UNIX)
 
-   // Under Win32 we always assume long file naming
+   // Under Win32 or UNIX we always assume long file naming
 
    return MAXFILE;
 #else
@@ -958,9 +965,9 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
  *          <NewAreaPath>\UUCP.COMP.BINARY.IBM.PC.SQ?                      *
  ***************************************************************************/
 
-#ifdef __W32__
+#if defined(__W32__) || defined(UNIX)
  static BOOL SUBENTRY DoMakeNAPathNTFS(PSZ pszArea, PNEWAREA pnewarea,
-                                       PSZ pszFile)
+                                       PSZ pszFile, BOOL lowerCase)
  {
    SHORT ich, cch, cchMax;
    PSZ psz;
@@ -976,7 +983,10 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
    for (ich = 0, psz = pszArea; ich < cchMax && *psz; psz++)
      if (!xstrchr(SPEC_CHARS_NTFS, *psz)) {
-       pszFile[cch + ich] = *psz;
+       if (lowerCase)
+          pszFile[cch + ich] = tolower(*psz);
+       else
+         pszFile[cch + ich] = *psz;
        ich++;
      }
 
@@ -997,9 +1007,9 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
  *           <NewAreaPath>\UUCP.COMP.BINARY.IBM.PC\@.SQ?                   *
  ***************************************************************************/
 
-#ifdef __W32__
+#if defined(__W32__) || defined(UNIX)
  static BOOL SUBENTRY DoMakeNAPathNTFSDIR(PSZ pszArea, PNEWAREA pnewarea,
-                                          PSZ pszFile)
+                                          PSZ pszFile, BOOL lowerCase)
  {
    BOOL fSquishArea = IsSquishArea(pnewarea->pszFlags);
    SHORT ich, cch, cchMax;
@@ -1010,20 +1020,25 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
    xstrncpy(pszFile, pnewarea->achPath, MAXPATH - 1);
    cch = xstrlen(pszFile);
    cchMax = MAXPATH - 1 - cch;
-   if (fSquishArea) cchMax-= sizeof("\\"SQSH_BASENAME);
+//   if (fSquishArea) cchMax-= sizeof("\\"SQSH_BASENAME);
+   if (fSquishArea) cchMax-= sizeof(PATH_DELIMS SQSH_BASENAME);
 
    // Compose the area base file name from the area tag by taking the first
    // maxfile characters of it without those not allowed in the os2 file names
 
    for (ich = 0, psz = pszArea; ich < cchMax && *psz; psz++)
      if (!xstrchr(SPEC_CHARS_NTFS, *psz)) {
-       pszFile[cch + ich] = *psz;
+       if (lowerCase)
+	 pszFile[cch + ich] = tolower(*psz);
+       else
+         pszFile[cch + ich] = *psz;
        ich++;
      }
 
    // Append the trailing backslash and squish message base name
 
-   if (fSquishArea) xstrcat(pszFile, "\\"SQSH_BASENAME);
+//   if (fSquishArea) xstrcat(pszFile, "\\"SQSH_BASENAME);
+   if (fSquishArea) xstrcat(pszFile, PATH_DELIMS SQSH_BASENAME);
 
    // Check if we already have the message base with the same path
 
@@ -1042,9 +1057,9 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
  *          <NewAreaPath>\UUCP.COMP.BINARY.IBM.PC.SQ?                      *
  ***************************************************************************/
 
-#ifdef __OS2__
+#if defined(__OS2__) || defined(UNIX)
  static BOOL SUBENTRY DoMakeNAPathHPFS(PSZ pszArea, PNEWAREA pnewarea,
-                                       PSZ pszFile)
+                                       PSZ pszFile, BOOL lowerCase)
  {
    SHORT ich, cch, cchMax;
    PSZ psz;
@@ -1060,7 +1075,10 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
    for (ich = 0, psz = pszArea; ich < cchMax && *psz; psz++)
      if (!xstrchr(SPEC_CHARS_HPFS, *psz)) {
-       pszFile[cch + ich] = *psz;
+       if (lowerCase)
+	 pszFile[cch + ich] = tolower(*psz);
+       else
+         pszFile[cch + ich] = *psz;
        ich++;
      }
 
@@ -1081,9 +1099,9 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
  *           <NewAreaPath>\UUCP.COMP.BINARY.IBM.PC\@.SQ?                   *
  ***************************************************************************/
 
-#ifdef __OS2__
+#if defined(__OS2__) || defined(UNIX)
  static BOOL SUBENTRY DoMakeNAPathHPFSDIR(PSZ pszArea, PNEWAREA pnewarea,
-                                          PSZ pszFile)
+                                          PSZ pszFile, BOOL lowerCase)
  {
    BOOL fSquishArea = IsSquishArea(pnewarea->pszFlags);
    SHORT ich, cch, cchMax;
@@ -1094,20 +1112,25 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
    xstrncpy(pszFile, pnewarea->achPath, MAXPATH - 1);
    cch = xstrlen(pszFile);
    cchMax = MAXPATH - 1 - cch;
-   if (fSquishArea) cchMax-= sizeof("\\"SQSH_BASENAME);
+//   if (fSquishArea) cchMax-= sizeof("\\"SQSH_BASENAME);
+   if (fSquishArea) cchMax-= sizeof(PATH_DELIMS SQSH_BASENAME);
 
    // Compose the area base file name from the area tag by taking the first
    // maxfile characters of it without those not allowed in the os2 file names
 
    for (ich = 0, psz = pszArea; ich < cchMax && *psz; psz++)
      if (!xstrchr(SPEC_CHARS_HPFS, *psz)) {
-       pszFile[cch + ich] = *psz;
+       if (lowerCase)
+	 pszFile[cch + ich] = tolower(*psz);
+       else
+         pszFile[cch + ich] = *psz;
        ich++;
      }
 
    // Append the trailing backslash and squish message base name
 
-   if (fSquishArea) xstrcat(pszFile, "\\"SQSH_BASENAME);
+//   if (fSquishArea) xstrcat(pszFile, "\\"SQSH_BASENAME);
+   if (fSquishArea) xstrcat(pszFile, PATH_DELIMS SQSH_BASENAME);
 
    // Check if we already have the message base with the same path
 
@@ -1175,7 +1198,8 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
      if (ich + cch + 1 < MAXPATH - 1) {
        xmemcpy(pszFile + ich, psz, cch);
-       ich+= cch; pszFile[ich++] = '\\';
+//       ich+= cch; pszFile[ich++] = '\\';
+       ich+= cch; pszFile[ich++] = PATH_DELIM;
      } else
        return FALSE;
 
@@ -1253,7 +1277,8 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
 
      if (ich + cch + 1 < MAXPATH - 1) {
        xmemcpy(pszFile + ich, psz, cch);
-       ich+= cch; pszFile[ich++] = '\\';
+//       ich+= cch; pszFile[ich++] = '\\';
+       ich+= cch; pszFile[ich++] = PATH_DELIM;
      } else
        return FALSE;
 
@@ -1328,7 +1353,7 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
  ***************************************************************************/
 
  static BOOL SUBENTRY DoMakeNAPath8x3(PSZ pszArea, PNEWAREA pnewarea,
-                                      PSZ pszFile)
+                                      PSZ pszFile, BOOL lowerCase)
  {
    SHORT ich, cch;
    PSZ psz;
@@ -1350,7 +1375,10 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
      xmemset(pszFile + cch, 0, MAXPATH - cch);
      for (ich = 0, psz = pszArea; ich < 8 && *psz; psz++)
        if (!xstrchr(".?*\\/:<>|+", *psz)) {
-         pszFile[cch + ich] = *psz;
+	 if (lowerCase)
+           pszFile[cch + ich] = tolower(*psz);
+	 else
+           pszFile[cch + ich] = *psz;
          ich++;
        }
 
@@ -1377,26 +1405,33 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
    CHAR achPath[MAXPATH];
    BOOL fOk = FALSE;
    PSZ psz;
+   BOOL forceLowerCase = FALSE;
 
    // Clean up the target path
 
    xmemset(achPath, 0, sizeof(achPath));
 
+   // Set flag for making new names lower case....
+   forceLowerCase = pnewarea->fs & NA_CONVERTLOWER;
+#ifdef DEBUG
+   printf("DEBUG: forceLowerCase is %s\n",forceLowerCase ? "TRUE" : "FALSE");
+   WriteLog("DEBUG: forceLowerCase is %s\n", forceLowerCase ? "TRUE" : "FALSE");
+#endif
    // Make up the area base name according to new area flags
 
    switch (pnewarea->fs & NA_CONVERTMASK) {
-#ifdef __W32__
-     case NA_CONVERTNTFS:    fOk = DoMakeNAPathNTFS(pszArea, pnewarea, achPath); break;
-     case NA_CONVERTNTFSDIR: fOk = DoMakeNAPathNTFSDIR(pszArea, pnewarea, achPath); break;
+#if defined(__W32__) || defined(UNIX)
+     case NA_CONVERTNTFS:    fOk = DoMakeNAPathNTFS(pszArea, pnewarea, achPath, forceLowerCase); break;
+     case NA_CONVERTNTFSDIR: fOk = DoMakeNAPathNTFSDIR(pszArea, pnewarea, achPath, forceLowerCase); break;
 #endif
-#ifdef __OS2__
-     case NA_CONVERTHPFS:    fOk = DoMakeNAPathHPFS(pszArea, pnewarea, achPath); break;
-     case NA_CONVERTHPFSDIR: fOk = DoMakeNAPathHPFSDIR(pszArea, pnewarea, achPath); break;
+#if defined(__OS2__) || defined(UNIX)
+     case NA_CONVERTHPFS:    fOk = DoMakeNAPathHPFS(pszArea, pnewarea, achPath, forceLowerCase); break;
+     case NA_CONVERTHPFSDIR: fOk = DoMakeNAPathHPFSDIR(pszArea, pnewarea, achPath, forceLowerCase); break;
 #endif
      case NA_CONVERTTREE:    fOk = DoMakeNAPathTREE(pszArea, pnewarea, achPath); break;
      case NA_CONVERTTREEDIR: fOk = DoMakeNAPathTREEDIR(pszArea, pnewarea, achPath); break;
      case NA_CONVERTCRC:     fOk = DoMakeNAPathCRC(pszArea, pnewarea, achPath); break;
-     default:                fOk = DoMakeNAPath8x3(pszArea, pnewarea, achPath); break;
+     default:                fOk = DoMakeNAPath8x3(pszArea, pnewarea, achPath, forceLowerCase); break;
    }
 
    // Check if failed and leave
@@ -1409,13 +1444,15 @@ fprintf(STDAUX, "------------: my AKA %s for %s (%s)\r\n", FormatNetAddr(&pnode-
    // this on its own later, but we want to make sure now that the
    // directory may be created
 
-   if (!fSquishArea) xstrcat(achPath, "\\-");
+//   if (!fSquishArea) xstrcat(achPath, "\\-");
+   if (!fSquishArea) xstrcat(achPath, PATH_DELIMS "-");
 
    if (!DoCreateDirTree(achPath)) {
      WriteLog("$ Can't make dir %s\n", achPath);
      return NULL;
    }
-   if (!fSquishArea) *xstrrchr(achPath, '\\') = '\0';
+//   if (!fSquishArea) *xstrrchr(achPath, '\\') = '\0';
+   if (!fSquishArea) *xstrrchr(achPath, PATH_DELIM) = '\0';
 
    // Allocate the area base name and check if ok
 
@@ -1629,7 +1666,8 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
 
    WriteLog("* Area %s created by %s in %s%s\n",
              parea->achTag, FormatNetAddr(&pnode->netAddr),
-             pszFile, fSquishArea ?  ".SQ?" : "\\*.MSG");
+//             pszFile, fSquishArea ?  ".SQ?" : "\\*.MSG");
+             pszFile, fSquishArea ?  ".SQ?" : PATH_DELIMS "*.MSG");
 
    if (parea->pszDescr != NULL && parea->pszDescr[0])
      WriteLog("* Desc \"%s\"\n", parea->pszDescr);
@@ -3557,7 +3595,8 @@ fprintf(STDAUX, "ExecQueueAreaMask: '%s'\r\n", pszAreaMask);
    fSquishArea = IsSquishArea(parea->pszSqshFlags);
    WriteLog("* Area %s destroyed by %s in %s%s\n",
              parea->achTag, FormatNetAddr(&pnode->netAddr),
-             parea->pszPath, fSquishArea ?  ".SQ?" : "\\*.MSG");
+//             parea->pszPath, fSquishArea ?  ".SQ?" : "\\*.MSG");
+             parea->pszPath, fSquishArea ?  ".SQ?" : PATH_DELIMS "*.MSG");
 
    if (parea->pszDescr != NULL && parea->pszDescr[0])
      WriteLog("* Desc \"%s\"\n", parea->pszDescr);

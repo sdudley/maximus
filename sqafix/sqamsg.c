@@ -34,6 +34,8 @@
 #endif
  #include "sqafix.h"
 
+#include "pathdef.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // M o d u l e   d e c l a r a t i o n s                                   //
 /////////////////////////////////////////////////////////////////////////////
@@ -406,8 +408,10 @@ fprintf(STDAUX, "DoSendLongPart: hmsgLong=[%09Fp]\n\r", hmsgLong);
      exit(EXIT_FAILURE);
    } else
      if (cfg.fl & FL_VERBOSEMODE)
+//       printf("Opened NetMail folder: %s%s\n", cfg.achNetMail,
+//               cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : "\\*.MSG");
        printf("Opened NetMail folder: %s%s\n", cfg.achNetMail,
-               cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : "\\*.MSG");
+               cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    return hNetMail;
  }
@@ -431,7 +435,8 @@ fprintf(STDAUX, "DoSendLongPart: hmsgLong=[%09Fp]\n\r", hmsgLong);
    } else
      if (cfg.fl & FL_VERBOSEMODE)
        printf("Closed NetMail folder: %s%s\n", cfg.achNetMail,
-               cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : "\\*.MSG");
+//               cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : "\\*.MSG");
+               cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    return TRUE;
  }
@@ -455,7 +460,8 @@ fprintf(STDAUX, "DoSendLongPart: hmsgLong=[%09Fp]\n\r", hmsgLong);
    } else
      if (cfg.fl & FL_VERBOSEMODE)
        printf("Opened BadMail folder: %s%s\n", cfg.achBadMail,
-               cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : "\\*.MSG");
+//               cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : "\\*.MSG");
+               cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    return hBadMail;
  }
@@ -479,7 +485,8 @@ fprintf(STDAUX, "DoSendLongPart: hmsgLong=[%09Fp]\n\r", hmsgLong);
    } else
      if (cfg.fl & FL_VERBOSEMODE)
        printf("Closed BadMail folder: %s%s\n", cfg.achBadMail,
-               cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : "\\*.MSG");
+//               cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : "\\*.MSG");
+               cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    return TRUE;
  }
@@ -502,11 +509,13 @@ fprintf(STDAUX, "DoSendLongPart: hmsgLong=[%09Fp]\n\r", hmsgLong);
                                )) == NULL || MsgLock(hEchoMail) == -1) {
      WriteLog("! Can't open %s area mail folder -- %s: '%s%s'\n",
                parea->achTag, DoGetOpenError(), parea->pszPath,
-               IsSquishArea(parea->pszSqshFlags) ? ".SQD" : "\\*.MSG");
+//               IsSquishArea(parea->pszSqshFlags) ? ".SQD" : "\\*.MSG");
+               IsSquishArea(parea->pszSqshFlags) ? ".SQD" : PATH_DELIMS "*.MSG");
    } else
      if (cfg.fl & FL_VERBOSEMODE)
        printf("Opened EchoMail folder: %s%s\n", parea->pszPath,
-               IsSquishArea(parea->pszSqshFlags) ? ".SQ?" : "\\*.MSG");
+//               IsSquishArea(parea->pszSqshFlags) ? ".SQ?" : "\\*.MSG");
+               IsSquishArea(parea->pszSqshFlags) ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    return hEchoMail;
  }
@@ -529,7 +538,8 @@ fprintf(STDAUX, "DoSendLongPart: hmsgLong=[%09Fp]\n\r", hmsgLong);
    } else
      if (cfg.fl & FL_VERBOSEMODE)
        printf("Closed EchoMail folder: %s%s\n", parea->pszPath,
-               IsSquishArea(parea->pszSqshFlags) ? ".SQ?" : "\\*.MSG");
+//               IsSquishArea(parea->pszSqshFlags) ? ".SQ?" : "\\*.MSG");
+               IsSquishArea(parea->pszSqshFlags) ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    return TRUE;
  }

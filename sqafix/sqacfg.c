@@ -31,6 +31,8 @@
 
  #include "sqafix.h"
 
+ #include "pathdef.h"
+
  // Comment the following line to use linear search of config keywords
 
  #define USE_BSEARCH
@@ -152,7 +154,7 @@
    "PreserveDestroyedAreas",    0, DoSqafPresDestrAreas,
    "PreserveDeletedAreas",      0, DoSqafPresDestrAreas,        // Old keyword
    "NewAreaPath",               0, DoSqafNewAreaPath,
-   "NewAreaNodes",              0, DoSqafNewAreaNodes,
+   "NewAreaNodes",               0, DoSqafNewAreaNodes,
    "NewAreaNotify",             0, DoSqafNewAreaNotify,
    "NewAreaFlags",              0, DoSqafNewAreaFlags,
    "NewAreaGroup",              0, DoSqafNewAreaGroup,
@@ -922,31 +924,41 @@
        pnewarea->fs|= NA_CONVERTTREEDIR;
      } else
      if (!xstricmp(pch, "HPFS")) {
-#ifdef __OS2__
+#if defined(__OS2__) || defined(UNIX)
        pnewarea->fs|= NA_CONVERTHPFS;
 #else
        DoLineError("Warning: HPFS conversion ignored in this version\n");
 #endif
      } else
      if (!xstricmp(pch, "HPFSDIR")) {
-#ifdef __OS2__
+#if defined(__OS2__) || defined(UNIX)
        pnewarea->fs|= NA_CONVERTHPFSDIR;
 #else
        DoLineError("Warning: HPFSDIR conversion ignored in this version\n");
 #endif
      } else
      if (!xstricmp(pch, "NTFS")) {
-#ifdef __W32__
+#if defined(__W32__) || defined(UNIX)
        pnewarea->fs|= NA_CONVERTNTFS;
 #else
        DoLineError("Warning: NTFS conversion ignored in this version\n");
 #endif
      } else
      if (!xstricmp(pch, "NTFSDIR")) {
-#ifdef __W32__
+#if defined(__W32__) || defined(UNIX)
        pnewarea->fs|= NA_CONVERTNTFSDIR;
 #else
        DoLineError("Warning: NTFSDIR conversion ignored in this version\n");
+#endif
+     } else
+     if (!xstricmp(pch, "LOWERCASE")) {
+#if defined(__W32__) || defined(UNIX) || defined(__OS2__)
+       pnewarea->fs|= NA_CONVERTLOWER;
+# ifdef DEBUG
+       DoLineError("DEBUG: LOWERCASE convertion option found in first position!\n");
+# endif
+#else
+       DoLineError("Warning: LOWERCASE conversion ignored in this version\n");
 #endif
      } else
        DoLineError("Warning: Unknown conversion\n");
@@ -971,8 +983,10 @@
 
    // Make sure that there is a trailing back slash
 
-   if (*(xstrchr(pnewarea->achPath, 0) - 1) != '\\')
-     xstrcat(pnewarea->achPath, "\\");
+//   if (*(xstrchr(pnewarea->achPath, 0) - 1) != '\\')
+   if (*(xstrchr(pnewarea->achPath, 0) - 1) != PATH_DELIM)
+//     xstrcat(pnewarea->achPath, "\\");
+     xstrcat(pnewarea->achPath, PATH_DELIMS);
  }
 
 /*

@@ -76,6 +76,8 @@
 #     include <stdlib.h>
 #endif
 
+#include "pathdef.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // M o d u l e   d e c l a r a t i o n s                                   //
 /////////////////////////////////////////////////////////////////////////////
@@ -1364,7 +1366,8 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
    // Inform user of what we're doing
 
    printf("Scanning mail: %s%s\n", cfg.achNetMail,
-           cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : "\\*.MSG");
+//           cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : "\\*.MSG");
+           cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    // Scan all the messages in the netmail folder
 
@@ -1409,7 +1412,8 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
 
    if (cfg.fl & FL_VERBOSEMODE)
      printf("Finished scan: %s%s\n", cfg.achNetMail,
-             cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : "\\*.MSG");
+//             cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : "\\*.MSG");
+             cfg.fl & FL_SQUISHNETMAIL ? ".SQ?" : PATH_DELIMS "*.MSG");
 
  }
 
@@ -1590,7 +1594,8 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
    // Inform user of what we're doing
 
    printf("Scanning mail: %s%s\n", cfg.achBadMail,
-           cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : "\\*.MSG");
+//           cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : "\\*.MSG");
+           cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    // Read all the message headers and control info and check if ok
 
@@ -1646,7 +1651,8 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
 
    if (cfg.fl & FL_VERBOSEMODE)
      printf("Finished scan: %s%s\n", cfg.achBadMail,
-             cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : "\\*.MSG");
+//             cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : "\\*.MSG");
+             cfg.fl & FL_SQUISHBADMAIL ? ".SQ?" : PATH_DELIMS "*.MSG");
 
    // Create new areas creation report
 

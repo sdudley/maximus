@@ -41,6 +41,8 @@
  #include <fcntl.h>
  #include "sqafix.h"
 
+ #include "pathdef.h"
+
 /*
  * This routine calculates hash value for the given string
  */
@@ -1133,7 +1135,8 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
    fSquishArea = IsSquishArea(parea->pszSqshFlags);
    WriteLog("* Area %s destroyed in %s%s\n",
              parea->achTag,
-             parea->pszPath, fSquishArea ?  ".SQ?" : "\\*.MSG");
+//             parea->pszPath, fSquishArea ?  ".SQ?" : "\\*.MSG");
+             parea->pszPath, fSquishArea ?  ".SQ?" : PATH_DELIMS "*.MSG");
 
    if (parea->pszDescr != NULL && parea->pszDescr[0])
      WriteLog("* Desc \"%s\"\n", parea->pszDescr);
@@ -1174,7 +1177,8 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
    // Copy the path specification and locate the last backslash
 
    xstrcpy(achPath, parea->pszPath);
-   pchLastSlash = xstrrchr(achPath, '\\');
+//   pchLastSlash = xstrrchr(achPath, '\\');
+   pchLastSlash = xstrrchr(achPath, PATH_DELIM);
 
    // Make up the file search mask and the path name
 
@@ -1220,7 +1224,8 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
 #endif
    // Log message base deletion
 
-   WriteLog("- Kill files matching %s\\%s\n", achPath, achMask);
+//   WriteLog("- Kill files matching %s\\%s\n", achPath, achMask);
+   WriteLog("- Kill files matching %s%s%s\n", achPath, PATH_DELIMS, achMask);
 
    // Delete all files matching mask
 
@@ -1657,7 +1662,8 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
      // Kill trailing back slash if it's not the only character
      // of the directory specification
 
-     if ((achDir[xstrlen(achDir) - 1] == '\\') && (xstrlen(achDir) > 1 ))
+//     if ((achDir[xstrlen(achDir) - 1] == '\\') && (xstrlen(achDir) > 1 ))
+     if ((achDir[xstrlen(achDir) - 1] == PATH_DELIM) && (xstrlen(achDir) > 1 ))
        achDir[xstrlen(achDir) - 1] = '\0';
 
      // Change to the specified directory and check if ok. If failed,
@@ -1676,6 +1682,7 @@ Done: return (pnetAddr->zone && pnetAddr->net) ? pch : NULL;
    // will be what we're after. If failed, just restore things back
 
 // xstrcpy(achDir, "\\");
+// xstrcpy(achDir, PATH_DELIMS);
 // if (getcurdir(0, &achDir[1])) {
 
    if (DoGetCurDir(achDir)) {
@@ -2292,7 +2299,8 @@ Fail:    WriteLog("! Insufficient memory for line %lu in file '%s'\n", iLine, ps
      if (*pszT == '\0' && *pszP != '*') return GSR_ABORT;
      switch (*pszP) {
 
-       case '\\':// Literally match the following character
+//       case '\\':// Literally match the following character
+       case PATH_DELIM:// Literally match the following character
                  pszP++;
                  // fall through
 
@@ -4476,8 +4484,10 @@ SetIt: psntm->aumsg[psntm->imsg++] = umsg;
        (psz = getenv("TMP")) != NULL) {
      xstrncpy(achPath, psz, lengof(achPath) - 1);
      achPath[lengof(achPath) - 1] = '\0';
-     if ((psz = xstrchr(achPath, 0)) > achPath && *(psz - 1) != '\\')
-       xstrcat(achPath, "\\");
+//     if ((psz = xstrchr(achPath, 0)) > achPath && *(psz - 1) != '\\')
+//       xstrcat(achPath, "\\");
+     if ((psz = xstrchr(achPath, 0)) > achPath && *(psz - 1) != PATH_DELIM)
+       xstrcat(achPath, PATH_DELIMS);
    } else
      achPath[0] = '\0';
 

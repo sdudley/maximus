@@ -426,6 +426,8 @@
  #define NA_CONVERTNTFS         0x0005  // Tag2path conversion -- NTFS
  #define NA_CONVERTNTFSDIR      0x0006  // Tag2path conversion -- NTFS\@
  #define NA_CONVERTCRC          0x0007  // Tag2path conversion -- CRC32
+ /* Note: CONVERTLOWER is possible in addition to the above options */
+ #define NA_CONVERTLOWER        0x0010  // Tag2path conversion -- Lower case name
 
  // Deleted area list element descriptor
 
