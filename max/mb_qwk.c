@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_qwk.c,v 1.7 2004/01/12 15:52:58 wmcbrine Exp $";
+static char rcs_id[]="$Id: mb_qwk.c,v 1.8 2004/01/12 16:04:27 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=QWK creation code for the BROWSE command
@@ -1493,8 +1493,9 @@ static void near GenerateStupidFiles(void)
     fprintf(fp, "VERSION = %s\r\n", version);
     fprintf(fp, "SYSTEM = %s\r\n", xfer_id);
     fprintf(fp, "CONTROLNAME = %s\r\n", cprog_name);
-    fprintf(fp, "CONTROLTYPE = ADD\r\n");
+/*    fprintf(fp, "CONTROLTYPE = ADD\r\n");
     fprintf(fp, "CONTROLTYPE = DROP\r\n");
+*/
     fclose(fp);
   }
 
