@@ -27,6 +27,8 @@ ifeq ($(BUILD),DEBUG)
   YFLAGS	+= -t
 endif
 
+# Define some implicit (pattern) rules
+
 %.a:
 	$(AR) -ru $@ $?
 	$(RANLIB) $@
