@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: joho.c,v 1.1 2002/10/01 17:51:13 sdudley Exp $";
+static char rcs_id[]="$Id: joho.c,v 1.2 2003/06/04 23:23:43 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -182,7 +182,11 @@ int JoHoOpen(char *path, struct _johofile *jf, int userlist)
 
   /* Open the nodelist binary file first */
 
+#ifndef UNIX
   sprintf(name, "%sNODELIST.FDX", path);
+#else
+  sprintf(name, "%nodelist.fdx", path);
+#endif
 
   if ((jf->fdfd=shopen(name, O_RDONLY | O_BINARY | O_NOINHERIT))==-1)
     return FALSE;
@@ -200,7 +204,14 @@ int JoHoOpen(char *path, struct _johofile *jf, int userlist)
   strncpy(ext, c.nl_ext, 3);
   ext[3]='\0';
 
+#ifndef UNIX
   sprintf(name, "%sNODELIST.%3s", path, ext);
+#else
+  ext[0] = tolower((int)ext[0]);
+  ext[1] = tolower((int)ext[1]);
+  ext[2] = tolower((int)ext[2]);
+  sprintf(name, "%snodelist.%3s", path, ext);
+#endif
 
   if ((jf->nfd=shopen(name, O_RDONLY | O_BINARY | O_NOINHERIT))==-1)
   {
@@ -212,7 +223,11 @@ int JoHoOpen(char *path, struct _johofile *jf, int userlist)
   
   if (userlist)
   {
+#ifndef UNIX
     sprintf(name, "%sUSERLIST.FDX", path);
+#else
+    sprintf(name, "%userlist.fdx", path);
+#endif
     
     if ((jf->ufd=shopen(name, O_RDONLY | O_BINARY | O_NOINHERIT))==-1)
     {
@@ -225,14 +240,22 @@ int JoHoOpen(char *path, struct _johofile *jf, int userlist)
   /* Failing to open the private nodelist is not an error, since there may  *
    * not be one!                                                            */
 
+#ifndef UNIX
   sprintf(name, "%sFDNET.PVT", path);
+#else
+  sprintf(name, "%sfdnet.pvt", path);
+#endif
   
   jf->pfd=shopen(name, O_RDONLY | O_BINARY | O_NOINHERIT);
 
   /* Failing to open the point nodelist is not an error, since there may    *
    * not be one!                                                            */
 
+#ifndef UNIX
   sprintf(name, "%sFDPOINT.PVT", path);
+#else
+  sprintf(name, "%sfdpoint.pvt", path);
+#endif
   
   jf->ppfd=shopen(name, O_RDONLY | O_BINARY | O_NOINHERIT);
   
