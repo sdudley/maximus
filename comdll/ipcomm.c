@@ -27,12 +27,11 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.15 2004/01/22 08:04:26 wmcbrine Exp $
+ *  @version	$Id: ipcomm.c,v 1.16 2004/01/27 21:05:02 paltas Exp $
  *
  * $Log: ipcomm.c,v $
- * Revision 1.15  2004/01/22 08:04:26  wmcbrine
- * Changed all the "static char rcs_id[]=" stuff to comments. Which works just
- * as well, but doesn't produce any warnings. :-)
+ * Revision 1.16  2004/01/27 21:05:02  paltas
+ * Fixed IAC parsing
  *
  * Revision 1.14  2004/01/19 23:37:03  paltas
  * Added some to get freebsd work, and improved maxcomm a bit..
@@ -99,7 +98,7 @@
 # error UNIX only!
 #endif
 
-#define TELNET
+static char rcs_id[]="$Id: ipcomm.c,v 1.16 2004/01/27 21:05:02 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -452,6 +451,8 @@ ssize_t telnet_write(HCOMM hc, const unsigned char *buf, size_t count)
 #endif
 
 #ifdef TELNET
+
+
 /** Read, blocking for (at most) the specified timeout.
  *  @see	telnet_read()
  *
@@ -530,9 +531,6 @@ void setTelnetOption(HCOMM hc, telnet_command_t command, telnet_option_t option)
 
   switch(command)
   {
-  
-    case 0:
-    case 24:
     case cmd_WILL:
       enable = TRUE;
       optionMask = &(hc->telnetOptions);
@@ -566,6 +564,7 @@ void setTelnetOption(HCOMM hc, telnet_command_t command, telnet_option_t option)
   return;
 }
 
+
 /** Read, consuming NVT control codes in as transparent a manner as possible.
  *  Processes IAC DO/DONT/WONT codes and adjusts hc as needed. Control codes
  *  are not passed to the caller.
@@ -580,14 +579,18 @@ void setTelnetOption(HCOMM hc, telnet_command_t command, telnet_option_t option)
  
 static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
 {
-  unsigned char	*iac, *ch, arg, arg2;
+  unsigned char	*ch;
+  unsigned char *tmp;
   int		fd = unixfd(hc);
-  ssize_t	bytesRead = read(fd, buf, count);	/* Select()ed for read already */
+  ssize_t	bytesRead;
   
+  
+  bytesRead = read(fd, buf, count);	/* Select()ed for read already */
  
   if (!hc)
     return -1;
 
+//  TODO: Fix this!
   if (hc->telnetOptions & mopt_TRANSMIT_BINARY)
     goto parse_iac;    
 
@@ -666,131 +669,139 @@ static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
       return bytesRead;
     }
   }
-  
+
   parse_iac:
+  
   /* Code below here assumes bytesRead, count >= 1 */
   if(count <= 0)
     return bytesRead;
+
+  /* output buffer and counter */
+  unsigned char obuf[bytesRead]; int oi; 
+  /* arguments */
+  unsigned char arg, arg2;
+  /* counter */
+  int i, j, found;
   
-  for (iac = memchr(buf, cmd_IAC, bytesRead);
-       bytesRead > 0 && iac && (iac < (buf + bytesRead));
-       iac = memchr(iac + 1, cmd_IAC, bytesRead))
+  memset(obuf, 0, bytesRead);
+  oi = 0;
+
+  for(i=0; i < bytesRead; i++)
   {
-    /* There was an embedded IAC. This means we need 
-     * to locate the telnet data and "consume" it.
-     */
-    if (iac == (buf + bytesRead - 1))		/* IAC last char in buf? */
+
+    if(buf[i] == cmd_IAC)
     {
-      if (timeout_read(fd, &arg, 1, 5) != 1)
-      {
-	sleep(1);
-	if (timeout_read(fd, &arg, 1, 5) != 1)
-	  return bytesRead - 1;			/* Can't find the argument.. drop the IAC */
-      }
-
-      if (arg == cmd_IAC)			/* Escaped (real) IAC (0xff) @ end of buf */
-	return bytesRead;
-
-      bytesRead -= 1;
-    }
-    else
-    {
-      arg = iac[1];
-      if (arg == cmd_IAC || (arg == cmd_EC))	/* Escaped (real) IAC (0xff), or erase char command */
-      {
-	bytesRead -= 1;
-	memmove(iac, iac + 1, bytesRead - (iac - buf));
-	if (arg == cmd_EC)
-	  *iac = 0x08; 				/* erase char command: shove a backspace in the stream */
-	continue;
-      }
-      else
-      {
-	bytesRead -= 2;
-	memmove(iac, iac + 2, bytesRead - (iac - buf));
-      }
-    }
-
-    /* Now the IAC and a single argument have been consumed. iac
-     * is now a pointer to arbitrary telnet data 
-     */
-
-    switch(arg)
-    {
-      case 0:
-      case 24:
-      case cmd_WILL:				/* These each have one additional argument. */
-      case cmd_WONT: 
-      case cmd_DO:
-      case cmd_DONT:
-	if (iac == (buf + bytesRead))		/* Extra argument not in buffer */
-	{
-	  if (timeout_read(fd, &arg2, 1, 2) != 1)
-	    return bytesRead;			/* Can't find the last argument.. drat. */
+	/* if the argument is avaible */
+        if((i+1) < bytesRead)
+        {
+	    i++;
+	    arg = buf[i];
 	}
+	/* if it's not IAC xxx */
 	else
 	{
-	  arg2 = *iac;
-	  bytesRead -= 1;
-	  memmove(iac, iac + 1, bytesRead - (iac - buf));
+	    /* we read one */
+	    if(timeout_read(fd, &arg, 1, 200) != 1)
+	    {
+		logit("!Read of extra arg didn't succed!");
+	        sleep(1);
+		/* if we didn't get anything we tries agian, 
+		   and hope it goes. */
+	        if(timeout_read(fd, &arg, 1, 200) != 1)
+	        {
+		    return oi;
+		}
+	    }
 	}
-	setTelnetOption(hc, arg, arg2);
-	break; /* continue loop */
 
-      case cmd_SE:				/* These commands have no arguments */
-      case cmd_NOP:
-      case cmd_DM:
-      case cmd_BRK:
-      case cmd_IP:
-      case cmd_AO:
-      case cmd_AYT:
-      case cmd_GA:
-	break; /* continue loop */
+	/* find out which argument it's */    
+	switch(arg)
+	{
+	    /* a real IAC */
+	    case cmd_IAC:
+	        obuf[oi] = cmd_IAC;
+	        oi++;
+		break;
+	    /* a erase charecter */	
+	    case cmd_EC:
+	        obuf[oi] = 0x08;
+	        oi++;
+	        break;    
+	    /* IAC WILL/WONT/DO/DONT <some option> */
+	    case cmd_WILL:				
+	    case cmd_WONT: 
+    	    case cmd_DO:
+    	    case cmd_DONT:
+		/* if the second argument is aviable */
+		if((i+1) < bytesRead )	    
+		{
+		    i++;
+		    arg2 = buf[i];
+		}
+		/* else we read one */
+		else
+		{
+		    if(timeout_read(fd, &arg2, 1, 200) != 1)
+		    {
+			logit("!Read of extra option didn't succed!");
+		        sleep(1);
+		        if(timeout_read(fd, &arg2, 1, 200) != 1)
+		        {
+		    	    return oi;
+			}
+		    }
+		}
+		setTelnetOption(hc, arg, arg2);
+		break;
+	    /* no argument just continue the loop */
+	    case cmd_SE: 
+		logit("!Found distrubed IAC SE");
+		break;
+	    
+	    case cmd_NOP:
+	    case cmd_DM:
+	    case cmd_BRK:
+	    case cmd_IP:
+	    case cmd_AO:
+	    case cmd_AYT:
+	    case cmd_GA:
+	    case cmd_EL:
+	        break;
+		
+	    case cmd_SB:
+	        found = 0;
+		    
+		for(j=i; j < bytesRead; j++)
+		{
+		    if(buf[j] == cmd_SE)
+		    {
+		        found = 1;
+		        break;
+		    }
+		}	        
+
+		if(found)
+		{
+		    i = j;
+		}
+		break;
+	    default:
+		logit("!Unknown IAC arg (%d)", arg);
+		obuf[oi] = arg;
+		oi++;
+		break;
+	}
 	
-      case cmd_SB:				/* Telnet subneg'n data coming; ignore all data 'till IAC/SE */
-      {
-	unsigned char 	*niac; /* next IAC */
-	int		found = 0;
+    }    
+    else
+    {
+        obuf[oi] = buf[i];
+        oi++;
+    }
+  }
 
-	for (niac = memchr(iac, cmd_IAC, bytesRead - (iac - buf));
-	     niac && (niac < (buf + bytesRead));
-	     niac = memchr(niac + 1, cmd_IAC, bytesRead - (niac -buf)))
-	{
-	  if (niac[1] == cmd_SE)
-	  {
-	    found = 1;
-	    break;
-	  }
-	}
-	
-	if (found)				/* IAC/SE sequence was in buffer. Consume it */
-	{
-	  bytesRead -= ((niac + 1) - iac);
-	  memmove(iac, niac + 1, bytesRead - ((niac + 1) - buf));
-	}
-	else					/* IAC/SE seq not in current buffer. Read 'till we find it */
-	{
-	  unsigned char	c, lastC;
-	  ssize_t	i;
-
-	  c = buf[bytesRead - 1];		/* Prime the loop with the last char read */
-	  bytesRead = iac - buf;		/* Report back we only read up to the IAC */
-
-	  do
-	  {
-	    lastC = c;
-	    i = timeout_read(fd, &c, 1, 20);
-	  } while ((i = 1) && !(c == cmd_SE && lastC == cmd_IAC));
-	}
-	break; /* continue loop */
-      }
-      default:
-	logit("!Found unknown IAC argument %d", arg);
-	break; /* continue loop */
-    } /* esac */
-  } /* end for */
-
-  return bytesRead;
+  memcpy(buf, obuf, oi);
+  return oi;
 }
 
 #else
@@ -974,7 +985,7 @@ USHORT COMMAPI IpComIsOnline(HCOMM hc)
     {	
       int	optval;
       int	optlen = sizeof(optval);
-      pid_t	parentPID = getpid();
+//      pid_t	parentPID = getpid();
       FILE* 	f = NULL;
 
       /* Have accepted a socket. Close the bound socket and dump
@@ -988,8 +999,8 @@ USHORT COMMAPI IpComIsOnline(HCOMM hc)
       fclose(f);
       
       CommHandle_setFileHandle(hc->h, fd);
-//      hc->listenfd = -1;
       hc->fDCD = TRUE;
+      hc->listenfd = -1;
       memset(&dcb, 0, sizeof(dcb));
       dcb.isTerminal = FALSE;
 

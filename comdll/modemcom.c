@@ -15,6 +15,7 @@
 #include <errno.h>
 #include "prog.h"
 #include "ntcomm.h"
+#include "telnet.h"
 #include "comstruct.h"
 #include "comprots.h"
 
@@ -59,7 +60,6 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
     fclose(lockfp);    
   }
     
-  
   fcntl (fd, F_SETFL, FASYNC);
 
   tcgetattr(fd, &tios);
@@ -93,6 +93,7 @@ BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwT
   
   (*phc)->device        = strdup(filename);
   (*phc)->peekHack	= -1;
+  
   return TRUE;
 }
 
@@ -151,7 +152,7 @@ BOOL COMMAPI ModemComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdw
     FD_SET(hc->listenfd, &fdrx);
     
     tv.tv_sec = 0;
-    tv.tv_usec = 0;
+    tv.tv_usec = 500;
     
     if(sresult = select(hc->listenfd + 1, &fdrx, NULL, NULL, &tv))
     {
@@ -231,8 +232,7 @@ DWORD COMMAPI ModemComOutCount(HCOMM hc)
   return 0;
 }
 
-void
-ModemLowerDTR (HCOMM hc)
+void ModemLowerDTR (HCOMM hc)
 {
   struct termios tty;
 
@@ -242,8 +242,7 @@ ModemLowerDTR (HCOMM hc)
   tcsetattr (hc->listenfd, TCSANOW, &tty);
 }
 
-void
-ModemRaiseDTR (HCOMM hc)
+void ModemRaiseDTR (HCOMM hc)
 {
   struct termios tty;
 
@@ -314,18 +313,20 @@ DWORD COMMAPI ModemComInCount(HCOMM hc)
 
   int ch;
 
-  if (!ComIsOnline(hc))
+/*  if (!ComIsOnline(hc))
     return 0;
 
   ch = ComPeek(hc);
 
-  return (ch >= 0 ? 1 : 0);
+  return (ch >= 0 ? 1 : 0);*/
+  
+  return 0;
 }
 
 DWORD COMMAPI ModemComOutSpace(HCOMM hc)
 {
-  if (!ComIsOnline(hc))
-    return 0;
+/*  if (!ComIsOnline(hc))
+    return 0;*/
 
   return 0;
 }

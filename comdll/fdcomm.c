@@ -34,7 +34,7 @@
 # error UNIX only!
 #endif
 
-/* $Id: fdcomm.c,v 1.3 2004/01/22 08:04:26 wmcbrine Exp $ */
+static char rcs_id[]="$Id: fdcomm.c,v 1.4 2004/01/27 21:05:02 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
