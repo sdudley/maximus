@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: api_sq.h,v 1.1 2002/10/01 17:54:23 sdudley Exp $ */
+/* $Id: api_sq.h,v 1.2 2003/06/05 03:31:41 wesgarland Exp $ */
 
 #ifndef __API_SQ_H_DEFINED
 #define __API_SQ_H_DEFINED
@@ -27,7 +27,8 @@ struct _sqidx;
 
 typedef struct _sqidx SQIDX;
 typedef struct _sqhdr SQHDR;
-typedef long FOFS;
+/* typedef long FOFS; */
+typedef int32 FOFS;
 
 
 /* Try to access a locked Squish base up to five times */
@@ -80,9 +81,7 @@ struct _sqhdr
 
   word frame_type;      /* Type of frame -- see above FRAME_XXXX */
   word rsvd;            /* Reserved for future use */
-};
-
-
+} __attribute__((packed, aligned(2)));
 
 /* An individual index entry in <area>.SQI */
 
@@ -91,8 +90,7 @@ struct _sqidx
   FOFS ofs;                   /* Offset of the frame relating to this msg */
   UMSGID umsgid;              /* Unique message identifier of this msg */
   dword hash;                 /* SquishHash of msg.to for this msg */
-};
-
+} __attribute__((packed, aligned(2)));
 
 /* Header block at offset 0 of <area>.SQD */
 
@@ -121,7 +119,8 @@ typedef struct _sqbase
   word sz_sqhdr;          /* sizeof(SQHDR) */                       /* 130 */
   byte rsvd2[124];        /* Reserved by Squish for future use*/    /* 132 */
                                                              /* total: 256 */
-} SQBASE;
+} SQBASE __attribute__((packed, aligned(2)));
+
 
 
 typedef struct

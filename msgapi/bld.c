@@ -18,9 +18,10 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: bld.c,v 1.1 2002/10/01 17:54:23 sdudley Exp $";
+static char rcs_id[]="$Id: bld.c,v 1.2 2003/06/05 03:31:41 wesgarland Exp $";
 #pragma on(unreferenced)
 
+#include "prog.h"
 #include "bld.h"
 
 #define stringize2(x) #x

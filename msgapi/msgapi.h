@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: msgapi.h,v 1.1 2002/10/01 17:54:26 sdudley Exp $ */
+/* $Id: msgapi.h,v 1.2 2003/06/05 03:31:41 wesgarland Exp $ */
 
 #ifndef __SQAPI_H_DEFINED
 #define __SQAPI_H_DEFINED
@@ -81,7 +81,11 @@ struct _xmsg;
 
     #define EXPENTRY pascal
 #else
-  #define EXPENTRY pascal
+#if !defined(UNIX)
+ #define EXPENTRY pascal
+#else
+ #define EXPENTRY
+#endif
   #define OS2LOADDS
   #define OS2FAR
 #endif
