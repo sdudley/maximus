@@ -1,0 +1,178 @@
+#! /bin/sh
+#
+# @description	Simple Configuration script for Maximus/UNIX.
+# @note         This script should stay BOURNE SHELL compatible. No bashisms, please.
+#
+# @author	Wes Garland; wes@ninja250.kingston.net
+# @date		May 23 2003
+#
+# $Id: configure,v 1.1 2003/06/05 03:30:16 wesgarland Exp $
+#
+
+OUTPUT='vars_local.mk'
+
+if [ "${UID}" = "0" ] || [ "`id -u 2>/dev/null`" = "0" ] || [ "${USER}" = "root" ] || [ "${LOGNAME}" = "root" ]; then
+  echo
+  echo "WARNING WARNING WARNING WARNING WARNING"
+  echo
+  echo "This script should not be run as root!"
+  echo "Press ^C to abort, or return to continue"
+  echo
+  read line
+  echo 
+fi
+
+locate()
+{
+  search="$1"
+  shift
+  prefPath="$*"
+
+  [ ! "${search}" ] &&  return 1
+
+  OLDIFS="${IFS}"
+  IFS=":"
+  set -- ${prefPath} ${searchPath} ""
+  IFS="$OLDIFS"
+
+  while [ "$1" ]
+  do
+    [ -x "$1/${search}" ] && echo "$1/${search}" && return 0
+    shift
+  done
+}
+
+find()
+{
+  label="$1"
+  prog="$2"
+  shift 2
+
+  eval ${label}=\"\`locate ${prog} $*\`\"
+
+  if eval [ \"\$${label}\" ]; then
+    eval echo "Found ${prog} as \$${label}"
+    eval echo "${label}=\$${label}" >> ${OUTPUT}
+  else
+    echo "Warning: Did not find ${prog}" >&2
+  fi
+}
+
+PREFIX="/var/max"
+SRC="`pwd`"
+
+OLDIFS="${IFS}"
+IFS="=${OLDIFS}"
+set -- $* ""
+IFS="${OLDIFS}"
+
+while [ "$1" ]
+do
+  case "$1" in 
+    "--help" | "-h")
+      echo "Usage:   ./configure [options]"
+      echo "Options:"
+      echo " --prefix=DIR sets the installation directory [${PREFIX}]"
+      echo " --help       generates this help file"
+      echo " --source     sets the location of the source tree [${SRC}]"
+      exit 0
+    ;;
+    "--prefix")
+      PREFIX="$2"
+      shift 2
+    ;;
+    "--source" | "--src")
+      SRC="$2"
+      shift 2
+    ;;
+    *)
+      set -- "--help"
+    ;;
+  esac
+done
+
+echo "Configuring Maximus.."
+echo
+
+searchPath="${PATH}:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/ccs/bin:/usr/ucb"
+
+if [ ! -f "configure" ] || [ ! -f "vars.mk.configure" ]; then
+  echo "Error: This script must be run from the directory" >&2
+  echo "       where you unpacked Maximus!" >&2
+  exit 1
+fi
+
+[ -f "${OUTPUT}" ] && mv -f "${OUTPUT}" "${OUTPUT}~"
+
+find CC gcc
+find MAKE make
+find AR ar
+find RANLIB ranlib 
+find YACC yacc 2>/dev/null
+find BISON bison 2>/dev/null
+
+if [ "${BISON}" ]; then
+  [ "${YACC}" ] && echo "Choosing bison in favour of yacc"
+  echo "YACC=${BISON}" >> ${OUTPUT}
+else
+  [ ! "${YACC}" ] && echo "Warning: found neither yacc nor bison!"
+fi
+
+find SED sed
+find RM rm
+find MV mv
+find INSTALL install /usr/ucb
+find UNAME uname
+
+[ ! "${SED}" ] && SED=sed
+[ ! "${UNAME}" ] && UNAME=uname
+[ ! "${MAKE}" ] && MAKE=make
+
+PLATFORM=`${UNAME} -s | ${SED} 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+
+echo
+echo "The file 'vars_${PLATFORM}.mk' will be used for various platform-dependant"
+echo "rules and build options."
+echo
+
+if [ -f "${PLATFORM}.mk" ]; then
+  echo "Please insure that it makes sense for your configuration. If it does not,"
+  echo "fix it, and submit your changes back to the Maximus development team."
+else
+  echo "Your platform has not been tested yet; as such the file does not exist."
+  echo "Please take a look at the other files, and create one for your platform."
+  echo "Once you get it working, submit it back to the Maximus development team."
+fi
+
+echo "If you have any installation-specific changes to make, you can edit"
+echo "the file '${OUTPUT}'."
+echo
+echo "Creating vars.mk; using PREFIX=${PREFIX}"
+echo "PREFIX=${PREFIX}" > vars.mk
+echo "SRC=${SRC}" >> vars.mk
+echo "PLATFORM=${PLATFORM}" >> vars.mk
+echo "" >> vars.mk
+echo "# Build platform: `uname -a`" >> vars.mk
+
+if [ "${LOGNAME}" ]; then
+  BUILDER="${LOGNAME}"
+else
+  BUILDER="${USER}"
+fi
+
+[ ! "${BUILDER}" ] && BUILDER="`id -un`"  # GNU id
+
+echo "# Configured `date` by ${BUILDER}" >> vars.mk
+echo "" >> vars.mk
+
+cat vars.mk.configure >> vars.mk
+
+echo 
+${MAKE} -f Makefile usage
+
+echo "Configuration complete."
+echo
+echo "Post-Install, it would be wise to make a bbs user and"
+echo "group, and change directory ownerships appropriately."
+echo "'chmod -R bbs:bbs ${PREFIX}' should work nicely."
+echo

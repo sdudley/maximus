@@ -1,0 +1,82 @@
+BUILD		= DEVEL
+
+CC		= gcc
+CXX		= gcc
+AR		= ar
+RANLIB		= ranlib
+YACC		= yacc
+SED		= sed
+RM		= rm -f
+MV		= mv -f
+BSD_INSTALL	= install
+UNAME		= uname
+
+-include	$(SRC)/vars_local.mk
+
+#PLATFORM	:= $(strip $(shell $(UNAME) -s | $(SED) 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'))
+
+OBJ_EXT		:= o
+LIB_EXT		:= so
+LIB_PREFIX	:= lib
+
+#PREFIX		= /var/max
+BIN		= $(PREFIX)/bin
+ETC		= $(PREFIX)/etc
+LIBEXEC		= $(PREFIX)/libexec
+LIB		= $(PREFIX)/lib
+STATIC_LIB	= $(SRC)/lib
+
+CXXFLAGS	:= $(CFLAGS)
+LOADLIBES	= $(EXTRA_LOADLIBES) -lmax -lcompat -lcurses
+INCLUDES	:= -I. -I$(SRC)/unix/include -I$(SRC)/slib -I$(SRC)/max -I$(SRC)/msgapi\
+		  -I$(SRC)/prot -I$(SRC)/btree -I$(SRC)/mex -I$(SRC)/prot 
+
+include		$(SRC)/vars_$(PLATFORM).mk
+
+LOADLIBES	+= $(OS_LIBS)
+CPPFLAGS	= -DUNIX $(EXTRA_CPPFLAGS) $(INCLUDES) $(EXTRA_INCLUDES)
+
+ifneq (,$(findstring gcc,$(CC)))
+include 	$(SRC)/vars_gcc.mk
+endif
+
+.PHONY:		top build_debug
+
+top:		all
+
+build_debug:
+		@echo
+		@echo "BUILD     = $(BUILD)"
+		@echo "PREFIX    = $(PREFIX)"
+		@echo "CC        = $(CC)"
+		@echo "LD        = $(LD)"
+		@echo "YACC      = $(YACC)"
+		@echo "YFLAGS    = $(YFLAGS)"
+		@echo "CFLAGS    = $(CFLAGS)"
+		@echo "LDFLAGS   = $(LDFLAGS)"
+		@echo "LOADLIBES = $(LOADLIBES)"
+		@echo "CPPFLAGS  = $(CPPFLAGS)"
+		@echo
+
+
+# Implicit rules for constructing *.c, *.h from yacc input
+# under either bison or yacc. Assumes !yacc == bison.
+
+%.h: %.y
+ifneq (,$(findstring yacc,$(YACC)))
+	$(YACC) -d $<
+	$(MV) y.tab.h $@
+	$(RM) y.tab.c
+else
+	$(YACC) -d $< -o $*.c
+endif
+
+%.c: %.y
+ifneq (,$(findstring yacc,$(YACC)))
+	$(YACC) $<
+	$(MV) y.tab.c $@
+else
+	$(YACC) $< -o $@
+endif
+
+
