@@ -2768,19 +2768,10 @@ fprintf(STDAUX, "DoSetNewAreaLevel: %s level=%u, minLinkLevel=%u\r\n", parea->ac
    // spawn external program
 
    GetCommandShellName(achCmd);
-#ifndef UNIX
    code = spawnlp(P_WAIT, achCmd, achCmd, "/C",
                   cfg.pszRescanCommand, achArea, achNode,
                   NULL);
 		  
-#else
-    tmp = (char*) malloc(strlen(cfg.pszRescanCommand) + 
-			 strlen(achArea) +
-			 strlen(achNode) + 1 );
-    sprintf(tmp, "%s %s %s", cfg.pszRescanCommand, achArea, achNode);
-    code = system(tmp);
-#endif
-    
 
    // Check if spawn failed and report
 

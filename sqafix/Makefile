@@ -40,6 +40,7 @@ SQUISH_OBJS :=	crc32.c		\
 		lst-mngr.obj	sqaarc.obj	sqacfg.obj	\
 		sqafix.obj	sqamsg.obj 	\
 		sqastr.obj	sqaexe.obj	fnmerge.obj	\
+		unixmisc.obj\
 		sqauti.obj
  
 SQUISH_OBJS := $(SQUISH_OBJS:.obj=.o) 

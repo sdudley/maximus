@@ -3833,17 +3833,11 @@ fprintf(STDAUX, "%s\r", achLine);
 
    GetCommandShellName(achCmd);
    
-#ifndef UNIX
-   
    code = spawnlp(P_WAIT, achCmd, achCmd, "/C",
                   puplink->pszName, pszOp, pszAreaOrFile,
                   SQAFIX_HOST, pszFromAddr, achAFix, pszToAddr,
                   pnode->achPassword, cfg.achNetMail,
                   NULL);
-
-#else
-    /* BO: FIXME! I really don't know what this rutine do! */
-#endif
 
    // Check if spawn failed
 
@@ -4483,6 +4477,8 @@ SetIt: psntm->aumsg[psntm->imsg++] = umsg;
      psz = "CMD.EXE";
 #elif defined(__W32__)
      psz = "CMD.EXE";
+#elif defined(UNIX)
+     psz = "";
 #else
      psz = "COMMAND.COM";
 #endif

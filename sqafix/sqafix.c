@@ -1744,15 +1744,9 @@ Drop:WriteLog("! Msg# %lu is too long to process\n", umsg);
      // spawn external program
 
      GetCommandShellName(achCmd);
-#ifndef UNIX
      code = spawnlp(P_WAIT, achCmd, achCmd, "/C", apszArg[iArg],
                     achArea, parea->pszPath, pszType, pszPThru,
                     NULL);
-#else
-    tmp = (char*) malloc(strlen(achCmd) + 3 + strlen(apszArg[iArg]));
-    sprintf(tmp, "%s %s %s", achCmd, "/C", apszArg[iArg]);
-    code = system(tmp);
-#endif
      // Check if spawn failed
 
      if (code == (SHORT)-1) {
