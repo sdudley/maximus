@@ -26,7 +26,7 @@ LIB		= $(PREFIX)/lib
 STATIC_LIB	= $(SRC)/lib
 
 H_DIRS		:= unix/include slib msgapi btree max prot mex
-SO_DIRS		:= unix slib msgapi btree prot mex
+SO_DIRS		:= unix slib msgapi btree prot mex comdll
 LDFLAGS		+= $(foreach DIR, $(SO_DIRS), -L$(SRC)/$(DIR))
 INCLUDES	:= -I. $(foreach DIR, $(H_DIRS), -I$(SRC)/$(DIR))
 CXXFLAGS	:= $(CFLAGS) -fpermissive
