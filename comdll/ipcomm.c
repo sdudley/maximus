@@ -27,9 +27,12 @@
  *			  
  *  @author 	Wes Garland
  *  @date   	May 24 2003
- *  @version	$Id: ipcomm.c,v 1.11 2003/12/16 12:31:34 paltas Exp $
+ *  @version	$Id: ipcomm.c,v 1.12 2004/01/13 00:47:31 paltas Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.12  2004/01/13 00:47:31  paltas
+ * Fixed comm module you can both run modem and telnet.
+ *
  * Revision 1.11  2003/12/16 12:31:34  paltas
  * Fixed keys in local mode
  *
@@ -86,7 +89,9 @@
 # error UNIX only!
 #endif
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.11 2003/12/16 12:31:34 paltas Exp $";
+#define TELNET
+
+static char rcs_id[]="$Id: ipcomm.c,v 1.12 2004/01/13 00:47:31 paltas Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,6 +101,7 @@ static char rcs_id[]="$Id: ipcomm.c,v 1.11 2003/12/16 12:31:34 paltas Exp $";
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
@@ -126,7 +132,7 @@ struct _hcomm
   COMMTIMEOUTS 		ct;          		/**< Timeout values */
 
   /****** Private members for this file below */
-  struct sockaddr_in 	*saddr_p;  		/**< Address we're bound to and listening on or NULL */
+  struct sockaddr_un 	*saddr_p;  		/**< Address we're bound to and listening on or NULL */
   int			listenfd;		/**< File descriptor for saddr_p or -1 */
   signed int		peekHack;		/**< Character we've ComPeek()ed but not ComRead(); or -1 */
   BOOL			burstModePending; 	/**< Next write's burst mode */
@@ -144,7 +150,7 @@ void logit(char *format,...);
  *
  *  @param hc Maximus Communications Handle.
  */
-static void _SetTimeoutBlock(HCOMM hc)
+void _SetTimeoutBlock(HCOMM hc)
 {
   DCB dcb;                        /* Device Control Block info for com port */
 
@@ -174,7 +180,7 @@ static void _SetTimeoutBlock(HCOMM hc)
 /** Misc. port initialization. 
  *  @param	hc	Maximus communications handle for opened port we're initializing.
  */
-static void _InitPort(HCOMM hc)
+void _InitPort(HCOMM hc)
 {
   DCB dcb;
 
@@ -267,14 +273,17 @@ BOOL COMMAPI ComOpenHandle(COMMHANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD d
  *  @returns			TRUE on success
  */ 
  
- 
-BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
+#define SOCKPATH "maxipc" 
+char sockpath[128];
+char lockpath[128];
+
+BOOL COMMAPI IpComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 {
   int			fd = -1; 	/**< file descriptor */
-  struct sockaddr_in 	serv_addr;
+  struct sockaddr_un 	serv_addr;
   struct servent 	*se;  
-  short			portnum = 0;
   int			junk;
+  short			portnum = 0;
   COMMHANDLE		h = NULL;
   h = CommHandle_fromFileHandle(h, -1);
 
@@ -284,28 +293,21 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
   if (pszDevice[0] == ':')
     pszDevice++;
 
-  if ((portnum = (short)atoi(pszDevice)) == 0)
-  {
-    se = getservbyname(pszDevice, "tcp");
-    if (se)
-      portnum = se->s_port;
-  }
-      
-  if (!portnum)
-    portnum = 2001;
+  portnum=atoi(pszDevice);
 
-  if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+  sprintf(sockpath, "%s%d", SOCKPATH, portnum);
+  sprintf(lockpath, "%s%d.lck", SOCKPATH, portnum);
+
+  if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
   {
     logit("!Unable to create AF_INET socket! (%s)", strerror(errno));
     return FALSE;
   }
 
-  serv_addr.sin_family=AF_INET;
-  serv_addr.sin_addr.s_addr = INADDR_ANY;
-  serv_addr.sin_port=htons(portnum);
-
-  junk = AF_INET;
-  setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&junk, sizeof(junk));
+  serv_addr.sun_family = AF_UNIX;
+  strcpy(serv_addr.sun_path, sockpath);
+  unlink(serv_addr.sun_path);
+  unlink(lockpath);
 
   if (bind(fd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)))
   {
@@ -345,7 +347,7 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
  *  @param	hc	The handle to close
  *  @returns		TRUE on success
  */
-BOOL COMMAPI ComClose(HCOMM hc)
+BOOL COMMAPI IpComClose(HCOMM hc)
 {
   if (!hc)
     return FALSE;
@@ -367,6 +369,9 @@ BOOL COMMAPI ComClose(HCOMM hc)
      free((char *)hc->device);
   if(hc)
      free(hc);
+
+  unlink(sockpath);
+  unlink(lockpath);
 
   return TRUE;
 }
@@ -406,9 +411,6 @@ ssize_t telnet_write(HCOMM hc, const unsigned char *buf, size_t count)
 
   if (!hc)
     return -1;
-
-/*  if (hc->telnetOptions & mopt_TRANSMIT_BINARY)
-    return write(fd, buf, count);*/
 
   iac = memchr(buf, cmd_IAC, count);
   if (!iac)
@@ -779,7 +781,7 @@ static inline ssize_t telnet_read(HCOMM hc, unsigned char *buf, size_t count)
 
 #ifdef TELNET
 /** This simple driver doesn't negotiate, it makes demands!
- *  We write with write() to enable us to send telnet data
+ *  We write with write() to enable us to write telnet data
  *  unmolested. We receive with ComPeek() because it will
  *  consume telnet data, and change the comm parameters
  *  as needed.
@@ -869,7 +871,7 @@ void negotiateTelnetOptions(HCOMM hc, int preferBinarySession)
  *  @param	hc 	Communications handle
  *  @returns		0 when we're offline
  */
-USHORT COMMAPI ComIsOnline(HCOMM hc)
+USHORT COMMAPI IpComIsOnline(HCOMM hc)
 {
   fd_set 		rfds, wfds;
   struct timeval 	tv;
@@ -901,6 +903,7 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
       hc->fDCD = FALSE;
       shutdown(unixfd(hc), 2);
       close(unixfd(hc));      
+      unlink(lockpath);
     }
 
     if ((rready == 1) && hc->fDCD && (hc->peekHack == -1))
@@ -954,24 +957,18 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
       int	optval;
       int	optlen = sizeof(optval);
       pid_t	parentPID = getpid();
+      FILE* 	f = NULL;
 
       /* Have accepted a socket. Close the bound socket and dump
        * the parent, so that we init can swing open a new task.
        * This technique probably won't cause us much grief, except
        * maybe on a very busy system.
        */
-#ifdef FORKING
-      close(hc->listenfd);	
-
-      if (fork())
-      {
-        _exit(0);	/* _exit -> no atexit cleanups! */ /* This should NOT be changed to exec; fd limit - Wes */
-      }
-      
-      logit("#pid %i accepted incoming connection and became pid %i", (int)parentPID, (int)getpid());
-#endif
-
       /* Set accepted descriptor and other misc com parameters */
+      
+      f = fopen(lockpath, "w");
+      fclose(f);
+      
       CommHandle_setFileHandle(hc->h, fd);
       hc->listenfd = -1;
       hc->fDCD = TRUE;
@@ -1021,7 +1018,7 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
  *  @param	dwCount	How many bytes to write
  *  @returns		TRUE if all bytes are written.
  */
-BOOL COMMAPI ComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
+BOOL COMMAPI IpComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
 {
   DWORD bytesWritten;
   DWORD totalBytesWritten;
@@ -1079,7 +1076,7 @@ BOOL COMMAPI ComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
  *  @param	pdwBytesRead [out]	Number of bytes which were actually read
  *  @returns				TRUE if some data was read
  */
-BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytesRead)
+BOOL COMMAPI IpComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytesRead)
 {
   fd_set 	rfds;
   struct 	timeval tv;
@@ -1165,7 +1162,6 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
 
     tv.tv_usec = (hc->ct.ReadIntervalTimeout * 1000) / 16; /* inter char timeout is in 1/16 of a ms */
     tv.tv_sec  = 0;
-    //goto ComRead_getData;
   }
 
   return retval;
@@ -1177,7 +1173,7 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
  *  			was nothing to read or there was an error.
  *  @see		ComRead()
  */
-int COMMAPI ComGetc(HCOMM hc)
+int COMMAPI IpComGetc(HCOMM hc)
 {
   DWORD dwBytesRead;
   BYTE b;
@@ -1193,7 +1189,7 @@ int COMMAPI ComGetc(HCOMM hc)
  *  read. ComRead will return this value as the first
  *  character in the buffer on the next read.
  */
-int COMMAPI ComPeek(HCOMM hc)
+int COMMAPI IpComPeek(HCOMM hc)
 {
   if (!ComIsOnline(hc))
     return -1;
@@ -1205,7 +1201,7 @@ int COMMAPI ComPeek(HCOMM hc)
 }
 
 /** Write a single character to the com port */
-BOOL COMMAPI ComPutc(HCOMM hc, int c)
+BOOL COMMAPI IpComPutc(HCOMM hc, int c)
 {
   BYTE b=(BYTE)c;
 
@@ -1227,7 +1223,7 @@ BOOL COMMAPI ComPutc(HCOMM hc, int c)
  *  @param	dwTimeOut	Time to wait, in msec
  *  @returns			TRUE if we can read without blocking.
  */
-BOOL COMMAPI ComRxWait(HCOMM hc, DWORD dwTimeOut)
+BOOL COMMAPI IpComRxWait(HCOMM hc, DWORD dwTimeOut)
 {
   fd_set fds;
   struct timeval tv;
@@ -1266,7 +1262,7 @@ BOOL COMMAPI ComRxWait(HCOMM hc, DWORD dwTimeOut)
  *  @param	hc		Communication handle to check
  *  @param	dwTimeOut	Time in milliseconds to wait
  */
-BOOL COMMAPI ComTxWait(HCOMM hc, DWORD dwTimeOut)
+BOOL COMMAPI IpComTxWait(HCOMM hc, DWORD dwTimeOut)
 {
   fd_set fds;
   struct timeval tv;
@@ -1311,7 +1307,7 @@ BOOL COMMAPI ComTxWait(HCOMM hc, DWORD dwTimeOut)
  *  @returns		0 if there is no data to be read; 1 otherwise. Always
  *                      returns 0 if no connection has been made.
  */
-DWORD COMMAPI ComInCount(HCOMM hc)
+DWORD COMMAPI IpComInCount(HCOMM hc)
 {
   /* Okay, we need to fake this so that mdm_avail() will
    * work. Let's peek, if that works, return that there is
@@ -1320,10 +1316,10 @@ DWORD COMMAPI ComInCount(HCOMM hc)
 
   int ch;
 
-  if (!ComIsOnline(hc))
+  if (!IpComIsOnline(hc))
     return 0;
 
-  ch = ComPeek(hc);
+  ch = IpComPeek(hc);
 
   return (ch >= 0 ? 1 : 0);
 }
@@ -1332,7 +1328,7 @@ DWORD COMMAPI ComInCount(HCOMM hc)
  *  @param	hc	Maximus communication handle to query
  *  @returns 0
  */
-DWORD COMMAPI ComOutCount(HCOMM hc)
+DWORD COMMAPI IpComOutCount(HCOMM hc)
 {
   ComIsOnline(hc);
   return 0;
@@ -1342,12 +1338,12 @@ DWORD COMMAPI ComOutCount(HCOMM hc)
  *  Under UNIX, we fudge this to be the size of the buffer. It
  *  doesn't really matter what the buffer size is, since ComWrite()
  *  won't return until we're done writing, but setting it too small
- *  will cause use to send too many packets (unless we enable nagle)
+ *  will cause use to write too many packets (unless we enable nagle)
  *
  *  @param	hc	Maximus communication handle to query
  *  @returns		The transmit buffer size (if set) or 1KB
  */
-DWORD COMMAPI ComOutSpace(HCOMM hc)
+DWORD COMMAPI IpComOutSpace(HCOMM hc)
 {
   if (!ComIsOnline(hc))
     return 0;
@@ -1364,7 +1360,7 @@ DWORD COMMAPI ComOutSpace(HCOMM hc)
  *  @param	fBuffer Which buffer to purge (bitmask) -- legal
  *                      values are COMM_PURGE_RX, COMM_PURGE_TX.
  */
-BOOL COMMAPI ComPurge(HCOMM hc, DWORD fBuffer)
+BOOL COMMAPI IpComPurge(HCOMM hc, DWORD fBuffer)
 {
 #if (COMM_PURGE_TX + COMM_PURGE_RX) != (COMM_PURGE_ALL)
 # error COMM_PURGE_* values in ntcomm.h are incorrect
@@ -1386,7 +1382,7 @@ BOOL COMMAPI ComPurge(HCOMM hc, DWORD fBuffer)
  *  @returns		A "Windows" comm handle for the same
  *                      session.
  */
-COMMHANDLE COMMAPI ComGetHandle(HCOMM hc)
+COMMHANDLE COMMAPI IpComGetHandle(HCOMM hc)
 {
   return (COMMHANDLE)hc->h;
 }
@@ -1422,7 +1418,7 @@ USHORT COMMAPI ComSetDCB(HCOMM hc, LPDCB pdcb)
  *  @see	SetCommState
  *  @returns	TRUE on success
  */
-BOOL COMMAPI ComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE bDataBits, BYTE bStopBits)
+BOOL COMMAPI IpComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE bDataBits, BYTE bStopBits)
 {
   DCB dcb;
   BOOL rc;
@@ -1449,7 +1445,7 @@ BOOL COMMAPI ComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE bDataBits,
  *  @returns	The baud rate, as a scalar value (not B19200, etc)
  *  @see ComSetBaudRate(), GetCommState()
  */
-DWORD ComGetBaudRate(HCOMM hc)
+DWORD IpComGetBaudRate(HCOMM hc)
 {
   DCB dcb;
 
@@ -1460,14 +1456,14 @@ DWORD ComGetBaudRate(HCOMM hc)
 
 /** Stop the RX thread from trying to look for a character.  The TX       
  *  thread doesn't really need to be paused, since it won't try           
- *  to send anything unless we give it a character, but this txpause      
+ *  to write anything unless we give it a character, but this txpause      
  *  semaphore ensures that nothign is transmitted.                        
  *
  *  @see	ComResume()
  *  @note	This is not implemented in the TCP/IP driver
  *  @returns	FALSE
  */
-BOOL COMMAPI ComPause(HCOMM hc)
+BOOL COMMAPI IpComPause(HCOMM hc)
 {
   return FALSE;
 }
@@ -1477,12 +1473,12 @@ BOOL COMMAPI ComPause(HCOMM hc)
  *  @note	This is not implemented in the TCP/IP driver
  *  @returns	FALSE
  */
-BOOL COMMAPI ComResume(HCOMM hc)
+BOOL COMMAPI IpComResume(HCOMM hc)
 {
   return FALSE;
 }
 
-BOOL COMMAPI ComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
+BOOL COMMAPI IpComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
 {
 #ifndef __GNUC__
   (void)hc; (void)fEnable; (void)ulTimeOut;
@@ -1512,7 +1508,7 @@ BOOL COMMAPI ComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
  *  @note		Calls in main max sources should be guarded with 
  *			#if (COMMAPI_VER > 1)
  */
-BOOL COMMAPI ComBurstMode(HCOMM hc, BOOL fEnable)
+BOOL COMMAPI IpComBurstMode(HCOMM hc, BOOL fEnable)
 {
   BOOL lastState;
   
@@ -1535,11 +1531,8 @@ BOOL COMMAPI ComBurstMode(HCOMM hc, BOOL fEnable)
  *  @note		Calls in main max sources should be guarded with 
  *			#if (COMMAPI_VER > 1)
  */
-BOOL COMMAPI ComIsAModem(HCOMM hc)
+BOOL COMMAPI IpComIsAModem(HCOMM hc)
 {
-  if (!hc)
-    return TRUE;
-
   return FALSE;
 }
 
@@ -1547,7 +1540,3 @@ BOOL COMMAPI ComIsAModem(HCOMM hc)
 
 
 
-void RAISE_DTR(HCOMM hc)
-{}
-void LOWER_DTR(HCOMM hc)
-{}

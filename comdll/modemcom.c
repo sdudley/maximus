@@ -34,68 +34,9 @@ ub */
  
 } _hcomm;
 
-static void _SetTimeoutBlock(HCOMM hc)
-{
-  DCB dcb;                        /* Device Control Block info for com port */
-
-  if (!hc)
-    return;
-
-  memset(&hc->ct, 0, sizeof hc->ct);   /* Default to a zero timeout for everything */
-
-  hc->ct.ReadIntervalTimeout=16;      /* Wait up to 1 msec between chars */
-  if (dcb.BaudRate > 2400)
-    hc->ct.ReadTotalTimeoutConstant=125; /* Wait a max of 150 msec for a char */
-  else 
-    hc->ct.ReadTotalTimeoutConstant=25; /* Wait a max of 25 msec for a char *  
-    hc->ct.WriteTotalTimeoutConstant=250; /*SJD Thu  04-22-1993  18:47:04 */
-}
-
-static void _InitPort(HCOMM hc)
-{
-  DCB dcb;
-
-    return;
-
-  /* Set communications timeouts */
-
-  _SetTimeoutBlock(hc);
-  dcb.fOutxDsrFlow=0;
-  dcb.fOutX=0;
-  dcb.fInX=0;
-  dcb.fRtsControl=RTS_CONTROL_ENABLE;
-  dcb.fAbortOnError=0;
-  dcb.EvtChar=0;
-}
 
 
-
-BOOL COMMAPI ComOpenHandle(COMMHANDLE hfComm, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
-{
-  HCOMM hc;
-
-  /* Verify that this is a valid comm handle */
-  if (!phc)
-    return FALSE;
-
-  /* Allocate memory for the handle structure */
-  hc = calloc(sizeof(*hc), 1);
-  if (hc == NULL)
-    return FALSE;
-
-  hc->h = CommHandle_fromFileHandle(NULL, -1);
-
-  /* Store the passed handle (may contain file descriptor)*/
-  hc->h = hfComm;
-  _InitPort(hc);
-
-  /* Store the comm handle in the caller's variable */
-  *phc=hc;
-  return TRUE;
-}
-
-
-BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
+BOOL COMMAPI ModemComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 {
   int                   fd = -1;        /**< file descriptor */
   char filename[128];
@@ -104,13 +45,16 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 
   memset(filename, 0, 128);
 
-  strcpy(filename, "/dev/modem");
+  if(strstr(pszDevice, "com"))
+    pszDevice += 3;
+    
+  sprintf(filename, "/dev/ttyS%d", atoi(pszDevice)-1);
 
   fd = open(filename, O_RDWR | O_NDELAY);
   
   if(fd < -1)
   {
-    printf("Could not open device!");
+    printf("Could not open device! (%s)", filename);
     exit(0);
   }
   
@@ -126,7 +70,7 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
 
   if(tcsetattr(fd, TCSANOW, &tios) < 0)
   {
-    printf("Could not set attributes at the modem!");
+    printf("Could not set attributes at the modem! (%s)", filename);
     exit(0);
   }
 
@@ -150,7 +94,7 @@ BOOL COMMAPI ComOpen(LPTSTR pszDevice, HCOMM *phc, DWORD dwRxBuf, DWORD dwTxBuf)
   return TRUE;
 }
 
-BOOL COMMAPI ComClose(HCOMM hc)
+BOOL COMMAPI ModemComClose(HCOMM hc)
 {
     if(!hc)
 	return FALSE;
@@ -160,22 +104,15 @@ BOOL COMMAPI ComClose(HCOMM hc)
     return TRUE;
 } 
 
-USHORT COMMAPI ComIsOnline(HCOMM hc)
+USHORT COMMAPI ModemComIsOnline(HCOMM hc)
 {
-    int tmp = 0;
-
     if(!hc)
        return 0;
 
-    if(ioctl (hc->listenfd, TIOCMGET, &tmp) < 0)
-    {
-	return 0;
-    }
-       
-    return ((tmp & TIOCM_CD) != 0);
+    return 1;
 }
 
-BOOL COMMAPI ComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
+BOOL COMMAPI ModemComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
 {
     if(write(hc->listenfd, pvBuf, dwCount) != -1)
 	return TRUE;
@@ -183,7 +120,7 @@ BOOL COMMAPI ComWrite(HCOMM hc, PVOID pvBuf, DWORD dwCount)
 	return FALSE;
 }
 
-BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytesRead)
+BOOL COMMAPI ModemComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytesRead)
 {
     fd_set fdrx;
     struct timeval tv;
@@ -237,7 +174,7 @@ BOOL COMMAPI ComRead(HCOMM hc, PVOID pvBuf, DWORD dwBytesToRead, PDWORD pdwBytes
     return FALSE;	
 }
 
-int COMMAPI ComGetc(HCOMM hc)
+int COMMAPI ModemComGetc(HCOMM hc)
 {
     DWORD dwBytesRead;
     char b = 0;
@@ -245,19 +182,19 @@ int COMMAPI ComGetc(HCOMM hc)
     return (ComRead(hc, &b, 1, &dwBytesRead) == 1) ? b : -1;
 }
 
-BOOL COMMAPI ComPutc(HCOMM hc, int c)
+BOOL COMMAPI ModemComPutc(HCOMM hc, int c)
 {
     char b = c;
     
     return (ComWrite(hc, &b, 1));
 }
 
-BOOL COMMAPI ComIsAModem(HCOMM hc)
+BOOL COMMAPI ModemComIsAModem(HCOMM hc)
 {
   return TRUE;
 }
 
-BOOL COMMAPI ComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
+BOOL COMMAPI ModemComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
 {
 #ifndef __GNUC__ 
   (void)hc; (void)fEnable; (void)ulTimeOut;
@@ -265,7 +202,7 @@ BOOL COMMAPI ComWatchDog(HCOMM hc, BOOL fEnable, DWORD ulTimeOut)
   return FALSE;
 }
 
-int COMMAPI ComPeek(HCOMM hc)
+int COMMAPI ModemComPeek(HCOMM hc)
 {
   if (!ComIsOnline(hc))
     return -1;
@@ -276,7 +213,7 @@ int COMMAPI ComPeek(HCOMM hc)
   return hc->peekHack;
 }
 
-COMMHANDLE COMMAPI ComGetHandle(HCOMM hc)  
+COMMHANDLE COMMAPI ModemComGetHandle(HCOMM hc)  
 {
   if(!hc)
     return NULL;
@@ -284,7 +221,7 @@ COMMHANDLE COMMAPI ComGetHandle(HCOMM hc)
   return (COMMHANDLE)hc->h;
 }
 
-DWORD COMMAPI ComOutCount(HCOMM hc)
+DWORD COMMAPI ModemComOutCount(HCOMM hc)
 {
   ComIsOnline(hc);
   return 0;
@@ -314,7 +251,7 @@ RAISE_DTR (HCOMM hc)
 }
 
 
-BOOL COMMAPI ComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE
+BOOL COMMAPI ModemComSetBaudRate(HCOMM hc, DWORD dwBps, BYTE bParity, BYTE
 bDataBits,
  BYTE bStopBits)
 {
@@ -337,21 +274,21 @@ bDataBits,
   return rc;
 }
 
-BOOL COMMAPI ComTxWait(HCOMM hc, DWORD dwTimeOut)
+BOOL COMMAPI ModemComTxWait(HCOMM hc, DWORD dwTimeOut)
 {  
 	return TRUE;
 }
-BOOL COMMAPI ComRxWait(HCOMM hc, DWORD dwTimeOut)
-{  
-	return TRUE;
-}
-
-BOOL COMMAPI ComPurge(HCOMM hc, DWORD fBuffer)
+BOOL COMMAPI ModemComRxWait(HCOMM hc, DWORD dwTimeOut)
 {  
 	return TRUE;
 }
 
-BOOL COMMAPI ComBurstMode(HCOMM hc, BOOL fEnable)
+BOOL COMMAPI ModemComPurge(HCOMM hc, DWORD fBuffer)
+{  
+	return TRUE;
+}
+
+BOOL COMMAPI ModemComBurstMode(HCOMM hc, BOOL fEnable)
 {
   BOOL lastState;          
 
@@ -364,7 +301,7 @@ BOOL COMMAPI ComBurstMode(HCOMM hc, BOOL fEnable)
   return lastState;
 }
 
-DWORD COMMAPI ComInCount(HCOMM hc)
+DWORD COMMAPI ModemComInCount(HCOMM hc)
 {
   /* Okay, we need to fake this so that mdm_avail() will
    * work. Let's peek, if that works, return that there is
@@ -381,18 +318,18 @@ DWORD COMMAPI ComInCount(HCOMM hc)
   return (ch >= 0 ? 1 : 0);
 }
 
-DWORD COMMAPI ComOutSpace(HCOMM hc)
+DWORD COMMAPI ModemComOutSpace(HCOMM hc)
 {
   if (!ComIsOnline(hc))
     return 0;
 
   return 0;
 }
-BOOL COMMAPI ComPause(HCOMM hc)
+BOOL COMMAPI ModemComPause(HCOMM hc)
 {
   return FALSE;
 }
-BOOL COMMAPI ComResume(HCOMM hc)
+BOOL COMMAPI ModemComResume(HCOMM hc)
 {
   return FALSE;
 }
