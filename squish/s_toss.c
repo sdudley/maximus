@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_toss.c,v 1.6 2003/09/26 18:54:52 paltas Exp $";
+static char rcs_id[]="$Id: s_toss.c,v 1.7 2003/09/27 15:35:35 paltas Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -670,11 +670,6 @@ static void near Tossing_From(word zone, word net, word node, word point)
   (void)printf("%-22s", temp);
 }
 
-
-
-
-#ifndef UNIX 
-
 static char *products[]=
 { 
   "Fido", "ConfMail", "SEAdog", NULL, NULL, "Opus", "Dutchie", NULL,
@@ -695,18 +690,14 @@ static char *products[]=
   NULL, NULL, NULL, NULL, NULL, NULL, NULL
 };
 
-#endif
 
 /* Print out product code for a known product */
 
-#ifndef UNIX
 #define NUMPROD (sizeof(products)/sizeof(products[0]))
-#endif
 
 static char * near ProdCode(byte prod)
 {
   static char pnum[3];
-#ifndef UNIX
   if (prod < NUMPROD && products[prod])
     return products[prod];
   else
@@ -714,15 +705,6 @@ static char * near ProdCode(byte prod)
     (void)sprintf(pnum, "%02hx", (word)prod);
     return pnum;
   }
-#else
-  if (products[prod].name)
-    return products[prod].name;
-  else
-  {
-    (void)sprintf(pnum, "%02hx", (word)prod);
-    return pnum;
-  }
-#endif
 }
 
 
