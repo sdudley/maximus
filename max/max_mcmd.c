@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_mcmd.c,v 1.2 2003/06/06 01:09:53 wesgarland Exp $";
+static char rcs_id[]="$Id: max_mcmd.c,v 1.3 2003/06/06 01:10:10 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Modem command dispatcher
