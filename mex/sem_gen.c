@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sem_gen.c,v 1.1 2002/10/01 17:54:04 sdudley Exp $";
+static char rcs_id[]="$Id: sem_gen.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <string.h>
@@ -148,7 +148,7 @@ int BackPatchTXT(PATCH *pat, VMADDR to_where)
   
   for (p=pat; p; p=p->next)
     if (p->quad)
-      printf("Backpatch #%lx: jump to %lx\n", p->quad, to_where);
+      printf("Backpatch #%" UINT32_FORMAT ": jump to %" UINT32_XFORMAT "\n", p->quad, to_where);
 
   return 0;
 }

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_run.c,v 1.1 2002/10/01 17:54:19 sdudley Exp $";
+static char rcs_id[]="$Id: vm_run.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define VM_INIT
@@ -29,7 +29,7 @@ static char rcs_id[]="$Id: vm_run.c,v 1.1 2002/10/01 17:54:19 sdudley Exp $";
 #include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
-#include "prog.h"
+#include "mex.h"
 #include "vm.h"
 #include "dv.h"
 
@@ -654,7 +654,7 @@ static int near VmRun(char *pszArgs)
       #ifdef DEBUGVM
       if (deb)
       {
-        printf("cs%08lx: ", vaIp);
+        printf("cs%08" UINT32_XFORMAT ": ", vaIp);
         fflush(stdout);
       }
       #endif

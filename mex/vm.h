@@ -47,14 +47,20 @@ typedef struct _quad INST;
                           Macro definitions
  *****************************************************************************/
 
-#ifdef VM_INIT
-  #define vm_extern
-  #define VM_IS(x) =x
-  #define VM_LEN(x) x
+#ifdef UNIX
+# define makeVMADDR(x) ((VMADDR)NULL + x)
 #else
-  #define vm_extern extern
-  #define VM_IS(x)
-  #define VM_LEN(x)
+# define makeVMADDR(x) x
+#endif
+
+#ifdef VM_INIT
+# define vm_extern
+# define VM_IS(x) =makeVMADDR(x)
+# define VM_LEN(x) x
+#else
+# define vm_extern extern
+# define VM_IS(x)
+# define VM_LEN(x)
 #endif
 
 /* Macros for pushing and popping values on stack */

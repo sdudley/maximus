@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_opflo.c,v 1.1 2002/10/01 17:54:15 sdudley Exp $";
+static char rcs_id[]="$Id: vm_opflo.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define COMPILING_MEX_VM
@@ -61,7 +61,7 @@ int op_jmp(INST *inst, struct _args *arg)
   #ifdef DEBUGVM
   if (deb)
     if (vaIp != oldip)
-      printf("jump to cs%08lx. ", vaIp);
+      printf("jump to cs%08" UINT32_XFORMAT ". ", vaIp);
   #endif
   
   return 0;

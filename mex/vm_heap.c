@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_heap.c,v 1.1 2002/10/01 17:54:12 sdudley Exp $";
+static char rcs_id[]="$Id: vm_heap.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define COMPILING_MEX_VM
@@ -56,7 +56,7 @@ VMADDR hpalloc(word len)
 
   if (hpcheck() != 0)
   {
-    printf("bar\n");
+    printf(__FUNCTION__ " bar\n");
   }
 #endif
 
@@ -167,7 +167,7 @@ void hpfree(VMADDR ofs)
 #ifdef HEAP_PROBLEMS
   if (hpcheck() != 0)
   {
-    printf("foo\n");
+    printf(__FUNCTION__ " foo\n");
   }
 #endif
 
@@ -184,7 +184,7 @@ void hpfree(VMADDR ofs)
 
   #ifdef DEBUGVM
   if (debheap)
-    printf("%08lx - hpfree() from %lx)\n", ofs, (long)vaIp);
+    printf("%08lx - hpfree() from %" UINT32_XFORMAT ")\n", ofs, (long)vaIp);
   #endif
 }
 
@@ -233,7 +233,7 @@ void hpdbug(void)
       if (first)
         printf("\n\n");
 
-      printf("heap ofs=%08lx (size=%d)\n", (long)((byte *)(dh+1)-pbDs), dh->size);
+      printf("heap ofs=%08" UINT32_XFORMAT " (size=%d)\n", (long)((byte *)(dh+1)-pbDs), dh->size);
     }
 
     if (dh->next==END_HEAP)

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sem_func.c,v 1.1 2002/10/01 17:54:04 sdudley Exp $";
+static char rcs_id[]="$Id: sem_func.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Function definition/declaration semantic routines
@@ -387,8 +387,28 @@ static ATTRIBUTES * near GenVarArgName(FUNCCALL *f, DATAOBJ *this, char *name)
 
   if ((found=st_find(symtab, name, FALSE))==NULL)
   {
-    error(MEXERR_CALLTOFUNCWITHNOPROTO, name);
-    return NULL;
+#ifdef WES_HACK
+    /* I don't really understand why UNIX MEX is munging
+     * print(var, "hello") as __print.. this is wierd - wes
+     *
+     * Never mind, I read the user docs and know now.  This
+     * function translates print(...) into multiple __print%s
+     * statements, one for each argument, depending on its
+     * type. This tells me that something is probably wrong
+     * in the symbol table somewhere.
+     */
+    if (name[0] == '_' && name[1] == '_' && 
+	(found = st_find(symtab, name + 2, FALSE)))
+    {
+      name += 2;
+      attr.name += 2;
+    }
+    else
+#endif
+    {
+      error(MEXERR_CALLTOFUNCWITHNOPROTO, name);
+      return NULL;
+    }
   }
 
   return found;
@@ -401,7 +421,7 @@ static ATTRIBUTES * near GenVarArgName(FUNCCALL *f, DATAOBJ *this, char *name)
 
 DATAOBJ * EndFuncCall(FUNCCALL *f, DATAOBJ *args)
 {
-  ATTRIBUTES *paVarArg;
+  ATTRIBUTES *paVarArg = NULL;
   DATAOBJ *this, *last, *ret, *res, *obj, *oldobj;
   int varargs, argno;
 
@@ -543,9 +563,13 @@ DATAOBJ * EndFuncCall(FUNCCALL *f, DATAOBJ *args)
            * lvalue and rvalue strings, so this tells the VM when to          *
            * set the indirect flag.                                           */
 
+	  DATAOBJ *dataObjPtr = (varargs && this->ref && this->type==&StringType) ? (DATAOBJ *)1 : NULL;
+          Generate(QOP_ARG_REF, obj, dataObjPtr, NULL);
+#if 0
           Generate(QOP_ARG_REF, obj,
                    (DATAOBJ *)(varargs && this->ref && this->type==&StringType),
                    NULL);
+#endif
         }
         else
         {

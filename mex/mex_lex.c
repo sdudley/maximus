@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mex_lex.c,v 1.1 2002/10/01 17:53:50 sdudley Exp $";
+static char rcs_id[]="$Id: mex_lex.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -114,7 +114,7 @@ int pop_fstk(void)
 
 int pull_character(void)
 {
-  int ch;
+  int ch = EOF;
 
   if (macro.fInMacro)
   {
@@ -323,7 +323,7 @@ static int near process_digit(int c)
   if (type==TYPE_DEC)
     yylval.constant.dwval=atol(scan);
   else
-    sscanf(scan, "%lx", &yylval.constant.dwval);
+    sscanf(scan, "%" UINT32_XFORMAT, &yylval.constant.dwval);
 
   /* If the number will fit in a single integer, return it
    * as a word (assuming that we did not explicitly ask otherwise).

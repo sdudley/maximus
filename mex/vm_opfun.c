@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_opfun.c,v 1.1 2002/10/01 17:54:15 sdudley Exp $";
+static char rcs_id[]="$Id: vm_opfun.c,v 1.2 2003/06/05 01:10:36 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define COMPILING_MEX_VM
@@ -83,7 +83,7 @@ int op_funcret(INST *inst, struct _args *arg)
   
   #ifdef DEBUGVM
   if (deb)
-    printf("args=%ld, newIP = %08lx, newSP=%p", inst->arg1.litdword, vaIp, pbSp);
+    printf("args=%" UINT32_FORMAT ", newIP = %08" UINT32_XFORMAT ", newSP=%p", inst->arg1.litdword, vaIp, pbSp);
   #endif
   return 0;
 }
@@ -96,7 +96,7 @@ int op_startcall(INST *inst, struct _args *arg)
   
   #ifdef DEBUGVM
   if (deb)
-    printf("Start call.  IP=%08lx, SP=%p.  ", vaIp, pbSp);
+    printf("Start call.  IP=%08" UINT32_XFORMAT ", SP=%p.  ", vaIp, pbSp);
   #endif
 
   return 0;
@@ -162,7 +162,7 @@ int op_funcjump(INST *inst, struct _args *arg)
 
   #ifdef DEBUGVM
   if (deb)
-    printf("Calling function at %08lx. IP=%08lx, SP=%p",
+    printf("Calling function at %08" UINT32_XFORMAT ". IP=%08" UINT32_XFORMAT ", SP=%p",
            inst->res.jump_label, vaIp, pbSp);
   #endif
 

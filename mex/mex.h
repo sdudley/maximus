@@ -85,6 +85,12 @@
 typedef char *string;
 
 typedef dword VMADDR;  /* Virtual machine address */
+#define VMADDR_FORMAT "%ld"
+
+#if 0
+typedef byte * VMADDR;
+#define VMADDR_FORMAT "%p"
+#endif
 
 typedef byte IDTYPE;
 
@@ -537,6 +543,7 @@ struct _attributes
 #include "mex_tab.h"  /* Constants produced by the yacc (bison) compiler    */
 #endif
 
+#include "max.h"
 #include "mex_lex.h"  /* Lexical analysis structs and constants */
 #include "mex_prot.h" /* Function prototypes */
 #include "mex_glob.h" /* Global variables */
