@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_config.c,v 1.4 2003/09/03 13:51:33 paltas Exp $";
+static char rcs_id[]="$Id: s_config.c,v 1.5 2003/10/05 13:52:50 paltas Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -30,6 +30,12 @@ static char rcs_id[]="$Id: s_config.c,v 1.4 2003/09/03 13:51:33 paltas Exp $";
 #include "max.h"
 #include "squish.h"
 #include "s_dupe.h"
+
+#include "sqfeat.h"
+
+#ifdef UNIX
+#include <dlfcn.h>
+#endif
 
 #define ARGLEN  64
 #define MAXARGS 128
@@ -53,13 +59,18 @@ static void near InvalStatement(char *where)
 }
 
 
-#ifdef OS2
-
+#if defined(OS2) || defined(UNIX)
 
 /* Add a DLL-oriented feature */
 
 static void near V_Feature(char *line, char *ag[])
 {
+
+#ifdef UNIX
+  void * sohandle = NULL;
+  char soname[256];
+  char * soerror;
+#endif
   struct _feature *pf;
   struct _feat_init fi;
   char szFailName[PATHLEN];
@@ -74,6 +85,8 @@ static void near V_Feature(char *line, char *ag[])
   config.feat=pf;
 
   /* Try to load the module */
+
+#ifndef UNIX
 
   if ((rc=DosLoadModule(szFailName, PATHLEN, pf->pszDLLName, &pf->hmod)) != 0)
   {
@@ -105,6 +118,51 @@ static void near V_Feature(char *line, char *ag[])
     exit(ERL_ERROR);
   }
 
+#else
+    sprintf(soname, "lib%s.so", strlwr(pf->pszDLLName));
+    if(!(sohandle = dlopen(soname, RTLD_LAZY)))
+    {
+        (void)printf("Can't open lib (check your /etc/ld.so.conf) '%s'!\n",
+                 soname);
+	exit(ERL_ERROR);
+    }
+
+    pf->pfnInit = dlsym(sohandle, "FeatureInit");
+    if((soerror = dlerror()) != NULL)
+    {
+	fprintf(stderr, "Lib error: %s\n", soerror);
+	exit(1);
+    }
+
+    pf->pfnConfig = dlsym(sohandle, "FeatureConfig");
+    if((soerror = dlerror()) != NULL)
+    {
+	fprintf(stderr, "Lib error: %s\n", soerror);
+	exit(1);
+    }
+
+    pf->pfnNetMsg = dlsym(sohandle, "FeatureNetMsg");
+    if((soerror = dlerror()) != NULL)
+    {
+	fprintf(stderr, "Lib error: %s\n", soerror);
+	exit(1);
+    }
+
+    pf->pfnTossMsg = dlsym(sohandle, "FeatureTossMsg");
+    if((soerror = dlerror()) != NULL)
+    {
+	fprintf(stderr, "Lib error: %s\n", soerror);
+	exit(1);
+    }
+
+    pf->pfnScanMsg = dlsym(sohandle, "FeatureScanMsg");
+    if((soerror = dlerror()) != NULL)
+    {
+	fprintf(stderr, "Lib error: %s\n", soerror);
+	exit(1);
+    }
+
+#endif
 
   /* Initialize the feature info structure */
 
@@ -1111,7 +1169,7 @@ static struct _cfgtable vt[]=
   {"areasbbs",        NULL,         VB_FILE,&config.areasbbs, 0},
   {"routing",         V_Routing,    VB_FILE,&config.routing,  0},
   {"logfile",         NULL,         VB_FILE,&config.logfile,  0},
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
   #ifdef __FLAT__
     {"feature",         NULL,         VB_FUNC,NULL,             0},
     {"feature32",       V_Feature,    VB_FUNC,NULL,             0},
@@ -1227,7 +1285,7 @@ static void near Parse1Config(char *cfgname, char *args[MAXARGS],
         break;
       }
 
-#ifdef OS_2 /* Feature-specific config lines */
+#if defined (OS_2) || defined (UNIX) /* Feature-specific config lines */
     {
       struct _feature *pf;
       struct _feat_config fc;
@@ -1243,23 +1301,31 @@ static void near Parse1Config(char *cfgname, char *args[MAXARGS],
         char *s;
 
         /* Search through the config name */
-
+#ifndef UNIX
         for (p=pf->pszConfigName; p; p=strchr(p, '\r'))
+#else
+        for (p=pf->pszConfigName; p; p=strchr(p, '\r'))	
+#endif
         {
           /* Skip over the \r, if necessary */
-
+#ifndef UNIX
           if (*p=='\r')
+#else
+          if (*p=='\n')
+#endif	  
             p++;
 
 
           /* The next \r or end of string delimits the length of keyword */
-
+#ifndef UNIX
           if ((s=strchr(p, '\r'))==NULL)
+#else
+          if ((s=strchr(p, '\n'))==NULL)	  
+#endif	  
             s=p+strlen(p);
 
 
           /* Compare it to our keyword */
-
           if (eqstrni(args[0], p, (unsigned)(s-p)))
           {
             if ((*pf->pfnConfig)(&fc))

@@ -77,7 +77,7 @@ struct _ndx {
         char RawNdx[512];
 
     } ndx;
-};
+} __attribute__((packed));
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
@@ -102,6 +102,11 @@ struct _vers7 {
         byte Cname_len;
         byte pack_len;
         byte BaudRate;         /* baud rate divided by 300 */
-};
+} __attribute__((packed));
 
 
+word FEATENTRY _export FeatureNetMsg(struct _feat_netmsg far *pfn);
+word FEATENTRY _export FeatureInit(struct _feat_init far *pfi);
+word FEATENTRY _export FeatureConfig(struct _feat_config far *pfc);
+word FEATENTRY _export FeatureScanMsg(struct _feat_scan far *pfs);
+word FEATENTRY _export FeatureTossMsg(struct _feat_toss far *pft);

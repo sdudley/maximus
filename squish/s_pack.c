@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.7 2003/09/10 22:15:48 paltas Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.8 2003/10/05 13:52:50 paltas Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -40,6 +40,7 @@ static char rcs_id[]="$Id: s_pack.c,v 1.7 2003/09/10 22:15:48 paltas Exp $";
 #include "msgapi.h"
 #include "squish.h"
 #include "s_pack.h"
+
 /*#include "api_sdm.h"*/
 
 static char area_col[]="AREA:";
@@ -112,9 +113,7 @@ static void near PackIt(struct _cfgarea *ar)
   else S_LogMsg(":  Packed=%ld",n_packed);
 }
 
-
-
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
 /* Call all of the external DLL features */
 
 static word near InvokeFeatures(HAREA ha, HMSG hmsg, XMSG *pMsg, char *pCtrl,
@@ -263,7 +262,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
   {
     /* do not pack, but call DLL handler anyway */
 
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
     (void)InvokeFeatures(sq, mh, &msg, ctrl, msgbuf, mn, &dokill, &logkill,
                          &rewriteit);
 #endif
@@ -309,7 +308,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
 
     /* If the DLL says it's okay to process this msg */
 
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
     if (InvokeFeatures(sq, mh, &msg, ctrl, msgbuf, mn, &dokill, &logkill,
                        &rewriteit))
 #endif

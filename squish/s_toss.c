@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_toss.c,v 1.7 2003/09/27 15:35:35 paltas Exp $";
+static char rcs_id[]="$Id: s_toss.c,v 1.8 2003/10/05 13:52:50 paltas Exp $";
 #pragma on(unreferenced)
 
 #include <stdio.h>
@@ -1182,7 +1182,7 @@ static void near DeallocBigBuf(void)
 
 
 
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
 
 /* Handle DLL-specific features when tossing messages */
 

@@ -138,6 +138,9 @@ extern byte *version;
   #include "sqfeat.h"   /* DLL feature library */
 #endif
 
+#ifdef UNIX
+  #include "sqfeat.h"
+#endif
 
 /* If a node is entered in the "personal list", only messages addressed to  *
  * 'name' will be sent to 'node'.                                           */
@@ -320,7 +323,7 @@ struct _config
   struct _groute *zgat;         /* Zonegate nodes                           */
   struct _tosspath *tpath;      /* Paths to toss from                       */
   struct _outb *outb;           /* Where to find outbound directories       */
-#ifdef OS_2
+#if defined(OS_2) || defined(UNIX)
   struct _feature *feat;        /* DLL features                             */
 #endif
 

@@ -3,11 +3,11 @@ include ../vars.mk
 MAINTARGETS := squish sqfix
 EXTRATARGETS:= sqpack sqconv sqinfo sqset sstat sqreidx
 MAINTARGETS += $(EXTRATARGETS)
-EXTRA_LOADLIBES += -lmax -lmsgapi
+EXTRA_LOADLIBES += -lmax -lmsgapi -ldl
 
 .PHONY: all install install_libs install_binaries
 
-all: $(MAINTARGETS) libkillrcat.so libmsgtrack.so
+all: $(MAINTARGETS) libkillrcat.so libmsgtrack.so 
 
 SQUISH_OBJS :=	squish.obj   s_abbs.obj         s_config.obj    \
                 s_scan.obj   s_toss.obj        s_pack.obj      \
@@ -28,7 +28,7 @@ squish: $(SQUISH_OBJS)
 libkillrcat.so: killrcat.o
 	gcc -shared $^ -o $@
 
-libmsgtrack.so: msgtrack.o
+libmsgtrack.so: msgtrack.o vsev.o
 	gcc -shared $^ -o $@
 
 install: install_libs install_binaries
