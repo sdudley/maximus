@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_args.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $";
+static char rcs_id[]="$Id: max_args.c,v 1.3 2003/06/05 23:37:19 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Command-line argument processing code
@@ -35,6 +35,7 @@ static char rcs_id[]="$Id: max_args.c,v 1.2 2003/06/04 23:46:21 wesgarland Exp $
 #include "mm.h"
 #include "caller.h"
 #ifdef UNIX
+#include "prm.h"
 #include <errno.h>
 #endif
 
@@ -183,6 +184,57 @@ void Recurse(void)
 
 #endif
 
+#ifdef UNIX
+/** Dynamically choose a task number, based on (*ugh*)
+ *  filesystem semaphores.
+ */
+byte getDynamicTaskNumber(int cleanup)
+{
+  char *path;
+  int  i, fd;
+  static char filename[FILENAME_MAX];
+
+  if (cleanup)
+  {
+    if (filename[0])
+      unlink(filename);
+  }
+
+  if (offsets && PRM(ipc_path))
+    path = PRM(ipc_path);
+  else
+    path = "/tmp";
+
+  /* First scan for files that don't exist at all */
+  for (i=1; i <= 0xff; i++)
+  {
+    snprintf(filename, sizeof(filename), "%s/max_dtn.%i", /* path */ "/tmp", i);
+    fd = open(filename, O_RDWR | O_CREAT, 0644);
+    if (fd >= 0)
+    {
+      if (flock(fd, LOCK_EX | LOCK_NB) == 0)
+      {
+        char buf[32];
+
+	snprintf(buf, sizeof(buf), "%i\n", (int)getpid());
+        write(fd, buf, strlen(buf));
+	logit("# PID %i running as task %i", (int)getpid(), i);
+        return i;
+      }
+      else
+        close(fd);
+    }
+  }
+
+  filename[0] = (char)0;
+  return 0;
+}
+
+void dtnCleanUp()
+{
+  getDynamicTaskNumber(1);  
+}
+#endif
 
 static void near Parse_Single_Arg(char *arg)
 {
@@ -279,6 +331,7 @@ static void near Parse_Single_Arg(char *arg)
             char letter;
             char mtask;
           } mtasks[]={{'d', MULTITASKER_doubledos},
+                      {'u', MULTITASKER_unix},
                       {'q', MULTITASKER_desqview},
                       {'p', MULTITASKER_topview},
                       {'l', MULTITASKER_mlink},
@@ -305,6 +358,17 @@ static void near Parse_Single_Arg(char *arg)
 
       case 'n':
         task_num=(byte)atoi(arg+2);
+#ifdef UNIX
+	if (task_num == 0)
+	  task_num = getDynamicTaskNumber(0);
+	if (task_num == 0)
+        {
+	  logit("!No free tasks!");
+	  exit(0);
+        }
+        else
+          atexit(dtnCleanUp);
+#endif
         fSetTask = TRUE;
         break;
 
