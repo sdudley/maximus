@@ -1,12 +1,15 @@
 /**
  * @file 	wincomm.c	WinNT-style Comm functions for UNIX
- * @version	$Id: wincomm.c,v 1.3 2003/06/29 20:48:59 wesgarland Exp $
+ * @version	$Id: wincomm.c,v 1.4 2003/06/30 05:25:33 wesgarland Exp $
  * @author 	Wes Garland
  * @date	May 13 2003
  * @description	Fudge routines/hooks for the comm library and asyncnt.c.
  * 		Designed to replace WinNT functions of the same names.
  *  
  * $Log: wincomm.c,v $
+ * Revision 1.4  2003/06/30 05:25:33  wesgarland
+ * Minor silly errors corrected
+ *
  * Revision 1.3  2003/06/29 20:48:59  wesgarland
  * Changes made to allow pluggable communications module. Code in not currently
  * pluggable, but "guts" will be identical to pluggable version of telnet
@@ -111,10 +114,10 @@ BOOL SetupComm(COMMHANDLE hFile, DWORD dwInQueue, DWORD dwOutQueue)
 {
   memset(hFile, 0, sizeof(*hFile));
 
-  if (hFile->txBufsize)
+  if (hFile->txBufSize)
     hFile->txBufSize 	= dwOutQueue;
   else
-    if (!hfFile->txBufSize)
+    if (!hFile->txBufSize)
       hFile->txBufSize	= 1024;
 
   if (hFile->rxBufSize)
