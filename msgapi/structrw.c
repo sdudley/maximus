@@ -30,6 +30,8 @@
 #include "putword.h"
 #include "putword.c"
 
+#include "structrw.h"
+
 int read_xmsg(int handle, XMSG *pxmsg)
 {
     byte buf[XMSG_SIZE], *pbuf = buf;
