@@ -17,9 +17,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* $Id: ipcomm.c,v 1.4 2003/06/11 17:21:48 wesgarland Exp $
+/* $Id: ipcomm.c,v 1.5 2003/06/13 04:24:43 wesgarland Exp $
  *
  * $Log: ipcomm.c,v $
+ * Revision 1.5  2003/06/13 04:24:43  wesgarland
+ * Corrected tv_usec delay in bound socket select to valid value (0.5s); now accepts calls under Solaris
+ *
  * Revision 1.4  2003/06/11 17:21:48  wesgarland
  * Andrew Clarke: Minor changes for building under FreeBSD + general touchup
  *
@@ -54,7 +57,7 @@
 #define WATCHDOG_LISTEN_TIMEOUT		0	/**< how long to wait between listen->accept */
 #define WATCHDOG_ACTIVITY_TIMEOUT	300	/**< how long to wait between ComRead activity */
 
-static char rcs_id[]="$Id: ipcomm.c,v 1.4 2003/06/11 17:21:48 wesgarland Exp $";
+static char rcs_id[]="$Id: ipcomm.c,v 1.5 2003/06/13 04:24:43 wesgarland Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -838,7 +841,7 @@ USHORT COMMAPI ComIsOnline(HCOMM hc)
 
   /* Will longish delay cause problems with console? */
   tv.tv_sec = 0;
-  tv.tv_usec = 5000000;
+  tv.tv_usec = 500000;
 
   if (select(hc->h + 1, &rfds, NULL, NULL, &tv) > 0)
   {
