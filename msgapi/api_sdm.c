@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: api_sdm.c,v 1.2 2003/06/05 22:54:50 wesgarland Exp $";
+static char rcs_id[]="$Id: api_sdm.c,v 1.3 2003/06/11 14:03:06 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MSGAPI_HANDLERS
@@ -1187,7 +1187,7 @@ static void MAPIENTRY WriteToFd(byte OS2FAR *str)
 }
 
   
-static void near Get_Binary_Date(struct _stamp *todate, struct _stamp *fromdate, byte *asciidate)
+static void near Get_Binary_Date(union _stampu *todate, union _stampu *fromdate, byte *asciidate)
 {
 #ifdef HCC
   /* If compiling for the HCC, use the ASCII message date only, not         *

@@ -955,7 +955,7 @@ struct _restart
   char written_matrix;    /* 0=user HASN'T entered matrix msg   *STABLE*   */
   char local;             /* 0=NOT local                        *STABLE*   */
 
-  struct _stamp laston;   /* Time the user was last on system   *STABLE*   */
+  union _stampu laston;   /* Time the user was last on system   *STABLE*   */
   
   word steady_baud;       /* Locked baud rate of user           *STABLE*   */
 

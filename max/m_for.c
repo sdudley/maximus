@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_for.c,v 1.1 2002/10/01 17:52:41 sdudley Exp $";
+static char rcs_id[]="$Id: m_for.c,v 1.2 2003/06/11 14:03:06 wesgarland Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: F)orward command
@@ -436,7 +436,7 @@ static void near Forward_One(struct _fwdp *f,struct _fwdp *fp)
   }
 
   last_fwd=now;
-  f->tmsg.date_written=*(struct _stamp *)&now;
+  f->tmsg.date_written=*(union _stampu *)&now;
 
   
   if (CheckCredit(&f->tmsg.dest, &f->toar)==-1)

@@ -42,8 +42,8 @@ struct _omsg
                            /* January 1, 1970).  Timestamps in messages are */
                            /* always Greenwich Mean Time, never local time. */
 
-      struct _stamp date_written;   /* When user wrote the msg              */
-      struct _stamp date_arrived;   /* When msg arrived on-line             */
+      union _stampu date_written;   /* When user wrote the msg              */
+      union _stampu date_arrived;   /* When msg arrived on-line             */
 
       word reply;          /* Current msg is a reply to this msg number     */
       word attr;           /* Attribute (behavior) of the message           */
