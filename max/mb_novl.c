@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: mb_novl.c,v 1.1 2002/10/01 17:52:12 sdudley Exp $";
+static char rcs_id[]="$Id: mb_novl.c,v 1.2 2004/01/11 19:59:50 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: "root" overlay code for B)rowse command
@@ -333,7 +333,7 @@ int Browse_Scan_Areas(BROWSE *b)
   int ret, rc;
   int colour=0, stop, bret;
   word ixnum;
-
+ 
   memset(&ma, 0, sizeof ma);
 
   display_line=display_col=1;

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: m_browse.c,v 1.1 2002/10/01 17:52:38 sdudley Exp $";
+static char rcs_id[]="$Id: m_browse.c,v 1.2 2004/01/11 19:59:50 wmcbrine Exp $";
 #pragma on(unreferenced)
 
 /*# name=Message Section: B)rowse command
@@ -57,7 +57,7 @@ int Msg_Browse(word newb, SEARCH *newfirst, char *menuname)
   BROWSE b;
   int ret;
   char nonstop=FALSE;
-  
+ 
   in_mcheck=TRUE;
   b.bflag=newb;
   ret=0;
