@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: max_xtrn.c,v 1.3 2003/06/13 04:53:30 wesgarland Exp $";
+static char rcs_id[]="$Id: max_xtrn.c,v 1.4 2003/06/18 02:04:20 wesgarland Exp $";
 #pragma on(unreferenced)
 
 #define MAX_LANG_max_chat
@@ -694,7 +694,11 @@ Skip:
     if (prm.flags2 & FLAG2_SWAPOUT)
     {
       strcpy(temp, GetComspec());
+  #ifdef UNIX
+      strcat(temp, " -c ");
+  #else
       strcat(temp, " /c ");
+  #endif
       strcat(temp, parm);
 
       erl=swapsz(temp);
