@@ -114,7 +114,8 @@ void _unalign(void *unaligned, void *aligned, size_t size);
 #endif
 
 #if !defined(_MAX_ALIGNMENT)
-static union alignmentTest
+# if defined _GNUC_
+static union
 {
   char		c;
   short		sh;
@@ -126,8 +127,11 @@ static union alignmentTest
     char a[1];
   }		st;
   void		*v;
-};
-# define _MAX_ALIGNMENT(alignof(alignmentTest))
+} alignmentTest;
+#  define _MAX_ALIGNMENT alignof(alignmentTest)
+# else
+#  define _MAX_ALIGNMENT sizeof(long) /* just a guess, but often right */
+# endif
 #endif
 
 #endif /* _COMPILER_ALIGN_H */
