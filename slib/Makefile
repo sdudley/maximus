@@ -31,7 +31,6 @@ dosdate.obJ  flush.obJ    canon.obJ    win.obJ          \
 cvtdate.obJ  trail.obJ    parsenn.obJ  qslist.obJ       \
 lcopy.obJ    fnsplit.obJ  uniqren.obJ  mktemp.obJ       \
 soundex.obJ  address.obJ  mktime.obJ   cencode.obJ      \
-ieee2lng.obJ ieee2msb.obJ lng2ieee.obJ msb2ieee.obJ     \
 adj_user.obJ win_pick.obJ arc_def.obJ  coreleft.obJ     \
 smalloc.obJ  strocpy.obJ                   \
 cshopen.obJ  crc32.obJ    crc16.obJ    strrstr.obJ      \

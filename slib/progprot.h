@@ -114,10 +114,6 @@ void _fast ParseNN(char *netnode,word *zone,word *net,word *node,word *point,wor
 void _fast c_encode(char *str,char *iarray,int len,int key);
 void _fast c_decode(char *iarray,char *str,int key);
 char * _fast sc_time(union stamp_combo *sc,char *string);
-unsigned long _fast ieee_to_long(unsigned long f);
-unsigned long _fast long_to_ieee(unsigned long l);
-int _fast ieee_to_msbin(void *source,void *dest);
-int _fast msbin_to_ieee(void *source,void *dest);
 int _stdc AreaNameComp(byte *a1,byte *a2);
 void * _fast smalloc(unsigned int size);
 char * _fast sstrdup(char *s);
