@@ -36,6 +36,6 @@ static void near Point_To_Fakenet_Orig(XMSG *msg);
 static void near Process_AttReqUpd(XMSG *msg,char *filename,word manual);
 static void near Process_OneAttReqUpd(XMSG *msg,char *filename, int tflag, char *orig_fspec, char *pwd);
 static void near TrackMessage(XMSG *msg, byte *ctrl);
-static void near AddViaLine(byte *msgbuf, byte *ctrl);
+static void near AddViaLine(byte *msgbuf, byte *ctrl, XMSG xmsg);
 static void near ExpandAndSend(XMSG *msg, int tflag, char *filename, char *pwd, char *szName);
 

@@ -18,7 +18,7 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: s_pack.c,v 1.5 2003/09/03 13:51:33 paltas Exp $";
+static char rcs_id[]="$Id: s_pack.c,v 1.6 2003/09/09 16:27:46 paltas Exp $";
 #pragma on(unreferenced)
 
 #define NOVARS
@@ -372,7 +372,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
               }
 
               TrackMessage(&msg, ctrl);
-              AddViaLine(msgbuf, ctrl);
+              AddViaLine(msgbuf, ctrl, msg);
 
               /* Now kill in-transit netmail */
 
@@ -382,7 +382,7 @@ static unsigned near Pack_Netmail_Msg(HAREA sq, dword *mn, struct _cfgarea *ar)
 
             /* Bo: we also add via lines to messages which come from here */
 	    if (msg.attr & MSGLOCAL)
-	      AddViaLine(msgbuf, ctrl);
+	      AddViaLine(msgbuf, ctrl, msg);
 
             front=msgbuf;
 
@@ -620,13 +620,15 @@ static void near TrackMessage(XMSG *msg, byte *ctrl)
 
 /* Add a ^aVia line to the end of a netmail message */
 
-static void near AddViaLine(byte *mbuf, byte *ctrl)
+static void near AddViaLine(byte *mbuf, byte *ctrl, XMSG xmsg)
 {
   NETADDR n;
   time_t gmt;
   struct tm *lt;
   byte temp[160], *s;
   char *artag;
+  
+  struct _sblist * tmps;
   
   /* Now tack on the "^aVia" line, if not an echomail message */
 
@@ -644,9 +646,13 @@ static void near AddViaLine(byte *mbuf, byte *ctrl)
   /* Bo: Added new Via: */
   /* ^aVia 2:236/100 @20030723.160020.UTC Squish/Linux 1.11\r */
   
+  for(tmps=config.addr; tmps; tmps=tmps->next)
+    if(tmps->zone == xmsg.dest.zone)
+	break;
+  
   (void)sprintf(temp,
                 "\x01Via %s @%04d%02d%02d.%02d%02d%02d.UTC " SQNAME " " SQVERSION "\r",
-                Address(SblistToNetaddr(config.addr, &n)),
+                Address(SblistToNetaddr(tmps, &n)),
                 lt->tm_year+1900,
 		lt->tm_mon+1,
 		lt->tm_mday,
