@@ -5,7 +5,7 @@ include ../vars.mk
 ifeq ($(WHICH),telnet)
 libcomm.so: telnetcomm.o
 else
-libcomm.so: ipcomm.o
+libcomm.so: stdcomm.o
 endif
 	gcc -shared $^ -o $@
 
@@ -16,6 +16,10 @@ install_libs install: libcomm.so
 
 telnetcomm.o: ipcomm.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DTELNET -c $^ -o $@
+
+stdcomm.o: stdcomm.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -DTELNET -c $^ -o $@
+
 
 clean:
 	-rm libcomm.so *.o
