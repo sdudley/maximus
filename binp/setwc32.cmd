@@ -1,1 +1,0 @@
-@call setwc 32
