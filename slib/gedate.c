@@ -21,7 +21,7 @@
 
 int _fast GEdate(union stamp_combo *s1,union stamp_combo *s2)
 {
-  struct _stamp st1, st2;
+  union _stampu st1, st2;
 
   st1=s1->msg_st;
   st2=s2->msg_st;
@@ -58,6 +58,68 @@ int _fast GEdate(union stamp_combo *s1,union stamp_combo *s2)
   }
 
   return FALSE;
+}
+
+/** Compare the date/time of s1 and s2 for equality. 
+ *
+ *  @warning    Re-working this routine to solely use 
+ *            	memcmp instead of the bit-field comparisons
+ * 		might appear to be a good idea at first, but 
+ *		it is not -- unless you take into account
+ *		the possibility for uninitialized bits,
+ * 		and bit fields which can be either 
+ *		sizeof(short) or sizeof(int) in length --
+ *		and where those bits happen to be, based
+ *		upon machine endianness and compiler
+ *		quirks.  
+ *
+ *  @note	The GTdate() define in prog.h compares
+ *  		the underlying integer, ldate, to 
+ *		determine equality. I'm not sure that's
+ *		such a good idea, due to comments in the
+ *		warning above -- maybe sjd is assuming
+ *		16-bit bit fields, or 0-initialized
+ *		structures for that? At any rate, I've
+ *		seen inequal ldates with equal dates in
+ *		the debugger, although gdb is notorious
+ *		for screwy output on bitfields with
+ *		sparc architecture..
+ *
+ *  @see	GEdate()
+ *
+ *  @param	s1	date/time stamp to compare
+ *  @param	s2	other date/time stamp to compare
+ *  @returns	TRUE    on equality
+ *
+ */
+int _fast EQdate(union stamp_combo *s1,union stamp_combo *s2)
+{
+  union _stampu st1, st2;
+
+  st1=s1->msg_st;
+  st2=s2->msg_st;
+
+  /* {date = {da = 9, mo = 6, yr = 23}, time = {ss = 25, mm = 40, hh = 10}} */
+
+  if (st1.time.ss != st2.time.ss)
+    return FALSE;
+
+  if (st1.time.mm != st2.time.mm)
+    return FALSE;
+
+  if (st1.time.hh != st2.time.hh)
+    return FALSE;
+
+  if (st1.date.da != st2.date.da)
+    return FALSE;
+
+  if (st1.date.mo != st2.date.mo)
+    return FALSE;
+
+  if (st1.date.yr != st2.date.yr)
+    return FALSE;
+
+  return TRUE;
 }
 
 
