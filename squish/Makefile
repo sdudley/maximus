@@ -22,6 +22,7 @@ bld.h:
 	bldupd bld.h
 
 $(SQUISH_OBJS):        apidebug.h
+squish.o squish: CPPFLAGS += -DINSTALL_PREFIX=\"$(PREFIX)\"
 squish: $(SQUISH_OBJS)
 
 libkillrcat.so: killrcat.o
