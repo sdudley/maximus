@@ -18,10 +18,10 @@
  */
 
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: sstat.c,v 1.2 2003/06/05 03:13:40 wesgarland Exp $";
+static char rcs_id[]="$Id: sstat.c,v 1.3 2003/08/26 15:37:19 paltas Exp $";
 #pragma on(unreferenced)
 
-/*#define DEBUG*/
+//#define DEBUG
 
 #include <stdio.h>
 #include <string.h>
@@ -146,12 +146,15 @@ static void near ReadArea(int fd, struct _ahlist *al, struct _tarea *ta)
 
 static void near ParseStats(int fd)
 {
+  int found;
   struct _thdr th;
   struct _tarea tarea;
-  struct _ahlist *al;
+  struct _ahlist *al; 
 
   while (read(fd, (char *)&th, sizeof th)==sizeof th)
   {
+    found = FALSE;
+
     if (th.type != TYPE_AREA)
     {
       lseek(fd, th.len, SEEK_CUR);
@@ -171,11 +174,14 @@ static void near ParseStats(int fd)
 
     for (al=ahlist; al; al=al->next)
       if (eqstri(tarea.tag, al->tag))
-        break;
+      {
+        found = TRUE;
+	break;
+      }
 
     /* This area not found */
 
-    if (al==NULL)
+    if (found == FALSE)
     {
       al=smalloc(sizeof(struct _ahlist));
 
@@ -216,7 +222,7 @@ static void near CalcTotals(dword *total_in_bytes, dword *total_in_msgs)
   struct _ahlist *al;
   struct _stlist *sl;
 
-  *total_in_bytes=*total_in_msgs=0;
+  total_in_bytes=total_in_msgs=0;
 
   for (al=ahlist; al; al=al->next)
   {
@@ -234,8 +240,11 @@ static void near CalcTotals(dword *total_in_bytes, dword *total_in_msgs)
     if (al->total_out_bytes==0 && al->total_out_msgs==0)
       continue;
 
-    *total_in_bytes += al->in_bytes;
-    *total_in_msgs  += al->in_msgs;
+    total_in_bytes += al->in_bytes;
+    total_in_msgs  += al->in_msgs;
+    #ifdef DEBUG
+	printf("Total in bytes: %d\nTotal in msgs: %d\n\n", total_in_bytes, total_in_msgs);
+    #endif
   }
 }
 
@@ -265,8 +274,8 @@ static void near CalculateStats(dword total_in_bytes, dword total_in_msgs)
 
     printf("   MSGS IN : %8ld (%02d.%02d%% of total msgs in)\n",
            al->in_msgs,
-           (int)(al->in_msgs*100/total_in_msgs),
-           (int)((al->in_msgs*10000/total_in_msgs) % 100));
+           (int) (al->in_msgs*100/total_in_msgs),
+           (int) ((al->in_msgs*10000/total_in_msgs) % 100));
 
     printf("   MSGS OUT: %8ld\n\n",
            al->total_out_msgs);
