@@ -71,7 +71,6 @@ int cursesAttribute(unsigned char dosAttribute)
    */
 
   int        ch = 0;
-  int		tmp = 0;
 
   switch (dosAttribute & (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED))
   {
