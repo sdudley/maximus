@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_heap.c,v 1.5 2004/01/27 20:57:25 paltas Exp $";
+static char rcs_id[]="$Id: vm_heap.c,v 1.6 2005/10/19 10:57:10 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -60,7 +60,7 @@ VMADDR hpalloc(word len)
 
   if (hpcheck() != 0)
   {
-    printf(__FUNCTION__ " bar\n");
+    printf("%s bar\n", __FUNCTION__);
   }
 #endif
 
@@ -171,7 +171,7 @@ void hpfree(VMADDR ofs)
 #ifdef HEAP_PROBLEMS
   if (hpcheck() != 0)
   {
-    printf(__FUNCTION__ " foo\n");
+    printf("%s foo\n", __FUNCTION__);
   }
 #endif
 

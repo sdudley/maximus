@@ -196,7 +196,7 @@ extrn char user_poo[] IS("$$$user");
 extrn char user_poo_bbs[] IS("$$$user.bbs");
 extrn char user_poo_idx[] IS("$$$user.idx");
 extrn char user_bak[] IS("user.bak");
-extrn char mem_nmsgb[] IS("!NOT ENOUGH MEMORY FOR MESSAGE BUFFER (function: " __FUNCTION__ " )");
+extrn char mem_nmsgb[] IS("!NOT ENOUGH MEMORY FOR MESSAGE BUFFER");
 extrn char mem_nrmb[] IS("!NOT ENOUGH MEMORY FOR READ MESSAGE BUFFER");
 extrn char mem_none[] IS("!NOT ENOUGH FREE MEMORY");
 extrn char cmd_delim[] IS(" ;,\t\r\n");

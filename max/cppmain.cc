@@ -19,14 +19,16 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: cppmain.cc,v 1.3 2004/01/27 21:00:26 paltas Exp $";
+static char rcs_id[]="$Id: cppmain.cc,v 1.4 2005/10/19 10:57:09 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
 #include "prog.h"
 
-extern "C" c_main(int argc, char *argv[]);
-extern "C" unsigned far _ovl_openflags(unsigned sharing_mode);
+extern "C" { 
+	     int _stdc c_main(int argc, char *argv[]); 
+	     unsigned far _ovl_openflags(unsigned sharing_mode); 
+}
 
 int main(int argc, char *argv[])
 {

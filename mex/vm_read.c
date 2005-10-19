@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: vm_read.c,v 1.3 2004/01/27 20:57:25 paltas Exp $";
+static char rcs_id[]="$Id: vm_read.c,v 1.4 2005/10/19 10:57:10 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -31,7 +31,7 @@ static char rcs_id[]="$Id: vm_read.c,v 1.3 2004/01/27 20:57:25 paltas Exp $";
 #include "vm.h"
 
 
-static void NoMem(void)
+void NoMem(void)
 {
   (*pfnLogger)("!MEX:  out of memory reading file");
 }

@@ -77,7 +77,7 @@ int xxspawnvp(int mode, const char *Cfile, char *const argv[])
         return 0; /* normal child exit */
 
       if (WIFSIGNALED(status))
-        fprintf(stderr, __FUNCTION__ ": Child (%s) exited due to signal %i!\n", Cfile, WSTOPSIG(status));
+        fprintf(stderr, "%s: Child (%s) exited due to signal %i!\n", __FUNCTION__, Cfile, WSTOPSIG(status));
 
       return -1;
     }

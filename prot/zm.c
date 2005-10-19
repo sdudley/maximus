@@ -19,7 +19,7 @@
 
 #ifndef __GNUC__
 #pragma off(unreferenced)
-static char rcs_id[]="$Id: zm.c,v 1.4 2004/01/27 21:31:00 paltas Exp $";
+static char rcs_id[]="$Id: zm.c,v 1.5 2005/10/19 10:57:10 paltas Exp $";
 #pragma on(unreferenced)
 #endif
 
@@ -121,8 +121,8 @@ static char rcs_id[]="$Id: zm.c,v 1.4 2004/01/27 21:31:00 paltas Exp $";
 #define ZRWINDOW 1400
 
 int Rxtimeout;                  /* Tenths of seconds to wait for something */
-static int Rxframeind;          /* ZBIN ZBIN32, or ZHEX type of frame received */
-static int Rxtype;              /* Type of header received */
+int Rxframeind;          /* ZBIN ZBIN32, or ZHEX type of frame received */
+int Rxtype;              /* Type of header received */
 int Rxcount;			/* Count of data bytes received */
 char Rxhdr[4];			/* Received header */
 char Txhdr[4];			/* Transmitted header */
