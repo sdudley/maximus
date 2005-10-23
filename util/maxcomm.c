@@ -262,7 +262,6 @@ int main(void)
     struct dirent * dirp = NULL;
     DIR* dir = NULL;
 
-    negotiateTelnetOptions(1);
 
     if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) 
     {
@@ -286,6 +285,9 @@ int main(void)
 	    break;
 	}
     }
+
+    negotiateTelnetOptions(1);
+
 
     len = strlen(remote.sun_path) + sizeof(remote.sun_family);
     if (connect(s, (struct sockaddr *)&remote, len) == -1) 
